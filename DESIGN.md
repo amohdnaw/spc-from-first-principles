@@ -66,6 +66,7 @@ Body is the anchor: **21px / 1.55**. Everything else is a step from it.
 | 11 | 0.688 | mono | micro labels, panel headers, units — uppercase, tracking .14em |
 | 13 | 0.813 | mono | figure numbers, status text, captions |
 | 16 | 1.000 | mono | readout values, nav |
+| 17 | 1.063 | serif | secondary prose — lab notes, list items, chart captions, callouts |
 | 21 | 1.313 | serif | body prose |
 | 26 | 1.625 | serif italic | dek / standfirst |
 | 33 | 2.063 | serif | h3, section heads |
@@ -76,6 +77,57 @@ Body is the anchor: **21px / 1.55**. Everything else is a step from it.
 - Reading measure **58–64ch**. Never full width.
 - Readouts and any figure use **tabular lining numerals** (`font-variant-numeric: tabular-nums`).
 - Mono labels: uppercase, `letter-spacing: .14em`. Serif: normal tracking, never letter-spaced.
+
+**Added 2026-08-25.** The 17px serif step was missing and got improvised as 15px and 17px
+in shipped code (`line-of-sight` `.verdict p`, `index` `.lab-note` / `.tools li` /
+`.two-cap`). It is a real need — secondary prose that must not compete with the 21px
+reading column — so it is now a documented step rather than an ad-hoc value. Nothing
+between 17 and 21, and nothing below 17 in serif; smaller than that is mono's job.
+
+### Narrow viewports (≤560px)
+
+21px serif cannot hold a 58–64ch measure on a 320px screen (that is roughly 25ch), so the
+scale is allowed exactly three substitutions below 560px, and no others:
+
+| Element | Normal | ≤560px |
+|---|---|---|
+| body prose | 21 | **19** |
+| mono micro-label, where a row would otherwise wrap | 11 | **10** |
+| wordmark | 21 | **18** |
+
+These were already in `index.html` and `line-of-sight.html` as undocumented values before
+being written down here. Anything else stays on the scale at every width — a 10px panel
+header at desktop width is a bug, not a substitution.
+
+**Fluid type is allowed, its endpoints are not negotiable.** `clamp(min, vw, max)` may
+interpolate between two steps — at 760px a `clamp(42px, 7vw, 86px)` headline renders 53px
+and that is fine. What must be on the scale (or a documented exception) is the **min and
+the max**. Auditing every rendered width against the table will flag fluid type forever;
+audit the endpoints.
+
+### What the scale does NOT govern
+
+**Text drawn inside a figure** — `<text>` in a chart SVG, anything painted into a canvas —
+is part of the figure, not the page, and sets its own sizes. The Manim renders already do
+this (font_size 18–40 in scene units), and the in-page charts match them: 9–11px for axis
+and limit labels, 13px for annotations, larger for a value the chart exists to show. §5's
+figure rule already says the page adapts to the figures, not the reverse.
+
+This is an exemption, not a loophole. The moment that text is a page element — a caption,
+a readout tile, a panel header — it is back on the scale.
+
+### Documented exceptions — `line-of-sight.html`
+
+Both approved 2026-08-25 rather than "fixed", because this page is a single long
+four-act essay and not a document in the curriculum sequence:
+
+1. **Display type runs off-scale**: `h1` to 86px and `h2` to 46px, against the 42/33
+   steps. The oversized opener is the essay's signature. Its *body* prose was brought
+   onto the 21px anchor and the 58–64ch measure; only the display sizes are excepted.
+2. **The nav is `position: sticky`**, where every other page lets it scroll away. Four
+   acts need act-to-act jumping. It already reverts to `position: static` at ≤900px so
+   it never squeezes the reading column on a laptop or phone, which is the case the
+   §6 fixed-chrome ban exists to prevent.
 
 ## 3. Spacing
 

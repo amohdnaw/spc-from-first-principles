@@ -40,7 +40,7 @@
   body{
     background:var(--ground);color:var(--ink-bright);
     font-family:'EB Garamond',Georgia,serif;
-    font-size:clamp(17px,1.2vw,20px);line-height:1.6;font-weight:500;
+    font-size:21px;line-height:1.55;font-weight:500;
     -webkit-font-smoothing:antialiased;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -55,7 +55,7 @@
     border-bottom:1px solid var(--rule);
   }
   .nav-inner{max-width:var(--max);margin:0 auto;padding:13px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:baseline}
-  .nav-id{font-family:'EB Garamond',Georgia,serif;font-size:18px}
+  .nav-id{font-family:'EB Garamond',Georgia,serif;font-size:21px}
   .nav-id em{font-style:italic;color:var(--accent)}
   .nav-links{display:flex;flex-wrap:wrap;gap:clamp(12px,2.5vw,26px);font-size:11px;font-weight:600;
     letter-spacing:0.1em;text-transform:uppercase;font-family:'IBM Plex Mono',ui-monospace,monospace}
@@ -77,26 +77,32 @@
     background-size:56px 56px;
     mask-image:radial-gradient(ellipse 90% 85% at 50% 30%,black 25%,transparent 78%);
   }
-  .kicker{font-size:11px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--ink-dim);display:flex;align-items:center;gap:12px}
+  /* 11px and 13px are mono steps in the scale, and an eyebrow/unit/control label is
+     instrument voice, not document voice — see DESIGN.md §1. These five rules were
+     inheriting the serif; .raw-cell h3 below already had it right. */
+  .kicker{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;font-weight:600;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim);display:flex;
+    align-items:center;gap:12px}
   .kicker::before{content:"";width:34px;height:1px;background:var(--accent)}
-  h1{font-size:clamp(40px,7vw,86px);margin:22px 0 0;max-width:15ch}
+  h1{font-size:clamp(42px,7vw,86px);margin:22px 0 0;max-width:15ch}
   h1 em{font-style:italic;font-weight:300;color:var(--accent)}
-  .lede{margin-top:26px;max-width:56ch;font-size:clamp(16px,1.4vw,19px);color:var(--ink)}
+  .lede{margin-top:26px;max-width:58ch;color:var(--ink)}
   .lede strong{color:var(--ink-bright)}
 
   /* acts */
   section{padding:clamp(64px,10vh,120px) 0 0}
   .act-head{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
-  .act-num{font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:clamp(20px,2.5vw,28px);color:var(--accent)}
-  h2{font-size:clamp(28px,4vw,46px);max-width:22ch}
-  .act-lede{max-width:62ch;color:var(--ink);margin-bottom:clamp(28px,4vh,44px)}
+  .act-num{font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:clamp(21px,2.5vw,26px);color:var(--accent)}
+  h2{font-size:clamp(26px,4vw,46px);max-width:22ch}
+  .act-lede{max-width:61ch;color:var(--ink);margin-bottom:clamp(28px,4vh,44px)}
 
   /* panels */
   .panel{border:1px solid var(--ink-bright);background:var(--panel)}
   .panel-head{
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 16px;
     padding:10px clamp(14px,2.5vw,24px);
-    font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-dim);
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim);
     border-bottom:1px solid var(--rule);
   }
   .panel-head b{color:var(--ink-bright)}
@@ -105,7 +111,8 @@
   /* buttons */
   button{font:inherit;cursor:pointer}
   .btn{
-    padding:11px 22px;font-size:13px;font-weight:600;letter-spacing:0.04em;
+    padding:11px 22px;font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:13px;font-weight:600;letter-spacing:0.04em;
     border:1px solid var(--ink-bright);background:transparent;color:var(--ink-bright);transition:all .2s;
   }
   .btn.primary{background:var(--ink-bright);color:var(--ground)}
@@ -116,29 +123,45 @@
   .raw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule)}
   @media(max-width:760px){.raw-grid{grid-template-columns:repeat(2,1fr)}}
   .raw-cell{background:var(--panel);padding:14px clamp(12px,2vw,20px)}
-  .raw-cell h3{font-size:12px;font-family:'IBM Plex Mono';font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim)}
-  .raw-val{font-family:'EB Garamond',Georgia,serif;font-size:clamp(24px,3vw,34px);margin:6px 0 2px;font-variant-numeric:tabular-nums}
-  .raw-sub{font-size:11px;color:var(--ink-dim);font-variant-numeric:tabular-nums}
+  .raw-cell h3{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
+    font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim)}
+  .raw-val{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(21px,3vw,26px);margin:6px 0 2px;font-variant-numeric:tabular-nums lining-nums;color:var(--ink-bright)}
+  .raw-sub{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
+    color:var(--ink-dim);font-variant-numeric:tabular-nums}
 
   /* verdict */
-  .verdict{margin-top:16px;padding:16px clamp(14px,2.5vw,24px);border-left:3px solid var(--accent);background:var(--signal-soft,#f4e5e0);display:none}
+  /* This callout says "Line C is the failure" and the readout below flags a process
+     that cannot hold tolerance. Both are "this went wrong", so both are salmon —
+     amber is wayfinding only (DESIGN.md §1). */
+  .verdict{margin-top:16px;padding:16px clamp(14px,2.5vw,24px);
+    border-left:3px solid var(--signal-alarm);background:var(--alarm-wash);display:none}
   .verdict.show{display:block}
-  :root{--signal-soft:oklch(0.55 0.21 28 / 0.08)}
-  .verdict p{font-size:15px;color:var(--ink-bright)}
-  .verdict b{color:var(--accent)}
+  :root{--alarm-wash:rgba(222,106,93,0.08)}
+  .verdict p{font-size:17px;color:var(--ink-bright)}
+  .verdict b{color:var(--signal-alarm)}
 
   /* act 3 capability lab */
   .lab-grid{display:grid;grid-template-columns:1fr 260px;gap:clamp(18px,3vw,36px);padding:clamp(18px,3vw,28px);align-items:start}
   @media(max-width:760px){.lab-grid{grid-template-columns:1fr}}
-  .ctl label{display:block;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink);margin-bottom:6px}
+  .ctl label{display:block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
+    font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink);margin-bottom:6px}
   .ctl input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:2px 0 18px}
   .readout{border-top:2px solid var(--ink-bright)}
-  .readout div{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule)}
-  .readout dt{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-dim);font-weight:600}
-  .readout dd{font-family:'EB Garamond',Georgia,serif;font-size:19px;font-variant-numeric:tabular-nums}
-  .readout dd.bad{color:var(--accent);font-weight:600}
+  /* stacked, per component 2: micro-label above, value below. Side by side, a 260px
+     column forced "predicted defects" and "not capable — scrap machine" onto two
+     lines each with a 16px gutter between them. */
+  .readout div{display:flex;flex-direction:column;gap:8px;align-items:flex-start;
+    padding:12px 0;border-bottom:1px solid var(--rule)}
+  /* component 2 — readout tile: mono micro-label, mono tabular value. 10px and 19px are
+     not steps; 11 is the label step and 16 is the readout-value step. 21px mono here
+     overflowed the 260px lab column and collided label into value. */
+  .readout dt{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim);font-weight:600}
+  .readout dd{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:16px;
+    font-variant-numeric:tabular-nums lining-nums}
+  .readout dd.bad{color:var(--signal-alarm);font-weight:600}
   .readout dd.good{color:var(--signal-ok);font-weight:600}
-  .lab-note{font-size:13px;color:var(--ink-dim);margin-top:14px;line-height:1.55}
+  .lab-note{font-size:17px;color:var(--ink-dim);margin-top:14px;line-height:1.55;max-width:52ch}
   .lab-note b{color:var(--ink-bright)}
 
   /* act 4 two-audience */
@@ -148,11 +171,14 @@
 
   /* footer */
   footer{border-top:1px solid var(--ink-bright);margin-top:clamp(72px,11vh,130px);padding:24px 0 48px}
-  .foot-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-dim)}
+  .foot-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
 
   /* reveal */
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
   .reveal.in{opacity:1;transform:none}
+  @media(max-width:560px){body{font-size:19px}.nav-id{font-size:18px}}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -290,13 +316,13 @@
 <!-- ============ COLOPHON ============ -->
 <section class="wrap" id="colophon">
   <div class="act-head reveal"><span class="act-num">Colophon.</span><h2>What you just used</h2></div>
-  <p class="act-lede reveal" style="max-width:66ch">
+  <p class="act-lede reveal">
     Everything on this page runs locally in your browser — no server, no library, no charting
     package. The plant simulation generates autocorrelated noise with scripted tool-wear drift;
     the charts, limits, EWMA logic, capability math (normal CDF via erf approximation), and
     visualizations are hand-built in vanilla JavaScript, Canvas, and SVG.
   </p>
-  <p class="act-lede reveal" style="max-width:66ch">
+  <p class="act-lede reveal">
     Built by <strong>Ammar</strong>, SPC engineer — I do this for manufacturing lines at work;
     this page is what happens when I point the same discipline at a browser.
     <a href="mailto:ammar.mnawawi@gmail.com" style="color:var(--accent)">Get in touch →</a>
