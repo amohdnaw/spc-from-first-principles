@@ -1,0 +1,56 @@
+graph LR
+  subgraph src["source of truth — spc-lab/"]
+    LIB["spclab<br/>Python library"]
+    TEST["pytest<br/>9 tests"]
+    SCENE["9 Manim scenes"]
+    NARR["narration.py<br/>self.say pacing"]
+  end
+
+  subgraph media["generated media — regenerable"]
+    MP4["1080p60 mp4"]
+    POST["posters/*.jpg"]
+    VTT["captions/*.vtt"]
+  end
+
+  subgraph site["the site"]
+    IDX["index.html<br/>CURRICULUM FRONT DOOR"]
+    HERO["hero: in-flow X-bar chart<br/>4 phases, no fixed strip"]
+    SPINE["syllabus spine<br/>0 I II III IV"]
+    APP["applied<br/>Lab A · Lab B · two audiences"]
+    L0["level-0<br/>basics"]
+    L1["level-1<br/>variation"]
+    L2["level-2<br/>limits"]
+    L3["level-3<br/>capability"]
+    L4["level-4<br/>detection"]
+    LOS["line-of-sight.html"]
+  end
+
+  HUB["spc-from-first-principles.html<br/>DELETED — absorbed into index"]
+
+  LIB --> TEST
+  LIB --> SCENE
+  NARR --> SCENE
+  SCENE --> MP4
+  SCENE --> POST
+  SCENE --> VTT
+  LIB -->|"ppm_from_cpk<br/>one source of truth"| APP
+
+  IDX --> HERO
+  IDX --> SPINE
+  IDX --> APP
+  HERO -->|"phase I door"| L1
+  HERO -->|"phase II door"| L2
+  HERO -->|"phase III door"| L3
+  HERO -->|"phase IV door"| L4
+  SPINE --> L0
+  SPINE --> L1
+  SPINE --> L2
+  SPINE --> L3
+  SPINE --> L4
+  APP --> LOS
+  L0 -->|"back-link repointed"| IDX
+  HUB -.->|"5 prose blocks, gallery video,<br/>provenance panel, SYS_MSG"| IDX
+
+  MP4 --> IDX
+  POST --> IDX
+  VTT --> IDX

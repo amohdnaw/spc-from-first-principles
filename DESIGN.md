@@ -1,7 +1,8 @@
 # DESIGN.md — SPC portfolio
 
-Frozen 2026-08-25. Governs `index.html`, `line-of-sight.html`,
-`spc-from-first-principles.html` and every curriculum level page.
+Frozen 2026-08-25. Governs `index.html`, `line-of-sight.html` and every curriculum
+level page. (`spc-from-first-principles.html` was absorbed into `index.html` and
+deleted — see `specs/spc-landing-contract.md`.)
 
 Picked from a 14-variant gallery. Winner is a synthesis:
 **v13 (process control room HMI) skin on v14 (mathematical textbook) skeleton**,

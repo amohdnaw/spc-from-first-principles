@@ -13,8 +13,10 @@ Direction picked from a 14-variant gallery: **v13 skin + v14 skeleton + v03 read
 Each line is literally checkable in a browser after the build.
 
 ### Level pages
-1. Open `spc-from-first-principles.html` → the page ground is `#0d1114` and the
-   Manim video sits on it with **no visible box or seam** — the render background
+1. ~~Open `spc-from-first-principles.html`~~ → **SUPERSEDED 2026-08-25 by
+   `spc-landing-contract.md`** — that page was absorbed into `index.html` and deleted.
+   The check itself still stands, now against `index.html`: the page ground is `#0d1114`
+   and the Manim video sits on it with **no visible box or seam** — the render background
    and the page background are the same colour.
 2. Every video on the site shows a **still frame before you press play**, never a
    grey rectangle.
@@ -114,8 +116,13 @@ Approving this contract confirms these. Each is reversible; say so and I change 
    (teal/salmon) used only for data. Sampled from the Manim renders, not chosen by eye.
 5. **Figures and videos keep their current rendered look.** The page adapts to them,
    not the reverse. No re-rendering to change colours.
-6. **`index.html` stays the entry point** and keeps its current section structure
-   (about / selected work / visualize / toolbox / contact). Reskin, not rewrite.
+6. ~~**`index.html` stays the entry point** and keeps its current section structure
+   (about / selected work / visualize / toolbox / contact). Reskin, not rewrite.~~
+   **REVERSED 2026-08-25 by `spc-landing-contract.md`** — the reskin left the landing
+   page as the only surface not actually built to the frozen system (fixed 150px monitor
+   strip, 15–17px body against a 21px scale, ~90ch measure against the 58–64ch rule).
+   Composition and copy were both reopened; `index.html` is now the curriculum front
+   door and absorbed the hub page.
 
 ---
 
