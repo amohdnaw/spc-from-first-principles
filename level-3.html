@@ -166,7 +166,11 @@
   @media(max-width:560px){
     body{font-size:19px}
     .dek,.sys p,.next{font-size:22px}
-    .eq-body{font-size:26px}
+    /* long formulas (Level IV's EWMA limit) blow past a 320px viewport;
+       stack the reference number and let the expression wrap */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+    .eq-body{font-size:24px;overflow-wrap:anywhere;line-height:1.35}
     .rail{gap:12px;width:100%;margin-left:0}
     .nav-in{flex-wrap:wrap;gap:12px}
     /* the wrapped two-row rail would eat a quarter of a phone viewport;
