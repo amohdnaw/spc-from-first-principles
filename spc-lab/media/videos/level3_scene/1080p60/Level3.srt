@@ -1,0 +1,88 @@
+1
+00:00:00,000 --> 00:00:04,075
+Capability compares two distributions. One is
+
+2
+00:00:04,175 --> 00:00:07,508
+the customer's. One is the process's.
+
+3
+00:00:07,600 --> 00:00:11,532
+One dimension, one axis, millimetres.
+
+4
+00:00:11,616 --> 00:00:14,641
+The customer speaks in limits. Anything
+
+5
+00:00:14,741 --> 00:00:17,204
+between these lines is accepted.
+
+6
+00:00:17,300 --> 00:00:22,240
+The process answers with its own spread. It never read the drawing.
+
+7
+00:00:22,333 --> 00:00:26,453
+Tolerance is zero point six millimetres wide. Six
+
+8
+00:00:26,553 --> 00:00:29,985
+sigma of process is zero point four five.
+
+9
+00:00:30,083 --> 00:00:33,898
+Cp is those two widths divided. One point
+
+10
+00:00:33,998 --> 00:00:38,863
+three three. Pure geometry, assuming a centred mean.
+
+11
+00:00:38,950 --> 00:00:42,930
+Now drift the mean. The spread does not change.
+
+12
+00:00:43,016 --> 00:00:48,196
+One gap shrinks. The other opens. Cp cannot tell.
+
+13
+00:00:48,283 --> 00:00:52,335
+The near side leaks. That is where parts fail.
+
+14
+00:00:52,433 --> 00:00:56,801
+Cpk takes the smaller one sided ratio. Zero
+
+15
+00:00:56,901 --> 00:01:00,853
+point eight nine. The near gap decides.
+
+16
+00:01:02,150 --> 00:01:06,562
+Every Cpk value is a promise about defect rate.
+
+17
+00:01:06,650 --> 00:01:11,474
+Each row: a Cpk, the parts per million expected outside
+
+18
+00:01:11,574 --> 00:01:15,862
+the limit, and the same number in plain counting.
+
+19
+00:01:15,950 --> 00:01:19,515
+These are near tail figures, computed at render time
+
+20
+00:01:19,615 --> 00:01:22,546
+by the same function the test suite checks.
+
+21
+00:01:22,633 --> 00:01:25,293
+Nothing is read off a table. Change
+
+22
+00:01:25,393 --> 00:01:28,053
+the formula and this slide changes.
+

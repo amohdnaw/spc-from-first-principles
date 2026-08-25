@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level IV — Detection theory: memory beats points · SPC from First Principles</title>
-<meta name="description" content="A chart with a memory catches drift while every raw point still looks innocent. EWMA versus Shewhart, calibrated to the same false-alarm rate and simulated honestly.">
+<title>Level 0 — What the numbers mean · SPC from First Principles</title>
+<meta name="description" content="Before control charts: what a mean actually is, why spread needs squaring, where the bell comes from, and why a sample is never the population. Twelve real measured shafts.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -32,8 +32,8 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
-    --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
-    --figure:44rem;              /* figures step wider than text, still not full bleed */
+    --measure:27em;
+    --figure:44rem;
     --gutter:clamp(24px,5vw,72px);
     --rhythm:32px;
   }
@@ -49,8 +49,6 @@
 
   .wrap{max-width:76rem;margin:0 auto;padding:0 var(--gutter)}
   .col{max-width:var(--measure)}
-
-  /* mono voice: labels, units, status, data */
   .m{font-family:var(--mono);font-variant-numeric:tabular-nums}
   .micro{font-family:var(--mono);font-size:11px;font-weight:600;
     letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
@@ -90,6 +88,8 @@
   main{padding-bottom:64px}
   section{padding-top:48px}
   p{margin:0 0 var(--rhythm)}
+  h2{font-family:var(--serif);font-weight:600;font-size:33px;line-height:1.15;
+    color:var(--ink-bright);margin:64px 0 20px;max-width:20em}
 
   /* ---------- equation ---------- */
   .eq{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
@@ -110,32 +110,31 @@
     display:block;margin-bottom:6px}
   figcaption .figtext{font-size:17px;line-height:1.5;color:var(--ink-dim)}
 
-  /* ---------- interactive ---------- */
-  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
-  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  /* ---------- the twelve parts ---------- */
+  .data{margin:48px 0 0;border:1px solid var(--rule);background:var(--panel);
+    max-width:var(--figure)}
+  .data-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
     padding:11px 20px;border-bottom:1px solid var(--rule)}
-  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  .data-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--signal-ok)}
-  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
-  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
-  canvas{display:block;width:100%;height:300px}
-  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
-  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
-    display:block;margin-bottom:12px}
-  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
-  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
-
-  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
-  .tile{background:var(--panel-high);padding:12px 14px}
-  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+  /* 12 readings: only use column counts that divide 12, otherwise auto-fit
+     leaves a phantom empty cell that reads as missing data */
+  .parts{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+    background:var(--rule)}
+  @media(max-width:820px){.parts{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:480px){.parts{grid-template-columns:repeat(3,1fr)}}
+  .part{background:var(--panel-high);padding:10px 12px;font-family:var(--mono);
+    font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink);text-align:center}
+  .part.lo{color:var(--signal-alarm)}
+  .part.hi{color:var(--signal-alarm)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    background:var(--rule);border-top:1px solid var(--rule)}
+  .stat{background:var(--panel-high);padding:14px}
+  .stat dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
     text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
-  .tile dd{margin:0;font-family:var(--mono);font-size:24px;font-weight:600;
-    font-variant-numeric:tabular-nums;line-height:1.1}
-  .tile dd.ok{color:var(--signal-ok)}
-  .tile dd.alarm{color:var(--signal-alarm)}
-  .tile dd.neutral{color:var(--ink-bright)}
-  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  .stat dd{margin:0;font-family:var(--mono);font-size:20px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--ink-bright);line-height:1.1}
+  .stat dd.ok{color:var(--signal-ok)}
 
   /* ---------- SYS note ---------- */
   .sys{margin:64px 0 0;border-left:2px solid var(--accent);
@@ -159,18 +158,13 @@
   .foot-in a:hover{color:var(--accent)}
   .foot-in .sp{margin-left:auto}
 
-  @media(max-width:900px){
-    .lab-grid{grid-template-columns:1fr}
-    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
-  }
   @media(max-width:560px){
     body{font-size:19px}
     .dek,.sys p,.next{font-size:22px}
     .eq-body{font-size:26px}
+    h2{font-size:26px}
     .rail{gap:12px;width:100%;margin-left:0}
     .nav-in{flex-wrap:wrap;gap:12px}
-    /* the wrapped two-row rail would eat a quarter of a phone viewport;
-       fixed chrome must not squeeze the reading column (DESIGN.md ban list) */
     nav{position:static}
     header.opener{padding-top:48px}
   }
@@ -183,106 +177,128 @@
   <div class="nav-in">
     <a class="wordmark" href="index.html">Ammar <span>/ SPC</span></a>
     <div class="rail">
-      <a href="level-0.html">0. Basics</a>
+      <a href="level-0.html" aria-current="page">0. Basics</a>
       <a href="level-1.html">I. Variation</a>
       <a href="level-2.html">II. Limits</a>
       <a href="level-3.html">III. Capability</a>
-      <a href="level-4.html" aria-current="page">IV. Detection</a>
+      <a href="level-4.html">IV. Detection</a>
     </div>
   </div>
 </nav>
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level IV</p>
-    <h1>Detection theory: memory beats points</h1>
-    <p class="dek">A chart with a memory catches drift while every raw point still looks innocent.</p>
+    <p class="eyebrow">Level 0</p>
+    <h1>What the numbers mean</h1>
+    <p class="dek">A mean, a spread, and a shape. Everything after this is built on three ideas.</p>
   </header>
 
   <main>
     <section>
       <div class="col">
-        <p>Slow drift is the most expensive failure mode in manufacturing precisely because no single measurement ever looks alarming. Shewhart charts wait for extremes; EWMA and CUSUM charts accumulate evidence across subgroups. How much sooner? Simulated honestly — with EWMA's limits calibrated so both charts share the same false-alarm rate first.</p>
+        <p>The rest of this curriculum starts by claiming that variation is
+        predictable. That claim already assumes you own three things: what an
+        average actually is, what a standard deviation measures, and where the
+        bell shape comes from. This level supplies them and stops. There are no
+        control charts here.</p>
+
+        <p>Twelve shafts, turned to a nominal twelve millimetres, measured to a
+        thousandth. No two are identical. That is not a defect — it is what every
+        real process does, and the whole discipline exists because of it.</p>
+      </div>
+
+      <div class="data">
+        <div class="data-head">
+          <span class="micro">12 measured shafts · nominal 12.000 mm · gauge 0.001 mm</span>
+          <span class="status">SEEDED · REPRODUCIBLE</span>
+        </div>
+        <div class="parts">
+          <div class="part">12.000</div><div class="part">12.006</div>
+          <div class="part">11.995</div><div class="part">11.982</div>
+          <div class="part">11.991</div><div class="part lo">11.980</div>
+          <div class="part">12.001</div><div class="part hi">12.027</div>
+          <div class="part">11.990</div><div class="part">11.988</div>
+          <div class="part">12.010</div><div class="part">12.007</div>
+        </div>
+        <dl class="stats">
+          <div class="stat"><dt>Mean x̄</dt><dd class="ok">11.9981</dd></div>
+          <div class="stat"><dt>Spread (max−min)</dt><dd>0.047</dd></div>
+          <div class="stat"><dt>σ (÷n)</dt><dd>0.0127</dd></div>
+          <div class="stat"><dt>s (÷n−1)</dt><dd>0.0133</dd></div>
+        </dl>
+      </div>
+
+      <h2>The mean is a balance point</h2>
+      <div class="col">
+        <p>Not "the middle", and not "the typical value". The mean is the one
+        place where the deviations cancel: add up how far every part sits above
+        it, add up how far every part sits below it, and the two totals are equal
+        and opposite. That is the definition, and it is why the mean is the
+        natural place to stand when you want to describe a process.</p>
+      </div>
+
+      <h2>Spread needs squaring</h2>
+      <div class="col">
+        <p>The obvious way to measure spread is to average the deviations. It
+        fails, and it fails for a structural reason: they sum to zero by
+        construction. Every time, for every dataset. The average deviation is
+        not a small number, it is exactly nothing.</p>
+
+        <p>So throw the signs away by squaring, average the squares, then take
+        the root to get back into millimetres. That is the standard deviation —
+        not a convention someone chose, but the shortest route around a problem
+        the mean creates.</p>
       </div>
 
       <div class="eq">
-        <div class="eq-body">±Lσ√(λ/(2−λ)·(1−(1−λ)<sup>2i</sup>))</div>
-        <div class="eq-num">(4.1)</div>
-        <div class="eq-cap">EWMA limits start wide and tighten to ±3σ√(λ/(2−λ)) as memory accumulates.</div>
+        <div class="eq-body">σ = √( Σ(x − x̄)² / n )</div>
+        <div class="eq-num">(0.1)</div>
+        <p class="eq-cap">Square to kill the signs, average, then root back into the original units.</p>
       </div>
 
-      <figure>
-        <div class="rule"></div>
-        <video src="spc-lab/media/videos/level4_scene/1080p60/Level4.mp4" poster="posters/level4.jpg" width="1920" height="1080" controls preload="none">
-          <track kind="captions" src="captions/level4.vtt" srclang="en" label="English" default>
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 4.1</span>
-          <span class="figtext">Rendered in Manim — drift hiding between ±3σ until the evidence line crosses. This is “Line C” from Line of Sight.</span>
-        </figcaption>
-      </figure>
-
+      <h2>The shape is a consequence</h2>
       <div class="col">
-        <p>Patterns catch shifts before limits do. The Western Electric rules read the shape of the run, not just the extremes — two of three beyond 2σ on the same side, four of five beyond 1σ, eight in a row on one side.</p>
+        <p>Measure twelve parts and you have a scatter. Measure twenty thousand
+        and a shape appears — and it is always the same shape, whenever the
+        variation comes from many small independent causes added together. Nobody
+        imposes the bell. It falls out of the arithmetic, which is exactly why it
+        can be relied on later.</p>
       </div>
 
-      <div class="sys">
-        <span class="micro">SYS NOTE</span>
-        <p>At a 1σ drift, EWMA detects in ~10 subgroups against Shewhart's ~44 — four times sooner, at identical false-alarm cost.</p>
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>You never measure the population. Every number you have is an estimate
+        made from a handful.</p>
+      </aside>
+
+      <h2>A sample is not the population</h2>
+      <div class="col">
+        <p>These twelve shafts give a mean of 11.9981 and a spread of 0.0133.
+        The process they came from has a true mean of 12.000 and a true sigma of
+        0.020 — two numbers you will never observe directly. Another twelve parts
+        would hand you slightly different estimates.</p>
+
+        <p>That gap between the estimate and the truth is not sloppiness. It is
+        measurable, and quantifying it is precisely what the next level does.</p>
       </div>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/41_l4_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 4.2</span>
-          <span class="figtext">Average Run Length against shift size. At a 1σ drift: detection in ~10 subgroups versus ~44, about four times sooner at identical false-alarm cost. Simulated, 8 000 runs per point.</span>
-        </figcaption>
-      </figure>
-
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/42_l4_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 4.3</span>
-          <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
-        </figcaption>
-      </figure>
-
-      <figure>
-        <div class="rule"></div>
-        <video src="spc-lab/media/videos/scenes2/1080p60/EWMAMemory.mp4" poster="posters/ewma.jpg" width="1920" height="1080" controls preload="none">
-          <track kind="captions" src="captions/ewma.vtt" srclang="en" label="English" default>
+        <video controls preload="none" poster="posters/level0.jpg">
+          <source src="spc-lab/media/videos/level0_scene/1080p60/Level0.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level0.vtt" srclang="en" label="English" default>
         </video>
         <figcaption>
-          <span class="fignum">Figure 4.4</span>
-          <span class="figtext">How the memory forms. Limits start wide and tighten toward ±3σ√(λ/(2−λ)) as weighted evidence accumulates.</span>
+          <span class="fignum">Figure 0.1</span>
+          <span class="figtext">The five ideas in order — parts vary, the mean
+          balances, spread needs squaring, the shape emerges from twenty thousand
+          parts, and a handful is never the whole. Narrated, with captions.</span>
         </figcaption>
       </figure>
 
-      <figure>
-        <div class="rule"></div>
-        <video src="spc-lab/media/videos/scenes2/1080p60/WERules.mp4" poster="posters/werules.jpg" width="1920" height="1080" controls preload="none">
-          <track kind="captions" src="captions/werules.vtt" srclang="en" label="English" default>
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 4.5</span>
-          <span class="figtext">Western Electric rules 1–4 — a point beyond 3σ, two of three beyond 2σ the same side, four of five beyond 1σ, eight in a row on one side.</span>
-        </figcaption>
-      </figure>
-
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/07_western_electric.png" width="1370" height="812" alt="The four rules drawn against the zone bands they test" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 4.6</span>
-          <span class="figtext">The four rules drawn against the zone bands they test.</span>
-        </figcaption>
-      </figure>
-
-      <a class="next" href="index.html">
-        <span class="m">Ammar / SPC</span>
-        <span>Back to the portfolio →</span>
+      <a class="next" href="level-1.html">
+        <span class="m">Level I</span>
+        <span>Variation is predictable →</span>
       </a>
     </section>
   </main>
@@ -290,7 +306,7 @@
 
 <footer>
   <div class="foot-in">
-    <span><a href="index.html">← SPC from First Principles — Ammar, SPC Engineer</a></span>
+    <span><a href="spc-from-first-principles.html">← SPC from First Principles</a></span>
     <span class="sp">All figures computed</span>
     <span>© 2026</span>
   </div>

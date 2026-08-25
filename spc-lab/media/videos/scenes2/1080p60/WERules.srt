@@ -1,0 +1,32 @@
+1
+00:00:00,000 --> 00:00:04,652
+The limits see one point at a time. The rules read the run.
+
+2
+00:00:04,750 --> 00:00:08,898
+Same chart, with the one and three sigma zones marked.
+
+3
+00:00:08,983 --> 00:00:13,371
+Forty subgroups from a process that looks calm at a glance.
+
+4
+00:00:13,466 --> 00:00:17,254
+Rule one: one point beyond three sigma.
+
+5
+00:00:17,350 --> 00:00:22,242
+Rule two: two of three beyond two sigma, same side.
+
+6
+00:00:22,333 --> 00:00:27,081
+Rule three: four of five beyond one sigma, same side.
+
+7
+00:00:27,166 --> 00:00:31,314
+Rule four: eight in a row on one side of centre.
+
+8
+00:00:31,400 --> 00:00:35,692
+A shift too small to breach a limit still shows in the pattern.
+

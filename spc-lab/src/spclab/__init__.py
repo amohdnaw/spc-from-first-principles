@@ -11,6 +11,7 @@ from .formulas import (
     xbar_r_limits,
     capability_indices,
     defects_per_million,
+    ppm_from_cpk,
     ewma_limits,
     western_electric_violations,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "xbar_r_limits",
     "capability_indices",
     "defects_per_million",
+    "ppm_from_cpk",
     "ewma_limits",
     "western_electric_violations",
 ]

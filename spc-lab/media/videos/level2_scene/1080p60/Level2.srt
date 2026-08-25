@@ -1,0 +1,88 @@
+1
+00:00:00,000 --> 00:00:03,161
+Three sigma is not a matter of taste. It
+
+2
+00:00:03,261 --> 00:00:06,260
+is a bet, and we can price it exactly.
+
+3
+00:00:06,350 --> 00:00:10,228
+Level one told us which distribution every subgroup
+
+4
+00:00:10,328 --> 00:00:14,050
+mean is drawn from, assuming nothing has changed.
+
+5
+00:00:14,150 --> 00:00:19,232
+This curve is the null hypothesis. Not an assumption about the
+
+6
+00:00:19,332 --> 00:00:23,746
+parts, but a claim about the process: it is unchanged.
+
+7
+00:00:23,833 --> 00:00:27,499
+Put limits at plus and minus three sigma of that curve,
+
+8
+00:00:27,599 --> 00:00:31,607
+and you have drawn a boundary around ninety nine point seven
+
+9
+00:00:31,707 --> 00:00:35,373
+three percent of everything the process should ever do.
+
+10
+00:00:35,466 --> 00:00:39,918
+That leaves zero point two seven percent outside. Roughly one
+
+11
+00:00:40,018 --> 00:00:44,320
+false alarm every three hundred and seventy subgroups. So a
+
+12
+00:00:44,420 --> 00:00:47,902
+point beyond the limit is a bet at three hundred
+
+13
+00:00:48,002 --> 00:00:51,782
+and seventy to one that something really did change.
+
+14
+00:00:53,066 --> 00:00:55,691
+A control chart is simply that same
+
+15
+00:00:55,791 --> 00:00:59,038
+test, run again on every subgroup, forever.
+
+16
+00:00:59,133 --> 00:01:03,185
+The limits are the boundary we just drew, turned on its side.
+
+17
+00:01:03,283 --> 00:01:08,032
+Every point inside is the process agreeing with the null. This
+
+18
+00:01:08,132 --> 00:01:11,943
+is what boring looks like, and boring is the goal.
+
+19
+00:01:12,033 --> 00:01:14,453
+Then one point steps outside.
+
+20
+00:01:14,550 --> 00:01:18,538
+That point is not a bad part. It is evidence against
+
+21
+00:01:18,638 --> 00:01:23,806
+the hypothesis that nothing changed. The correct response is not to
+
+22
+00:01:23,906 --> 00:01:27,266
+scrap it. It is to go and find what changed.
+

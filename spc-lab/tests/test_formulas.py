@@ -6,6 +6,7 @@ from spclab import (
     xbar_r_limits,
     capability_indices,
     defects_per_million,
+    ppm_from_cpk,
     ewma_limits,
     western_electric_violations,
 )
@@ -67,3 +68,28 @@ def test_we_rules_detect_shift():
     v = western_electric_violations(np.array(shifted), cl=0, sigma=1)
     assert any("Rule 4" in desc for _, desc in v)  # sustained shift → runs rule
     assert len(v) > len(western_electric_violations(np.array(stable), 0, 1))
+
+
+def test_ppm_from_cpk_matches_normal_tail():
+    """Cpk -> ppm is an integral, not a lookup. One tail by default."""
+    # Cpk 1.00 -> z=3.00 -> 1350 ppm near tail; 1.33 -> z=3.99 -> 33 ppm
+    assert ppm_from_cpk(1.00) == pytest.approx(1350, rel=0.01)
+    assert ppm_from_cpk(1.33) == pytest.approx(33.0, rel=0.02)
+    assert ppm_from_cpk(0.80) == pytest.approx(8198, rel=0.01)
+    # two-sided is exactly double, never something in between
+    assert ppm_from_cpk(0.80, two_sided=True) == pytest.approx(2 * ppm_from_cpk(0.80))
+    # the Six Sigma drift convention: Cpk 2.0 with 1.5 sigma shift -> 3.4 ppm
+    assert ppm_from_cpk(2.0, shift=1.5) == pytest.approx(3.4, rel=0.05)
+
+
+def test_ppm_table_uses_one_convention():
+    """Regression: the Level 3 promise table once mixed one- and two-sided rows.
+
+    Every published row must sit on the same curve, so the ratio between a row
+    and its own one-sided value is 1.0 for all of them or the table lies.
+    """
+    published = {0.80: 8198.0, 1.00: 1350.0, 1.33: 33.0, 1.67: 0.272}
+    for cpk, claim in published.items():
+        assert ppm_from_cpk(cpk) == pytest.approx(claim, rel=0.02), (
+            f"Cpk {cpk} row is off the one-sided curve"
+        )

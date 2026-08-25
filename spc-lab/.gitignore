@@ -1,0 +1,8 @@
+# Manim build output. Only the final 1080p60 mp4s are tracked (the site serves
+# them); everything else here is regenerable with ./build-media.sh in ~2 min.
+media/videos/**/partial_movie_files/
+media/videos/**/480p15/
+media/videos/**/*.wav
+media/voiceovers/
+media/images/
+media/texts/

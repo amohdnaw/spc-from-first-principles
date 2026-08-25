@@ -1,0 +1,76 @@
+1
+00:00:00,000 --> 00:00:04,748
+Slow drift is the most expensive failure mode in manufacturing.
+
+2
+00:00:04,833 --> 00:00:09,173
+A Shewhart chart, limits at plus and minus three sigma.
+
+3
+00:00:09,266 --> 00:00:11,734
+The process starts on target.
+
+4
+00:00:11,833 --> 00:00:14,613
+The first twenty subgroups are noise.
+
+5
+00:00:14,700 --> 00:00:19,232
+Then a drift begins, fifteen hundredths of a sigma per step.
+
+6
+00:00:19,316 --> 00:00:23,176
+Every point still sits comfortably inside the limits.
+
+7
+00:00:23,266 --> 00:00:29,046
+Each point is judged alone, then forgotten. The chart has no memory.
+
+8
+00:00:30,333 --> 00:00:33,353
+A chart with a memory behaves differently.
+
+9
+00:00:33,450 --> 00:00:36,424
+Its limits are calibrated first, so both
+
+10
+00:00:36,524 --> 00:00:39,422
+charts share the same false alarm rate.
+
+11
+00:00:39,516 --> 00:00:42,248
+Same centre line, same data.
+
+12
+00:00:42,333 --> 00:00:45,905
+The faint points are the raw measurements from before.
+
+13
+00:00:46,000 --> 00:00:49,047
+This statistic weights the newest subgroup and
+
+14
+00:00:49,147 --> 00:00:51,852
+carries forward what it has already seen.
+
+15
+00:00:51,950 --> 00:00:55,122
+So evidence accumulates, and every subgroup
+
+16
+00:00:55,222 --> 00:00:57,178
+after the drift adds to it.
+
+17
+00:00:57,266 --> 00:01:01,606
+It crosses the limit while every raw point still looks innocent.
+
+18
+00:01:01,700 --> 00:01:06,795
+At a one sigma drift: about ten subgroups instead of forty
+
+19
+00:01:06,895 --> 00:01:11,632
+four. Four times sooner, at the same false alarm cost.
+

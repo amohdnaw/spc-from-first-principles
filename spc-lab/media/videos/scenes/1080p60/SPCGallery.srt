@@ -1,0 +1,92 @@
+1
+00:00:00,000 --> 00:00:03,340
+Statistical process control is a handful of
+
+2
+00:00:03,440 --> 00:00:05,900
+formulas. Each one is a picture.
+
+3
+00:00:05,983 --> 00:00:08,763
+Two of those pictures carry the rest.
+
+4
+00:00:09,550 --> 00:00:12,964
+First idea. Control limits are learned from
+
+5
+00:00:13,064 --> 00:00:15,498
+the process, not handed to you.
+
+6
+00:00:15,583 --> 00:00:19,402
+This chart plots subgroup averages in sample order.
+
+7
+00:00:19,502 --> 00:00:22,323
+The centre line is just their average.
+
+8
+00:00:22,416 --> 00:00:27,548
+Now let the process talk. Each dot is one subgroup mean.
+
+9
+00:00:27,633 --> 00:00:30,625
+Their spread gives you sigma hat. Lines at
+
+10
+00:00:30,725 --> 00:00:34,085
+three sigma either side are the control limits.
+
+11
+00:00:34,183 --> 00:00:39,214
+Limits come from the data. Specs come from the customer. Confusing
+
+12
+00:00:39,314 --> 00:00:43,179
+the two is the most common mistake on a shop floor.
+
+13
+00:00:43,866 --> 00:00:47,226
+Second idea. Capability is what happens when
+
+14
+00:00:47,326 --> 00:00:51,158
+you compare the process against the specification.
+
+15
+00:00:51,250 --> 00:00:55,022
+Same process, now plotted against the measurement
+
+16
+00:00:55,122 --> 00:00:57,630
+itself. This is where parts land.
+
+17
+00:00:57,716 --> 00:01:00,686
+Now the customer's two limits. These
+
+18
+00:01:00,786 --> 00:01:04,096
+were not calculated. They were dictated.
+
+19
+00:01:04,183 --> 00:01:09,435
+Everything past them is scrap. The red area is how much to expect.
+
+20
+00:01:09,533 --> 00:01:13,580
+Nearest spec distance over three sigma is C p k.
+
+21
+00:01:13,680 --> 00:01:17,641
+About one, so a thousand bad parts per million.
+
+22
+00:01:18,433 --> 00:01:21,656
+The chart says whether the process is steady.
+
+23
+00:01:21,756 --> 00:01:25,053
+Capability says whether steady is good enough.
+

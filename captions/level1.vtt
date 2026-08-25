@@ -1,0 +1,82 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.151
+One part is noise. Many parts are
+
+2
+00:00:03.251 --> 00:00:07.388
+information. Six faces, all equally likely.
+
+3
+00:00:07.483 --> 00:00:10.311
+One roll. It tells you nothing.
+
+4
+00:00:10.400 --> 00:00:13.180
+Ten rolls. Still lumpy.
+
+5
+00:00:13.266 --> 00:00:15.518
+A hundred. Evening out.
+
+6
+00:00:15.616 --> 00:00:18.204
+A thousand. Nearly level.
+
+7
+00:00:18.300 --> 00:00:22.208
+Ten thousand: flat, one sixth each.
+
+8
+00:00:22.300 --> 00:00:27.552
+Predictable in bulk. Still flat, still one die at a time.
+
+9
+00:00:28.150 --> 00:00:31.245
+Now average the dice instead of counting
+
+10
+00:00:31.345 --> 00:00:33.642
+them. One die is the baseline.
+
+11
+00:00:33.733 --> 00:00:37.113
+Average two, and the flat top is gone.
+
+12
+00:00:37.200 --> 00:00:40.868
+Average five: a shape where there was none.
+
+13
+00:00:40.966 --> 00:00:43.554
+Thirty dice, and it is a bell.
+
+14
+00:00:43.650 --> 00:00:47.083
+Those spreads are measured, not drawn: one die's
+
+15
+00:00:47.183 --> 00:00:50.102
+spread over the square root of the count.
+
+16
+00:00:51.300 --> 00:00:55.832
+Subgroup size across the bottom, spread of the mean going up.
+
+17
+00:00:55.916 --> 00:00:59.656
+Sigma of x bar equals sigma over root n.
+
+18
+00:00:59.750 --> 00:01:05.650
+Four parts halve it. Nine, a third. Sixteen, a quarter.
+
+19
+00:01:05.750 --> 00:01:09.569
+This is why charts watch subgroup means: a shift
+
+20
+00:01:09.669 --> 00:01:13.570
+moves a mean visibly, and drowns in single parts.
+

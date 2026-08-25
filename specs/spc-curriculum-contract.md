@@ -30,11 +30,22 @@ Each line is literally checkable in a browser after the build.
 8. The interactive block shows **three readout tiles** — in-control area,
    false-alarm rate, false alarm every — with tabular numerals, the pass value in
    teal `#65ccaf` and any alarm value in salmon `#de6a5d`.
-9. **All four levels exist** as pages (I Variation, II Limits, III Capability,
+9. **Five levels exist** as pages (0 Basics, I Variation, II Limits, III Capability,
    IV Detection) and the level rail highlights the current one in amber.
-10. **All 8 existing Manim scenes appear somewhere.** Today 2 of 8 are used.
-    After this: Level1/2/3/4 on their own pages, and SPCGallery, ConstantsAct,
-    EWMAMemory, WERules embedded in the level whose argument they support.
+10. **All 9 Manim scenes appear somewhere.** Was 2 of 8 used. Now: Level0/1/2/3/4 on
+    their own pages, and SPCGallery, ConstantsAct, EWMAMemory, WERules embedded in
+    the level whose argument they support.
+
+### Narration — added 2026-08-25
+10a. **Every act is narrated.** Each video carries an audio stream, and playing one
+     produces sound. Verified by decoded audio bytes, not by the container alone.
+10b. **Every video has a caption track.** A `<track kind="captions">` pointing at a
+     WebVTT file that parses to a non-zero cue count in the browser.
+10c. **No act plays faster than its narration.** Pacing is not hand-tuned; the
+     narration script drives it via `self.say` in `spclab/narration.py`. A silent
+     render and a voiced render of the same scene stay within a second of each other.
+10d. **`SPCLAB_VOICE=1 ./build-media.sh` reproduces every mp4, poster and caption**
+     from source in one command.
 
 ### The other two pages
 11. Open `index.html` → same dark ground, same two-voice type system. The
@@ -88,14 +99,12 @@ Mock files deleted after the pick, per the throwaway rule.
 
 Approving this contract confirms these. Each is reversible; say so and I change it.
 
-1. **Level 0 is deferred, not dropped.** You described wanting to start from basic
-   statistics. The existing arc starts one step later, at "variation is predictable".
-   A true Level 0 — what a mean and a standard deviation are, what a distribution is,
-   what sampling means — is a real gap. Default: **build Levels I–IV first with zero
-   new renders**, then decide Level 0 separately. When we do it, default is to
-   **reuse the existing Level 1 dice-to-bell footage with new prose and figures**,
-   and only render new scenes if that reads badly. Rendering new Manim is the single
-   most expensive item available and should not ride along unexamined.
+1. ~~**Level 0 is deferred, not dropped.**~~ **SUPERSEDED 2026-08-25** — you said
+   "do all". Level 0 was built as new Manim (`level0_scene.py`, 102.5s) rather than
+   reusing Level 1 footage, and every act was re-rendered. The cost reasoning behind
+   the original default was wrong and is corrected here for the record: a full
+   1080p60 render is **8 seconds per scene**, so all nine rebuild in under two
+   minutes. Rendering was never the expensive part — authoring is.
 2. **Dark everywhere**, including the landing page — your call, recorded here because
    it means `index.html` and `line-of-sight.html` get reskinned, which is the bulk of
    the work.

@@ -1,0 +1,66 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.580
+Every constant on a control chart is derived, not decreed.
+
+2
+00:00:04.666 --> 00:00:08.094
+Take a subgroup of five parts off the process.
+
+3
+00:00:08.183 --> 00:00:13.075
+Each part lands somewhere. Sigma itself you cannot measure.
+
+4
+00:00:13.166 --> 00:00:17.266
+The range you can: largest value minus smallest.
+
+5
+00:00:17.350 --> 00:00:21.013
+Repeat forever, and the mean range settles at a
+
+6
+00:00:21.113 --> 00:00:24.858
+fixed multiple of sigma. That multiple is d two.
+
+7
+00:00:24.950 --> 00:00:28.911
+spc-lab computes d two by simulating four hundred
+
+8
+00:00:29.011 --> 00:00:32.890
+thousand subgroups, rather than reading a table.
+
+9
+00:00:33.583 --> 00:00:35.790
+So R bar over d two estimates
+
+10
+00:00:35.890 --> 00:00:39.051
+sigma, from ranges you actually measured.
+
+11
+00:00:39.150 --> 00:00:42.747
+Feed that into three sigma limits, then divide by
+
+12
+00:00:42.847 --> 00:00:46.370
+root n, because you are charting subgroup means.
+
+13
+00:00:46.466 --> 00:00:50.377
+Gather the constants: A two equals three, over
+
+14
+00:00:50.477 --> 00:00:53.254
+d two times the square root of n.
+
+15
+00:00:53.350 --> 00:00:55.932
+At n of five that is zero point
+
+16
+00:00:56.032 --> 00:01:00.258
+five seven seven, matching the AIAG table exactly.
+

@@ -1,0 +1,102 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:05.228
+Take twelve parts off one machine. Same tool, same gauge.
+
+2
+00:00:05.316 --> 00:00:08.984
+Every reading is different. Nothing is broken.
+
+3
+00:00:09.083 --> 00:00:14.191
+Spread is not a defect. It is what every real process does.
+
+4
+00:00:14.283 --> 00:00:19.295
+Twelve numbers is not an answer. You need one number for the centre.
+
+5
+00:00:19.383 --> 00:00:22.643
+The mean is the balance point of the measurements.
+
+6
+00:00:22.733 --> 00:00:25.472
+The deviations above the mean add to
+
+7
+00:00:25.572 --> 00:00:28.153
+plus zero point zero six two five.
+
+8
+00:00:28.250 --> 00:00:31.112
+Below it, the same amount with the
+
+9
+00:00:31.212 --> 00:00:34.510
+opposite sign. The sum is exactly zero.
+
+10
+00:00:35.300 --> 00:00:38.488
+Now spread. Averaging the deviations is
+
+11
+00:00:38.588 --> 00:00:41.608
+useless, they cancel by construction.
+
+12
+00:00:41.700 --> 00:00:47.240
+Square each one. Negatives turn positive and the cancelling stops.
+
+13
+00:00:47.333 --> 00:00:52.513
+Average the squares. That is the variance, in millimetres squared.
+
+14
+00:00:52.600 --> 00:00:57.180
+Take the root and you are back in millimetres. That is sigma.
+
+15
+00:00:57.966 --> 00:01:02.258
+Twelve parts say nothing about shape. Keep measuring.
+
+16
+00:01:02.350 --> 00:01:06.162
+Sixty. Three hundred. Three thousand.
+
+17
+00:01:06.250 --> 00:01:10.830
+Twenty thousand parts, and a shape appears that nobody chose.
+
+18
+00:01:10.916 --> 00:01:14.253
+Many small independent effects add up. The
+
+19
+00:01:14.353 --> 00:01:17.608
+bell is a consequence, not an assumption.
+
+20
+00:01:18.400 --> 00:01:21.491
+You never measure everything. The true mean
+
+21
+00:01:21.591 --> 00:01:23.940
+and spread belong to the process.
+
+22
+00:01:24.033 --> 00:01:26.813
+Your twelve parts only estimate them.
+
+23
+00:01:26.900 --> 00:01:31.168
+Four more handfuls of twelve land somewhere else every time.
+
+24
+00:01:31.266 --> 00:01:35.846
+That is also why the sample spread divides by n minus one.
+
+25
+00:01:35.933 --> 00:01:41.425
+Every estimate carries uncertainty. Level one puts a number on it.
+

@@ -101,6 +101,25 @@ def defects_per_million(mu: float, sigma: float, lsl: float, usl: float,
     z = min((usl - mu) / sigma, (mu - lsl) / sigma) - shift
     return int(round((1 - _phi(z)) * 1e6))
 
+def ppm_from_cpk(cpk: float, shift: float = 0.0, two_sided: bool = False) -> float:
+    """Expected defective ppm implied by a Cpk value.
+
+    Cpk is defined by the *nearer* spec limit, so the default is the near tail
+    only — the honest answer for the drifted process Cpk describes:
+
+        ppm = (1 - Phi(3*Cpk - shift)) * 1e6
+
+    Set two_sided=True for a centred process where Cp == Cpk and both tails
+    contribute equally; that doubles the result. Set shift=1.5 for the classic
+    Six Sigma drift convention.
+
+    Mixing the two conventions inside one table is the bug this function
+    exists to prevent: at Cpk 0.80 the near tail is 8 198 ppm but both tails
+    are 16 396, and quoting one row each way makes a table self-contradictory.
+    """
+    tail = 1 - _phi(3 * cpk - shift)
+    return (2 * tail if two_sided else tail) * 1e6
+
 
 def _phi(z: float) -> float:
     """Standard normal CDF via erf (math.erf is exact to double precision)."""

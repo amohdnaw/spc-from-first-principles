@@ -70,6 +70,10 @@
     display:flex;align-items:center;gap:7px;padding:3px 0;transition:color .18s}
   .rail a::before{content:"";width:7px;height:7px;background:var(--rule-strong);flex:none}
   .rail a:hover{color:var(--ink)}
+  /* The rail wraps to two rows below 1024px. A sticky nav that tall is the
+     'fixed chrome squeezing the reading column' the ban list forbids, so it
+     only sticks while it is a single 52px row. */
+  @media(max-width:1023px){nav{position:static}}
   .rail a[aria-current="page"]{color:var(--accent)}
   .rail a[aria-current="page"]::before{background:var(--accent)}
 
@@ -179,6 +183,7 @@
   <div class="nav-in">
     <a class="wordmark" href="index.html">Ammar <span>/ SPC</span></a>
     <div class="rail">
+      <a href="level-0.html">0. Basics</a>
       <a href="level-1.html">I. Variation</a>
       <a href="level-2.html">II. Limits</a>
       <a href="level-3.html" aria-current="page">III. Capability</a>
@@ -240,6 +245,7 @@
         <div class="rule"></div>
         <video controls preload="none" poster="posters/level3.jpg">
           <source src="spc-lab/media/videos/level3_scene/1080p60/Level3.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level3.vtt" srclang="en" label="English" default>
         </video>
         <figcaption>
           <span class="fignum">Figure 3.1</span>
@@ -272,6 +278,7 @@
         <div class="rule"></div>
         <video controls preload="none" poster="posters/gallery.jpg">
           <source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4">
+          <track kind="captions" src="captions/gallery.vtt" srclang="en" label="English" default>
         </video>
         <figcaption>
           <span class="fignum">Figure 3.4</span>
