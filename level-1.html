@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level II — Control limits are a hypothesis test · SPC from First Principles</title>
-<meta name="description" content="±3σ isn't taste. It's a bet at 370:1 odds. Why control limits are a hypothesis test, derived rather than asserted — with the exact integral, the R̄/d₂ plumbing, and an interactive threshold picker.">
+<title>Level I — Variation is predictable · SPC from First Principles</title>
+<meta name="description" content="One part is noise. Many parts are information. Why averages obey σ/√n, derived by simulation rather than asserted — the fact every control chart is built on.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -179,8 +179,8 @@
   <div class="nav-in">
     <a class="wordmark" href="index.html">Ammar <span>/ SPC</span></a>
     <div class="rail">
-      <a href="level-1.html">I. Variation</a>
-      <a href="level-2.html" aria-current="page">II. Limits</a>
+      <a href="level-1.html" aria-current="page">I. Variation</a>
+      <a href="level-2.html">II. Limits</a>
       <a href="level-3.html">III. Capability</a>
       <a href="level-4.html">IV. Detection</a>
     </div>
@@ -189,131 +189,62 @@
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level II</p>
-    <h1>Control limits are a hypothesis test</h1>
-    <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
+    <p class="eyebrow">Level I</p>
+    <h1>Variation is predictable</h1>
+    <p class="dek">One part is noise. Many parts are information.</p>
   </header>
 
   <main>
     <section>
       <div class="col">
-        <p>If a process is stable, Level I's logic tells us exactly which distribution
-        every subgroup mean is drawn from. Choose limits at ±3σ of that distribution
-        and you've defined a test: points inside are boring, a point outside happens
-        0.27% of the time by pure chance — once per ~370 subgroups. So when one
-        appears, it's rational to bet something changed.</p>
+        <p>A single measurement tells you almost nothing — its value is chaos. But averages of repeated measurements obey a law so reliable that entire industries are built on it. Watch one die become a bell as we average more of them; then notice the yellow numbers: the spread shrinks by exactly σ/√n. That single fact is the engine under everything else in this curriculum.</p>
       </div>
 
       <div class="eq">
-        <div class="eq-body">Φ(3) − Φ(−3) = 0.9973</div>
-        <div class="eq-num">(2.1)</div>
-        <p class="eq-cap">The exact integral. 0.27% outside → one false alarm per ~370 subgroups.</p>
-      </div>
-
-      <div class="lab">
-        <div class="lab-head">
-          <span class="micro">Interactive — choose your alarm threshold</span>
-          <span class="status" id="lab-status">SYSTEM-OK</span>
-        </div>
-        <div class="lab-grid">
-          <div class="lab-canvas">
-            <canvas id="null-canvas" height="300"
-              aria-label="Null distribution of subgroup means with the chosen limits marked"></canvas>
-          </div>
-          <div class="lab-ctl">
-            <div>
-              <label for="z-slider">Limit at ± <b id="z-val">3.00</b> σx̄</label>
-              <input type="range" id="z-slider" min="100" max="400" value="300" step="1">
-            </div>
-            <dl class="tiles">
-              <div class="tile"><dt>In-control area</dt><dd class="ok" id="r-in">—</dd></div>
-              <div class="tile"><dt>False-alarm rate</dt><dd class="alarm" id="r-fa">—</dd></div>
-              <div class="tile"><dt>False alarm every</dt><dd class="neutral" id="r-arl">—</dd></div>
-            </dl>
-            <p class="lab-note">Shewhart picked ±3σ as the balance point: sensitive
-            enough to matter, quiet enough that operators trust the alarm.</p>
-          </div>
-        </div>
+        <div class="eq-body">σx̄ = σ/√n</div>
+        <div class="eq-num">(1.1)</div>
+        <p class="eq-cap">The standard error. Average n parts and the spread of that average shrinks by the square root of n.</p>
       </div>
 
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>A violation is not a bad part. It is evidence against the null.</p>
+        <p>One part is noise. Many parts are information.</p>
       </aside>
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="none" poster="posters/level2.jpg">
-          <source src="spc-lab/media/videos/level2_scene/1080p60/Level2.mp4" type="video/mp4">
+        <video controls preload="none" poster="posters/level1.jpg">
+          <source src="spc-lab/media/videos/level1_scene/1080p60/Level1.mp4" type="video/mp4">
         </video>
         <figcaption>
-          <span class="fignum">Figure 2.1</span>
-          <span class="figtext">Rendered in Manim — the bell becomes H₀, the ±3σ region
-          fills to 99.73%, and a violation becomes “evidence against the null.”</span>
+          <span class="fignum">Figure 1.1</span>
+          <span class="figtext">Rendered in Manim — the histogram piles up live as rolls accumulate, then the σ/√n line derives itself.</span>
         </figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/21_l2_null_distribution.png" width="1495" height="782" decoding="async"
-             alt="Null distribution of x-bar with both tails annotated">
+        <img src="spc-lab/docs/11_l1_dice_to_bell.png" width="2117" height="665" decoding="async"
+             alt="The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice.">
         <figcaption>
-          <span class="fignum">Figure 2.2</span>
-          <span class="figtext">The null distribution of x̄, with the exact integral and
-          both tails annotated with the false-alarm arithmetic.</span>
+          <span class="fignum">Figure 1.2</span>
+          <span class="figtext">The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice. Measured spreads land exactly on σ/√k — 2.449 → 0.447, annotated from the simulation, not drawn by hand.</span>
         </figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/22_l2_rbar_plumbing.png" width="1263" height="741" decoding="async"
-             alt="Sampling distribution of sigma-hat from R-bar over d2">
+        <img src="spc-lab/docs/12_l1_sqrt_n.png" width="1967" height="772" decoding="async"
+             alt="Why we chart means, not parts. Same process, three lenses — individuals, means of 5, means of 25.">
         <figcaption>
-          <span class="fignum">Figure 2.3</span>
-          <span class="figtext">How good is σ̂ = R̄/d₂? 4 000 simulated stable processes:
-          unbiased, but with only 25 subgroups the limits themselves carry real fuzz —
-          why Phase I needs enough data.</span>
+          <span class="fignum">Figure 1.3</span>
+          <span class="figtext">Why we chart means, not parts. Same process, three lenses — individuals, means of 5, means of 25. Means of 5 cluster far tighter, so a shift moves the mean visibly instead of drowning in noise.</span>
         </figcaption>
       </figure>
 
-      <figure>
-        <div class="rule"></div>
-        <video controls preload="none" poster="posters/constants.jpg">
-          <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 2.4</span>
-          <span class="figtext">Where the constants come from. d₂ is the expected range of
-          n standard normals, computed here by simulating 400 000 subgroups rather than
-          read off a table; A₂ = 3/(d₂√n) follows from it.</span>
-        </figcaption>
-      </figure>
-
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
-             alt="Monte Carlo derivation of the d2 control chart constant">
-        <figcaption>
-          <span class="fignum">Figure 2.5</span>
-          <span class="figtext">d₂ = E(R/σ), the bridge from an average range to a σ estimate.
-          Simulated, then checked against AIAG Table B in the test suite — n=5 lands on 2.326.</span>
-        </figcaption>
-      </figure>
-
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
-             alt="A2, D3 and D4 constants plotted against subgroup size">
-        <figcaption>
-          <span class="fignum">Figure 2.6</span>
-          <span class="figtext">A₂, D₃ and D₄ against subgroup size. These are the numbers on
-          every shop-floor chart form; nothing here is looked up, all of it is derived.</span>
-        </figcaption>
-      </figure>
-
-      <a class="next" href="level-3.html">
-        <span class="m">Level III</span>
-        <span>Capability is comparing two distributions →</span>
+      <a class="next" href="level-2.html">
+        <span class="m">Level II</span>
+        <span>Control limits are a hypothesis test →</span>
       </a>
     </section>
   </main>
@@ -327,101 +258,5 @@
   </div>
 </footer>
 
-<script>
-(function(){
-'use strict';
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const COL = {
-  ok: css('--signal-ok'), alarm: css('--signal-alarm'),
-  accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
-};
-
-/* Abramowitz & Stegun 7.1.26 — same approximation the rest of the site uses. */
-function erf(x){
-  const s = x < 0 ? -1 : 1; x = Math.abs(x);
-  const t = 1/(1 + .3275911*x);
-  const y = 1 - (((((1.061405429*t - 1.453152027)*t + 1.421413741)*t
-              - .284496736)*t + .254829592)*t*Math.exp(-x*x));
-  return s*y;
-}
-const phi = z => 0.5*(1 + erf(z/Math.SQRT2));
-
-const cv   = document.getElementById('null-canvas');
-const ctx  = cv.getContext('2d');
-const sl   = document.getElementById('z-slider');
-const zVal = document.getElementById('z-val');
-const rIn  = document.getElementById('r-in');
-const rFa  = document.getElementById('r-fa');
-const rArl = document.getElementById('r-arl');
-const stat = document.getElementById('lab-status');
-
-function draw(){
-  const dpr = Math.min(devicePixelRatio || 1, 2);
-  const W = cv.clientWidth, H = 300;
-  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,W,H);
-
-  const z = +sl.value/100;
-  const pad = {l:16,r:16,t:22,b:30};
-  const npdf = v => Math.exp(-v*v/2)/Math.sqrt(2*Math.PI);
-  const pdfMax = npdf(0);
-  const innerW = W - pad.l - pad.r;
-  const x = v => pad.l + (v+4)/8*innerW;
-  const y = p => H - pad.b - p/pdfMax*(H - pad.t - pad.b)*0.94;
-
-  /* filled region: inside = in control, outside = false alarm */
-  for (let i=0; i<innerW; i++){
-    const v = -4 + i/innerW*8;
-    const p = npdf(v);
-    ctx.fillStyle = Math.abs(v) <= z ? 'rgba(101,204,175,.30)' : 'rgba(222,106,93,.55)';
-    ctx.fillRect(pad.l+i, y(p), 1, H - pad.b - y(p));
-  }
-
-  /* curve */
-  ctx.beginPath();
-  for (let i=0; i<=innerW; i++){
-    const v = -4 + i/innerW*8;
-    i ? ctx.lineTo(pad.l+i, y(npdf(v))) : ctx.moveTo(pad.l+i, y(npdf(v)));
-  }
-  ctx.strokeStyle = COL.ok; ctx.lineWidth = 2; ctx.stroke();
-
-  /* baseline */
-  ctx.strokeStyle = 'rgba(125,139,152,.4)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(pad.l, H-pad.b); ctx.lineTo(W-pad.r, H-pad.b); ctx.stroke();
-
-  /* limit lines */
-  ctx.font = '600 11px "IBM Plex Mono", monospace';
-  ctx.textAlign = 'center';
-  [-z, z].forEach(v => {
-    ctx.strokeStyle = COL.accent; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
-    ctx.beginPath(); ctx.moveTo(x(v), pad.t); ctx.lineTo(x(v), H-pad.b); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = COL.accent;
-    ctx.fillText((v>0?'+':'\u2212') + z.toFixed(2) + '\u03C3', x(v), H-pad.b+18);
-  });
-
-  ctx.fillStyle = COL.dim;
-  ctx.fillText('DISTRIBUTION OF SUBGROUP MEANS IF STABLE', W/2, pad.t - 6);
-
-  const inside = phi(z) - phi(-z);
-  const fa = 1 - inside;
-  rIn.textContent  = (inside*100).toFixed(2) + '%';
-  rFa.textContent  = (fa*100).toFixed(3) + '%';
-  rArl.textContent = Math.round(1/fa).toLocaleString() + ' subgroups';
-  zVal.textContent = z.toFixed(2);
-
-  /* status reflects the trade the reader just made */
-  if (z >= 2.9 && z <= 3.1)      { stat.textContent = 'SYSTEM-OK';   stat.style.color = COL.ok; }
-  else if (z < 2.9)              { stat.textContent = 'NOISY';       stat.style.color = COL.alarm; }
-  else                           { stat.textContent = 'INSENSITIVE'; stat.style.color = COL.accent; }
-}
-
-sl.addEventListener('input', draw);
-addEventListener('resize', draw);
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-draw();
-})();
-</script>
 </body>
 </html>

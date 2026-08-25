@@ -1,381 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SPC from First Principles — an interactive curriculum</title>
-<meta name="description" content="From dice rolls to detection theory: why Statistical Process Control works, derived rather than asserted. Interactive essay by Ammar, SPC engineer.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="Why Statistical Process Control works, derived rather than asserted. Four levels from dice rolls to detection theory, every constant computed by simulation and checked against AIAG Table B.">
+
+<link rel="icon" href="favicon.svg">
+<link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
+
 <style>
+  /* ---------- self-hosted, two families, two voices ---------- */
+  @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
+    font-weight:400 600;font-style:normal;font-display:swap}
+  @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-italic.woff2') format('woff2');
+    font-weight:400 500;font-style:italic;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-400.woff2') format('woff2');
+    font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-600.woff2') format('woff2');
+    font-weight:600;font-style:normal;font-display:swap}
+
+  /* ---------- tokens: DESIGN.md ---------- */
   :root{
-    --bg:#0e1116; --bg2:#141a22; --fg:#e8e8e8; --muted:#8a939f;
-    --line:#232a33; --blue:#58C4DD; --teal:#5CD0B3; --yellow:#FFD54F; --red:#FC6255;
+    --ground:#0d1114; --panel:#14181c; --panel-high:#1b2026;
+    --rule:#2a3138; --rule-strong:#3d4650;
+    --ink-dim:#7d8b98; --ink:#d7dee4; --ink-bright:#eef3f7;
+    --accent:#ffae00; --accent-wash:rgba(255,174,0,.14);
+    --signal-ok:#65ccaf; --signal-alarm:#de6a5d; --fill-ok:#2a534b;
+
+    --serif:'EB Garamond',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+    --measure:27em;
+    --figure:44rem;
+    --gutter:clamp(24px,5vw,72px);
+    --rhythm:32px;
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
   body{
-    background:var(--bg);color:var(--fg);
-    font-family:'Archivo',sans-serif;
-    font-size:clamp(15px,1.05vw,17px);line-height:1.7;
-    -webkit-font-smoothing:antialiased;
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
+    font-variant-numeric:oldstyle-nums;
   }
-  ::selection{background:var(--red);color:var(--bg)}
-  a{color:var(--blue);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .wrap{max-width:900px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
-  h1,h2,h3{font-family:'Fraunces',serif;font-weight:400;line-height:1.12}
+  ::selection{background:var(--accent);color:var(--ground)}
+  .wrap{max-width:76rem;margin:0 auto;padding:0 var(--gutter)}
+  .col{max-width:var(--measure)}
+  .micro{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
 
-  nav{position:sticky;top:0;z-index:50;background:rgba(14,17,22,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .nav-inner{max-width:1100px;margin:0 auto;padding:13px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:baseline}
-  .nav-id{font-family:'Fraunces',serif;font-size:18px}
-  .nav-id em{font-style:italic;color:var(--red)}
-  .nav-links{display:flex;gap:clamp(12px,2vw,24px);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-  .nav-links a{color:var(--muted)}
-  .nav-links a:hover{color:var(--teal)}
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:30;background:var(--ground);
+    border-bottom:1px solid var(--rule)}
+  .nav-in{max-width:76rem;margin:0 auto;padding:14px var(--gutter);
+    display:flex;align-items:center;gap:28px}
+  .wordmark{font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-bright);
+    text-decoration:none;white-space:nowrap}
+  .wordmark span{color:var(--accent)}
+  .rail{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+  .rail a{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);text-decoration:none;
+    display:flex;align-items:center;gap:7px;padding:3px 0;transition:color .18s}
+  .rail a::before{content:"";width:7px;height:7px;background:var(--rule-strong);flex:none}
+  .rail a:hover{color:var(--ink)}
 
-  header{padding:clamp(70px,11vh,130px) 0 clamp(40px,6vh,70px)}
-  .kicker{font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px}
-  .kicker::before{content:"";width:34px;height:1px;background:var(--red)}
-  h1{font-size:clamp(38px,6.5vw,76px);margin-top:22px;max-width:16ch}
-  h1 em{font-style:italic;color:var(--teal)}
-  .lede{margin-top:26px;max-width:60ch;font-size:clamp(16px,1.4vw,19px);color:var(--muted)}
-  .lede strong{color:var(--fg)}
+  /* ---------- opener ---------- */
+  header.opener{padding:88px 0 0}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 20px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.2vw,56px);
+    line-height:1.04;letter-spacing:-.01em;color:var(--ink-bright);margin:0 0 20px;max-width:18em}
+  .dek{font-style:italic;font-size:26px;line-height:1.4;color:var(--ink-dim);
+    margin:0 0 var(--rhythm);max-width:24em}
+  main{padding-bottom:64px}
+  section{padding-top:48px}
+  p{margin:0 0 var(--rhythm)}
 
-  .level{padding:clamp(64px,10vh,110px) 0 0;border-top:1px solid var(--line)}
-  .level-head{display:flex;align-items:baseline;gap:16px;margin-bottom:16px}
-  .level-num{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(20px,2.4vw,28px);color:var(--red)}
-  h2{font-size:clamp(26px,4vw,42px)}
-  .claim{
-    font-family:'Fraunces',serif;font-style:italic;
-    font-size:clamp(19px,2vw,24px);color:var(--teal);
-    margin-bottom:clamp(24px,4vh,40px);max-width:44ch;
+  /* ---------- level index ---------- */
+  .levels{margin:64px 0 0;border-top:1px solid var(--rule)}
+  .lv{display:grid;grid-template-columns:auto 1fr auto;gap:0 28px;align-items:baseline;
+    padding:28px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:inherit;
+    transition:background .18s}
+  .lv:hover{background:var(--panel)}
+  .lv-num{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--accent);white-space:nowrap;min-width:5.5em}
+  .lv-body{max-width:38em}
+  .lv-title{font-size:33px;line-height:1.15;color:var(--ink-bright);display:block;margin-bottom:8px}
+  .lv-idea{font-size:17px;line-height:1.5;color:var(--ink-dim);display:block}
+  .lv-meta{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-dim);white-space:nowrap;text-align:right}
+  .lv:hover .lv-meta{color:var(--accent)}
+
+  /* ---------- figure ---------- */
+  figure{margin:64px 0 0;max-width:var(--figure)}
+  figure .rule{height:1px;background:var(--rule);margin-bottom:20px}
+  figure img,figure video{display:block;width:100%;height:auto;background:var(--ground)}
+  figcaption{margin-top:16px;max-width:var(--measure)}
+  figcaption .fignum{font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+    display:block;margin-bottom:6px}
+  figcaption .figtext{font-size:17px;line-height:1.5;color:var(--ink-dim)}
+
+  /* ---------- proof panel ---------- */
+  .proof{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel);max-width:var(--figure)}
+  .proof-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .proof-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  /* no padding: the 1px grid gap over --rule IS the divider, padding would
+     expose a band of rule colour around the cells */
+  .proof-body{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    background:var(--rule)}
+  .pcell{background:var(--panel-high);padding:14px}
+  .pcell dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .pcell dd{margin:0;font-family:var(--mono);font-size:20px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--ink-bright);line-height:1.1}
+  .pcell dd.ok{color:var(--signal-ok)}
+
+  .sys{margin:64px 0 0;border-left:2px solid var(--accent);
+    background:var(--accent-wash);padding:20px 24px;max-width:34em}
+  .sys .micro{color:var(--accent);display:block;margin-bottom:8px}
+  .sys p{font-size:26px;line-height:1.35;color:var(--ink-bright);margin:0;font-style:italic}
+
+  .next{display:inline-flex;align-items:baseline;gap:12px;margin-top:96px;
+    padding-bottom:6px;border-bottom:1px solid var(--rule-strong);
+    color:var(--ink-bright);text-decoration:none;font-size:26px;transition:border-color .18s}
+  .next:hover{border-bottom-color:var(--accent)}
+  .next .m{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent)}
+
+  footer{border-top:1px solid var(--rule);margin-top:64px}
+  .foot-in{max-width:76rem;margin:0 auto;padding:24px var(--gutter);
+    display:flex;flex-wrap:wrap;gap:16px 32px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
+  .foot-in a{color:var(--ink-dim);text-decoration:none}
+  .foot-in a:hover{color:var(--accent)}
+  .foot-in .sp{margin-left:auto}
+
+  @media(max-width:700px){
+    .lv{grid-template-columns:1fr;gap:10px}
+    .lv-meta{text-align:left}
   }
-  p.body{color:var(--muted);margin-bottom:1.2em;max-width:64ch}
-  p.body strong{color:var(--fg)}
-  p.body code{color:var(--yellow);font-size:.92em}
-
-  figure{margin:clamp(24px,4vh,40px) 0}
-  figure img{width:100%;border:1px solid var(--line);display:block}
-  figcaption{font-size:13px;color:var(--muted);margin-top:10px;max-width:64ch}
-  figcaption b{color:var(--fg)}
-
-  .video-box{border:1px solid var(--line);background:var(--bg2)}
-  video{width:100%;display:block}
-  .video-cap{padding:10px 16px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
-
-  /* interactive labs */
-  .lab{border:1px solid var(--blue);background:var(--bg2);padding:clamp(18px,3vw,30px);margin:clamp(24px,4vh,40px) 0}
-  .lab-title{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-  .lab-title::after{content:"";flex:1;height:1px;background:var(--line)}
-  .lab-grid{display:grid;grid-template-columns:1fr 230px;gap:clamp(18px,3vw,32px);align-items:start}
-  @media(max-width:720px){.lab-grid{grid-template-columns:1fr}}
-  .ctl label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-  .ctl input[type=range]{width:100%;accent-color:var(--red);cursor:pointer;margin:2px 0 18px}
-  .readout div{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line)}
-  .readout dt{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-  .readout dd{font-family:'Fraunces',serif;font-size:19px;font-variant-numeric:tabular-nums;text-align:right}
-  .lab-note{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.55}
-  canvas{display:block;width:100%}
-
-  footer{border-top:1px solid var(--line);margin-top:clamp(72px,11vh,120px);padding:26px 0 56px}
-  .foot-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-
-  .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
-  .reveal.in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+  @media(max-width:560px){
+    body{font-size:19px}
+    .dek,.sys p,.next{font-size:22px}
+    .lv-title{font-size:26px}
+    .rail{gap:12px;width:100%;margin-left:0}
+    .nav-in{flex-wrap:wrap;gap:12px}
+    nav{position:static}
+    header.opener{padding-top:48px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-inner">
-    <div class="nav-id">SPC <em>from</em> First Principles</div>
-    <div class="nav-links">
-      <a href="#l1">I · Variation</a>
-      <a href="#l2">II · The bet</a>
-      <a href="#l3">III · Two voices</a>
-      <a href="#l4">IV · Detection</a>
+  <div class="nav-in">
+    <a class="wordmark" href="index.html">Ammar <span>/ SPC</span></a>
+    <div class="rail">
+      <a href="level-1.html">I. Variation</a>
+      <a href="level-2.html">II. Limits</a>
+      <a href="level-3.html">III. Capability</a>
+      <a href="level-4.html">IV. Detection</a>
     </div>
   </div>
 </nav>
 
-<header class="wrap">
-  <p class="kicker">An interactive curriculum · four levels · every claim computed</p>
-  <h1>Why SPC works — <em>derived,</em> not asserted.</h1>
-  <p class="lede">
-    Most training teaches control charts as rules to memorize. They're not.
-    Every formula on a shop floor is a consequence of one statistical idea,
-    and each level below builds on the last — ending at a place where you can
-    <strong>defend every number in front of an audit</strong>. All figures are
-    computed live or rendered from simulations whose source is open.
-  </p>
-</header>
+<div class="wrap">
+  <header class="opener">
+    <p class="eyebrow">An interactive curriculum · four levels</p>
+    <h1>SPC from First Principles</h1>
+    <p class="dek">Why SPC works — derived, not asserted.</p>
+  </header>
 
-<!-- ================= LEVEL 1 ================= -->
-<section class="level wrap" id="l1">
-  <div class="level-head reveal"><span class="level-num">Level I.</span><h2>Variation is predictable</h2></div>
-  <p class="claim reveal">One part is noise. Many parts are information.</p>
-  <p class="body reveal">
-    A single measurement tells you almost nothing — its value is chaos. But averages of
-    repeated measurements obey a law so reliable that entire industries are built on it.
-    Watch one die become a bell as we average more of them; then notice the yellow numbers:
-    the spread shrinks by exactly <code>σ/√n</code>. That single fact is the engine under
-    everything else on this page.
-  </p>
-  <figure class="reveal">
-    <img src="spc-lab/docs/11_l1_dice_to_bell.png" alt="Dice averaging into a bell curve">
-    <figcaption><b>The sampling distribution being born.</b> Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice. Measured spreads land exactly on σ/√k.</figcaption>
-  </figure>
-  <figure class="reveal">
-    <img src="spc-lab/docs/12_l1_sqrt_n.png" alt="Sigma over root n curve">
-    <figcaption><b>Why we chart means, not parts.</b> Same process, three lenses. Means of 5 cluster far tighter than individual parts — so a shift in the process moves the mean visibly instead of drowning in noise.</figcaption>
-  </figure>
-</section>
-
-<!-- ================= LEVEL 2 ================= -->
-<section class="level wrap" id="l2">
-  <div class="level-head reveal"><span class="level-num">Level II.</span><h2>Control limits are a hypothesis test</h2></div>
-  <p class="claim reveal">±3σ isn't taste. It's a bet at 370:1 odds.</p>
-  <p class="body reveal">
-    If a process is stable, Level I's logic tells us exactly which distribution every subgroup
-    mean is drawn from. Choose limits at ±3σ of that distribution and you've defined a test:
-    points inside are boring, a point outside happens <strong>0.27% of the time by pure
-    chance</strong> — once per ~370 subgroups. So when one appears, it's rational to bet
-    something changed. Drag the threshold yourself:
-  </p>
-  <div class="lab reveal">
-    <div class="lab-title">Interactive — choose your alarm threshold</div>
-    <div class="lab-grid">
-      <canvas id="null-canvas" height="300"></canvas>
-      <div class="ctl">
-        <label for="z-slider">Limit at ±<span id="z-val">3.00</span>σx̄</label>
-        <input type="range" id="z-slider" min="100" max="400" value="300">
-        <dl class="readout">
-          <div><dt>In-control area</dt><dd id="r-in">—</dd></div>
-          <div><dt>False-alarm rate</dt><dd id="r-fa">—</dd></div>
-          <div><dt>False alarm every</dt><dd id="r-arl">—</dd></div>
-        </dl>
-        <p class="lab-note">Shewhart picked ±3σ as the balance point: sensitive enough to matter, quiet enough that operators trust the alarm.</p>
+  <main>
+    <section>
+      <div class="col">
+        <p>Most training teaches control charts as rules to memorise. They are not rules.
+        Every formula on a shop floor is a consequence of one statistical idea, and each
+        level below builds on the last — ending somewhere you can defend every number in
+        front of an audit.</p>
+        <p>Nothing here is read off a table. The control-chart constants are derived by
+        Monte Carlo simulation and then checked against AIAG Table B in a test suite, so
+        the library is its own proof. Every figure and every frame of video on these pages
+        was computed from that same code.</p>
       </div>
-    </div>
-  </div>
-  <figure class="reveal">
-    <img src="spc-lab/docs/21_l2_null_distribution.png" alt="Null distribution with tails">
-    <figcaption><b>The exact arithmetic.</b> Φ(3)−Φ(−3)=0.9973, and the honest plumbing question: how well does R̄/d₂ estimate σ?</figcaption>
-  </figure>
-  <figure class="reveal">
-    <div class="video-box">
-      <video controls preload="none"><source src="spc-lab/media/videos/level2_scene/1080p60/Level2.mp4" type="video/mp4"></video>
-      <div class="video-cap">Rendered in Manim — the bell becomes H₀, the region fills to 99.73%, and a violation becomes “evidence against the null.”</div>
-    </div>
-  </figure>
-</section>
 
-<!-- ================= LEVEL 3 ================= -->
-<section class="level wrap" id="l3">
-  <div class="level-head reveal"><span class="level-num">Level III.</span><h2>Capability is comparing two distributions</h2></div>
-  <p class="claim reveal">Specs are the customer's voice. Spread is the process's. Cpk prices their mismatch in defects.</p>
-  <p class="body reveal">
-    Control limits describe what a process <em>does</em>; spec limits describe what a customer
-    <em>will accept</em>. Capability indices measure the gap between those two sentences —
-    Cp compares widths, Cpk also accounts for where the mean sits. And because the process is
-    (approximately) normal, every Cpk value converts to a concrete promise:
-  </p>
-  <figure class="reveal">
-    <img src="spc-lab/docs/31_l3_two_voices.png" alt="Two voices dimension drawing">
-    <figcaption><b>Cp as geometry.</b> Top: perfectly centered — Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.</figcaption>
-  </figure>
-  <div class="lab reveal">
-    <div class="lab-title">Interactive — what does your Cpk promise?</div>
-    <div class="lab-grid">
-      <canvas id="cpk-canvas" height="300"></canvas>
-      <div class="ctl">
-        <label for="cpk-slider">Cpk = <span id="c-val" style="color:var(--teal)">1.33</span></label>
-        <input type="range" id="cpk-slider" min="40" max="200" value="133">
-        <dl class="readout">
-          <div><dt>Predicted defects</dt><dd id="rc-ppm">—</dd></div>
-          <div><dt>Odds of a bad part</dt><dd id="rc-odds">—</dd></div>
-          <div><dt>Industry verdict</dt><dd id="rc-verdict">—</dd></div>
-        </dl>
-        <p class="lab-note">Computed from the exact normal tail — the same integral tested in spc-lab's suite. No lookup tables.</p>
+      <div class="levels">
+        <a class="lv" href="level-1.html">
+          <span class="lv-num">Level I</span>
+          <span class="lv-body">
+            <span class="lv-title">Variation is predictable</span>
+            <span class="lv-idea">Individual parts are unpredictable; aggregates obey a law.
+            One die is chaos, the average of thirty is a bell exactly σ/√30 wide.</span>
+          </span>
+          <span class="lv-meta">σ/√n →</span>
+        </a>
+
+        <a class="lv" href="level-2.html">
+          <span class="lv-num">Level II</span>
+          <span class="lv-body">
+            <span class="lv-title">Control limits are a hypothesis test</span>
+            <span class="lv-idea">±3σ isn't taste. If the process is stable, a point lands
+            outside 0.27% of the time — so a violation is a bet at 370:1 that something changed.</span>
+          </span>
+          <span class="lv-meta">370:1 →</span>
+        </a>
+
+        <a class="lv" href="level-3.html">
+          <span class="lv-num">Level III</span>
+          <span class="lv-body">
+            <span class="lv-title">Capability is comparing two distributions</span>
+            <span class="lv-idea">Spec limits are the customer's voice, the spread is the
+            process's. Cpk prices the mismatch as an exact tail integral.</span>
+          </span>
+          <span class="lv-meta">Cpk → ppm →</span>
+        </a>
+
+        <a class="lv" href="level-4.html">
+          <span class="lv-num">Level IV</span>
+          <span class="lv-body">
+            <span class="lv-title">Detection theory: memory beats points</span>
+            <span class="lv-idea">Slow drift never looks alarming in any single point. EWMA
+            accumulates evidence and catches a 1σ shift about four times sooner, at the same
+            false-alarm cost.</span>
+          </span>
+          <span class="lv-meta">ARL 10 vs 44 →</span>
+        </a>
       </div>
-    </div>
-  </div>
-  <figure class="reveal">
-    <img src="spc-lab/docs/32_l3_cpk_to_ppm.png" alt="Cpk to ppm mapping">
-    <figcaption><b>The thresholds demystified.</b> 1.00 / 1.33 / 1.67 are chosen points on a continuous curve — here mapped both short-term and with the 1.5σ drift convention behind “Six Sigma.”</figcaption>
-  </figure>
-</section>
 
-<!-- ================= LEVEL 4 ================= -->
-<section class="level wrap" id="l4">
-  <div class="level-head reveal"><span class="level-num">Level IV.</span><h2>Detection theory: memory beats points</h2></div>
-  <p class="claim reveal">A chart with a memory catches drift while every raw point still looks innocent.</p>
-  <p class="body reveal">
-    Slow drift is the most expensive failure mode in manufacturing precisely because no single
-    measurement ever looks alarming. Shewhart charts wait for extremes; EWMA and CUSUM charts
-    accumulate evidence across subgroups. How much sooner? Simulated, honestly — with EWMA's
-    limits calibrated so both charts share the same false-alarm rate first:
-  </p>
-  <figure class="reveal">
-    <img src="spc-lab/docs/41_l4_arl.png" alt="ARL vs shift curves">
-    <figcaption><b>Average Run Length vs shift size.</b> At a 1σ drift: detection in ~10 subgroups vs ~44 — about 4× sooner, at identical false-alarm cost. Simulated, 8 000 runs per point.</figcaption>
-  </figure>
-  <figure class="reveal">
-    <img src="spc-lab/docs/42_l4_race.png" alt="Two charts racing to detect drift">
-    <figcaption><b>The race.</b> Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</figcaption>
-  </figure>
-  <figure class="reveal">
-    <div class="video-box">
-      <video controls preload="none"><source src="spc-lab/media/videos/level4_scene/1080p60/Level4.mp4" type="video/mp4"></video>
-      <div class="video-cap">Drift hiding between ±3σ — until the evidence line crosses. This is “Line C” from <a href="line-of-sight.html">Line of Sight</a>.</div>
-    </div>
-  </figure>
-</section>
+      <figure>
+        <div class="rule"></div>
+        <video controls preload="none" poster="posters/gallery.jpg">
+          <source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4">
+        </video>
+        <figcaption>
+          <span class="fignum">Figure 0.1</span>
+          <span class="figtext">The whole argument in one shot — limits learned from the
+          process rather than the spec, then capability measured against what the customer
+          will actually accept.</span>
+        </figcaption>
+      </figure>
+
+      <div class="proof">
+        <div class="proof-head">
+          <span class="micro">Provenance — every number on this site</span>
+          <span class="status">VERIFIED</span>
+        </div>
+        <dl class="proof-body">
+          <div class="pcell"><dt>Subgroups simulated</dt><dd>400 000</dd></div>
+          <div class="pcell"><dt>d₂ at n=5</dt><dd class="ok">2.326</dd></div>
+          <div class="pcell"><dt>A₂ at n=5</dt><dd class="ok">0.577</dd></div>
+          <div class="pcell"><dt>Checked against</dt><dd>AIAG Table B</dd></div>
+        </dl>
+      </div>
+
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>If a number here disagrees with the table, the test fails. That is the point.</p>
+      </aside>
+
+      <a class="next" href="level-1.html">
+        <span class="m">Start · Level I</span>
+        <span>Variation is predictable →</span>
+      </a>
+    </section>
+  </main>
+</div>
 
 <footer>
-  <div class="wrap foot-inner">
-    <span><a href="index.html" style="color:var(--blue)">← SPC from First Principles — Ammar, SPC Engineer</a></span>
-    <span><a href="line-of-sight.html" style="color:var(--blue)">Line of Sight</a> · <a href="spc-lab/README.md" style="color:var(--blue)">spc-lab library</a></span>
-    <span>All figures computed · © 2026</span>
+  <div class="foot-in">
+    <span><a href="index.html">← Ammar — SPC Engineer</a></span>
+    <span><a href="line-of-sight.html">Line of Sight</a></span>
+    <span class="sp">All figures computed</span>
+    <span>© 2026</span>
   </div>
 </footer>
 
-<script>
-(function(){
-'use strict';
-const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const COL={bg:css('--bg'),bg2:css('--bg2'),fg:css('--fg'),muted:css('--muted'),line:css('--line'),
-           blue:css('--blue'),teal:css('--teal'),yellow:css('--yellow'),red:css('--red')};
-function phi(z){return 0.5*(1+erf(z/Math.SQRT2))}
-function erf(x){const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+.3275911*x);
-  const y=1-(((((1.061405429*t-1.453152027)*t+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x));
-  return s*y}
-
-/* ---------------- Lab 1: threshold picker ---------------- */
-(function(){
-  const cv=document.getElementById('null-canvas');
-  const ctx=cv.getContext('2d');
-  const sl=document.getElementById('z-slider');
-  const rIn=document.getElementById('r-in'),rFa=document.getElementById('r-fa'),
-        rArl=document.getElementById('r-arl');
-  function draw(){
-    const dpr=Math.min(devicePixelRatio||1,2);
-    const W=cv.clientWidth,H=300;
-    if(cv.width!==W*dpr){cv.width=W*dpr;cv.height=H*dpr}
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.clearRect(0,0,W,H);
-    const z=+sl.value/100;
-    const pad={l:14,r:14,t:16,b:26};
-    const x=v=>pad.l+(v+4)/(8)*(W-pad.l-pad.r);
-    const y=p=>H-pad.b-p/pdfMax*(H-pad.t-pad.b)*0.95;
-    function npdf(v){return Math.exp(-v*v/2)/Math.sqrt(2*Math.PI)}
-    let pdfMax=npdf(0);
-
-    // filled regions sampled
-    for(let i=0;i<W-pad.l-pad.r;i++){
-      const v=-4+i/(W-pad.l-pad.r)*8;
-      const p=npdf(v), inside=Math.abs(v)<=z;
-      ctx.fillStyle=inside?'rgba(92,208,179,.35)':'rgba(252,98,85,.55)';
-      ctx.fillRect(pad.l+i,y(p),1,H-pad.b-y(p));
-    }
-    // curve
-    ctx.beginPath();
-    for(let i=0;i<=W-pad.l-pad.r;i++){
-      const v=-4+i/(W-pad.l-pad.r)*8;
-      i?ctx.lineTo(pad.l+i,y(npdf(v))):ctx.moveTo(pad.l+i,y(npdf(v)));
-    }
-    ctx.strokeStyle=COL.teal;ctx.lineWidth=2;ctx.stroke();
-    // limit lines
-    [-z,z].forEach(v=>{
-      ctx.strokeStyle=COL.yellow;ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
-      ctx.beginPath();ctx.moveTo(x(v),pad.t);ctx.lineTo(x(v),H-pad.b);ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle=COL.yellow;ctx.font='11px Archivo';ctx.textAlign='center';
-      ctx.fillText((v>0?'+':'−')+Math.abs(z).toFixed(2)+'σ',x(v),H-pad.b+16);
-    });
-    ctx.fillStyle=COL.fg;ctx.font='12px Archivo';ctx.textAlign='center';
-    ctx.fillText('distribution of subgroup means if stable',W/2,pad.t+2);
-
-    const insideP=phi(z)-phi(-z), fa=1-insideP;
-    rIn.textContent=(insideP*100).toFixed(2)+'%';
-    rFa.textContent=(fa*100).toFixed(3)+'%';
-    rArl.textContent=Math.round(1/fa).toLocaleString()+' subgroups';
-  }
-  sl.addEventListener('input',draw);
-  addEventListener('resize',draw);
-  draw();
-})();
-
-/* ---------------- Lab 2: Cpk promise ---------------- */
-(function(){
-  const cv=document.getElementById('cpk-canvas');
-  const ctx=cv.getContext('2d');
-  const sl=document.getElementById('cpk-slider');
-  const rP=document.getElementById('rc-ppm'),rO=document.getElementById('rc-odds'),
-        rV=document.getElementById('rc-verdict');
-  function draw(){
-    const dpr=Math.min(devicePixelRatio||1,2);
-    const W=cv.clientWidth,H=300;
-    if(cv.width!==W*dpr){cv.width=W*dpr;cv.height=H*dpr}
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.clearRect(0,0,W,H);
-    const c=+sl.value/100;
-    document.getElementById('c-val').textContent=c.toFixed(2);
-    // draw centered process with sigma such that Cpk=c => 3sgap = width/(2c)
-    const LSL=-1.5,USL=1.5;                 // fixed tolerance half-width 1.5
-    const gap=USL/(3*c);                    // distance mu->limit in sigma units
-    const sg=gap;                           // work in z space: limit at z=3c
-    const pad={l:14,r:14,t:16,b:26};
-    const xmax=4.6;
-    const x=v=>pad.l+(v+xmax)/(2*xmax)*(W-pad.l-pad.r);
-    const y=p=>H-pad.b-p/(npdf(0))*(H-pad.t-pad.b)*0.95;
-    function npdf(v){return Math.exp(-v*v/2)/Math.sqrt(2*Math.PI)}
-    for(let i=0;i<W-pad.l-pad.r;i++){
-      const v=-xmax+i/(W-pad.l-pad.r)*2*xmax;
-      const p=npdf(v), inside=Math.abs(v)<=3*c;
-      ctx.fillStyle=inside?'rgba(92,208,179,.35)':'rgba(252,98,85,.55)';
-      ctx.fillRect(pad.l+i,y(p),1,H-pad.b-y(p));
-    }
-    ctx.beginPath();
-    for(let i=0;i<=W-pad.l-pad.r;i++){
-      const v=-xmax+i/(W-pad.l-pad.r)*2*xmax;
-      i?ctx.lineTo(x(v),y(npdf(v))):ctx.moveTo(x(v),y(npdf(v)));
-    }
-    ctx.strokeStyle=COL.teal;ctx.lineWidth=2;ctx.stroke();
-    [LSL,USL].forEach(v=>{
-      const zv=3*c;
-      ctx.strokeStyle=COL.yellow;ctx.setLineDash([5,4]);ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(x(-zv),pad.t);ctx.lineTo(x(-zv),H-pad.b);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(x(zv),pad.t);ctx.lineTo(x(zv),H-pad.b);ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle=COL.yellow;ctx.font='11px Archivo';ctx.textAlign='center';
-      ctx.fillText('LSL',x(-zv),H-pad.b+16);ctx.fillText('USL',x(zv),H-pad.b+16);
-    });
-
-    const ppm=(1-phi(3*c))*1e6;
-    rP.textContent=ppm>=100?Math.round(ppm).toLocaleString():
-                   ppm>=1?ppm.toFixed(1):ppm.toFixed(2);
-    rO.textContent='1 in '+Math.round(1e6/ppm).toLocaleString();
-    let verd,vc;
-    if(c>=1.67){verd='excellent';vc=COL.blue}
-    else if(c>=1.33){verd='capable';vc=COL.teal}
-    else if(c>=1.0){verd='marginal';vc=COL.yellow}
-    else{verd='scrap machine';vc=COL.red}
-    rV.textContent=verd;rV.style.color=vc;
-  }
-  sl.addEventListener('input',draw);
-  addEventListener('resize',draw);
-  draw();
-})();
-
-/* reveal */
-const io=new IntersectionObserver(es=>es.forEach(e=>{
-  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
-document.querySelectorAll('.reveal').forEach(n=>io.observe(n));
-})();
-</script>
 </body>
 </html>

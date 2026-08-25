@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level II — Control limits are a hypothesis test · SPC from First Principles</title>
-<meta name="description" content="±3σ isn't taste. It's a bet at 370:1 odds. Why control limits are a hypothesis test, derived rather than asserted — with the exact integral, the R̄/d₂ plumbing, and an interactive threshold picker.">
+<title>Level III — Capability is comparing two distributions · SPC from First Principles</title>
+<meta name="description" content="Specs are the customer's voice, spread is the process's. Cp compares widths, Cpk prices the mismatch in defects — every threshold an exact tail integral.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -180,8 +180,8 @@
     <a class="wordmark" href="index.html">Ammar <span>/ SPC</span></a>
     <div class="rail">
       <a href="level-1.html">I. Variation</a>
-      <a href="level-2.html" aria-current="page">II. Limits</a>
-      <a href="level-3.html">III. Capability</a>
+      <a href="level-2.html">II. Limits</a>
+      <a href="level-3.html" aria-current="page">III. Capability</a>
       <a href="level-4.html">IV. Detection</a>
     </div>
   </div>
@@ -189,131 +189,99 @@
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level II</p>
-    <h1>Control limits are a hypothesis test</h1>
-    <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
+    <p class="eyebrow">Level III</p>
+    <h1>Capability is comparing two distributions</h1>
+    <p class="dek">Specs are the customer's voice. Spread is the process's. Cpk prices their mismatch in defects.</p>
   </header>
 
   <main>
     <section>
       <div class="col">
-        <p>If a process is stable, Level I's logic tells us exactly which distribution
-        every subgroup mean is drawn from. Choose limits at ±3σ of that distribution
-        and you've defined a test: points inside are boring, a point outside happens
-        0.27% of the time by pure chance — once per ~370 subgroups. So when one
-        appears, it's rational to bet something changed.</p>
+        <p>Control limits describe what a process does; spec limits describe what a customer will accept. Capability indices measure the gap between those two sentences — Cp compares widths, Cpk also accounts for where the mean sits. And because the process is approximately normal, every Cpk value converts to a concrete promise.</p>
       </div>
 
       <div class="eq">
-        <div class="eq-body">Φ(3) − Φ(−3) = 0.9973</div>
-        <div class="eq-num">(2.1)</div>
-        <p class="eq-cap">The exact integral. 0.27% outside → one false alarm per ~370 subgroups.</p>
+        <div class="eq-body">Cpk = min(USL − μ, μ − LSL) / 3σ</div>
+        <div class="eq-num">(3.1)</div>
+        <p class="eq-cap">The nearer gap decides. Cp is pure geometry; Cpk is honest about where the mean actually sits.</p>
       </div>
 
       <div class="lab">
         <div class="lab-head">
-          <span class="micro">Interactive — choose your alarm threshold</span>
+          <span class="micro">Interactive — what does your Cpk promise?</span>
           <span class="status" id="lab-status">SYSTEM-OK</span>
         </div>
         <div class="lab-grid">
           <div class="lab-canvas">
-            <canvas id="null-canvas" height="300"
-              aria-label="Null distribution of subgroup means with the chosen limits marked"></canvas>
+            <canvas id="cpk-canvas" height="300"
+              aria-label="Normal distribution with specification limits drawn according to the chosen Cpk"></canvas>
           </div>
           <div class="lab-ctl">
             <div>
-              <label for="z-slider">Limit at ± <b id="z-val">3.00</b> σx̄</label>
-              <input type="range" id="z-slider" min="100" max="400" value="300" step="1">
+              <label for="cpk-slider">Cpk = <b id="c-val">1.33</b></label>
+              <input type="range" id="cpk-slider" min="40" max="200" value="133" step="1">
             </div>
             <dl class="tiles">
-              <div class="tile"><dt>In-control area</dt><dd class="ok" id="r-in">—</dd></div>
-              <div class="tile"><dt>False-alarm rate</dt><dd class="alarm" id="r-fa">—</dd></div>
-              <div class="tile"><dt>False alarm every</dt><dd class="neutral" id="r-arl">—</dd></div>
+              <div class="tile"><dt>Predicted defects</dt><dd class="alarm" id="rc-ppm">—</dd></div>
+              <div class="tile"><dt>Odds of a bad part</dt><dd class="neutral" id="rc-odds">—</dd></div>
+              <div class="tile"><dt>Industry verdict</dt><dd class="ok" id="rc-verdict">—</dd></div>
             </dl>
-            <p class="lab-note">Shewhart picked ±3σ as the balance point: sensitive
-            enough to matter, quiet enough that operators trust the alarm.</p>
+            <p class="lab-note">Computed from the exact normal tail — the same integral tested in spc-lab's suite. No lookup tables.</p>
           </div>
         </div>
       </div>
 
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>A violation is not a bad part. It is evidence against the null.</p>
+        <p>Control limits are what the process says. Spec limits are what the customer says. Cpk is the distance between them.</p>
       </aside>
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="none" poster="posters/level2.jpg">
-          <source src="spc-lab/media/videos/level2_scene/1080p60/Level2.mp4" type="video/mp4">
+        <video controls preload="none" poster="posters/level3.jpg">
+          <source src="spc-lab/media/videos/level3_scene/1080p60/Level3.mp4" type="video/mp4">
         </video>
         <figcaption>
-          <span class="fignum">Figure 2.1</span>
-          <span class="figtext">Rendered in Manim — the bell becomes H₀, the ±3σ region
-          fills to 99.73%, and a violation becomes “evidence against the null.”</span>
+          <span class="fignum">Figure 3.1</span>
+          <span class="figtext">Rendered in Manim — the tolerance bracket meets the natural
+          spread as dimension lines, the bell drifts and its red tail grows, then the promise
+          table converts each Cpk into an expected defect rate. Use the calculator above for
+          the exact figure: it computes the near-tail integral live rather than reading a table.</span>
         </figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/21_l2_null_distribution.png" width="1495" height="782" decoding="async"
-             alt="Null distribution of x-bar with both tails annotated">
+        <img src="spc-lab/docs/31_l3_two_voices.png" width="1667" height="1247" decoding="async" alt="Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.">
         <figcaption>
-          <span class="fignum">Figure 2.2</span>
-          <span class="figtext">The null distribution of x̄, with the exact integral and
-          both tails annotated with the false-alarm arithmetic.</span>
+          <span class="fignum">Figure 3.2</span>
+          <span class="figtext">Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.</span>
         </figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/22_l2_rbar_plumbing.png" width="1263" height="741" decoding="async"
-             alt="Sampling distribution of sigma-hat from R-bar over d2">
+        <img src="spc-lab/docs/32_l3_cpk_to_ppm.png" width="1345" height="794" decoding="async" alt="The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.">
         <figcaption>
-          <span class="fignum">Figure 2.3</span>
-          <span class="figtext">How good is σ̂ = R̄/d₂? 4 000 simulated stable processes:
-          unbiased, but with only 25 subgroups the limits themselves carry real fuzz —
-          why Phase I needs enough data.</span>
+          <span class="fignum">Figure 3.3</span>
+          <span class="figtext">The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.</span>
         </figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="none" poster="posters/constants.jpg">
-          <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
+        <video controls preload="none" poster="posters/gallery.jpg">
+          <source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4">
         </video>
         <figcaption>
-          <span class="fignum">Figure 2.4</span>
-          <span class="figtext">Where the constants come from. d₂ is the expected range of
-          n standard normals, computed here by simulating 400 000 subgroups rather than
-          read off a table; A₂ = 3/(d₂√n) follows from it.</span>
+          <span class="fignum">Figure 3.4</span>
+          <span class="figtext">The gallery act — control limits learned from the process, then capability compared against the customer's spec, in one continuous shot.</span>
         </figcaption>
       </figure>
 
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
-             alt="Monte Carlo derivation of the d2 control chart constant">
-        <figcaption>
-          <span class="fignum">Figure 2.5</span>
-          <span class="figtext">d₂ = E(R/σ), the bridge from an average range to a σ estimate.
-          Simulated, then checked against AIAG Table B in the test suite — n=5 lands on 2.326.</span>
-        </figcaption>
-      </figure>
-
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
-             alt="A2, D3 and D4 constants plotted against subgroup size">
-        <figcaption>
-          <span class="fignum">Figure 2.6</span>
-          <span class="figtext">A₂, D₃ and D₄ against subgroup size. These are the numbers on
-          every shop-floor chart form; nothing here is looked up, all of it is derived.</span>
-        </figcaption>
-      </figure>
-
-      <a class="next" href="level-3.html">
-        <span class="m">Level III</span>
-        <span>Capability is comparing two distributions →</span>
+      <a class="next" href="level-4.html">
+        <span class="m">Level IV</span>
+        <span>Detection theory: memory beats points →</span>
       </a>
     </section>
   </main>
@@ -336,7 +304,7 @@ const COL = {
   accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
 };
 
-/* Abramowitz & Stegun 7.1.26 — same approximation the rest of the site uses. */
+/* Abramowitz & Stegun 7.1.26 */
 function erf(x){
   const s = x < 0 ? -1 : 1; x = Math.abs(x);
   const t = 1/(1 + .3275911*x);
@@ -346,13 +314,13 @@ function erf(x){
 }
 const phi = z => 0.5*(1 + erf(z/Math.SQRT2));
 
-const cv   = document.getElementById('null-canvas');
+const cv   = document.getElementById('cpk-canvas');
 const ctx  = cv.getContext('2d');
-const sl   = document.getElementById('z-slider');
-const zVal = document.getElementById('z-val');
-const rIn  = document.getElementById('r-in');
-const rFa  = document.getElementById('r-fa');
-const rArl = document.getElementById('r-arl');
+const sl   = document.getElementById('cpk-slider');
+const cVal = document.getElementById('c-val');
+const rcPpm = document.getElementById('rc-ppm');
+const rcOdds = document.getElementById('rc-odds');
+const rcVerdict = document.getElementById('rc-verdict');
 const stat = document.getElementById('lab-status');
 
 function draw(){
@@ -362,17 +330,23 @@ function draw(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,W,H);
 
-  const z = +sl.value/100;
+  const c = +sl.value / 100;
+  const z = 3 * c;
+
   const pad = {l:16,r:16,t:22,b:30};
   const npdf = v => Math.exp(-v*v/2)/Math.sqrt(2*Math.PI);
   const pdfMax = npdf(0);
   const innerW = W - pad.l - pad.r;
-  const x = v => pad.l + (v+4)/8*innerW;
+  const X_MIN = -7;
+  const X_MAX = 7;
+  const xSpan = X_MAX - X_MIN;
+
+  const x = v => pad.l + ((v - X_MIN)/xSpan) * innerW;
   const y = p => H - pad.b - p/pdfMax*(H - pad.t - pad.b)*0.94;
 
-  /* filled region: inside = in control, outside = false alarm */
+  /* filled region: inside = in spec, outside = out of spec */
   for (let i=0; i<innerW; i++){
-    const v = -4 + i/innerW*8;
+    const v = X_MIN + (i/innerW)*xSpan;
     const p = npdf(v);
     ctx.fillStyle = Math.abs(v) <= z ? 'rgba(101,204,175,.30)' : 'rgba(222,106,93,.55)';
     ctx.fillRect(pad.l+i, y(p), 1, H - pad.b - y(p));
@@ -381,7 +355,7 @@ function draw(){
   /* curve */
   ctx.beginPath();
   for (let i=0; i<=innerW; i++){
-    const v = -4 + i/innerW*8;
+    const v = X_MIN + (i/innerW)*xSpan;
     i ? ctx.lineTo(pad.l+i, y(npdf(v))) : ctx.moveTo(pad.l+i, y(npdf(v)));
   }
   ctx.strokeStyle = COL.ok; ctx.lineWidth = 2; ctx.stroke();
@@ -393,28 +367,45 @@ function draw(){
   /* limit lines */
   ctx.font = '600 11px "IBM Plex Mono", monospace';
   ctx.textAlign = 'center';
-  [-z, z].forEach(v => {
+  [-z, z].forEach((v, idx) => {
     ctx.strokeStyle = COL.accent; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
     ctx.beginPath(); ctx.moveTo(x(v), pad.t); ctx.lineTo(x(v), H-pad.b); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = COL.accent;
-    ctx.fillText((v>0?'+':'\u2212') + z.toFixed(2) + '\u03C3', x(v), H-pad.b+18);
+    ctx.fillText(idx === 0 ? 'LSL' : 'USL', x(v), H-pad.b+18);
   });
 
-  ctx.fillStyle = COL.dim;
-  ctx.fillText('DISTRIBUTION OF SUBGROUP MEANS IF STABLE', W/2, pad.t - 6);
+  const ppm = (1 - phi(z)) * 1e6;
+  
+  let ppmText;
+  if (ppm >= 100) ppmText = Math.round(ppm).toLocaleString();
+  else if (ppm >= 1) ppmText = ppm.toFixed(1);
+  else ppmText = ppm.toFixed(2);
+  
+  rcPpm.textContent = ppmText;
+  
+  const odds = Math.round(1e6 / Math.max(ppm, 1e-6));
+  rcOdds.textContent = '1 in ' + odds.toLocaleString();
+  
+  cVal.textContent = c.toFixed(2);
 
-  const inside = phi(z) - phi(-z);
-  const fa = 1 - inside;
-  rIn.textContent  = (inside*100).toFixed(2) + '%';
-  rFa.textContent  = (fa*100).toFixed(3) + '%';
-  rArl.textContent = Math.round(1/fa).toLocaleString() + ' subgroups';
-  zVal.textContent = z.toFixed(2);
-
-  /* status reflects the trade the reader just made */
-  if (z >= 2.9 && z <= 3.1)      { stat.textContent = 'SYSTEM-OK';   stat.style.color = COL.ok; }
-  else if (z < 2.9)              { stat.textContent = 'NOISY';       stat.style.color = COL.alarm; }
-  else                           { stat.textContent = 'INSENSITIVE'; stat.style.color = COL.accent; }
+  if (c >= 1.67) { 
+    rcVerdict.textContent = 'excellent'; 
+    stat.textContent = 'SYSTEM-OK'; 
+    stat.style.color = COL.ok; 
+  } else if (c >= 1.33) { 
+    rcVerdict.textContent = 'capable'; 
+    stat.textContent = 'SYSTEM-OK'; 
+    stat.style.color = COL.ok; 
+  } else if (c >= 1.0) { 
+    rcVerdict.textContent = 'marginal'; 
+    stat.textContent = 'MARGINAL'; 
+    stat.style.color = COL.accent; 
+  } else { 
+    rcVerdict.textContent = 'scrap machine'; 
+    stat.textContent = 'OUT-OF-SPEC'; 
+    stat.style.color = COL.alarm; 
+  }
 }
 
 sl.addEventListener('input', draw);
