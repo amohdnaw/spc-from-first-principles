@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Line of Sight — See a factory the way an SPC engineer does</title>
+<meta name="description" content="An interactive SPC essay: four simulated production lines are streaming data. One is drifting toward scrap. Could you spot it before the control chart does?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: oklch(0.968 0.008 85);
+    --paper-deep: oklch(0.94 0.012 85);
+    --ink: oklch(0.24 0.035 255);
+    --ink-soft: oklch(0.42 0.03 255);
+    --ink-faint: oklch(0.60 0.02 255);
+    --line: oklch(0.86 0.015 255);
+    --signal: oklch(0.55 0.21 28);
+    --grid: oklch(0.91 0.01 255);
+    --ok: oklch(0.55 0.12 150);
+    --max: 1080px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-size:clamp(15px,1.05vw,17px);line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--signal);color:var(--paper)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:400;line-height:1.08;letter-spacing:-0.01em}
+  a{color:inherit}
+
+  /* nav */
+  nav{
+    position:sticky;top:0;z-index:60;
+    background:color-mix(in oklch,var(--paper) 90%,transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:var(--max);margin:0 auto;padding:13px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:baseline}
+  .nav-id{font-family:'Fraunces',serif;font-size:18px}
+  .nav-id em{font-style:italic;color:var(--signal)}
+  .nav-links{display:flex;gap:clamp(14px,2.5vw,26px);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase}
+  .nav-links a{text-decoration:none;color:var(--ink-soft)}
+  .nav-links a:hover{color:var(--signal)}
+
+  /* hero */
+  header{padding:clamp(64px,11vh,130px) 0 clamp(40px,6vh,70px);position:relative}
+  header::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 90% 85% at 50% 30%,black 25%,transparent 78%);
+  }
+  .kicker{font-size:11px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--ink-faint);display:flex;align-items:center;gap:12px}
+  .kicker::before{content:"";width:34px;height:1px;background:var(--signal)}
+  h1{font-size:clamp(40px,7vw,86px);margin:22px 0 0;max-width:15ch}
+  h1 em{font-style:italic;font-weight:300;color:var(--signal)}
+  .lede{margin-top:26px;max-width:56ch;font-size:clamp(16px,1.4vw,19px);color:var(--ink-soft)}
+  .lede strong{color:var(--ink)}
+
+  /* acts */
+  section{padding:clamp(64px,10vh,120px) 0 0}
+  .act-head{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
+  .act-num{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(20px,2.5vw,28px);color:var(--signal)}
+  h2{font-size:clamp(28px,4vw,46px);max-width:22ch}
+  .act-lede{max-width:62ch;color:var(--ink-soft);margin-bottom:clamp(28px,4vh,44px)}
+
+  /* panels */
+  .panel{border:1px solid var(--ink);background:var(--paper-deep)}
+  .panel-head{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 16px;
+    padding:10px clamp(14px,2.5vw,24px);
+    font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-faint);
+    border-bottom:1px solid var(--line);
+  }
+  .panel-head b{color:var(--ink)}
+  canvas{display:block;width:100%}
+
+  /* buttons */
+  button{font:inherit;cursor:pointer}
+  .btn{
+    padding:11px 22px;font-size:13px;font-weight:600;letter-spacing:0.04em;
+    border:1px solid var(--ink);background:transparent;color:var(--ink);transition:all .2s;
+  }
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn:hover{background:var(--signal);border-color:var(--signal);color:var(--paper)}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+
+  /* act 1 raw table */
+  .raw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+  @media(max-width:760px){.raw-grid{grid-template-columns:repeat(2,1fr)}}
+  .raw-cell{background:var(--paper-deep);padding:14px clamp(12px,2vw,20px)}
+  .raw-cell h3{font-size:12px;font-family:'Archivo';font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint)}
+  .raw-val{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,34px);margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .raw-sub{font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+
+  /* verdict */
+  .verdict{margin-top:16px;padding:16px clamp(14px,2.5vw,24px);border-left:3px solid var(--signal);background:var(--signal-soft,#f4e5e0);display:none}
+  .verdict.show{display:block}
+  :root{--signal-soft:oklch(0.55 0.21 28 / 0.08)}
+  .verdict p{font-size:15px;color:var(--ink)}
+  .verdict b{color:var(--signal)}
+
+  /* act 3 capability lab */
+  .lab-grid{display:grid;grid-template-columns:1fr 260px;gap:clamp(18px,3vw,36px);padding:clamp(18px,3vw,28px);align-items:start}
+  @media(max-width:760px){.lab-grid{grid-template-columns:1fr}}
+  .ctl label{display:block;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+  .ctl input[type=range]{width:100%;accent-color:var(--signal);cursor:pointer;margin:2px 0 18px}
+  .readout{border-top:2px solid var(--ink)}
+  .readout div{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+  .readout dt{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .readout dd{font-family:'Fraunces',serif;font-size:19px;font-variant-numeric:tabular-nums}
+  .readout dd.bad{color:var(--signal);font-weight:600}
+  .readout dd.good{color:var(--ok);font-weight:600}
+  .lab-note{font-size:13px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
+  .lab-note b{color:var(--ink)}
+
+  /* act 4 two-audience */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,36px);align-items:center}
+  @media(max-width:780px){.two-col{grid-template-columns:1fr}}
+  svg text{user-select:none}
+
+  /* footer */
+  footer{border-top:1px solid var(--ink);margin-top:clamp(72px,11vh,130px);padding:24px 0 48px}
+  .foot-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-id">Line <em>of</em> Sight</div>
+    <div class="nav-links">
+      <a href="#act1">I. Raw data</a>
+      <a href="#act2">II. Control charts</a>
+      <a href="#act3">III. Capability</a>
+      <a href="#act4">IV. Audiences</a>
+      <a href="#colophon">About</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap">
+  <p class="kicker">An interactive essay on Statistical Process Control</p>
+  <h1>Four lines are running. <em>One is quietly making scrap.</em></h1>
+  <p class="lede">
+    Below is a simulated plant: four production lines streaming real measurements,
+    right now, in your browser. One of them started drifting a few minutes ago.
+    Most dashboards would show you four green numbers. An SPC engineer sees something
+    different. <strong>Scroll — by the end, so will you.</strong>
+  </p>
+</header>
+
+<!-- ============ ACT I ============ -->
+<section class="wrap" id="act1">
+  <div class="act-head reveal"><span class="act-num">Act I.</span><h2>The supervisor's view: four numbers, all "fine"</h2></div>
+  <p class="act-lede reveal">
+    This is what most plants manage on: the <em>latest reading</em> from each line. Target is
+    50.00 mm, tolerance ±0.30. Every number below is inside tolerance — nothing to see here,
+    right? Watch for a minute. Then decide which line you'd shut down.
+  </p>
+  <div class="panel reveal">
+    <div class="panel-head">
+      <span>Live readings · <b>target 50.000 mm</b> · tol ±0.300</span>
+      <span id="clock">t = 00:00</span>
+    </div>
+    <div class="raw-grid" id="raw-grid"></div>
+  </div>
+  <div class="btn-row reveal">
+    <button class="btn primary" id="reveal-btn">Reveal which line is dying →</button>
+  </div>
+  <div class="verdict" id="verdict">
+    <p><b>Line C</b> is the failure — its average has been creeping upward for minutes while
+    every individual reading stayed inside tolerance. That's the trap of managing on last-value:
+    <b>a single number can't show direction.</b> The mean of Line C has moved ~0.15&nbsp;mm since
+    you started watching. At this rate it breaches USL within the hour — after producing
+    thousands of out-of-tolerance parts. You didn't need more data. You needed memory.</p>
+  </div>
+</section>
+
+<!-- ============ ACT II ============ -->
+<section class="wrap" id="act2">
+  <div class="act-head reveal"><span class="act-num">Act II.</span><h2>The SPC view: same data, but now it has a memory</h2></div>
+  <p class="act-lede reveal">
+    A control chart doesn't plot parts — it plots <em>evidence over time</em>, against limits
+    learned from the process itself (±3σ of its own history). The drifting line can't hide
+    anymore: watch its points march toward UCL until the chart raises the alarm
+    <strong>before</strong> a single bad part is made.
+  </p>
+  <div class="panel reveal">
+    <div class="panel-head">
+      <span>X̄ charts · subgroups of 5 · <b>±3σ limits from baseline</b></span>
+      <span id="alarm-count">alarms: none</span>
+    </div>
+    <canvas id="charts-canvas" height="620"></canvas>
+  </div>
+  <p class="act-lede reveal" style="margin-top:22px">
+    Notice <em>when</em> the alarm fires versus when parts actually go out of spec. That gap —
+    often hours of production — is exactly what SPC buys you. It's also why the limits come
+    from the <strong>process</strong>, not the customer: spec limits say what's acceptable,
+    control limits say what's <em>normal</em>. A process can be perfectly in control and still
+    make garbage — or wildly out of control and passing inspection, like Line C was in Act I.
+  </p>
+</section>
+
+<!-- ============ ACT III ============ -->
+<section class="wrap" id="act3">
+  <div class="act-head reveal"><span class="act-num">Act III.</span><h2>Capability: how much scrap is this process hiding?</h2></div>
+  <p class="act-lede reveal">
+    Control charts watch stability. Capability asks a harder question: <em>if this process keeps
+    running exactly as it is, how many parts will fail?</em> Drag the process mean and spread.
+    Watch Cpk — and the predicted defect rate — respond.
+  </p>
+  <div class="panel reveal">
+    <div class="lab-grid">
+      <svg id="cap-svg" viewBox="0 0 560 280" aria-label="Interactive capability histogram"></svg>
+      <div class="ctl">
+        <label for="c-mean">Process centering — mean offset: <span id="c-mean-v">0.00</span> mm</label>
+        <input type="range" id="c-mean" min="-100" max="100" value="0">
+        <label for="c-sig">Process spread — σ: <span id="c-sig-v">0.10</span> mm</label>
+        <input type="range" id="c-sig" min="4" max="30" value="10">
+        <dl class="readout">
+          <div><dt>Cp (potential)</dt><dd id="r-cp">—</dd></div>
+          <div><dt>Cpk (actual)</dt><dd id="r-cpk">—</dd></div>
+          <div><dt>Predicted defects</dt><dd id="r-ppm">—</dd></div>
+          <div><dt>Verdict</dt><dd id="r-verdict">—</dd></div>
+        </dl>
+        <p class="lab-note">
+          <b>Cp</b> asks: if the process were perfectly centered, could it fit inside tolerance?
+          <b>Cpk</b> asks the honest question: given where it <em>actually</em> sits, how much
+          room is left on the bad side? A Cpk of 1.33 ≈ 32 defects per million. 1.0 ≈ 1,350.
+          0.8 ≈ <b>16,400 per million</b>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT IV ============ -->
+<section class="wrap" id="act4">
+  <div class="act-head reveal"><span class="act-num">Act IV.</span><h2>Same alarm, two audiences</h2></div>
+  <p class="act-lede reveal">
+    Detecting the problem is half the job. The other half is telling people who can act — in the
+    language they think in. Same drifting line, two translations:
+  </p>
+  <div class="two-col reveal">
+    <div class="panel"><div class="panel-head"><span>For the quality engineer</span></div>
+      <svg id="eng-svg" viewBox="0 0 480 250"></svg></div>
+    <div class="panel"><div class="panel-head"><span>For the plant manager</span></div>
+      <svg id="mgm-svg" viewBox="0 0 480 250"></svg></div>
+  </div>
+  <p class="act-lede reveal" style="margin-top:22px">
+    Neither view is dumbed down. The engineer gets sensitivity — zones, rules, early detection.
+    The manager gets a decision: status, cause, action, cost. <strong>That translation layer is
+    the job.</strong>
+  </p>
+</section>
+
+<!-- ============ COLOPHON ============ -->
+<section class="wrap" id="colophon">
+  <div class="act-head reveal"><span class="act-num">Colophon.</span><h2>What you just used</h2></div>
+  <p class="act-lede reveal" style="max-width:66ch">
+    Everything on this page runs locally in your browser — no server, no library, no charting
+    package. The plant simulation generates autocorrelated noise with scripted tool-wear drift;
+    the charts, limits, EWMA logic, capability math (normal CDF via erf approximation), and
+    visualizations are hand-built in vanilla JavaScript, Canvas, and SVG.
+  </p>
+  <p class="act-lede reveal" style="max-width:66ch">
+    Built by <strong>Ammar</strong>, SPC engineer — I do this for manufacturing lines at work;
+    this page is what happens when I point the same discipline at a browser.
+    <a href="mailto:you@example.com" style="color:var(--signal)">Get in touch →</a>
+  </p>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>Line of Sight — an interactive SPC essay</span>
+    <span>Ammar · SPC Engineer</span>
+    <span>All simulation local · © 2025</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL={ink:css('--ink'),soft:css('--ink-faint'),line:css('--line'),signal:css('--signal'),paper:css('--paper'),grid:css('--grid'),deep:css('--paper-deep'),ok:css('--ok')};
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a,parent)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(parent)parent.appendChild(e);return e};
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rng(seed){let s=seed;return()=>{s=(s*1103515245+12345)%2147483648;return s/2147483648}}
+function gauss(r){let u=0,v=0;while(u===0)u=r();while(v===0)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+
+/* ================= THE PLANT ================= */
+/* target 50.000, tol ±0.30. Lines: A stable tight, B stable loose, C slow upward wear, D stable w/ occasional spikes */
+const TARGET=50, TOL=0.30;
+const lines=[
+  {name:'A',seed:101,sigma:0.08,wear:0,     spike:0},
+  {name:'B',seed:202,sigma:0.16,wear:0,     spike:0},
+  {name:'C',seed:303,sigma:0.09,wear:0.0011,spike:0},   // the killer
+  {name:'D',seed:404,sigma:0.10,wear:0,     spike:0.35},
+];
+lines.forEach(L=>{
+  L.r=rng(L.seed);
+  L.mean=TARGET;
+  L.history=[];          // all individual values
+  L.sub=[];              // current subgroup
+  L.subMeans=[];         // subgroup means (CL phase uses first 20)
+  L.alarmAt=-1;
+});
+function stepPlant(t){
+  lines.forEach((L,i)=>{
+    let v=L.mean+gauss(L.r)*L.sigma;
+    if(L.spike&&L.r()<L.spike*0.04)v+=gauss(L.r)*L.sigma*3.2;
+    L.history.push(v);
+    L.sub.push(v);
+    if(L.sub.length===5){
+      const m=L.sub.reduce((a,b)=>a+b)/5;
+      L.subMeans.push(m);
+      // sigma estimate from grand baseline computed later; simple fixed limits from known baseline sigma of means
+      L.sub=[];
+    }
+    L.wear&&(L.mean+=L.wear);
+  });
+}
+// precompute control limits for subgroup means: sigma_xbar = sigma/sqrt(5)
+const SIG_XBAR=lines.map(L=>L.sigma/Math.sqrt(5));
+const CL=TARGET;
+
+/* ================= ACT I : raw readouts ================= */
+const grid=document.getElementById('raw-grid');
+const cells=lines.map(L=>{
+  const d=document.createElement('div');d.className='raw-cell';
+  d.innerHTML=`<h3>Line ${L.name}</h3><div class="raw-val">—</div><div class="raw-sub">last 20 avg: —</div>`;
+  grid.appendChild(d);
+  return {val:d.querySelector('.raw-val'),avg:d.querySelector('.raw-sub')};
+});
+const clock=document.getElementById('clock');
+let tick=0;
+function renderRaw(){
+  cells.forEach((c,i)=>{
+    const L=lines[i],v=L.history[L.history.length-1];
+    c.val.textContent=v.toFixed(3);
+    c.avg.textContent='last 20 avg: '+(L.history.slice(-20).reduce((a,b)=>a+b,0)/Math.min(20,L.history.length)).toFixed(3);
+    c.val.style.color=Math.abs(v-TARGET)>TOL?COL.signal:'';
+  });
+  const s=Math.floor(tick*0.5);
+  clock.textContent='t = '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+}
+document.getElementById('reveal-btn').addEventListener('click',e=>{
+  document.getElementById('verdict').classList.add('show');
+  e.target.style.display='none';
+});
+
+/* ================= ACT II : control charts canvas ================= */
+const cc=document.getElementById('charts-canvas');
+const cctx=cc.getContext('2d');
+const alarmEl=document.getElementById('alarm-count');
+const MAXPTS=90;
+function drawCharts(){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const W=cc.clientWidth,H=620;
+  if(cc.width!==W*dpr){cc.width=W*dpr;cc.height=H*dpr}
+  cctx.setTransform(dpr,0,0,dpr,0,0);
+  cctx.clearRect(0,0,W,H);
+  const rows=4,rh=H/rows,padL=52,padR=16;
+  const yLo=TARGET-3*SIG_XBAR[0]*1.9,yHi=TARGET+3*SIG_XBAR[0]*1.9;
+  let alarms=0;
+  lines.forEach((L,i)=>{
+    const top=i*rh;
+    const y=v=>top+rh*0.82-(v-yLo)/(yHi-yLo)*rh*0.68;
+    // panel bg
+    if(i%2)cctx.fillStyle='rgba(36,42,66,0.03)',cctx.fillRect(0,top,W,rh);
+    // limits
+    [[CL+3*SIG_XBAR[i],'UCL'],[CL,'CL'],[CL-3*SIG_XBAR[i],'LCL']].forEach(([v,lab])=>{
+      cctx.beginPath();cctx.setLineDash(lab==='CL'?[]:[5,4]);
+      cctx.strokeStyle=lab==='CL'?COL.soft:COL.line;cctx.lineWidth=lab==='CL'?1.2:1;
+      cctx.moveTo(padL,y(v));cctx.lineTo(W-padR,y(v));cctx.stroke();cctx.setLineDash([]);
+      cctx.fillStyle=lab==='CL'?COL.ink:COL.soft;cctx.font='9px Archivo';cctx.textAlign='right';
+      cctx.fillText(lab,padL-6,y(v)+3);
+    });
+    // data: subgroup means
+    const pts=L.subMeans.slice(-MAXPTS);
+    cctx.beginPath();
+    pts.forEach((v,k)=>{const px=k/(MAXPTS-1)*(W-padL-padR)+padL;k===0?cctx.moveTo(px,y(v)):cctx.lineTo(px,y(v))});
+    cctx.strokeStyle=L.name==='C'?COL.signal:COL.ink;cctx.lineWidth=L.name==='C'?2:1.6;cctx.stroke();
+    pts.forEach((v,k)=>{
+      const breach=v>CL+3*SIG_XBAR[i]||v<CL-3*SIG_XBAR[i];
+      if(breach)alarms++;
+      cctx.beginPath();
+      cctx.arc(k/(MAXPTS-1)*(W-padL-padR)+padL,y(v),breach?4:2.6,0,7);
+      cctx.fillStyle=breach?COL.signal:(L.name==='C'?COL.paper:COL.paper);
+      cctx.fill();
+      cctx.lineWidth=1.4;cctx.strokeStyle=breach?COL.signal:(L.name==='C'?COL.signal:COL.ink);cctx.stroke();
+    });
+    // label
+    cctx.fillStyle=COL.ink;cctx.font='700 11px Archivo';cctx.textAlign='left';
+    cctx.fillText('LINE '+L.name,padL,top+20);
+    cctx.fillStyle=L.name==='C'&&pts.length>25?COL.signal:COL.ok;cctx.font='9px Archivo';cctx.textAlign='right';
+    cctx.fillText(L.name==='C'&&pts.length>25?'● DRIFTING':'● nominal',W-padR,top+20);
+  });
+  const lineCUp=lines[2].subMeans.length>25&&lines[2].subMeans[lines[2].subMeans.length-1]>CL+3*SIG_XBAR[2];
+  alarmEl.innerHTML=lineCUp?'alarm: <b style="color:'+COL.signal+'">Line C above UCL</b>':(alarms?'points beyond limits: '+alarms:'no alarms yet');
+}
+
+/* ================= ACT III : capability lab ================= */
+(function(){
+  const svg=document.getElementById('cap-svg');
+  const mIn=document.getElementById('c-mean'),sIn=document.getElementById('c-sig');
+  const mV=document.getElementById('c-mean-v'),sV=document.getElementById('c-sig-v');
+  const rCp=document.getElementById('r-cp'),rCpk=document.getElementById('r-cpk'),
+        rPpm=document.getElementById('r-ppm'),rVer=document.getElementById('r-verdict');
+  function erf(x){ // Abramowitz-Stegun
+    const s=x<0?-1:1;x=Math.abs(x);
+    const t=1/(1+0.3275911*x);
+    const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+    return s*y;
+  }
+  const phi=z=>0.5*(1+erf(z/Math.SQRT2));
+  function render(){
+    svg.innerHTML='';
+    const mu=TARGET+(+mIn.value/100)*TOL;   // offset up to ±tolerance
+    const sg=+sIn.value/100;                 // 0.04..0.30
+    mV.textContent=(mu-TARGET).toFixed(2);sV.textContent=sg.toFixed(2);
+    const W=560,H=280,pad={l:16,r:16,t:20,b:34};
+    const lo=TARGET-TOL-0.12,hi=TARGET+TOL+0.12;
+    const x=v=>pad.l+(v-lo)/(hi-lo)*(W-pad.l-pad.r);
+
+    // tolerance zones
+    const zone=(a,b,c)=>el('rect',{x:x(a),y:pad.t,width:x(b)-x(a),height:H-pad.t-pad.b,fill:c},svg);
+    zone(lo,TARGET-TOL,'rgba(85,58,51,0.07)');
+    zone(TARGET+TOL,hi,'rgba(85,58,51,0.07)');
+    // spec lines
+    [TARGET-TOL,TARGET,TARGET+TOL].forEach((v,i)=>{
+      el('line',{x1:x(v),x2:x(v),y1:pad.t-4,y2:H-pad.b,stroke:i===1?COL.soft:COL.signal,'stroke-width':i===1?1:1.4,'stroke-dasharray':i===1?'none':'6 4'},svg);
+      const t=el('text',{x:x(v),y:H-pad.b+16,'text-anchor':'middle','font-size':'10','font-weight':'600','font-family':'Archivo',fill:i===1?COL.soft:COL.signal},svg);
+      t.textContent=['LSL 49.70','Target','USL 50.30'][i];
+    });
+
+    // histogram of 2000 samples
+    const r=rng(99);const bins=new Array(40).fill(0);
+    for(let k=0;k<2000;k++){
+      const v=mu+gauss(r)*sg;
+      const bi=Math.floor((v-lo)/(hi-lo)*bins.length);
+      if(bi>=0&&bi<bins.length)bins[bi]++;
+    }
+    const bMax=Math.max(...bins),bw=(W-pad.l-pad.r)/bins.length;
+    bins.forEach((n,bi)=>{
+      if(!n)return;
+      const bx=pad.l+bi*bw,bh=n/bMax*(H-pad.t-pad.b-30);
+      const center=lo+(bi+0.5)/bins.length*(hi-lo);
+      el('rect',{x:bx,y:H-pad.b-bh,width:bw-1,height:bh,fill:center<TARGET-TOL||center>TARGET+TOL?COL.signal:COL.ink,'fill-opacity':0.75},svg);
+    });
+
+    // normal curve overlay
+    let d='';
+    for(let px=0;px<=W-pad.l-pad.r;px+=4){
+      const v=lo+px/(W-pad.l-pad.r)*(hi-lo);
+      const z=(v-mu)/sg;
+      const hh=Math.exp(-z*z/2)*(H-pad.t-pad.b-30);
+      d+=(px?'L':'M')+(pad.l+px)+' '+(H-pad.b-hh)+' ';
+    }
+    el('path',{d,fill:'none',stroke:COL.ink,'stroke-width':2},svg);
+
+    // math
+    const Cp=(2*TOL)/(6*sg);   // total tolerance width 0.60 / 6σ
+    const Cpk=(Math.min(TARGET+TOL-mu,mu-(TARGET-TOL)))/(3*sg);
+    const ppm=Math.round((1-phi((TARGET+TOL-mu)/sg)+phi((TARGET-TOL-mu)/sg))*1e6);
+    rCp.textContent=Cp.toFixed(2);
+    rCpk.textContent=Cpk.toFixed(2);
+    rCpk.className=Cpk>=1.33?'good':(Cpk>=1?'':'bad');
+    rPpm.textContent=ppm.toLocaleString()+' / million';
+    rPpm.className=ppm>1350?'bad':(ppm>63?'':'good');
+    let verd,vc;
+    if(Cpk>=1.67){verd='excellent';vc='good'}
+    else if(Cpk>=1.33){verd='capable';vc='good'}
+    else if(Cpk>=1.0){verd='marginal — center & tighten';vc=''}
+    else{verd='not capable — scrap machine';vc='bad'}
+    rVer.textContent=verd;rVer.className=vc;
+  }
+  mIn.addEventListener('input',render);sIn.addEventListener('input',render);
+  render();
+})();
+
+/* ================= ACT IV : two audiences ================= */
+(function(){
+  // engineer panel: xbar tail of line C with zones + violation
+  const eng=document.getElementById('eng-svg'),mgm=document.getElementById('mgm-svg');
+  const series=lines[2].subMeans.slice(-30).length>10?lines[2].subMeans.slice(-30):Array.from({length:30},(_,i)=>TARGET+(i-10)*0.012+gauss(rng(5))*0.04);
+  function drawEng(){
+    eng.innerHTML='';
+    const W=480,H=250,UCL=CL+3*0.04,LCL=CL-3*0.04,pad={l:44,r:10,t:14,b:10};
+    const y=v=>pad.t+(1-(v-LCL)/(UCL-LCL))*(H-pad.t-pad.b);
+    const x=i=>pad.l+i/(series.length-1)*(W-pad.l-pad.r);
+    [0.04,0.08].forEach((z,k)=>{
+      const op=k===0?0.05:0.09;
+      [[UCL-z,UCL],[LCL,LCL+z]].forEach(([lo,hi])=>el('rect',{x:pad.l,y:y(hi),width:W-pad.l-pad.r,height:y(lo)-y(hi),fill:COL.ink,'fill-opacity':op},eng));
+    });
+    [[UCL,'UCL'],[CL,'CL'],[LCL,'LCL']].forEach(([v,l])=>{
+      el('line',{x1:pad.l,x2:W-pad.r,y1:y(v),y2:y(v),stroke:v===CL?COL.soft:COL.line,'stroke-dasharray':v===CL?'none':'5 4'},eng);
+      const t=el('text',{x:pad.l-5,y:y(v)+3,'text-anchor':'end','font-size':'9','font-family':'Archivo',fill:COL.soft},eng);t.textContent=l;
+    });
+    let d='';series.forEach((v,i)=>d+=(i?'L':'M')+x(i)+' '+y(Math.min(UCL*1.02,v))+' ');
+    el('path',{d,fill:'none',stroke:COL.signal,'stroke-width':1.8},eng);
+    series.forEach((v,i)=>{
+      const breach=v>UCL||v<LCL;
+      el('circle',{cx:x(i),cy:y(Math.min(UCL*1.02,v)),r:breach?4.5:2.8,fill:breach?COL.signal:COL.paper,stroke:breach?COL.signal:COL.signal,'stroke-width':1.4},eng);
+    });
+    const t=el('text',{x:W-pad.r-4,y:pad.t+10,'text-anchor':'end','font-size':'10','font-weight':'700','font-family':'Archivo',fill:COL.signal},eng);
+    t.textContent='Rule 2 · 2-of-3 beyond 2σ → tool wear suspected (st.2)';
+  }
+  drawEng();
+
+  // management panel
+  mgm.innerHTML='';
+  const W=480,H=250,pad=30;
+  el('rect',{x:pad,y:pad,width:W-pad*2,height:H-pad*2,fill:COL.paper,stroke:COL.signal,'stroke-width':2},mgm);
+  const mk=(yy,size,weight,color,text)=>{const t=el('text',{x:W/2,y:yy,'text-anchor':'middle','font-size':size,'font-weight':weight,'font-family':'Archivo',fill:color},mgm);t.textContent=text};
+  mk(88,'13','400',COL.soft,'Line C — bore diameter');
+  mk(124,'23','700',COL.signal,'⚠ Shut down for tool change today');
+  mk(152,'12','400',COL.soft,'Drift detected before any part went out of spec.');
+  mk(170,'12','400',COL.soft,'Cost of waiting: ≈ €4,200/hr in scrap once it slips.');
+  mk(196,'12','400',COL.ok,'Action decided: station 2 tool change, 40 min.');
+})();
+
+/* ================= engine ================= */
+let acc=0,lastT=performance.now(),running=true;
+document.addEventListener('visibilitychange',()=>running=!document.hidden);
+function loop(now){
+  requestAnimationFrame(loop);
+  if(!running)return;
+  const dt=now-lastT;lastT=now;
+  acc+=dt;
+  const interval=reduced?400:180;   // new subgroup member every 180ms
+  if(acc<interval)return;
+  acc=0;
+  tick++;
+  const steps=reduced?4:1;
+  for(let s=0;s<steps;s++)stepPlant(tick);
+  renderRaw();
+  drawCharts();
+}
+requestAnimationFrame(loop);
+
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(n=>io.observe(n));
+})();
+</script>
+</body>
+</html>

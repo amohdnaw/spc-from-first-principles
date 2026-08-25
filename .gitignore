@@ -1,0 +1,6 @@
+spc-lab/.venv/
+spc-lab/*.egg-info/
+spc-lab/src/spclab.egg-info/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

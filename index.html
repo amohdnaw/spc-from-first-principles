@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ammar — SPC Engineer · Statistical Process Control & Manufacturing Analytics</title>
+<meta name="description" content="SPC engineer turning manufacturing data into decisions. Control charts, capability studies, MSA, and visualizations management actually understands.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: oklch(0.968 0.008 85);
+    --paper-deep: oklch(0.94 0.012 85);
+    --ink: oklch(0.24 0.035 255);
+    --ink-soft: oklch(0.42 0.03 255);
+    --ink-faint: oklch(0.60 0.02 255);
+    --line: oklch(0.86 0.015 255);
+    --signal: oklch(0.55 0.21 28);
+    --grid: oklch(0.91 0.01 255);
+    --max: 1080px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-size:clamp(15px,1.05vw,17px);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--signal);color:var(--paper)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:400;line-height:1.05;letter-spacing:-0.01em}
+  a{color:inherit}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    background:color-mix(in oklch, var(--paper) 90%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--max);margin:0 auto;
+    padding:13px clamp(20px,4vw,48px);
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .nav-id{font-family:'Fraunces',serif;font-size:18px}
+  .nav-id em{font-style:italic;color:var(--signal)}
+  .nav-links{display:flex;gap:clamp(14px,2.5vw,28px);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+  .nav-links a{text-decoration:none;color:var(--ink-soft);transition:color .2s}
+  .nav-links a:hover{color:var(--signal)}
+
+  /* ---------- scroll progress rail ---------- */
+  .progress-rail{
+    position:fixed;top:0;left:0;height:2px;width:100%;z-index:70;background:transparent;
+  }
+  .progress-rail::after{
+    content:"";display:block;height:100%;width:100%;
+    background:var(--signal);
+    transform-origin:left;transform:scaleX(var(--p,0));
+  }
+
+  /* ---------- THE strip: page-long control chart ---------- */
+  .strip{
+    position:fixed;left:0;right:0;bottom:0;z-index:55;
+    height:148px;
+    background:color-mix(in oklch, var(--paper) 92%, transparent);
+    backdrop-filter:blur(6px);
+    border-top:1px solid var(--ink);
+    transition:transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  .strip.hidden{transform:translateY(102%)}
+  .strip-head{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px 16px;
+    padding:8px clamp(16px,3vw,40px) 0;
+    font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-faint);
+  }
+  .strip-head b{color:var(--ink)}
+  #strip-status.ooc{color:var(--signal)}
+  #strip-canvas{display:block;width:100%;height:calc(148px - 30px)}
+  @media(max-width:640px){.strip{height:118px}#strip-canvas{height:calc(118px - 26px)}.strip-head span.opt{display:none}}
+
+  /* ---------- hero ---------- */
+  header{
+    min-height:88vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding-top:110px;position:relative;
+  }
+  /* faint engineering graph paper behind hero */
+  header::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%);
+  }
+  .kicker{
+    font-size:11px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--ink-faint);display:flex;align-items:center;gap:12px;
+  }
+  .kicker::before{content:"";width:34px;height:1px;background:var(--signal)}
+  h1{
+    font-size:clamp(42px,7.5vw,92px);
+    margin:22px 0 0;max-width:13ch;
+  }
+  h1 em{font-style:italic;font-weight:300;color:var(--signal)}
+  .lede{margin-top:28px;max-width:52ch;font-size:clamp(16px,1.4vw,19px);color:var(--ink-soft)}
+  .lede strong{color:var(--ink)}
+  .hero-hint{
+    margin-top:44px;display:flex;align-items:center;gap:14px;
+    font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-faint);
+  }
+  .hero-hint .arrow{animation:nudge 2s cubic-bezier(.45,0,.55,1) infinite;font-size:16px;color:var(--signal)}
+  @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+  /* ---------- sections ---------- */
+  section{padding:clamp(72px,11vh,130px) 0 0}
+  .sec-head{display:flex;align-items:baseline;gap:20px;margin-bottom:clamp(32px,5vh,56px)}
+  .sec-num{font-size:12px;font-weight:700;letter-spacing:0.2em;color:var(--signal)}
+  h2{font-size:clamp(30px,4.5vw,52px)}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:clamp(32px,6vw,72px);align-items:start}
+  .about-grid p{color:var(--ink-soft);margin-bottom:1.1em}
+  .about-grid p strong{color:var(--ink)}
+  .spec{border-top:2px solid var(--ink)}
+  .spec-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line)}
+  .spec-row dt{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .spec-row dd{font-family:'Fraunces',serif;font-size:17px;text-align:right}
+  @media(max-width:820px){.about-grid{grid-template-columns:1fr}}
+
+  /* ---------- case studies ---------- */
+  .case{
+    display:grid;grid-template-columns:80px 1fr;gap:clamp(20px,4vw,48px);
+    padding:clamp(36px,6vh,60px) 0;
+    border-top:1px solid var(--line);
+  }
+  .case:first-of-type{border-top:none;padding-top:0}
+  .case-index{font-family:'Fraunces',serif;font-style:italic;color:var(--ink-faint);font-size:clamp(24px,3vw,36px)}
+  .case h3{font-size:clamp(22px,2.8vw,30px);margin-bottom:14px}
+  .case>p, .case .case-body p{color:var(--ink-soft);max-width:62ch}
+
+  /* --- interactive lab --- */
+  .lab{
+    margin-top:24px;
+    border:1px solid var(--ink);
+    background:var(--paper-deep);
+    padding:clamp(18px,3vw,28px);
+  }
+  .lab-title{
+    font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--signal);
+    margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  .lab-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .lab-grid{display:grid;grid-template-columns:1fr 220px;gap:clamp(18px,3vw,32px);align-items:start}
+  @media(max-width:680px){.lab-grid{grid-template-columns:1fr}}
+  .lab svg{display:block;width:100%;height:auto}
+  .lab-controls label{
+    display:block;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:6px;
+  }
+  .lab-controls input[type=range]{
+    width:100%;accent-color:var(--signal);margin:2px 0 16px;cursor:pointer;
+  }
+  .lab-readout{border-top:2px solid var(--ink);padding-top:10px}
+  .lab-readout div{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--line)}
+  .lab-readout dt{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .lab-readout dd{font-family:'Fraunces',serif;font-size:17px}
+  .lab-readout dd.bad{color:var(--signal);font-weight:600}
+  .lab-note{font-size:13px;color:var(--ink-faint);margin-top:12px;line-height:1.5}
+  .tags{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);padding:5px 12px;color:var(--ink-soft)}
+
+  /* ---------- viz demo ---------- */
+  .viz-demo{
+    border:1px solid var(--ink);background:var(--paper-deep);
+    padding:clamp(24px,4vw,44px);
+    display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;
+  }
+  .viz-demo h3{font-size:clamp(22px,2.6vw,30px);margin-bottom:14px}
+  .viz-demo p{color:var(--ink-soft);font-size:15px}
+  .viz-toggle{margin-top:22px;display:flex;gap:10px}
+  .vt{font:inherit;font-size:13px;font-weight:600;padding:9px 18px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:all .2s}
+  .vt.active,.vt:hover{background:var(--ink);color:var(--paper)}
+  .viz-caption{grid-column:1/-1;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  .viz-caption b{color:var(--signal)}
+  @media(max-width:820px){.viz-demo{grid-template-columns:1fr}}
+
+  /* ---------- skills ---------- */
+  .skills{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(28px,4vw,48px)}
+  .skill-col h3{font-size:12px;font-family:'Archivo';font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--signal);margin-bottom:16px}
+  .skill-col ul{list-style:none}
+  .skill-col li{padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink-soft)}
+  @media(max-width:720px){.skills{grid-template-columns:1fr}}
+
+  /* ---------- contact ---------- */
+  .contact{padding-bottom:200px}
+  .contact h2{max-width:16ch}
+  .contact h2 em{font-style:italic;color:var(--signal);font-weight:300}
+  .contact-lines{margin-top:36px;display:flex;flex-wrap:wrap;gap:clamp(20px,4vw,56px)}
+  .contact-lines a{
+    text-decoration:none;font-family:'Fraunces',serif;font-size:clamp(18px,2vw,22px);
+    border-bottom:1px solid var(--line);padding-bottom:4px;transition:border-color .2s,color .2s;
+  }
+  .contact-lines a:hover{color:var(--signal);border-color:var(--signal)}
+
+  footer{
+    border-top:1px solid var(--ink);
+    padding:20px 0 180px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+    .hero-hint .arrow{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-rail" aria-hidden="true"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-id">Ammar <em>/ SPC</em></div>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#viz">Visualize</a>
+      <a href="#skills">Toolbox</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap">
+  <p class="kicker reveal">Statistical Process Control · Manufacturing Analytics</p>
+  <h1 class="reveal">I find the drift before it finds the scrap bin.</h1>
+  <p class="lede reveal">
+    SPC engineer. I build control charts that catch problems early, capability studies that hold
+    up in audits, and visualizations a plant manager reads in <strong>ten seconds flat</strong>.
+    This page works like my process monitoring does —
+    <strong>keep scrolling and watch what happens.</strong>
+  </p>
+  <div class="hero-hint reveal"><span>Scroll — the process below is being monitored in real time</span><span class="arrow">↓</span></div>
+</header>
+
+<!-- ============ 01 ABOUT ============ -->
+<section class="wrap" id="about">
+  <div class="sec-head reveal"><span class="sec-num">01</span><h2>What I actually do</h2></div>
+  <div class="about-grid">
+    <div class="reveal">
+      <p>
+        Most quality problems don't announce themselves. They drift. A tool wears, a supplier
+        changes a batch, a setting creeps — and by the time final inspection catches it,
+        you've made thousands of parts you can't ship.
+      </p>
+      <p>
+        My job is making sure it never gets that far: <strong>SPC systems end-to-end</strong> —
+        rational subgroups, the right chart for the data, Gage R&amp;R before anyone blames the
+        process, capability studies (Cp/Cpk/Ppk), and reaction plans operators actually follow.
+      </p>
+      <p>
+        And because a chart nobody reads is worthless, I put equal work into the
+        <strong>communication layer</strong> — visuals where the signal is impossible to miss,
+        written for people who've never heard of a Western Electric rule. Try the labs below:
+        every claim on this page, you can poke at yourself.
+      </p>
+    </div>
+    <dl class="spec reveal" aria-label="Process spec sheet">
+      <div class="spec-row"><dt>Discipline</dt><dd>SPC &amp; Quality Engineering</dd></div>
+      <div class="spec-row"><dt>Environment</dt><dd>High-volume manufacturing</dd></div>
+      <div class="spec-row"><dt>Core methods</dt><dd>X̄-R, I-MR, p, EWMA, CUSUM</dd></div>
+      <div class="spec-row"><dt>Capability</dt><dd>Cp · Cpk · Ppk studies</dd></div>
+      <div class="spec-row"><dt>Measurement</dt><dd>Gage R&amp;R (MSA)</dd></div>
+      <div class="spec-row"><dt>Frameworks</dt><dd>IATF 16949 · AIAG SPC</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ 02 WORK + LABS ============ -->
+<section class="wrap" id="work">
+  <div class="sec-head reveal"><span class="sec-num">02</span><h2>Selected work <span style="font-style:italic;font-weight:300;color:var(--ink-faint);font-size:.6em">— with the math left in</span></h2></div>
+
+  <!-- CASE A -->
+  <article class="case reveal">
+    <div class="case-index">a.</div>
+    <div>
+      <h3>Cutting diameter variation on a CNC line by half</h3>
+      <p>
+        A critical bore was failing Cpk audits (1.1) with no assignable cause. Layering an
+        EWMA chart over the X̄-R exposed slow tool wear invisible to the Shewhart chart.
+        Fixing coolant temperature cycling + tying tool changes to the EWMA signal brought
+        the process back to center. <strong>Drag the slider:</strong> this is exactly the
+        detection problem I solved.
+      </p>
+      <div class="lab">
+        <div class="lab-title">Lab A — why EWMA catches what X̄ misses</div>
+        <div class="lab-grid">
+          <svg id="labA-svg" viewBox="0 0 520 240" aria-label="Interactive EWMA versus Shewhart chart"></svg>
+          <div class="lab-controls">
+            <label for="labA-wear">Tool-wear rate per subgroup</label>
+            <input type="range" id="labA-wear" min="0" max="100" value="22">
+            <dl class="lab-readout">
+              <div><dt>X̄ chart detects</dt><dd id="labA-xbar">—</dd></div>
+              <div><dt>EWMA detects</dt><dd id="labA-ewma">—</dd></div>
+              <div><dt>Final Cpk</dt><dd id="labA-cpk">—</dd></div>
+            </dl>
+            <p class="lab-note">EWMA weights recent subgroups exponentially (λ=0.2), averaging away noise so slow wear surfaces fast.</p>
+          </div>
+        </div>
+      </div>
+      <div class="result tags"><span class="tag">Cpk 1.1 → 1.6</span><span class="tag">−52% std. dev</span><span class="tag">−38% scrap cost</span><span class="tag">EWMA</span><span class="tag">Root cause</span></div>
+    </div>
+  </article>
+
+  <!-- CASE B -->
+  <article class="case reveal">
+    <div class="case-index">b.</div>
+    <div>
+      <h3>Proving the measurement system before blaming the process</h3>
+      <p>
+        Two engineers had already tried — and failed — to fix a "chaotic" filling line.
+        A crossed Gage R&amp;R showed the measurement system itself consumed 61% of tolerance.
+        After a fixture redesign, %GRR fell to 9%, and the "process problem" turned out to be
+        over-adjustment. <strong>Slide the gage error up and down</strong> and watch the
+        verdict flip:
+      </p>
+      <div class="lab">
+        <div class="lab-title">Lab B — measurement error masquerading as process variation</div>
+        <div class="lab-grid">
+          <svg id="labB-svg" viewBox="0 0 520 240" aria-label="Interactive Gage R&R variance decomposition"></svg>
+          <div class="lab-controls">
+            <label for="labB-gage">Gage repeatability (σ of the measurement system)</label>
+            <input type="range" id="labB-gage" min="2" max="100" value="62">
+            <dl class="lab-readout">
+              <div><dt>%GRR of tolerance</dt><dd id="labB-grr">—</dd></div>
+              <div><dt>ndc (distinct categories)</dt><dd id="labB-ndc">—</dd></div>
+              <div><dt>AIAG verdict</dt><dd id="labB-verdict">—</dd></div>
+            </dl>
+            <p class="lab-note">Observed variation² = process² + gage². When the gage dominates, every "process fix" is a guess.</p>
+          </div>
+        </div>
+      </div>
+      <div class="result tags"><span class="tag">%GRR 61% → 9%</span><span class="tag">−70% false alarms</span><span class="tag">Gage R&amp;R</span><span class="tag">ANOVA</span></div>
+    </div>
+  </article>
+
+  <!-- CASE C -->
+  <article class="case reveal">
+    <div class="case-index">c.</div>
+    <div>
+      <h3>A daily quality dashboard executives actually open</h3>
+      <p>
+        The plant's quality reporting was a 40-slide deck nobody read. I replaced it with a
+        one-page daily dashboard: every line's Cpk trend, violations flagged in plain language,
+        and a "what changed since yesterday" panel. Adoption hit 100% of tier meetings, and
+        signal-to-containment dropped from two shifts to under three hours.
+      </p>
+      <div class="tags"><span class="tag">&lt; 3 hrs signal→containment</span><span class="tag">1 page replaced 40 slides</span><span class="tag">Power BI / Python</span><span class="tag">Stakeholder comms</span></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 03 VIZ ============ -->
+<section class="wrap" id="viz">
+  <div class="sec-head reveal"><span class="sec-num">03</span><h2>Same data, two audiences</h2></div>
+  <p class="reveal" style="max-width:60ch;color:var(--ink-soft);margin-bottom:36px">
+    The heart of my job is translation. Below: the <em>same drifting process</em>, shown the way
+    an engineer needs it, and the way management needs it.
+  </p>
+  <div class="viz-demo reveal">
+    <div>
+      <h3>One signal. Two stories.</h3>
+      <p id="viz-text"></p>
+      <div class="viz-toggle" role="tablist">
+        <button class="vt active" id="vt-eng">Engineer view</button>
+        <button class="vt" id="vt-mgmt">Management view</button>
+      </div>
+    </div>
+    <svg id="viz-svg" viewBox="0 0 460 300" aria-label="Engineer vs management views of the same data"></svg>
+    <p class="viz-caption" id="viz-caption"></p>
+  </div>
+</section>
+
+<!-- ============ 04 SKILLS ============ -->
+<section class="wrap" id="skills">
+  <div class="sec-head reveal"><span class="sec-num">04</span><h2>Toolbox</h2></div>
+  <div class="skills reveal">
+    <div class="skill-col">
+      <h3>Statistics &amp; SPC</h3>
+      <ul>
+        <li>Control charts — X̄-R, I-MR, p/np, c/u, EWMA, CUSUM</li>
+        <li>Capability — Cp, Cpk, Pp, Ppk, non-normal methods</li>
+        <li>MSA — Gage R&amp;R, bias &amp; linearity</li>
+        <li>DOE, hypothesis testing, regression, ANOVA</li>
+        <li>Acceptance sampling (AQL)</li>
+      </ul>
+    </div>
+    <div class="skill-col">
+      <h3>Tools &amp; Code</h3>
+      <ul>
+        <li>Python — pandas, NumPy, SciPy, matplotlib, Plotly</li>
+        <li>R — qcc, SixSigma packages</li>
+        <li>Minitab, JMP</li>
+        <li>Power BI / Tableau dashboards</li>
+        <li>SQL, Excel (advanced), VBA</li>
+      </ul>
+    </div>
+    <div class="skill-col">
+      <h3>Manufacturing Context</h3>
+      <ul>
+        <li>IATF 16949 / ISO 9001 quality systems</li>
+        <li>AIAG core tools — SPC, MSA, APQP, PPAP, FMEA</li>
+        <li>8D, 5-Why, Ishikawa</li>
+        <li>Lean / Six Sigma (Green Belt)</li>
+        <li>Tier meetings, layered process audits</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 CONTACT ============ -->
+<section class="wrap contact" id="contact">
+  <div class="sec-head reveal"><span class="sec-num">05</span><h2>The process is stable. <em>The inbox is open.</em></h2></div>
+  <div class="contact-lines reveal">
+    <a href="mailto:you@example.com">you@example.com</a>
+    <a href="https://linkedin.com/in/yourname" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="#">Download résumé (PDF)</a>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>Ammar — SPC Engineer</span>
+  <span>You scrolled through a full process cycle</span>
+  <span>© 2025</span>
+</footer>
+
+<!-- ============ the monitoring strip ============ -->
+<div class="strip" id="strip" aria-hidden="false">
+  <div class="strip-head">
+    <span>Fig. 00 — <b>Process monitor</b> · scroll-linked · n=5</span>
+    <span id="strip-status">● in control</span>
+    <span class="opt" id="strip-pos">subgroup 0 / 120</span>
+    <span class="opt" id="strip-phase">Phase I — baseline study</span>
+  </div>
+  <canvas id="strip-canvas"></canvas>
+</div>
+
+<script>
+(function(){
+'use strict';
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL={ink:css('--ink'),soft:css('--ink-faint'),line:css('--line'),signal:css('--signal'),paper:css('--paper'),grid:css('--grid'),deep:css('--paper-deep')};
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* deterministic noise */
+function rng(seed){let s=seed;return()=>{s=(s*1103515245+12345)%2147483648;return s/2147483648-0.5}}
+function smoothNoise(n,seed){const r=rng(seed);let v=0;const out=[];for(let i=0;i<n;i++){v+=r()*0.9;v*=0.55;out.push(v)}return out}
+
+/* ================================================================
+   THE STRIP — one control chart spanning the entire page.
+   Scroll position = time. Narrative: stable → drift → Rule-2
+   violation (at case studies) → corrective action → stable.
+================================================================ */
+const N=120, DRIFT_START=38, VIOLATION=66, CORRECT=78;
+(function(){
+  const base=smoothNoise(N,7);
+  const series=base.map((v,i)=>{
+    if(i<DRIFT_START)return v*0.85;
+    if(i<CORRECT){
+      const t=(i-DRIFT_START)/(CORRECT-DRIFT_START);
+      return v*0.85+t*3.4+Math.sin(i*1.7)*0.06*t; // accelerating wear
+    }
+    return (v*0.85)+Math.max(0,3.4-(i-CORRECT)*0.65); // correction pulls back to center
+  });
+  const UCL=2.6,LCL=-2.6;
+  const canvas=document.getElementById('strip-canvas');
+  const ctx=canvas.getContext('2d');
+  const strip=document.getElementById('strip');
+  const stStatus=document.getElementById('strip-status'),
+        stPos=document.getElementById('strip-pos'),
+        stPhase=document.getElementById('strip-phase');
+
+  function phaseFor(i){
+    if(i<DRIFT_START)return 'Phase I — baseline study';
+    if(i<VIOLATION)return 'Phase II — drift developing…';
+    if(i<CORRECT)return 'Phase III — ⚠ rule 2 violation → investigate';
+    return 'Phase IV — corrective action · back in control';
+  }
+  function draw(upTo){
+    const dpr=Math.min(devicePixelRatio||1,2);
+    const W=canvas.clientWidth,H=canvas.clientHeight;
+    if(canvas.width!==W*dpr){canvas.width=W*dpr;canvas.height=H*dpr}
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,W,H);
+    const padL=46,padR=14,padT=12,padB=8;
+    const y=v=>padT+(1-(v-LCL)/(UCL-LCL))*(H-padT-padB);
+    const x=i=>padL+i/(N-1)*(W-padL-padR);
+
+    // zones
+    [[0.87,'rgba(36,42,66,0.05)'],[1.73,'rgba(36,42,66,0.09)']].forEach(([z,c])=>{
+      ctx.fillStyle=c;
+      ctx.fillRect(padL,y(z),W-padL-padR,y(UCL)-y(z));
+      ctx.fillRect(padL,y(LCL),W-padL-padR,y(-z)-y(LCL));
+    });
+    // limits
+    const limit=(v,lab,dashed)=>{
+      ctx.beginPath();ctx.setLineDash(dashed?[5,5]:[]);
+      ctx.strokeStyle=v===0?COL.soft:COL.line;ctx.lineWidth=v===0?1.4:1;
+      ctx.moveTo(padL,y(v));ctx.lineTo(W-padR,y(v));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=v===0?COL.ink:COL.soft;
+      ctx.font='9px Archivo';ctx.textAlign='right';
+      ctx.fillText(lab,padL-6,y(v)+3);
+    };
+    limit(UCL,'UCL',true);limit(1.73,'+2σ',true);limit(0,'CL',false);limit(-1.73,'−2σ',true);limit(LCL,'LCL',true);
+
+    // future ghost line
+    ctx.beginPath();
+    for(let i=upTo;i<N;i++){const px=x(i),py=y(series[i]);i===upTo?ctx.moveTo(px,py):ctx.lineTo(px,py)}
+    ctx.strokeStyle=COL.line;ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.stroke();ctx.setLineDash([]);
+
+    // plotted line
+    ctx.beginPath();
+    for(let i=0;i<=upTo;i++){const px=x(i),py=y(series[i]);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)}
+    ctx.strokeStyle=COL.ink;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();
+
+    // points
+    for(let i=0;i<=upTo;i++){
+      const breach=series[i]>UCL||series[i]<LCL;
+      const flag=breach||i===VIOLATION;
+      ctx.beginPath();
+      ctx.arc(x(i),y(series[i]),flag?4:2.4,0,7);
+      ctx.fillStyle=flag?COL.signal:COL.paper;
+      ctx.fill();
+      ctx.lineWidth=1.4;ctx.strokeStyle=flag?COL.signal:COL.ink;ctx.stroke();
+    }
+    // violation annotation
+    if(upTo>=VIOLATION){
+      const vx=x(VIOLATION),vy=y(series[VIOLATION]);
+      ctx.fillStyle=COL.signal;ctx.font='700 9px Archivo';ctx.textAlign='center';
+      ctx.fillText('RULE 2 — ACT NOW',vx,vy-12);
+      ctx.strokeStyle=COL.signal;ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(vx,vy-8);ctx.lineTo(vx,vy-4);ctx.stroke();
+    }
+  }
+
+  let last=-1,ticking=false;
+  function update(){
+    ticking=false;
+    const doc=document.documentElement;
+    const max=doc.scrollHeight-innerHeight;
+    const p=Math.min(1,Math.max(0,scrollY/max));
+    document.querySelector('.progress-rail').style.setProperty('--p',p);
+    if(scrollY<innerHeight*0.25){strip.classList.add('hidden')}
+    else strip.classList.remove('hidden');
+    const i=Math.round(p*(N-1));
+    if(i===last)return;
+    last=i;
+    draw(i);
+    const cur=series[i];
+    stPos.textContent=`subgroup ${i+1} / ${N}`;
+    stPhase.textContent=phaseFor(i);
+    if(i>=DRIFT_START&&i<VIOLATION){stStatus.textContent='● drift developing — watch EWMA'}
+    else if(i>=VIOLATION&&i<CORRECT){stStatus.textContent='● out of control — containment';stStatus.classList.add('ooc')}
+    else{stStatus.textContent='● in control';stStatus.classList.remove('ooc')}
+  }
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
+  addEventListener('resize',()=>{last=-1;update()});
+  reduced?draw(N-1)&&update():update();
+})();
+
+/* ================================================================
+   LAB A — EWMA vs Shewhart under tool wear
+================================================================ */
+(function(){
+  const svg=document.getElementById('labA-svg');
+  const slider=document.getElementById('labA-wear');
+  const oX=document.getElementById('labA-xbar'),oE=document.getElementById('labA-ewma'),oC=document.getElementById('labA-cpk');
+  const Nn=40,UCL=2.6,LCL=-2.6,LAM=0.2;
+
+  function render(){
+    svg.innerHTML='';
+    const rate=slider.value/100;               // 0..1 wear strength
+    const r=rng(21+Math.round(rate*97));
+    const raw=[],wear=[];
+    let w=0,v=0;
+    for(let i=0;i<Nn;i++){
+      v+=r()*0.9;v*=0.55;
+      w+=rate*0.09*(0.8+r()*0.4);
+      raw.push(v+w);wear.push(w);
+    }
+    // EWMA of standardized-ish values
+    let e=0;const ewma=raw.map(x=>e=LAM*x+(1-LAM)*e);
+    const ewmaLim=k=>k*1.227*Math.sqrt(LAM/(2-LAM)*(1-Math.pow(1-LAM,2*k)));
+    const pad={l:40,r:12,t:14,b:22},W=520,H=240;
+    const y=val=>pad.t+(1-(val-LCL)/(UCL-LCL))*(H-pad.t-pad.b);
+    const x=i=>pad.l+i/(Nn-1)*(W-pad.l-pad.r);
+
+    // limits
+    const lim=(val,color,dash,label)=>{
+      svg.appendChild(el('line',{x1:pad.l,x2:W-pad.r,y1:y(val),y2:y(val),stroke:color,'stroke-dasharray':dash?'4 4':'none','stroke-width':1}));
+      const t=el('text',{x:pad.l-5,y:y(val)+3,'text-anchor':'end','font-size':'9','font-family':'Archivo',fill:COL.soft});
+      t.textContent=label;svg.appendChild(t);
+    };
+    lim(UCL,COL.soft,true,'UCL');lim(0,COL.soft,false,'CL');lim(LCL,COL.soft,true,'LCL');
+    const EL=ewmaLim(Nn);
+    lim(EL,COL.signal,true,'EWMA UCL');lim(-EL,COL.signal,true,'EWMA LCL');
+
+    // raw line (faded) + points
+    let d='';raw.forEach((val,i)=>d+=(i?'L':'M')+x(i)+' '+y(Math.max(LCL,Math.min(UCL,val)))+' ');
+    svg.appendChild(el('path',{d,fill:'none',stroke:COL.line,'stroke-width':1.4}));
+    raw.forEach((val,i)=>{
+      const breach=val>UCL||val<LCL;
+      svg.appendChild(el('circle',{cx:x(i),cy:y(Math.max(LCL,Math.min(UCL,val))),r:breach?3.5:2,fill:breach?COL.signal:COL.paper,stroke:breach?COL.signal:COL.line,'stroke-width':1}));
+    });
+    // ewma line bold
+    let de='';ewma.forEach((val,i)=>de+=(i?'L':'M')+x(i)+' '+y(Math.max(LCL,Math.min(UCL,val)))+' ');
+    svg.appendChild(el('path',{d:de,fill:'none',stroke:COL.ink,'stroke-width':2.4}));
+
+    // detection points
+    let dx=-1,ex=-1;
+    for(let i=0;i<Nn;i++){
+      if(dx<0&&(raw[i]>UCL||raw[i]<LCL))dx=i;
+      if(ex<0&&Math.abs(ewma[i])>EL)ex=i;
+    }
+    const mark=(i,color,label)=>{
+      if(i<0)return;
+      const t=el('text',{x:x(i),y:pad.t+9,'text-anchor':i>Nn-8?'end':'start','font-size':'9','font-weight':'700','font-family':'Archivo',fill:color});
+      t.textContent=label+' @ '+String(i+1).padStart(2,'0');svg.appendChild(t);
+      svg.appendChild(el('circle',{cx:x(i),cy:y(Math.max(LCL,Math.min(UCL,(color===COL.signal?ewma[i]:raw[i]))))+0,r:5,fill:'none',stroke:color,'stroke-width':1.6}));
+    };
+    mark(dx,COL.signal,'X̄');mark(ex,COL.ink,'EWMA');
+
+    // readouts
+    const cpk=Math.max(0,(2.6-wear[Nn-1])/3);
+    oX.textContent=dx<0?'not detected':'pt '+(dx+1);
+    oE.textContent=ex<0?'not detected':'pt '+(ex+1);
+    oX.classList.toggle('bad',dx>=0);oE.classList.toggle('bad',ex>=0);
+    oC.textContent=cpk.toFixed(2);oC.classList.toggle('bad',cpk<1.33);
+  }
+  slider.addEventListener('input',render);
+  render();
+})();
+
+/* ================================================================
+   LAB B — Gage R&R variance decomposition
+================================================================ */
+(function(){
+  const svg=document.getElementById('labB-svg');
+  const slider=document.getElementById('labB-gage');
+  const oG=document.getElementById('labB-grr'),oN=document.getElementById('labB-ndc'),oV=document.getElementById('labB-verdict');
+  const TOL=10, PROC=2.0; // tolerance 10 units, true process sigma 2.0
+
+  function render(){
+    svg.innerHTML='';
+    const gagePct=slider.value/100;
+    const gage=gagePct*TOL/5.15;             // gage sigma from %GRR of tolerance
+    const grr=gagePct*100;
+    const obsSigma=Math.sqrt(PROC*PROC+gage*gage);
+    const ndc=Math.max(1,Math.floor(1.41*(PROC/gage)));
+
+    // stacked variance bar
+    const W=520,H=240,pad=34;
+    const pv=PROC*PROC, gv=gage*gage, total=pv+gv;
+    const bw=W-pad*2,bh=54,by=70;
+    const pw=bw*pv/total, gw=bw-pw;
+    svg.appendChild(el('rect',{x:pad,y:by,width:pw,height:bh,fill:COL.ink}));
+    svg.appendChild(el('rect',{x:pad+pw,y:by,width:gw,height:bh,fill:COL.signal}));
+    const t1=el('text',{x:pad+pw/2,y:by+bh/2+4,'text-anchor':'middle','font-size':'11','font-weight':'600','font-family':'Archivo',fill:COL.paper});
+    t1.textContent='True process '+Math.round(pv/total*100)+'%';svg.appendChild(t1);
+    if(gw>60){
+      const t2=el('text',{x:pad+pw+gw/2,y:by+bh/2+4,'text-anchor':'middle','font-size':'11','font-weight':'600','font-family':'Archivo',fill:COL.paper});
+      t2.textContent='Measurement system '+Math.round(gv/total*100)+'%';svg.appendChild(t2);
+    }else{
+      const t2=el('text',{x:pad+pw+gw/2,y:by+bh+16,'text-anchor':'middle','font-size':'10','font-weight':'600','font-family':'Archivo',fill:COL.signal});
+      t2.textContent='MS '+Math.round(gv/total*100)+'%';svg.appendChild(t2);
+    }
+    const cap=el('text',{x:pad,y:by-12,'font-size':'10','font-weight':'700','letter-spacing':'2','font-family':'Archivo',fill:COL.soft});
+    cap.textContent='OBSERVED VARIANCE — DECOMPOSED';svg.appendChild(cap);
+
+    // distribution sketch: observed spread vs tolerance
+    const y0=190,scale=(W-pad*2)/TOL;
+    svg.appendChild(el('line',{x1:pad,x2:W-pad,y1:y0,y2:y0,stroke:COL.line,'stroke-width':1.4}));
+    [['LSL',0],['USL',TOL]].forEach(([lab,v])=>{
+      svg.appendChild(el('line',{x1:pad+v*scale,x2:pad+v*scale,y1:y0-14,y2:y0+14,stroke:COL.soft,'stroke-width':1.4,'stroke-dasharray':'3 3'}));
+      const t=el('text',{x:pad+v*scale,y:y0+28,'text-anchor':'middle','font-size':'9','font-family':'Archivo',fill:COL.soft});
+      t.textContent=lab;svg.appendChild(t);
+    });
+    // normal curve of observed data
+    let d='';
+    for(let px=0;px<=bw;px+=4){
+      const val=(px/bw)*TOL;
+      const z=(val-TOL/2)/obsSigma;
+      const hgt=Math.exp(-z*z/2)*46;
+      d+=(px?'L':'M')+(pad+px)+' '+(y0-hgt)+' ';
+    }
+    svg.appendChild(el('path',{d,fill:'none',stroke:COL.ink,'stroke-width':2}));
+
+    oG.textContent=grr.toFixed(0)+'%';oG.classList.toggle('bad',grr>30);
+    oN.textContent=ndc;
+    let verd,cls='';
+    if(grr<10)verd='acceptable';
+    else if(grr<=30){verd='conditional';cls='bad'}
+    else{verd='unacceptable — fix gage first';cls='bad'}
+    oV.textContent=verd;oV.classList.toggle('bad',!!cls);
+  }
+  slider.addEventListener('input',render);
+  render();
+})();
+
+/* ================================================================
+   VIZ DEMO — engineer vs management
+================================================================ */
+(function(){
+  const viz=document.getElementById('viz-svg');
+  const txt=document.getElementById('viz-text'),cap=document.getElementById('viz-caption');
+  const bEng=document.getElementById('vt-eng'),bMgmt=document.getElementById('vt-mgmt');
+  const base=smoothNoise(25,42);
+  const data=base.map((v,i)=>v+(i>=14?(i-14)*0.22:0));
+
+  function chart(svg,W,H,series){
+    svg.innerHTML='';
+    const UCL=2.6,LCL=-2.6,pad={l:40,r:10,t:16,b:8};
+    const y=v=>pad.t+(1-(v-LCL)/(UCL-LCL))*(H-pad.t-pad.b);
+    const x=i=>pad.l+i/(series.length-1)*(W-pad.l-pad.r);
+    [0.87,1.73].forEach((z,k)=>{
+      const op=k===0?0.05:0.09;
+      const band=(lo,hi)=>svg.appendChild(el('rect',{x:pad.l,y:y(hi),width:W-pad.l-pad.r,height:y(lo)-y(hi),fill:COL.ink,'fill-opacity':op}));
+      band(z,UCL);band(LCL,-z);
+    });
+    [[UCL,'UCL'],[1.73,''],[0,'CL'],[-1.73,''],[LCL,'LCL']].forEach(([v])=>{
+      svg.appendChild(el('line',{x1:pad.l,x2:W-pad.r,y1:y(v),y2:y(v),stroke:v===0?COL.soft:COL.grid,'stroke-width':v===0?1.2:1,'stroke-dasharray':v===0?'none':'5 5'}));
+      if(v!==0&&v!==1.73&&v!==-1.73){}
+    });
+    let detect=-1;
+    for(let i=2;i<series.length;i++){
+      const t=[series[i-2],series[i-1],series[i]];
+      if(t.filter(v=>v>1.73).length>=2||t.filter(v=>v<-1.73).length>=2){detect=i;break}
+    }
+    let d='';series.forEach((v,i)=>d+=(i?'L':'M')+x(i)+' '+y(v)+' ');
+    svg.appendChild(el('path',{d,fill:'none',stroke:COL.ink,'stroke-width':1.8,'stroke-linejoin':'round'}));
+    series.forEach((v,i)=>{
+      const flag=i===detect||v>UCL||v<LCL;
+      svg.appendChild(el('circle',{cx:x(i),cy:y(v),r:flag?5:3,fill:flag?COL.signal:COL.paper,stroke:flag?COL.signal:COL.ink,'stroke-width':1.5}));
+    });
+    if(detect>=0){
+      const t=el('text',{x:x(detect),y:y(series[detect])-12,'text-anchor':'middle','font-size':'10','font-weight':'700','font-family':'Archivo',fill:COL.signal});
+      t.textContent='RULE 2 VIOLATION';svg.appendChild(t);
+    }
+    return detect;
+  }
+
+  function drawEng(){
+    const det=chart(viz,460,300,data);
+    txt.innerHTML='<strong>Engineer view:</strong> an X̄ chart with 1σ/2σ/3σ zones. The drift violates Western Electric Rule 2 (2 of 3 points beyond 2σ, same side) <em>before</em> anything breaches the UCL — earlier, more sensitive detection than a limits-only check.';
+    cap.innerHTML='Detection at <b>point '+(det+1)+' of 25</b> — several subgroups sooner than a limits-only rule. Earlier detection = less scrap before reaction.';
+  }
+  function drawMgmt(){
+    viz.innerHTML='';
+    const W=460,H=300,pad=40;
+    viz.appendChild(el('rect',{x:pad,y:pad,width:W-pad*2,height:H-pad*2-50,fill:COL.paper,stroke:COL.signal,'stroke-width':2}));
+    const mk=(yy,size,weight,color,text)=>{const t=el('text',{x:W/2,y:yy,'text-anchor':'middle','font-size':size,'font-weight':weight,'font-family':'Archivo',fill:color});t.textContent=text;viz.appendChild(t)};
+    mk(108,'14','400',COL.soft,'Line 3 — bore diameter');
+    mk(146,'25','700',COL.signal,'⚠ Needs attention today');
+    mk(176,'13','400',COL.soft,'Process is drifting upward since yesterday.');
+    mk(196,'13','400',COL.soft,'Action: check tool wear on station 2.');
+    const y=v=>232+(0.5-v/6)*36, x=i=>pad+30+i/(data.length-1)*(W-pad*2-60);
+    let d='';data.forEach((v,i)=>d+=(i?'L':'M')+x(i)+' '+y(v)+' ');
+    viz.appendChild(el('path',{d,fill:'none',stroke:COL.soft,'stroke-width':2}));
+    viz.appendChild(el('circle',{cx:x(14),cy:y(data[14]),r:5,fill:COL.signal}));
+    const t5=el('text',{x:x(14),y:y(data[14])-11,'text-anchor':'middle','font-size':'10','font-weight':'700','font-family':'Archivo',fill:COL.signal});
+    t5.textContent='drift starts here';viz.appendChild(t5);
+    txt.innerHTML='<strong>Management view:</strong> no jargon, no Greek letters. One status, one plain-language cause, one recommended action, plus a trend line for context. Readable during a tier meeting in ten seconds.';
+    cap.innerHTML='The point isn\'t dumbing it down — it\'s <b>decision-ready</b> communication. The engineering detail lives one click away.';
+  }
+  bEng.addEventListener('click',()=>{bEng.classList.add('active');bMgmt.classList.remove('active');drawEng()});
+  bMgmt.addEventListener('click',()=>{bMgmt.classList.add('active');bEng.classList.remove('active');drawMgmt()});
+  drawEng();
+})();
+
+/* ================================================================
+   reveal on scroll
+================================================================ */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
+}),{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(n=>io.observe(n));
+})();
+</script>
+</body>
+</html>
