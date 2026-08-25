@@ -34,6 +34,12 @@
   .wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
   h1,h2,h3{font-family:'Fraunces',serif;font-weight:400;line-height:1.05;letter-spacing:-0.01em}
   a{color:inherit}
+  .deep-link{
+    color:var(--signal);text-decoration:none;
+    border-bottom:1px solid color-mix(in oklch,var(--signal) 35%,transparent);
+    padding-bottom:1px;transition:border-color .18s ease;
+  }
+  .deep-link:hover{border-bottom-color:var(--signal)}
 
   /* ---------- nav ---------- */
   nav{
@@ -52,6 +58,21 @@
   .nav-links{display:flex;gap:clamp(14px,2.5vw,28px);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
   .nav-links a{text-decoration:none;color:var(--ink-soft);transition:color .2s}
   .nav-links a:hover{color:var(--signal)}
+  /* the base nav had zero slack at 4 items; Writing makes 5 and overflows
+     small viewports. Toolbox drops first (static list, reachable by scroll),
+     then the "/ SPC" suffix below 390px. Measured: fits 320px and up. */
+  @media(max-width:560px){
+    .nav-id{font-size:15px;white-space:nowrap}
+    .nav-links{gap:12px;font-size:11px;letter-spacing:0.03em}
+    .nav-links a[href="#skills"]{display:none}
+  }
+  @media(max-width:413px){
+    .nav-id em{display:none}
+    .nav-links{gap:10px}
+  }
+  @media(max-width:340px){
+    .nav-links{font-size:10px;gap:8px;letter-spacing:0.01em}
+  }
 
   /* ---------- scroll progress rail ---------- */
   .progress-rail{
@@ -235,6 +256,7 @@
     <div class="nav-links">
       <a href="#work">Work</a>
       <a href="#viz">Visualize</a>
+      <a href="spc-from-first-principles.html">Writing</a>
       <a href="#skills">Toolbox</a>
       <a href="#contact">Contact</a>
     </div>
@@ -300,7 +322,9 @@
         EWMA chart over the X̄-R exposed slow tool wear invisible to the Shewhart chart.
         Fixing coolant temperature cycling + tying tool changes to the EWMA signal brought
         the process back to center. <strong>Drag the slider:</strong> this is exactly the
-        detection problem I solved.
+        detection problem I solved — or see it play out at full scale in
+        <a class="deep-link" href="line-of-sight.html">Line of Sight</a>, where four lines
+        stream live and one is drifting.
       </p>
       <div class="lab">
         <div class="lab-title">Lab A — why EWMA catches what X̄ misses</div>
@@ -375,7 +399,9 @@
   <div class="sec-head reveal"><span class="sec-num">03</span><h2>Same data, two audiences</h2></div>
   <p class="reveal" style="max-width:60ch;color:var(--ink-soft);margin-bottom:36px">
     The heart of my job is translation. Below: the <em>same drifting process</em>, shown the way
-    an engineer needs it, and the way management needs it.
+    an engineer needs it, and the way management needs it. For the long-form version — why
+    the underlying math works, derived rather than asserted — read
+    <a class="deep-link" href="spc-from-first-principles.html">SPC from First Principles</a>.
   </p>
   <div class="viz-demo reveal">
     <div>
