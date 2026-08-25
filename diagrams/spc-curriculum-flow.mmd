@@ -1,0 +1,26 @@
+graph LR
+  F["formulas.py<br/>d2 A2 Cpk EWMA WE"] -->|"Monte Carlo<br/>400k subgroups"| S["formula_sheets.py<br/>level1-4.py"]
+  F -->|"verified by"| T["tests<br/>7 pass vs AIAG Table B"]
+  S -->|"matplotlib"| D["spc-lab/docs<br/>14 PNG figures"]
+  F --> SC["*_scene.py<br/>8 Manim scenes"]
+  SC -->|"manim -qh 1080p60"| V["spc-lab/media/videos<br/>~2 min rendered"]
+
+  D --> L2
+  V --> L2
+  DS["DESIGN.md<br/>frozen tokens"] --> L2
+
+  L2["Level pages I-IV<br/>document + instrument"] --> IDX["index.html<br/>entry point"]
+  L2 --> LOS["line-of-sight.html<br/>live simulation"]
+  IDX --> L2
+  LOS --> IDX
+
+  IDX --> GH["GitHub Pages<br/>not yet deployed"]
+
+  classDef py fill:#14181c,stroke:#ffae00,color:#eef3f7
+  classDef asset fill:#14181c,stroke:#65ccaf,color:#eef3f7
+  classDef page fill:#14181c,stroke:#d7dee4,color:#eef3f7
+  classDef todo fill:#14181c,stroke:#de6a5d,color:#eef3f7
+  class F,S,SC,T py
+  class D,V,DS asset
+  class L2,IDX,LOS page
+  class GH todo
