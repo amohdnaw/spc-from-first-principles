@@ -17,74 +17,130 @@ Level one told us which distribution every subgroup
 mean is drawn from, assuming nothing has changed.
 
 5
-00:00:14.150 --> 00:00:19.232
-This curve is the null hypothesis. Not an assumption about the
+00:00:14.133 --> 00:00:19.254
+That curve is the null hypothesis. Not an assumption about the
 
 6
-00:00:19.332 --> 00:00:23.746
+00:00:19.354 --> 00:00:23.801
 parts, but a claim about the process: it is unchanged.
 
 7
-00:00:23.833 --> 00:00:27.499
-Put limits at plus and minus three sigma of that curve,
+00:00:23.900 --> 00:00:27.834
+So put a pair of limits on it and sweep them outward
 
 8
-00:00:27.599 --> 00:00:31.607
-and you have drawn a boundary around ninety nine point seven
+00:00:27.934 --> 00:00:32.023
+from the centre. The readout is not a table: it is the
 
 9
-00:00:31.707 --> 00:00:35.373
-three percent of everything the process should ever do.
+00:00:32.123 --> 00:00:37.144
+integral of that curve between the limits, evaluated as they move.
 
 10
-00:00:35.466 --> 00:00:39.918
-That leaves zero point two seven percent outside. Roughly one
+00:00:37.233 --> 00:00:42.239
+Ninety nine point seven three percent. Nobody chose that number.
 
 11
-00:00:40.018 --> 00:00:44.320
-false alarm every three hundred and seventy subgroups. So a
+00:00:42.339 --> 00:00:45.989
+It is what plus and minus three sigma is worth.
 
 12
-00:00:44.420 --> 00:00:47.902
-point beyond the limit is a bet at three hundred
+00:00:46.083 --> 00:00:50.427
+Everything the process should ever do lives inside. The whole
 
 13
-00:00:48.002 --> 00:00:51.782
-and seventy to one that something really did change.
+00:00:50.527 --> 00:00:53.414
+of the rest is out here in the tails, and
 
 14
-00:00:53.066 --> 00:00:55.691
-A control chart is simply that same
+00:00:53.514 --> 00:00:56.255
+at this scale you cannot see it at all.
 
 15
-00:00:55.791 --> 00:00:59.038
-test, run again on every subgroup, forever.
+00:00:56.350 --> 00:01:00.289
+So stretch the vertical axis and let them grow. The peak
 
 16
-00:00:59.133 --> 00:01:03.185
-The limits are the boundary we just drew, turned on its side.
+00:01:00.389 --> 00:01:03.968
+goes straight out of frame — that is the point. The
 
 17
-00:01:03.283 --> 00:01:08.032
-Every point inside is the process agreeing with the null. This
+00:01:04.068 --> 00:01:08.658
+tails are seventy times smaller than anything else on this chart.
 
 18
-00:01:08.132 --> 00:01:11.943
-is what boring looks like, and boring is the goal.
+00:01:08.750 --> 00:01:11.154
+Each wing is one tenth of one percent
 
 19
-00:01:12.033 --> 00:01:14.453
-Then one point steps outside.
+00:01:11.254 --> 00:01:13.930
+of everything, and there are two of them.
 
 20
-00:01:14.550 --> 00:01:18.538
-That point is not a bad part. It is evidence against
+00:01:14.016 --> 00:01:18.524
+Together they are the tail integral, and it has a closed form.
 
 21
-00:01:18.638 --> 00:01:23.806
-the hypothesis that nothing changed. The correct response is not to
+00:01:18.616 --> 00:01:23.148
+Evaluate it: zero point zero zero two seven.
 
 22
-00:01:23.906 --> 00:01:27.266
-scrap it. It is to go and find what changed.
+00:01:23.233 --> 00:01:26.061
+Which is the two wings added together.
+
+23
+00:01:26.150 --> 00:01:30.401
+Invert it and the bet is priced. Zero point two seven
+
+24
+00:01:30.501 --> 00:01:35.819
+percent is one false alarm in three hundred and seventy subgroups.
+
+25
+00:01:35.919 --> 00:01:39.514
+A point outside the limit is that bet, taken.
+
+26
+00:01:41.100 --> 00:01:43.724
+A control chart is simply that same
+
+27
+00:01:43.824 --> 00:01:47.072
+test, run again on every subgroup, forever.
+
+28
+00:01:47.166 --> 00:01:51.218
+The limits are the boundary we just drew, turned on its side.
+
+29
+00:01:51.316 --> 00:01:56.537
+Every point inside is the process agreeing with the null hypothesis.
+
+30
+00:01:56.637 --> 00:02:00.840
+This is what boring looks like, and boring is the goal.
+
+31
+00:02:00.933 --> 00:02:03.353
+Then one point steps outside.
+
+32
+00:02:03.450 --> 00:02:07.265
+Four point one sigma above the centre line, where the
+
+33
+00:02:07.365 --> 00:02:11.846
+null hypothesis allows one point in three hundred and seventy.
+
+34
+00:02:11.933 --> 00:02:16.273
+So this is not a bad part, and scrapping it changes nothing.
+
+35
+00:02:16.366 --> 00:02:20.830
+It is evidence against the hypothesis that nothing changed. The
+
+36
+00:02:20.930 --> 00:02:24.018
+correct response is to go and find what did.
 
