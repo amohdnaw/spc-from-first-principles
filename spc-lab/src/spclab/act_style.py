@@ -59,9 +59,28 @@ def micro(txt: str, size: float = 16, color: str = GREY) -> Text:
     return Text(txt, font=MONO, font_size=size, color=color)
 
 
+# 16:9 at the default frame height of 8 units. A readout that reaches this is
+# clipped by the render, silently, and only a frame grab shows it.
+FRAME_RIGHT = 7.11
+EDGE_MARGIN = 0.12
+
+
 def at_panel(mob: Text, row: int, value: bool = True) -> Text:
-    """Left-align `mob` in the readout column, on `row` (0-2)."""
-    return mob.move_to([PANEL, ROWS[row][1 if value else 0], 0], aligned_edge=LEFT)
+    """Left-align `mob` in the readout column, on `row` (0-2).
+
+    Raises if the string runs off the frame. A loud failure during the render
+    beats a label whose last three characters are missing from the video:
+    'FALSE ALARMS, ONE IN' measured 2.95 units, which ends at 7.10 — one
+    hundredth of a unit inside the frame, and clipped in every take.
+    """
+    mob.move_to([PANEL, ROWS[row][1 if value else 0], 0], aligned_edge=LEFT)
+    right = float(mob.get_right()[0])
+    if right > FRAME_RIGHT - EDGE_MARGIN:
+        raise ValueError(
+            f"readout overflows the frame: {mob.get_right()[0]:.2f} > "
+            f"{FRAME_RIGHT - EDGE_MARGIN:.2f} for {getattr(mob, 'text', mob)!r}. "
+            "Shorten the string or move the unit into the label.")
+    return mob
 
 
 def phi(x: float) -> float:

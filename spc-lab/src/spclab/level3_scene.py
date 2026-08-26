@@ -234,7 +234,7 @@ class Level3(NarratedCameraScene):
         cpk_end = min((USL - mu_end) / (3 * SG_END), (mu_end - LSL) / (3 * SG_END))
         ppm_end = ppm_from_cpk(cpk_end)
 
-        lab_ppm = at_panel(micro("EXPECTED OUTSIDE USL"), 0, value=False)
+        lab_ppm = at_panel(micro("PARTS PAST USL"), 0, value=False)
         val_ppm = at_panel(gauge(f"{ppm_end:,.0f} ppm", 26, RED), 0)
         lab_x = at_panel(micro("VERTICAL AXIS"), 1, value=False)
         val_x = always_redraw(lambda: at_panel(
