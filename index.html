@@ -137,7 +137,10 @@
 
   /* ---------- SYS note (component 7) ---------- */
   .sys{border-left:2px solid var(--accent);padding-left:24px}
-  .sys p{font-style:italic;color:var(--ink);margin-top:8px;max-width:58ch}
+  /* pull-quote, so the line takes the 26px dek step — same component as the level
+     pages. 21px read as body text and lost the pull-quote's job. */
+  .sys p{font-style:italic;font-size:26px;line-height:1.35;color:var(--ink-bright);
+    margin-top:8px;max-width:34em}
 
   /* ---------- applied ---------- */
   .section{padding-block:clamp(64px,8vw,96px)}
@@ -223,6 +226,7 @@
     .tools{grid-template-columns:1fr}
     .readouts{gap:24px 32px}
     .ro dd{font-size:21px}
+    .sys p{font-size:21px}
     /* two mono buttons side by side exceed a 320px viewport and drag the whole
        grid column out with them — stack them instead */
     .toggle{flex-direction:column;width:100%}
@@ -365,10 +369,10 @@
     </figcaption>
   </figure>
 
-  <div class="sys" style="margin-top:64px">
+  <aside class="sys" style="margin-top:64px">
     <span class="micro">SYS_MSG</span>
     <p>If a number here disagrees with the table, the test fails. That is the point.</p>
-  </div>
+  </aside>
 </section>
 
 <!-- ================= applied ================= -->

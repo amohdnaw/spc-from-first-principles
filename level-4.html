@@ -138,8 +138,10 @@
   .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
 
   /* ---------- SYS note ---------- */
+  /* component 7 is a pull-quote with an amber left border and NO fill — an amber
+     area carries no information, and DESIGN.md 6 bans decorative ornament. */
   .sys{margin:64px 0 0;border-left:2px solid var(--accent);
-    background:var(--accent-wash);padding:20px 24px;max-width:34em}
+    padding-left:24px;max-width:34em}
   .sys .micro{color:var(--accent);display:block;margin-bottom:8px}
   .sys p{font-size:26px;line-height:1.35;color:var(--ink-bright);margin:0;font-style:italic}
 
@@ -230,10 +232,10 @@
         <p>Patterns catch shifts before limits do. The Western Electric rules read the shape of the run, not just the extremes — two of three beyond 2σ on the same side, four of five beyond 1σ, eight in a row on one side.</p>
       </div>
 
-      <div class="sys">
-        <span class="micro">SYS NOTE</span>
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
         <p>At a 1σ drift, EWMA detects in ~10 subgroups against Shewhart's ~44 — four times sooner, at identical false-alarm cost.</p>
-      </div>
+      </aside>
 
       <figure>
         <div class="rule"></div>
