@@ -1,66 +1,86 @@
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:04.580
-EWMA has one knob, and everything follows from it.
+00:00:00.000 --> 00:00:05.453
+An EWMA chart has exactly one knob, and everything else follows from
 
 2
-00:00:04.666 --> 00:00:06.633
-Each new point blends the fresh
+00:00:05.553 --> 00:00:10.844
+it. Each new subgroup is blended with everything that came before.
 
 3
-00:00:06.733 --> 00:00:09.366
-reading with everything that came before.
+00:00:10.933 --> 00:00:15.521
+Unroll the recursion and the weights fall away geometrically.
 
 4
-00:00:09.466 --> 00:00:13.734
-Unroll that recursion and the weights fall away geometrically.
+00:00:15.621 --> 00:00:18.750
+At lambda one half the chart has almost no
 
 5
-00:00:13.833 --> 00:00:16.835
-At lambda zero point two, each step back
+00:00:18.850 --> 00:00:22.593
+memory: one subgroup back already counts for half.
 
 6
-00:00:16.935 --> 00:00:20.093
-weighs eighty percent of the one in front.
+00:00:22.683 --> 00:00:27.349
+Turn it down and the tail grows: the chart starts remembering a
 
 7
-00:00:20.783 --> 00:00:23.275
-That memory changes the limits.
+00:00:27.449 --> 00:00:32.039
+dozen subgroups at a time, and reacts to none of them quickly.
 
 8
-00:00:23.366 --> 00:00:26.554
-Plot the limit width against the subgroup number.
+00:00:32.133 --> 00:00:35.996
+Zero point two is the usual compromise: half
 
 9
-00:00:26.650 --> 00:00:31.038
-A Shewhart chart holds the same three sigma limits throughout.
+00:00:36.096 --> 00:00:39.689
+the weight is gone by 3.1 subgroups back.
 
 10
-00:00:31.133 --> 00:00:35.620
-The EWMA limits start wide, because early on there is
+00:00:40.883 --> 00:00:45.600
+That memory changes the limits themselves. A Shewhart chart
 
 11
-00:00:35.720 --> 00:00:41.593
-little accumulated evidence, then tighten as weighted history builds.
+00:00:45.700 --> 00:00:49.519
+holds the same three sigma either side, forever.
 
 12
-00:00:41.683 --> 00:00:44.391
-They close on an asymptote near one
+00:00:49.616 --> 00:00:54.800
+The EWMA limits start wide, because at subgroup one there is
 
 13
-00:00:44.491 --> 00:00:47.199
-sigma, a band three times narrower.
+00:00:54.900 --> 00:01:00.700
+no accumulated evidence, then close as the weighted history builds.
 
 14
-00:00:47.283 --> 00:00:50.044
-Tighter limits on smoothed data catch a
+00:01:00.800 --> 00:01:04.608
+They settle near one third of a sigma times three
 
 15
-00:00:50.144 --> 00:00:52.391
-slow drift about twice as early.
+00:01:04.708 --> 00:01:08.596
+— a band 3.0 times narrower than the Shewhart one.
 
 16
-00:00:52.483 --> 00:00:56.055
-Lambda sets how much of the past the chart keeps.
+00:01:08.683 --> 00:01:12.616
+The width comes from one expression, and at lambda zero
+
+17
+00:01:12.716 --> 00:01:15.183
+point two it is a third of a sigma.
+
+18
+00:01:15.283 --> 00:01:20.655
+Tighter limits on smoothed data catch a small shift much earlier.
+
+19
+00:01:20.755 --> 00:01:26.127
+Simulated at a matched false alarm rate: 44 subgroups against 10.
+
+20
+00:01:26.216 --> 00:01:29.716
+4.4 times sooner, and lambda is the knob that
+
+21
+00:01:29.816 --> 00:01:33.316
+decides how much of the past the chart keeps.
 

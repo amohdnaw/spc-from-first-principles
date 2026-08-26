@@ -1,39 +1,51 @@
-"""SPCGallery — the overview act, in true 3b1b spirit.
+"""SPCGallery — the overview act the landing page plays first.
 
-The curriculum landing page plays this one first, so it assumes nothing: it
-introduces the two ideas the whole subject rests on. Points stream onto an X̄
-chart and control limits draw themselves from the data (not from a spec), then
-capability geometry shows where scrap hides.
+It assumes nothing and carries two ideas: control limits are learned from the
+process, and capability is what happens when you hold that process against a
+specification.
 
-Pacing lives in the narration script: every beat is held for as long as its
-line takes to speak, whether or not the audio is rendered. See narration.py.
+Rebuilt 2026-08-26 under specs/spc-manim-craft-contract.md, checkpoint 5:
 
-    silent:   PYTHONPATH=src .venv/bin/manim -qm src/spclab/scenes.py SPCGallery
-    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qm src/spclab/scenes.py SPCGallery
+- **The limits are derived by motion.** σ̂ is computed from the plotted means,
+  then a tracker sweeps a candidate band outward from ±0σ̂ to ±3σ̂ while a live
+  readout counts how many of the thirty six points still fall outside it. The
+  band stops where the count reaches zero and stays there — which is what
+  "learned from the process" means, watched rather than asserted.
+- **The scrap figure is computed**, by `spclab.ppm_from_cpk` at render time.
+  The old act typed "≈ 1 000+ defects per million" beside a Cpk it had also
+  typed; both now come from the geometry on screen.
+- One `TransformMatchingTex` on the limit definition, one camera push into the
+  tail, every play with a deliberate rate_func, and all in-frame text in the
+  site's two voices.
 
-No LaTeX required — all math uses unicode Text().
+Pacing lives in the narration script — see narration.py.
+
+    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/scenes.py SPCGallery
+    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/scenes.py SPCGallery
 """
+from __future__ import annotations
+
 import numpy as np
 from manim import (
-    Axes, Dot, Line, Text, VGroup, Group, Rectangle, Polygon,
-    Create, Write, FadeIn, Unwrite, GrowFromEdge, ITALIC,
-    UP, DOWN, RIGHT, LEFT, config,
+    Axes, DashedLine, Dot, Group, Line, MathTex, Polygon, ValueTracker, VGroup,
+    Create, FadeIn, FadeOut, LaggedStart, ReplacementTransform, Restore,
+    TransformMatchingTex, Write,
+    always_redraw,
+    DOWN, LEFT, RIGHT, UP,
 )
+from manim.utils import rate_functions as rf
 
-from spclab.narration import NarratedScene
+from spclab.act_style import (
+    BLUE, GREY, INK, PANEL, RED, TEAL, YELLOW,
+    at_panel, gauge, micro, prose,
+)
+from spclab.formulas import ppm_from_cpk
+from spclab.narration import NarratedCameraScene
 
-# ---- palette (the classic 3b1b constants) --------------------------------
-BG     = "#0e1116"
-BLUE   = "#58C4DD"
-TEAL   = "#5CD0B3"
-YELLOW = "#FFD54F"
-RED    = "#FC6255"
-GREY   = "#8a939f"
-
-config.background_color = BG
+N_SUB = 36
 
 
-class SPCGallery(NarratedScene):
+class SPCGallery(NarratedCameraScene):
     def construct(self):
         self.intro()
         self.chart_act()
@@ -41,146 +53,204 @@ class SPCGallery(NarratedScene):
 
     # ------------------------------------------------------------- intro
     def intro(self):
-        t1 = Text("Every SPC formula,", font_size=44, slant=ITALIC)
-        t2 = Text("drawn.", font_size=44, slant=ITALIC, color=TEAL)
-        title = VGroup(t1, t2).arrange(DOWN, aligned_edge=LEFT).shift(UP)
-        with self.say("Statistical process control is a handful of formulas. "
-                      "Each one is a picture."):
-            self.play(Write(t1), run_time=1.2)
+        t1 = prose("Every SPC formula,", 46, INK)
+        t2 = prose("drawn.", 46, TEAL)
+        VGroup(t1, t2).arrange(DOWN, aligned_edge=LEFT).shift(UP * 0.4)
+        with self.say("Statistical process control is a handful of formulas, and "
+                      "every one of them is a picture."):
+            self.play(Write(t1), run_time=1.2, rate_func=rf.linear)
         with self.say("Two of those pictures carry the rest."):
-            self.play(Write(t2), run_time=0.8)
-        self.play(Unwrite(t1), Unwrite(t2), run_time=0.7)
+            self.play(Write(t2), run_time=0.8, rate_func=rf.linear)
+        self.play(FadeOut(VGroup(t1, t2), shift=UP * 0.2),
+                  run_time=0.7, rate_func=rf.ease_in_sine)
 
     # ---------------------------------------------- act 1: the X̄ chart
     def chart_act(self):
-        rng = np.random.default_rng(7)
-        target = 0.0
+        # seed 2 because σ̂ is estimated in-sample: on seed 7 the largest of the
+        # 36 means sat at 3.03 σ̂, so the band never emptied and the act would
+        # have narrated "nothing outside" over a readout saying "1 of 36".
+        rng = np.random.default_rng(2)
+        means = np.array([rng.normal(0.0, 0.09) for _ in range(N_SUB)])
+        # σ̂ from the plotted points themselves, which is the whole claim
+        sigma_hat = float(means.std(ddof=1))
 
-        title = Text("1 · Control limits come FROM the process",
-                     font_size=30, color=GREY).to_edge(UP, buff=0.4)
-        with self.say("First idea. Control limits are learned from the process, "
-                      "not handed to you."):
-            self.play(FadeIn(title))
+        title = prose("1 · control limits come from the process", 30, GREY)
+        title.to_edge(UP, buff=0.38)
+        axes = Axes(x_range=[0, 40, 10], y_range=[-0.42, 0.42, 0.2],
+                    x_length=9.4, y_length=4.4, tips=False,
+                    axis_config={"stroke_color": GREY, "stroke_width": 1.5}
+                    ).shift(LEFT * 0.6 + DOWN * 0.35)
+        xlab = micro("SUBGROUP").next_to(axes, DOWN, buff=0.26)
+        cl = Line(axes.c2p(0, 0), axes.c2p(40, 0), stroke_color=GREY, stroke_width=2)
+        cl_tag = micro("CL", 18).next_to(cl, RIGHT, buff=0.14)
 
-        axes = Axes(
-            x_range=[0, 40, 10], y_range=[-0.45, 0.45, 0.2],
-            x_length=10, y_length=4.6,
-            tips=False,
-            axis_config={"stroke_color": GREY, "stroke_width": 1.5,
-                         "tip_width": 0.1},
-        ).shift(DOWN * 0.3)
-        labels = axes.get_axis_labels(Text("subgroup", font_size=20),
-                                      Text("x̄", font_size=24, slant=ITALIC))
+        with self.say("First idea. A control chart plots subgroup averages in "
+                      "the order they were made, and its centre line is simply "
+                      "their average."):
+            self.play(FadeIn(title, shift=DOWN * 0.12),
+                      run_time=0.8, rate_func=rf.ease_out_sine)
+            self.play(Create(axes), FadeIn(xlab), Create(cl), FadeIn(cl_tag),
+                      run_time=1.2, rate_func=rf.ease_in_out_sine)
 
-        # CL first — it is just the grand mean
-        cl_line = Line(axes.c2p(0, target), axes.c2p(40, target),
-                       stroke_color=GREY, stroke_width=2)
-        cl_lab = Text("CL", font_size=22, color=GREY).next_to(cl_line, RIGHT, buff=0.15)
-
-        with self.say("This chart plots subgroup averages in sample order. "
-                      "The centre line is just their average."):
-            self.play(Create(axes), FadeIn(labels), run_time=1)
-            self.play(Create(cl_line), FadeIn(cl_lab), run_time=0.6)
-
-        # points stream in, six at a time
-        means = [rng.normal(target, 0.09) for _ in range(36)]
         dots = VGroup(*[
-            Dot(axes.c2p(i + 1, m), radius=0.045, color=BLUE)
+            Dot(axes.c2p(i + 1, float(m)), radius=0.05, color=BLUE)
             for i, m in enumerate(means)
         ])
-        with self.say("Now let the process talk. Each dot is one subgroup mean."):
-            for i in range(0, 36, 6):
-                self.play(FadeIn(dots[i:i + 6]), run_time=0.18)
+        lab_sd = at_panel(micro("σ̂ FROM THESE POINTS"), 0, value=False)
+        val_sd = at_panel(gauge(f"{sigma_hat:.4f}", 26, BLUE), 0)
+        with self.say("Let the process talk: thirty six subgroup means, and the "
+                      "spread they happen to have.") as tr:
+            self.play(LaggedStart(*[FadeIn(d, scale=0.4) for d in dots],
+                                  lag_ratio=0.5),
+                      run_time=max(2.0, tr.duration * 0.6), rate_func=rf.linear)
+            self.play(FadeIn(lab_sd), FadeIn(val_sd),
+                      run_time=0.5, rate_func=rf.ease_out_sine)
 
-        # derive σ of subgroup means from the data itself → ±3σ limits
-        sigma_hat = float(np.std(means[5:], ddof=1))
-        ucl_v, lcl_v = 3 * sigma_hat, -3 * sigma_hat
-        ucl = Line(axes.c2p(0, ucl_v), axes.c2p(40, ucl_v),
-                   stroke_color=YELLOW, stroke_width=2.5)
-        lcl = Line(axes.c2p(0, lcl_v), axes.c2p(40, lcl_v),
-                   stroke_color=YELLOW, stroke_width=2.5)
-        band = Rectangle(stroke_width=0, fill_color=BLUE, fill_opacity=0.08)
-        band.stretch_to_fit_width(axes.x_length)
-        band.stretch_to_fit_height(ucl.get_y() - lcl.get_y())
-        band.move_to((ucl.get_center() + lcl.get_center()) / 2)
+        # ---- the band is swept outward and the count of outsiders falls ----
+        k = ValueTracker(0.0)
 
-        ucl_lab = Text("UCL = x̄̄ + 3σ̂", font_size=22, color=YELLOW).next_to(ucl, RIGHT, buff=0.12)
-        lcl_lab = Text("LCL = x̄̄ − 3σ̂", font_size=22, color=YELLOW).next_to(lcl, RIGHT, buff=0.12)
+        def band() -> VGroup:
+            w = k.get_value() * sigma_hat
+            return VGroup(*[
+                DashedLine(axes.c2p(0, s * w), axes.c2p(40, s * w),
+                           dash_length=0.13, stroke_color=YELLOW, stroke_width=2.6)
+                for s in (1, -1)
+            ])
 
-        with self.say("Their spread gives you sigma hat. Lines at three sigma "
-                      "either side are the control limits."):
-            self.play(GrowFromEdge(band, LEFT), Create(ucl), Create(lcl), run_time=1.1)
-            self.play(FadeIn(ucl_lab), FadeIn(lcl_lab), run_time=0.5)
+        def outside() -> int:
+            return int(np.count_nonzero(np.abs(means) > k.get_value() * sigma_hat))
 
-        note = Text("limits learned from data — not from the customer's spec",
-                    font_size=26, slant=ITALIC, color=TEAL).to_edge(DOWN, buff=0.35)
-        with self.say("Limits come from the data. Specs come from the customer. "
-                      "Confusing the two is the most common mistake on a shop floor."):
-            self.play(Write(note), run_time=1)
+        live_band = always_redraw(band)
+        lab_k = at_panel(micro("BAND WIDTH"), 1, value=False)
+        val_k = always_redraw(lambda: at_panel(
+            gauge(f"± {k.get_value():.2f} σ̂", 26, YELLOW), 1))
+        lab_out = at_panel(micro("POINTS OUTSIDE IT"), 2, value=False)
+        val_out = always_redraw(lambda: at_panel(
+            gauge(f"{outside():>2} of {N_SUB}", 26, RED), 2))
 
-        everything = Group(title, axes, labels, cl_line, cl_lab, band,
-                           ucl, lcl, ucl_lab, lcl_lab, dots, note)
-        self.play(everything.animate.scale(0.001).set_opacity(0), run_time=0.6)
-        self.remove(everything)
+        with self.say("Now widen a band around that centre line and count what "
+                      "falls outside. By three of those sigmas nothing is, with "
+                      "room to spare — and that is where the control limits go.") as tr:
+            self.play(FadeIn(live_band), FadeIn(lab_k), FadeIn(val_k),
+                      FadeIn(lab_out), FadeIn(val_out),
+                      run_time=0.7, rate_func=rf.ease_out_sine)
+            self.play(k.animate.set_value(3.0),
+                      run_time=max(3.0, tr.duration * 0.7), rate_func=rf.ease_out_cubic)
+
+        eq_a = MathTex(r"\mathrm{UCL}", "=", r"\bar{\bar{x}} + 3\hat{\sigma}",
+                       font_size=36, color=INK).move_to([1.5, 2.85, 0])
+        eq_b = MathTex(r"\mathrm{UCL}", "=", f"+{3 * sigma_hat:.3f}",
+                       font_size=36, color=INK).move_to([1.5, 2.85, 0])
+        with self.say("Written out, the upper limit is the grand mean plus three "
+                      "sigma hat."):
+            self.play(Write(eq_a), run_time=1.2, rate_func=rf.linear)
+        with self.say("Which for this process is a number the process itself "
+                      "chose."):
+            self.play(TransformMatchingTex(eq_a, eq_b),
+                      run_time=1.2, rate_func=rf.ease_in_out_sine)
+
+        note = prose("limits are learned from the data — specs are dictated by "
+                     "the customer", 26, TEAL).move_to(DOWN * 3.45)
+        with self.say("Limits come from the data. Specifications come from the "
+                      "customer. Confusing those two is the most common mistake "
+                      "on a shop floor."):
+            self.play(FadeIn(note, shift=UP * 0.12),
+                      run_time=1.2, rate_func=rf.ease_out_sine)
+
+        self.beat(0.5)
+        for m in self.mobjects:
+            m.clear_updaters()
+        self.play(FadeOut(Group(*self.mobjects)), run_time=0.7, rate_func=rf.ease_in_sine)
 
     # --------------------------------------- act 2: capability geometry
     def capability_act(self):
-        title = Text("2 · Capability — how much scrap hides in the tail",
-                     font_size=30, color=GREY).to_edge(UP, buff=0.4)
-        with self.say("Second idea. Capability is what happens when you compare "
-                      "the process against the specification."):
-            self.play(FadeIn(title))
-
         mu, sg, lsl, usl = 50.03, 0.09, 49.7, 50.3
-        xs = np.linspace(lsl - 0.28, usl + 0.28, 300)
-        pdf = np.exp(-((xs - mu) ** 2) / (2 * sg ** 2))
-
-        axes = Axes(
-            x_range=[float(xs[0]), float(xs[-1]), 0.1],
-            y_range=[0, 1.25, 0.25],
-            x_length=10.5, y_length=4.4, tips=False,
-            axis_config={"stroke_color": GREY, "stroke_width": 1.5},
-        ).shift(DOWN * 0.35)
-        curve = axes.plot_line_graph(
-            xs, pdf, add_vertex_dots=False, line_color=TEAL, stroke_width=3,
-        )["line_graph"]
-
-        with self.say("Same process, now plotted against the measurement itself. "
-                      "This is where parts land."):
-            self.play(Create(axes), run_time=0.8)
-            self.play(Create(curve), run_time=1.1)
-
-        with self.say("Now the customer's two limits. These were not calculated. "
-                      "They were dictated."):
-            for xv, lab in [(lsl, "LSL"), (usl, "USL")]:
-                ln = Line(axes.c2p(xv, 0), axes.c2p(xv, 1.15),
-                          stroke_color=YELLOW, stroke_width=2.5)
-                t = Text(lab, font_size=22, color=YELLOW).next_to(ln, DOWN, buff=0.12)
-                self.play(Create(ln), FadeIn(t), run_time=0.4)
-
-        # red tails: area beyond spec = predicted scrap
-        poly_l = Polygon(
-            *[axes.c2p(a, b) for a, b in zip(xs[xs <= lsl], pdf[xs <= lsl])],
-            axes.c2p(lsl, 0), axes.c2p(float(xs[0]), 0),
-            fill_color=RED, fill_opacity=0.65, stroke_width=0)
-        poly_r = Polygon(
-            *[axes.c2p(a, b) for a, b in zip(xs[xs >= usl], pdf[xs >= usl])],
-            axes.c2p(usl, 0), axes.c2p(float(xs[-1]), 0),
-            fill_color=RED, fill_opacity=0.65, stroke_width=0)
-        with self.say("Everything past them is scrap. The red area is how much "
-                      "to expect."):
-            self.play(FadeIn(poly_l), FadeIn(poly_r), run_time=0.9)
-
         cpk = min(usl - mu, mu - lsl) / (3 * sg)
-        txt = Text(f"Cpk = {cpk:.2f}   →   ≈ 1 000+ defects per million",
-                   font_size=28, color=RED).to_edge(DOWN, buff=0.35)
-        with self.say("Nearest spec distance over three sigma is C p k. "
-                      "About one, so a thousand bad parts per million."):
-            self.play(Write(txt), run_time=1)
+        ppm = ppm_from_cpk(cpk)
 
-        self.beat(0.7)
+        title = prose("2 · capability — where the scrap hides", 30, GREY)
+        title.to_edge(UP, buff=0.38)
+        axes = Axes(x_range=[lsl - 0.28, usl + 0.28, 0.2], y_range=[0, 1.25, 0.25],
+                    x_length=9.4, y_length=4.3, tips=False,
+                    axis_config={"stroke_color": GREY, "stroke_width": 1.5}
+                    ).shift(LEFT * 0.6 + DOWN * 0.5)
+        xlab = micro("MEASURED SIZE (mm)").next_to(axes, DOWN, buff=0.26)
 
-        # Closing line: no new visual, the narration alone holds the last frame.
-        with self.say("The chart says whether the process is steady. "
-                      "Capability says whether steady is good enough."):
-            pass
+        xs = np.linspace(lsl - 0.28, usl + 0.28, 301)
+        pdf = np.exp(-((xs - mu) ** 2) / (2 * sg ** 2))
+        curve = axes.plot_line_graph(xs, pdf, add_vertex_dots=False,
+                                     line_color=TEAL, stroke_width=3)["line_graph"]
+
+        with self.say("Second idea. Take the same process and plot it against "
+                      "the measurement itself. This is where parts land."):
+            self.play(FadeIn(title, shift=DOWN * 0.12),
+                      run_time=0.8, rate_func=rf.ease_out_sine)
+            self.play(Create(axes), FadeIn(xlab),
+                      run_time=0.9, rate_func=rf.ease_in_out_sine)
+            self.play(Create(curve), run_time=1.3, rate_func=rf.ease_in_out_sine)
+
+        specs = VGroup(*[
+            DashedLine(axes.c2p(v, 0), axes.c2p(v, 1.18), dash_length=0.13,
+                       stroke_color=YELLOW, stroke_width=2.6)
+            for v in (lsl, usl)
+        ])
+        spec_tags = VGroup(
+            micro("LSL", 18, YELLOW).next_to(axes.c2p(lsl, 0), DOWN, buff=0.30),
+            micro("USL", 18, YELLOW).next_to(axes.c2p(usl, 0), DOWN, buff=0.30),
+        )
+        with self.say("Then the customer's two limits. These were not calculated "
+                      "from anything. They were dictated."):
+            self.play(Create(specs), FadeIn(spec_tags),
+                      run_time=1.0, rate_func=rf.ease_in_out_sine)
+
+        def tail(lo: float, hi: float) -> Polygon:
+            m = (xs >= lo) & (xs <= hi)
+            return Polygon(*[axes.c2p(a, b) for a, b in zip(xs[m], pdf[m])],
+                           axes.c2p(hi, 0), axes.c2p(lo, 0),
+                           fill_color=RED, fill_opacity=0.85, stroke_width=0)
+
+        tails = VGroup(tail(float(xs[0]), lsl), tail(usl, float(xs[-1])))
+        lab_cpk = at_panel(micro("Cpk, NEAR GAP / 3σ"), 0, value=False)
+        val_cpk = at_panel(gauge(f"{cpk:.2f}", 26, RED), 0)
+        lab_ppm = at_panel(micro("EXPECTED SCRAP"), 1, value=False)
+        val_ppm = at_panel(gauge(f"{ppm:,.0f} ppm", 26, RED), 1)
+        with self.say("Everything past them is scrap, and the near gap decides "
+                      "how much. Distance to the nearest limit, over three "
+                      "sigma, is Cpk."):
+            self.play(FadeIn(tails), run_time=0.9, rate_func=rf.ease_out_sine)
+            self.play(FadeIn(lab_cpk), FadeIn(val_cpk),
+                      FadeIn(lab_ppm), FadeIn(val_ppm),
+                      run_time=0.7, rate_func=rf.ease_out_sine)
+
+        # one camera push: the tail is a sliver at this scale, and it is the
+        # whole subject. Chrome sized for the wide frame leaves first.
+        zoom = 0.42
+        chrome = Group(title, xlab, spec_tags, lab_cpk, val_cpk, lab_ppm, val_ppm)
+        self.camera.frame.save_state()
+        one_in = gauge(f"1 in {round(1e6 / ppm):,} parts", 26, RED).scale(zoom)
+        one_in.move_to(axes.c2p(usl + 0.10, 0.22))
+        with self.say(f"At this scale the red is a sliver. It is "
+                      f"{ppm:,.0f} parts per million — one in "
+                      f"{round(1e6 / ppm):,}."):
+            self.play(FadeOut(chrome), run_time=0.5, rate_func=rf.ease_in_sine)
+            self.play(self.camera.frame.animate.scale(zoom).move_to(
+                      axes.c2p(usl + 0.02, 0.16)),
+                      run_time=1.4, rate_func=rf.ease_in_out_sine)
+            self.play(ReplacementTransform(val_ppm.copy().scale(zoom), one_in),
+                      run_time=1.2, rate_func=rf.ease_in_out_sine)
+
+        # one line, not two: stacked at the bottom edge the pair sat on the
+        # LSL/USL tags and the axis label
+        closing = prose("steady is the chart's question — good enough is "
+                        "capability's", 26, TEAL).move_to(DOWN * 3.55)
+        with self.say("So the chart tells you whether the process is steady, and "
+                      "capability tells you whether steady is good enough."):
+            self.play(Restore(self.camera.frame), FadeOut(one_in),
+                      run_time=1.3, rate_func=rf.ease_in_out_sine)
+            self.play(FadeIn(Group(title, xlab, spec_tags, lab_cpk, val_cpk,
+                                   lab_ppm, val_ppm)),
+                      run_time=0.6, rate_func=rf.ease_out_sine)
+            self.play(FadeIn(closing, shift=UP * 0.1),
+                      run_time=1.1, rate_func=rf.ease_out_sine)
+
+        self.beat(1.0)

@@ -41,9 +41,11 @@ from spclab.act_style import (
     BLUE, GREY, INK, PANEL, RED, TEAL, YELLOW,
     at_panel, gauge, micro, prose,
 )
+from spclab.detection import (
+    ARL0_EWMA, ARL0_SHEW, ARL1_EWMA, ARL1_SHEW, EWMA_LIMIT, LAM,
+    SHEWHART_ARL0, SPEEDUP,
+)
 from spclab.narration import NarratedCameraScene
-
-LAM = 0.2
 
 # The demonstration process: 80 subgroups, quiet until 20, then a ramp of
 # 0.06 σ per subgroup. The old act ramped at 0.15 σ, which reaches 6 σ inside
@@ -52,59 +54,6 @@ LAM = 0.2
 # supposed to illustrate. This ramp is slow enough to be the failure mode the
 # act is about, and seed 35 is a run whose lead matches the simulated ARLs.
 N_SUB, SHIFT_AT, DRIFT, SEED = 80, 20, 0.06, 35
-SHEWHART_ARL0 = 370.4          # 1 / 0.0027, the rate ±3σ buys by construction
-
-
-# ---------------------------------------------------------------------------
-# Simulation. Vectorised so it can run inside a render: 3,000 runs of 1,200
-# subgroups is ~4M updates, well under a second, and seeded so two renders of
-# this act agree to the last digit.
-# ---------------------------------------------------------------------------
-def _run_lengths(shift: float, limit: float, lam: float = LAM,
-                 n_sims: int = 3000, max_run: int = 1200, seed: int = 5):
-    """Average subgroups to alarm for Shewhart ±3σ and for EWMA at `limit`."""
-    rng = np.random.default_rng(seed)
-    x = rng.normal(shift, 1.0, size=(n_sims, max_run))
-
-    z = np.empty_like(x)
-    prev = np.zeros(n_sims)
-    for i in range(max_run):
-        prev = lam * x[:, i] + (1.0 - lam) * prev
-        z[:, i] = prev
-
-    def first(hit: np.ndarray) -> np.ndarray:
-        any_hit = hit.any(axis=1)
-        idx = np.where(any_hit, hit.argmax(axis=1) + 1, max_run)
-        return idx
-
-    return (float(first(np.abs(x) > 3.0).mean()),
-            float(first(np.abs(z) > limit).mean()))
-
-
-def calibrate_ewma(target: float = SHEWHART_ARL0, lam: float = LAM) -> float:
-    """The EWMA limit whose in-control ARL matches Shewhart's ±3σ.
-
-    Without this the comparison is rigged: a lower limit always detects sooner
-    because it also cries wolf more often. Bisection on the simulated ARL0,
-    which is monotonic in the limit.
-    """
-    lo, hi = 0.6, 1.4
-    for _ in range(9):
-        mid = (lo + hi) / 2
-        _, arl0 = _run_lengths(0.0, mid, lam=lam, n_sims=1500, max_run=2000, seed=3)
-        if arl0 < target:
-            lo = mid          # alarms too often — raise the limit
-        else:
-            hi = mid
-    return (lo + hi) / 2
-
-
-EWMA_LIMIT = calibrate_ewma()
-ARL0_SHEW, ARL0_EWMA = _run_lengths(0.0, EWMA_LIMIT, n_sims=1500,
-                                    max_run=2000, seed=3)
-ARL1_SHEW, ARL1_EWMA = _run_lengths(1.0, EWMA_LIMIT, n_sims=4000,
-                                    max_run=600, seed=11)
-SPEEDUP = ARL1_SHEW / ARL1_EWMA
 
 
 def drifting_process():

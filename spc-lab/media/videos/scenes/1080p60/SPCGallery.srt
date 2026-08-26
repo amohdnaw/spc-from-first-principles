@@ -1,92 +1,96 @@
 1
-00:00:00,000 --> 00:00:03,340
-Statistical process control is a handful of
+00:00:00,000 --> 00:00:03,759
+Statistical process control is a handful of formulas,
 
 2
-00:00:03,440 --> 00:00:05,900
-formulas. Each one is a picture.
+00:00:03,859 --> 00:00:06,308
+and every one of them is a picture.
 
 3
-00:00:05,983 --> 00:00:08,763
+00:00:06,400 --> 00:00:09,180
 Two of those pictures carry the rest.
 
 4
-00:00:09,550 --> 00:00:12,964
-First idea. Control limits are learned from
+00:00:09,966 --> 00:00:14,635
+First idea. A control chart plots subgroup averages in the order
 
 5
-00:00:13,064 --> 00:00:15,498
-the process, not handed to you.
+00:00:14,735 --> 00:00:19,106
+they were made, and its centre line is simply their average.
 
 6
-00:00:15,583 --> 00:00:19,402
-This chart plots subgroup averages in sample order.
+00:00:19,200 --> 00:00:22,902
+Let the process talk: thirty six subgroup means,
 
 7
-00:00:19,502 --> 00:00:22,323
-The centre line is just their average.
+00:00:23,002 --> 00:00:25,676
+and the spread they happen to have.
 
 8
-00:00:22,416 --> 00:00:27,548
-Now let the process talk. Each dot is one subgroup mean.
+00:00:25,766 --> 00:00:29,737
+Now widen a band around that centre line and count what
 
 9
-00:00:27,633 --> 00:00:30,625
-Their spread gives you sigma hat. Lines at
+00:00:29,837 --> 00:00:34,252
+falls outside. By three of those sigmas nothing is, with room
 
 10
-00:00:30,725 --> 00:00:34,085
-three sigma either side are the control limits.
+00:00:34,352 --> 00:00:38,026
+to spare — and that is where the control limits go.
 
 11
-00:00:34,183 --> 00:00:39,214
-Limits come from the data. Specs come from the customer. Confusing
+00:00:38,116 --> 00:00:43,176
+Written out, the upper limit is the grand mean plus three sigma hat.
 
 12
-00:00:39,314 --> 00:00:43,179
-the two is the most common mistake on a shop floor.
+00:00:43,266 --> 00:00:47,534
+Which for this process is a number the process itself chose.
 
 13
-00:00:43,866 --> 00:00:47,226
-Second idea. Capability is what happens when
+00:00:47,633 --> 00:00:53,383
+Limits come from the data. Specifications come from the customer. Confusing
 
 14
-00:00:47,326 --> 00:00:51,158
-you compare the process against the specification.
+00:00:53,483 --> 00:00:57,517
+those two is the most common mistake on a shop floor.
 
 15
-00:00:51,250 --> 00:00:55,022
-Same process, now plotted against the measurement
+00:00:58,816 --> 00:01:02,468
+Second idea. Take the same process and plot it
 
 16
-00:00:55,122 --> 00:00:57,630
-itself. This is where parts land.
+00:01:02,568 --> 00:01:07,116
+against the measurement itself. This is where parts land.
 
 17
-00:00:57,716 --> 00:01:00,686
-Now the customer's two limits. These
+00:01:07,216 --> 00:01:10,328
+Then the customer's two limits. These were
 
 18
-00:01:00,786 --> 00:01:04,096
-were not calculated. They were dictated.
+00:01:10,428 --> 00:01:14,076
+not calculated from anything. They were dictated.
 
 19
-00:01:04,183 --> 00:01:09,435
-Everything past them is scrap. The red area is how much to expect.
+00:01:14,166 --> 00:01:19,356
+Everything past them is scrap, and the near gap decides how
 
 20
-00:01:09,533 --> 00:01:13,580
-Nearest spec distance over three sigma is C p k.
+00:01:19,456 --> 00:01:24,914
+much. Distance to the nearest limit, over three sigma, is Cpk.
 
 21
-00:01:13,680 --> 00:01:17,641
-About one, so a thousand bad parts per million.
+00:01:25,000 --> 00:01:29,628
+At this scale the red is a sliver. It
 
 22
-00:01:18,433 --> 00:01:21,656
-The chart says whether the process is steady.
+00:01:29,728 --> 00:01:34,740
+is 1,350 parts per million — one in 741.
 
 23
-00:01:21,756 --> 00:01:25,053
-Capability says whether steady is good enough.
+00:01:34,833 --> 00:01:38,302
+So the chart tells you whether the process is steady,
+
+24
+00:01:38,402 --> 00:01:42,005
+and capability tells you whether steady is good enough.
 
