@@ -50,10 +50,20 @@ def spoken_duration(text: str) -> float:
     return max(MIN_BEAT, words / (WPM / 60.0) + TAIL_PAUSE)
 
 
+from manim import MovingCameraScene as _MovingCameraScene, Scene as _PlainScene
+
 if VOICE:
-    from manim_voiceover import VoiceoverScene as _Base
+    from manim_voiceover import VoiceoverScene as _PlainBase
+
+    class _CameraBase(_PlainBase, _MovingCameraScene):
+        """Voiceover pacing plus a movable camera.
+
+        Both bases derive from Scene, so the MRO resolves cleanly. VoiceoverScene
+        comes first so its setup() and teardown() win.
+        """
 else:
-    from manim import Scene as _Base
+    _PlainBase = _PlainScene
+    _CameraBase = _MovingCameraScene
 
 
 def _speech_service():
@@ -84,8 +94,14 @@ class _SilentTracker:
         self.duration = duration
 
 
-class NarratedScene(_Base):
-    """Scene base that understands `with self.say(...)`."""
+class _Narration:
+    """`with self.say(...)` pacing, independent of the Scene it is mixed into.
+
+    A mixin rather than a base class: an act that wants a camera move must not
+    have to give up narration-driven pacing, which is the one thing in this repo
+    that must not regress. Listed first in every MRO below so its setup() runs
+    and chains upward via super().
+    """
 
     def setup(self) -> None:
         super().setup()
@@ -110,3 +126,11 @@ class NarratedScene(_Base):
     def beat(self, seconds: float = 0.6) -> None:
         """A deliberate pause between sections, voiced or not."""
         self.wait(seconds)
+
+
+class NarratedScene(_Narration, _PlainBase):
+    """Scene base that understands `with self.say(...)`."""
+
+
+class NarratedCameraScene(_Narration, _CameraBase):
+    """Same pacing, plus `self.camera.frame` for camera moves."""
