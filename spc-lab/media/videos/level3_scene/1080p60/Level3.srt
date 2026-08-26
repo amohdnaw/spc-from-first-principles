@@ -1,88 +1,160 @@
 1
-00:00:00,000 --> 00:00:04,075
-Capability compares two distributions. One is
+00:00:00,000 --> 00:00:04,598
+Capability compares two distributions. One belongs to the
 
 2
-00:00:04,175 --> 00:00:07,508
-the customer's. One is the process's.
+00:00:04,698 --> 00:00:08,390
+customer, one belongs to the process, and they
 
 3
-00:00:07,600 --> 00:00:11,532
-One dimension, one axis, millimetres.
+00:00:08,490 --> 00:00:11,852
+are drawn on the same axis in millimetres.
 
 4
-00:00:11,616 --> 00:00:14,641
-The customer speaks in limits. Anything
+00:00:11,950 --> 00:00:16,374
+The customer speaks in limits. Anything between these two
 
 5
-00:00:14,741 --> 00:00:17,204
-between these lines is accepted.
+00:00:16,474 --> 00:00:20,106
+lines is accepted, and nothing outside them is.
 
 6
-00:00:17,300 --> 00:00:22,240
-The process answers with its own spread. It never read the drawing.
+00:00:20,200 --> 00:00:23,870
+The process answers with a spread. It never read the
 
 7
-00:00:22,333 --> 00:00:26,453
-Tolerance is zero point six millimetres wide. Six
+00:00:23,970 --> 00:00:26,988
+drawing, and at this width it does not fit.
 
 8
-00:00:26,553 --> 00:00:29,985
-sigma of process is zero point four five.
+00:00:27,083 --> 00:00:31,152
+Now improve the process and watch the only number
 
 9
-00:00:30,083 --> 00:00:33,898
-Cp is those two widths divided. One point
+00:00:31,252 --> 00:00:35,746
+that matters here: the tolerance divided by six sigma.
 
 10
-00:00:33,998 --> 00:00:38,863
-three three. Pure geometry, assuming a centred mean.
+00:00:35,846 --> 00:00:39,319
+That ratio is Cp, and it is pure geometry.
 
 11
-00:00:38,950 --> 00:00:42,930
-Now drift the mean. The spread does not change.
+00:00:39,416 --> 00:00:44,267
+One point three three. The natural spread is now three quarters
 
 12
-00:00:43,016 --> 00:00:48,196
-One gap shrinks. The other opens. Cp cannot tell.
+00:00:44,367 --> 00:00:48,196
+of the tolerance, and there is room on both sides.
 
 13
-00:00:48,283 --> 00:00:52,335
-The near side leaks. That is where parts fail.
+00:00:48,283 --> 00:00:51,465
+Now let the mean drift, and change nothing
 
 14
-00:00:52,433 --> 00:00:56,801
-Cpk takes the smaller one sided ratio. Zero
+00:00:51,565 --> 00:00:54,903
+else. The spread stays exactly where it was.
 
 15
-00:00:56,901 --> 00:01:00,853
-point eight nine. The near gap decides.
+00:00:55,000 --> 00:00:59,425
+Cpk keeps the smaller of the two one sided ratios,
 
 16
-00:01:02,150 --> 00:01:06,562
-Every Cpk value is a promise about defect rate.
+00:00:59,525 --> 00:01:03,859
+because the near limit is the one you fail first.
 
 17
-00:01:06,650 --> 00:01:11,474
-Each row: a Cpk, the parts per million expected outside
+00:01:03,959 --> 00:01:07,932
+0.80, and the near side is now leaking parts.
 
 18
-00:01:11,574 --> 00:01:15,862
-the limit, and the same number in plain counting.
+00:01:08,016 --> 00:01:13,287
+That leak is 8,198 parts per million, and at this scale you
 
 19
-00:01:15,950 --> 00:01:19,515
-These are near tail figures, computed at render time
+00:01:13,387 --> 00:01:19,114
+cannot see it. So stretch the vertical axis until it is visible.
 
 20
-00:01:19,615 --> 00:01:22,546
-by the same function the test suite checks.
+00:01:19,214 --> 00:01:24,212
+The peak leaves the frame; the tail is what we came for.
 
 21
-00:01:22,633 --> 00:01:25,293
-Nothing is read off a table. Change
+00:01:24,300 --> 00:01:32,456
+8,198 parts per million is the same sentence as 1 in 122 parts.
 
 22
-00:01:25,393 --> 00:01:28,053
-the formula and this slide changes.
+00:01:32,550 --> 00:01:37,202
+And the index itself is only the near gap measured in three sigmas.
+
+23
+00:01:37,300 --> 00:01:41,232
+Which for this drifted process is 0.80.
+
+24
+00:01:42,716 --> 00:01:47,161
+Every Cpk value is a promise about defect rate, and
+
+25
+00:01:47,261 --> 00:01:51,796
+the promise is steep. Parts per million up the side,
+
+26
+00:01:51,896 --> 00:01:56,608
+on a logarithmic scale, because it spans five decades.
+
+27
+00:01:56,700 --> 00:02:00,936
+Walk Cpk upward from zero point six. Every figure here
+
+28
+00:02:01,036 --> 00:02:05,032
+is computed at render time by the same function the
+
+29
+00:02:05,132 --> 00:02:08,888
+test suite checks — nothing is read off a table.
+
+30
+00:02:08,983 --> 00:02:16,618
+Cpk 1.00, the number that means the limit sits three sigma
+
+31
+00:02:16,718 --> 00:02:23,019
+out: 1,350 parts per million, or 1 in 741 parts.
+
+32
+00:02:23,116 --> 00:02:30,243
+Cpk 1.33, the number most customers ask for: 33.04
+
+33
+00:02:30,343 --> 00:02:36,024
+parts per million, or 1 in 30,269 parts.
+
+34
+00:02:36,116 --> 00:02:41,528
+Cpk 1.67, and the curve is falling off a cliff:
+
+35
+00:02:41,628 --> 00:02:47,392
+0.27 parts per million, or 1 in 3.7 million parts.
+
+36
+00:02:47,483 --> 00:02:51,673
+Which is why the difference between one point three three
+
+37
+00:02:51,773 --> 00:02:55,511
+and one point six seven is not a rounding argument.
+
+38
+00:02:55,611 --> 00:02:58,447
+It is two orders of magnitude of scrap.
+
+39
+00:02:58,533 --> 00:03:02,630
+A capability index is a defect rate wearing a friendlier
+
+40
+00:03:02,730 --> 00:03:06,977
+number. Change the formula and this curve changes with it.
 

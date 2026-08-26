@@ -32,67 +32,21 @@ Pacing still lives in the narration script — see narration.py.
 """
 from __future__ import annotations
 
-import math
-
 import numpy as np
 from manim import (
-    Axes, DashedLine, Dot, Group, Line, MathTex, Polygon, Text, ValueTracker,
-    VGroup,
+    Axes, DashedLine, Dot, Group, Line, MathTex, Polygon, ValueTracker, VGroup,
     Create, FadeIn, FadeOut, LaggedStart, ReplacementTransform, Restore,
     TransformMatchingTex, Write,
     always_redraw,
-    DOWN, LEFT, RIGHT, UP, config,
+    DOWN, LEFT, RIGHT, UP,
 )
 from manim.utils import rate_functions as rf
 
+from spclab.act_style import (
+    BLUE, GREY, INK, PANEL, RED, TEAL, YELLOW,
+    gauge, inside, micro, norm_pdf, phi, prose,
+)
 from spclab.narration import NarratedCameraScene
-
-BG     = "#0e1116"
-BLUE   = "#58C4DD"
-TEAL   = "#5CD0B3"
-YELLOW = "#FFD54F"
-RED    = "#FC6255"
-GREY   = "#8a939f"
-INK    = "#e8e8e8"
-
-# The site's two voices. Installed from the repo's own woff2 by
-# tools/install-fonts.py, so the video's outlines are the page's outlines.
-SERIF = "EB Garamond"    # document: prose, claims, verdicts
-MONO  = "IBM Plex Mono"  # instrument: readouts, units, axis labels
-
-config.background_color = BG
-
-# Where the readout panel's value column starts. Reserved: nothing else may be
-# placed right of x = 4.1.
-PANEL = 4.15
-
-
-def prose(txt: str, size: float = 28, color: str = INK) -> Text:
-    return Text(txt, font=SERIF, weight="MEDIUM", font_size=size, color=color)
-
-
-def gauge(txt: str, size: float = 26, color: str = INK) -> Text:
-    return Text(txt, font=MONO, font_size=size, color=color)
-
-
-def micro(txt: str, size: float = 16, color: str = GREY) -> Text:
-    """Instrument label. Written in caps at the callsite, never .upper()'d —
-    uppercasing turns σ into Σ, which means something else entirely."""
-    return Text(txt, font=MONO, font_size=size, color=color)
-
-
-def phi(x: float) -> float:
-    """Standard normal density at x."""
-    return math.exp(-x * x / 2.0) / math.sqrt(2.0 * math.pi)
-
-
-def norm_pdf(xs, mu=0.0, sg=1.0):
-    return np.exp(-((xs - mu) ** 2) / (2 * sg ** 2)) / (sg * np.sqrt(2 * np.pi))
-
-
-def inside(k: float) -> float:
-    """Exact area within ±k σ: Φ(k) − Φ(−k) = erf(k/√2). Not a table lookup."""
-    return math.erf(k / math.sqrt(2.0))
 
 
 class Level2(NarratedCameraScene):
