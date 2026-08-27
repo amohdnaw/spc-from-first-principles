@@ -105,10 +105,14 @@ def sheet_l4_arl():
                 xy=(0, arl_s[0]), xytext=(0.15, arl_s[0] * 1.6),
                 fontsize=12, color=MUTED,
                 arrowprops=dict(arrowstyle="->", color=MUTED))
+    # The speed-up is published by detection.py, which both acts and both pages
+    # already quote. Recomputing it here from this figure's own grid point, and
+    # then rounding to no decimals, printed "5× sooner" onto a chart while the
+    # rest of the curriculum said 4.4 — the same claim, computed twice, disagreeing.
+    from spclab.detection import ARL1_EWMA, ARL1_SHEW, SPEEDUP
     mid = 4
-    speedup = arl_s[mid] / arl_e[mid]
-    ax.annotate(f"a 1σ drift:\nEWMA catches it in {arl_e[mid]:.0f}\n"
-                f"vs {arl_s[mid]:.0f} subgroups —\n{speedup:.0f}× sooner",
+    ax.annotate(f"a 1σ drift:\nEWMA catches it in {ARL1_EWMA:.0f}\n"
+                f"vs {ARL1_SHEW:.0f} subgroups —\n{SPEEDUP:.1f}× sooner",
                 xy=(shifts[mid], arl_e[mid]), xytext=(shifts[mid] + .25, arl_e[mid] * 6),
                 fontsize=12, color=YELLOW,
                 arrowprops=dict(arrowstyle="->", color=YELLOW))

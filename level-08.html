@@ -33,6 +33,7 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
+    --body:21px;
     --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
     --figure:44rem;              /* figures step wider than text, still not full bleed */
     --gutter:clamp(24px,5vw,72px);
@@ -52,7 +53,7 @@
   .nc{text-transform:none}
   body{
     margin:0;background:var(--ground);color:var(--ink);
-    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
+    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
     font-variant-numeric:oldstyle-nums;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -218,19 +219,111 @@
      The measure never moves; figures spend the width the prose refuses.
      Each figure is additionally capped at its own native resolution by an
      inline max-width, so the band is a ceiling and never a stretch. */
-  @media (min-width:1440px){
-    :root{ --figure:64rem }
-    .wrap{ max-width:84rem }
-  }
-  @media (min-width:1800px){
-    :root{ --figure:94rem }
-    .wrap{ max-width:110rem }
-  }
   /* A run of chart figures sits two-up once there is room for two of them
      without either dropping below 560px. Videos never join a pair. */
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
     gap:var(--gutter);align-items:start;max-width:var(--figure)}
   .figpair figure{margin:64px 0 0;max-width:none}
+
+  /* ---------- chapter grammar (DESIGN.md §3) ----------
+     Layout follows the book convention rather than an invented one. Tufte CSS:
+     figures are constrained to the main column by default, a *small* figure may
+     go in the margin, and anything larger takes the full text block. Margin notes
+     sit "as close as possible to the text that references them" - which is done
+     with a float at the note's position in the flow, never with grid rows. Grid
+     rows put the note in a row of its own and cut an L-shaped hole in the page. */
+  :root{ --marg:320px; --marg-gap:48px; }
+
+  /* The page IS the grid. Before this the container was 110rem while the text
+     block was 1090px and left-aligned inside it, so the margins came out 149px
+     left and 675px right - the dead right column. The page width is now computed
+     from the same tokens the grid uses, so it can never drift from it again. */
+  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
+  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
+  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
+
+  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+
+  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
+    padding:22px 0 24px;margin:8px 0 0;
+    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
+  .toc-head .est{margin-left:auto}
+  .toc ol{list-style:none;margin:0;padding:0;display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
+  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
+    border-bottom:1px solid rgba(42,49,56,.55)}
+  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
+  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
+  .toc a:hover{color:var(--accent)}
+  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
+    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
+  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
+  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
+
+  /* a heading must clear the sticky nav when jumped to from the contents */
+  main section{scroll-margin-top:96px}
+  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
+    color:var(--accent);display:block;margin-bottom:10px}
+  /* headings balance across lines; body prose gets pretty so no line is left
+     carrying a single word (better-typography principle 9) */
+  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
+    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
+  .leaf > div > p{text-wrap:pretty}
+  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
+  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
+
+  /* margin notes: instrument voice, level with the paragraph they annotate.
+     Below the margin breakpoint they simply follow the prose at measure width. */
+  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
+    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
+    margin:0 0 26px;max-width:var(--measure);text-indent:0}
+  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
+    font-size:11px;margin-bottom:5px}
+  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
+  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
+    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
+  .note.speak{border-left-color:var(--accent)}
+  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
+    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
+  .note.data .row:last-child{border-bottom:0}
+  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
+     Keep label text ASCII and put Greek in the value. */
+  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
+    overflow-wrap:anywhere}
+  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
+  /* a sentence is not data: own line, left aligned, in the reading voice */
+  .note.data .row.txt{display:block}
+  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
+    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
+  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
+    line-height:1.5;overflow-wrap:anywhere}
+  /* a margin figure - Tufte's one case for a figure outside the main flow */
+  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
+  .note.watch:hover .k{color:var(--ink-bright)}
+
+  /* figures take the whole text block and share its left edge */
+  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
+
+  @media (min-width:1500px){
+    :root{ --body:26px; --marg:340px; }
+    /* the note floats into the margin at its position in the flow. This is the
+       whole trick: no row of its own, so no hole beside it. */
+    /* tufte-css's mechanism: a negative right margin pulls the float out of the
+       text column so it consumes no horizontal space there. Without it the float
+       lives inside the 702px paragraph and shortens every line beside it, which
+       destroys the measure the whole design is built on. */
+    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
+      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
+      position:relative;z-index:1}
+    /* the demoted act carries a player: it stays in the flow at block width */
+    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
+    .leaf > div::after{content:"";display:block;clear:both}
+  }
 </style>
 </head>
 <body>
@@ -256,25 +349,57 @@
 </nav>
 
 <div class="wrap">
-  <header class="opener">
-    <p class="eyebrow">Level 8</p>
-    <h1>Capability is comparing two distributions</h1>
-    <p class="dek">Specs are the customer's voice. Spread is the process's. Cpk prices their mismatch in defects.</p>
-  </header>
-
-  <main>
-    <section>
-      <div class="col">
-        <p>Control limits describe what a process does; spec limits describe what a customer will accept. Capability indices measure the gap between those two sentences — Cp compares widths, Cpk also accounts for where the mean sits. And because the process is approximately normal, every Cpk value converts to a concrete promise.</p>
+    <main>
+    <header class="ch">
+      <div class="leaf">
+        <div>
+          <p class="ch-no">Level 8 · chapter eight</p>
+          <h1>Capability is comparing two distributions</h1>
+          <p class="dek">Specs are the customer's voice. Spread is the process's. Cpk prices their mismatch in defects.</p>
+        </div>
       </div>
-
+      <div class="toc">
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">4 sections · 1 interactive · 2 acts · ~8 min read</span></div>
+        <p class="toc-chain"><span class="micro">after</span> Level 7 — evidence and decisions, not yet written<span class="sep">·</span><span class="micro">leads to</span> Level 9 — detection</p>
+        <ol>
+          <li><span class="n">8.1</span><a href="#s1">Two distributions on one axis<span class="sub">the customer speaks in limits, the process in spread</span></a></li>
+          <li><span class="n">8.2</span><a href="#s2">Cp is pure geometry<span class="sub">tolerance over six sigma, and no probability in it</span></a></li>
+          <li><span class="n">8.3</span><a href="#s3">The near side is the one you fail<span class="sub">the mean drifts, the spread does not, the number collapses</span></a></li>
+          <li><span class="n">8.4</span><a href="#s4">Every Cpk is a promise about defect rate<span class="sub">1.33 against 1.67 is two orders of magnitude of scrap</span></a></li>
+        </ol>
+      </div>
+    </header>
+    <section id="s1">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">8.1</span>
+          <h2>Two distributions on one axis</h2>
+          <p class="lead">Capability compares two distributions. <span class="note"><span class="k">the customer's voice</span>Two lines on a drawing. They know nothing about your machine.</span>One belongs to the customer and one belongs to the process, and the whole trick is that they are drawn on the same axis, in millimetres. The customer speaks in limits: anything between these two lines is accepted, and nothing outside them is.</p>
+          <p>The process answers with a spread. It never read the drawing, and at this width it does not fit.</p>
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/31_l3_two_voices.png" width="1667" height="1247" decoding="async" alt="Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.">
+        <figcaption>
+          <span class="fignum">Figure 8.2</span>
+          <span class="figtext">Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.</span>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </section>
+    <section id="s2">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">8.2</span>
+          <h2>Cp is pure geometry</h2>
+          <p>Improve the process and watch the only number that matters here: the tolerance divided by six sigma. <span class="note data"><span class="k">geometry only</span><span class="row num"><span class="rk">Cp</span><span class="rv">TOL / 6σ</span></span><span class="row txt"><span class="rk">at Cp 1.33</span><span class="rv">spread = 75 % of TOL</span></span></span>That ratio is Cp, and it is pure geometry — no probability in it at all.</p>
       <div class="eq">
         <div class="eq-body" data-tex="C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>p</mi><mi>k</mi></mrow></msub><mo>=</mo><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mi>min</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo>−</mo><mi>μ</mi><mo separator="true">,</mo><mtext> </mtext><mi>μ</mi><mo>−</mo><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo fence="true">)</mo></mrow></mrow><mrow><mn>3</mn><mi>σ</mi></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0715em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.0315em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.113em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">min</span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathrm">USL</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">μ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathrm">LSL</span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
         <div class="eq-num">(8.1)</div>
         <p class="eq-cap">The nearer gap decides. Cp is pure geometry; Cpk is honest about where the mean actually sits.</p>
       </div>
-
-      <div class="lab">
+          <p>At 1.33 the natural spread is three quarters of the tolerance, and there is room on both sides. Drag the slider and the ratio moves with the spread.</p>
+  <div class="lab">
         <div class="lab-head">
           <span class="micro">Interactive — what does your Cpk promise?</span>
           <span class="status" id="lab-status">SYSTEM-OK</span>
@@ -298,12 +423,6 @@
           </div>
         </div>
       </div>
-
-      <aside class="sys">
-        <span class="micro">SYS_MSG</span>
-        <p>Control limits are what the process says. Spec limits are what the customer says. Cpk is the distance between them.</p>
-      </aside>
-
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level08.jpg">
@@ -318,18 +437,31 @@
           the exact figure: it computes the near-tail integral live rather than reading a table.</span>
         </figcaption>
       </figure>
-
-      <div class="figpair">
-<figure style="max-width:min(var(--figure),1667px)">
-        <div class="rule"></div>
-        <img src="spc-lab/docs/31_l3_two_voices.png" width="1667" height="1247" decoding="async" alt="Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.">
-        <figcaption>
-          <span class="fignum">Figure 8.2</span>
-          <span class="figtext">Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.</span>
-        </figcaption>
-      </figure>
-
-      <figure style="max-width:min(var(--figure),1345px)">
+        </div>
+      </div>
+    </section>
+    <section id="s3">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">8.3</span>
+          <h2>The near side is the one you fail</h2>
+          <p>Now let the mean drift and change nothing else. <span class="note data"><span class="k">what the drift costs</span><span class="row num"><span class="rk">Cpk</span><span class="rv">0.80</span></span><span class="row num"><span class="rk">leak</span><span class="rv">8 198 ppm</span></span><span class="row num"><span class="rk">in plain counting</span><span class="rv">1 in 122</span></span></span>The spread stays exactly where it was, but the number collapses, because Cpk keeps the smaller of the two one-sided ratios: the near limit is the one you fail first.</p>
+          <p>That leak is 8,198 parts per million, and at this scale you cannot see it. <span class="note speak"><span class="k">spoken · 1:36</span><em>“8,198 parts per million is the same sentence as 1 in 122 parts.”</em></span>So stretch the vertical axis until it is visible: the peak leaves the frame, and the tail is what we came for. The index itself is only the near gap, measured in three sigmas.</p>
+        </div>
+      </div>
+    </section>
+    <section id="s4">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">8.4</span>
+          <h2>Every Cpk is a promise about defect rate</h2>
+          <p>Parts per million up the side, on a logarithmic scale, because it spans five decades. <span class="note data"><span class="k">the promise</span><span class="row num"><span class="rk">Cpk 1.00</span><span class="rv">1 350 ppm</span></span><span class="row num"><span class="rk">Cpk 1.33</span><span class="rv">33.04 ppm</span></span><span class="row num"><span class="rk">Cpk 1.67</span><span class="rv">0.27 ppm</span></span></span>Walk Cpk upward from 0.6 and read the promise off the curve. Every figure here is computed at render time by the same function the test suite checks — nothing is read off a table.</p>
+          <p>Which is why the difference between 1.33 and 1.67 is not a rounding argument.         <div class="note watch nofloat"><span class="k">watch · figure 8.4</span><video controls playsinline preload="none" poster="posters/gallery.jpg"><source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4"><track kind="captions" src="captions/gallery.vtt" srclang="en" label="English" default></video><em>The overview act: a chart and its limits drawing themselves from the data, and where capability geometry sits among them.</em></div>It is two orders of magnitude of scrap. A capability index is a defect rate wearing a friendlier number.</p>
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>Control limits are what the process says. Spec limits are what the customer says. Cpk is the distance between them.</p>
+      </aside>
+      <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/32_l3_cpk_to_ppm.png" width="1345" height="794" decoding="async" alt="The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.">
         <figcaption>
@@ -337,25 +469,13 @@
           <span class="figtext">The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.</span>
         </figcaption>
       </figure>
-</div>
-
-      <figure>
-        <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/gallery.jpg">
-          <source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4">
-          <track kind="captions" src="captions/gallery.vtt" srclang="en" label="English" default>
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 8.4</span>
-          <span class="figtext">The gallery act — control limits learned from the process, then capability compared against the customer's spec, in one continuous shot.</span>
-        </figcaption>
-      </figure>
-
-      <a class="next" href="level-09.html">
+        </div>
+      </div>
+    </section>
+    <a class="next" href="level-09.html">
         <span class="m">Level 9</span>
         <span>Detection theory: memory beats points →</span>
       </a>
-    </section>
   </main>
 </div>
 
