@@ -269,8 +269,22 @@ the case-studies palette turns every Manim video into a black rectangle punched 
 white page — the exact failure §6 names. Going light would mean re-rendering nine acts
 and fourteen matplotlib sheets on a white ground and re-freezing every signal colour.
 
-What converges is the furniture: the mono wordmark string, the eyebrow device, teal for
-links, and reciprocal navigation between the three. Palette and body font stay per site.
+What converges is the furniture: the **mono wordmark string** (`Ammar Nawawi / SPC`, the
+same primary name the siblings use), the **eyebrow device**, and **reciprocal navigation** —
+every page links out to the portfolio and the case studies, not only the hub. Palette and
+body font stay per site.
+
+**Correction to an earlier version of this section:** it said links should converge on
+teal. They should not. Teal is the in-control signal on this site, and amber is
+wayfinding — which is exactly what a link is. Borrowing the signal colour for
+navigation would break the palette's one job. The light sites use teal for links
+because they have no signals to protect.
+
+**And the light option is closed, on measurement rather than taste.** Every colour that
+carries meaning here fails WCAG on white: amber 1.9:1, teal 1.9:1, body ink 1.6:1,
+salmon 3.3:1 (large text only). Only the dark teal *fill* passes. Going light is not a
+skin swap — it is a new palette plus re-rendering nine acts and fourteen sheets, and it
+forfeits the sampled ground that makes video seamless.
 
 ## 4. Radius
 
