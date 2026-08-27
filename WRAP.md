@@ -26,9 +26,9 @@ Three connected works on Statistical Process Control, plus a Python library.
 cd spc-lab && PYTHONPATH=src .venv/bin/python -m pytest tests -q
 
 # regenerate formula sheets + level sheets
-PYTHONPATH=src .venv/bin/python -m spclab.formula_sheets && PYTHONPATH=src .venv/bin/python -m spclab.level1 \
-  && PYTHONPATH=src .venv/bin/python -m spclab.level2 && PYTHONPATH=src .venv/bin/python -m spclab.level3 \
-  && PYTHONPATH=src .venv/bin/python -m spclab.level4
+PYTHONPATH=src .venv/bin/python -m spclab.formula_sheets && PYTHONPATH=src .venv/bin/python -m spclab.level04 \
+  && PYTHONPATH=src .venv/bin/python -m spclab.level06 && PYTHONPATH=src .venv/bin/python -m spclab.level08 \
+  && PYTHONPATH=src .venv/bin/python -m spclab.level09
 
 # re-render manim scenes (1080p60)
 PYTHONPATH=src .venv/bin/manim -qh src/spclab/scenes.py SPCGallery   # etc.

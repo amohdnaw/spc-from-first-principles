@@ -3,7 +3,7 @@
 Sheet 1: individual chaos -> collective law (dice averaging into a bell).
 Sheet 2: sigma/sqrt(n) plotted as itself — the reason subgroup means are charted.
 
-    PYTHONPATH=src .venv/bin/python -m spclab.level1
+    PYTHONPATH=src .venv/bin/python -m spclab.level04
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def phi(z):
 # ---------------------------------------------------------------------------
 # Sheet 1 — one die vs. the average of many: from uniform to bell
 # ---------------------------------------------------------------------------
-def sheet_l1_dice():
+def sheet_l04_dice():
     rng = np.random.default_rng(0)
     max_k = 30
     rolls = rng.integers(1, 7, size=(100_000, max_k))  # columns = dice
@@ -75,13 +75,13 @@ def sheet_l1_dice():
 
     fig.suptitle("One die is noise. The average of many dice is a measurement.",
                  fontsize=15, y=1.06)
-    _save(fig, "11_l1_dice_to_bell")
+    _save(fig, "l04_1_dice_to_bell")
 
 
 # ---------------------------------------------------------------------------
 # Sheet 2 — sigma_xbar = sigma / sqrt(n): THE reason X̄ charts exist
 # ---------------------------------------------------------------------------
-def sheet_l1_sqrtn():
+def sheet_l04_sqrtn():
     sig = 0.08  # a plausible machining σ in mm
 
     fig, axs = plt.subplots(1, 2, figsize=(13, 4.8), constrained_layout=True)
@@ -119,9 +119,9 @@ def sheet_l1_sqrtn():
     fig.suptitle("Why we chart subgroup means, not parts:  "
                  r"averaging divides noise by $\sqrt{n}$",
                  fontsize=15, y=1.04)
-    _save(fig, "12_l1_sqrt_n")
+    _save(fig, "l04_2_sqrt_n")
 
 
 if __name__ == "__main__":
-    sheet_l1_dice()
-    sheet_l1_sqrtn()
+    sheet_l04_dice()
+    sheet_l04_sqrtn()

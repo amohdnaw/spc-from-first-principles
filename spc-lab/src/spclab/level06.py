@@ -4,7 +4,7 @@ Sheet 1: the sampling distribution of x̄ with the ±3σ envelope and its
          exact tail area — the origin of '99.73%' and ARL ≈ 370.
 Sheet 2: the plumbing — how well does R̄/d₂ estimate σ? (simulated).
 
-    PYTHONPATH=src .venv/bin/python -m spclab.level2
+    PYTHONPATH=src .venv/bin/python -m spclab.level06
 """
 from __future__ import annotations
 
@@ -41,7 +41,7 @@ def _norm_pdf(xs, mu=0, sg=1):
 # ---------------------------------------------------------------------------
 # Sheet 1 — the null distribution and its 0.27% tail
 # ---------------------------------------------------------------------------
-def sheet_l2_null():
+def sheet_l06_null():
     sig = 1.0
     fig, ax = plt.subplots(figsize=(11, 5.4))
     xs = np.linspace(-4.2, 4.2, 600)
@@ -73,13 +73,13 @@ def sheet_l2_null():
     ax.set_title("If the process is stable, THIS is the distribution of every "
                  "plotted point.\nA point outside is not proof of change — it's "
                  "a bet at 370:1 odds.", loc="left")
-    _save(fig, "21_l2_null_distribution")
+    _save(fig, "l06_1_null_distribution")
 
 
 # ---------------------------------------------------------------------------
 # Sheet 2 — the plumbing: quality of σ̂ = R̄/d₂
 # ---------------------------------------------------------------------------
-def sheet_l2_plumbing():
+def sheet_l06_plumbing():
     """Simulate 5000 processes; compare R̄/d₂ against the true σ."""
     rng = np.random.default_rng(9)
     n, subs, sims = 5, 25, 4000
@@ -108,9 +108,9 @@ def sheet_l2_plumbing():
                  loc="left")
     ax.set_xlabel(r"$\hat{\sigma}/\sigma$"); ax.set_ylabel("density")
     ax.grid(alpha=.5, axis="y")
-    _save(fig, "22_l2_rbar_plumbing")
+    _save(fig, "l06_2_rbar_plumbing")
 
 
 if __name__ == "__main__":
-    sheet_l2_null()
-    sheet_l2_plumbing()
+    sheet_l06_null()
+    sheet_l06_plumbing()

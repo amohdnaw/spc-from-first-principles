@@ -287,7 +287,7 @@ def chapter_06(K):
                          note("spoken · 0:11", text="“That curve is the null hypothesis. Not an "
                               "assumption about the parts, but a claim about the process.”",
                               speak=True, serif=True)),
-                    "      " + K["fig"]("21_l2_null_distribution.png"),
+                    "      " + K["fig"]("l06_1_null_distribution.png"),
         ]),
         ("s2", "6.2", "Pricing ±3σ", [
                     para("Put a pair of limits on that curve and sweep them outward from the centre. At"
@@ -344,7 +344,7 @@ def chapter_06(K):
                          datanote(("sigma-hat from ranges", "R̄ / d₂"),
                                   ("at 25 subgroups", "±0.075 σ", "spread in the estimate itself"),
                                   k="estimating sigma")),
-                    "      " + K["fig"]("22_l2_rbar_plumbing.png"),
+                    "      " + K["fig"]("l06_2_rbar_plumbing.png"),
         ]),
         ("s6", "6.6", "Where the constants come from", [
                     para(tex(r"d_2") + " is the expected range of n standard normals. "
@@ -453,7 +453,7 @@ def chapter_04(K):
                       " this.")),
             para("That matters because nothing about a die is bell shaped. The shape did not come"
                  " from the parts; it came from averaging them."),
-            "      " + K["fig"]("11_l1_dice_to_bell.png"),
+            "      " + K["fig"]("l04_1_dice_to_bell.png"),
         ]),
         ("s3", "4.3", "The law", [
             para("Two numbers, measured separately, agree to three decimals: the spread of the"
@@ -478,7 +478,7 @@ def chapter_04(K):
                  note("spoken · 2:04", text="“A shift that hides inside single parts moves a mean"
                       " far enough to see.”", speak=True, serif=True)),
             "      " + K["sys"],
-            "      " + K["fig"]("12_l1_sqrt_n.png"),
+            "      " + K["fig"]("l04_2_sqrt_n.png"),
         ]),
     ]
 
@@ -494,7 +494,7 @@ def chapter_08(K):
                       " about your machine."), lead=True),
             para("The process answers with a spread. It never read the drawing, and at this width"
                  " it does not fit."),
-            "      " + K["fig"]("31_l3_two_voices.png"),
+            "      " + K["fig"]("l08_1_two_voices.png"),
         ]),
         ("s2", "8.2", "Cp is pure geometry", [
             para("Improve the process and watch the only number that matters here: the tolerance"
@@ -535,7 +535,7 @@ def chapter_08(K):
                        "The overview act: a chart and its limits drawing themselves from the data,"
                        " and where capability geometry sits among them."),
             "      " + K["sys"],
-            "      " + K["fig"]("32_l3_cpk_to_ppm.png"),
+            "      " + K["fig"]("l08_2_cpk_to_ppm.png"),
         ]),
     ]
 
@@ -586,7 +586,7 @@ def chapter_09(K):
             para("It crosses the limit at subgroup 34, with the mean only 0.8 sigma off and the raw"
                  " measurement sitting at +2.48 sigma — a number no Shewhart chart would look at"
                  " twice. The other chart waited until subgroup 64, thirty subgroups later."),
-            "      " + K["fig"]("42_l4_race.png"),
+            "      " + K["fig"]("l09_2_race.png"),
         ]),
         ("s5", "9.5", "One drift is an anecdote", [
             para("That is one drift. Run thousands of them and the average wait to detect a one"
@@ -599,7 +599,7 @@ def chapter_09(K):
                  note("spoken · 3:41", text="“4.4 times sooner, bought with no extra false alarms"
                       " at all.”", speak=True, serif=True)),
             "      " + K["sys"],
-            "      " + K["fig"]("41_l4_arl.png"),
+            "      " + K["fig"]("l09_1_arl.png"),
         ]),
         ("s6", "9.6", "Rules that read the run", [
             para("A limit is not the only evidence on a chart. Four more rules read the run rather"

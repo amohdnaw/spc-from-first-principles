@@ -5,7 +5,7 @@ Sheet 1: the two voices on one axis — customer tolerance vs process spread;
 Sheet 2: from Cpk to promised defects — the exact mapping curve with
          industry thresholds marked at their real ppm values.
 
-    PYTHONPATH=src .venv/bin/python -m spclab.level3
+    PYTHONPATH=src .venv/bin/python -m spclab.level08
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def _pdf(xs, mu, sg):
 # ---------------------------------------------------------------------------
 # Sheet 1 — two voices, one axis
 # ---------------------------------------------------------------------------
-def sheet_l3_two_voices():
+def sheet_l08_two_voices():
     lsl, usl = 49.7, 50.3          # customer's voice: width 0.6
     sg = 0.075                      # process voice: 6σ = 0.45
 
@@ -108,13 +108,13 @@ def sheet_l3_two_voices():
 
     fig.suptitle("Cp asks “could it fit?” · Cpk asks “does it fit where it actually sits?”",
                  fontsize=15, y=1.02)
-    _save(fig, "31_l3_two_voices")
+    _save(fig, "l08_1_two_voices")
 
 
 # ---------------------------------------------------------------------------
 # Sheet 2 — Cpk -> promised defects (the exact mapping)
 # ---------------------------------------------------------------------------
-def sheet_l3_cpk_to_ppm():
+def sheet_l08_cpk_to_ppm():
     import scipy.stats as st
     phi = st.norm.cdf if True else None
 
@@ -144,9 +144,9 @@ def sheet_l3_cpk_to_ppm():
                  loc="left")
     ax.set_xlabel("Cpk"); ax.set_ylabel("predicted defective parts per million")
     ax.legend(frameon=False); ax.grid(alpha=.5, which="both")
-    _save(fig, "32_l3_cpk_to_ppm")
+    _save(fig, "l08_2_cpk_to_ppm")
 
 
 if __name__ == "__main__":
-    sheet_l3_two_voices()
-    sheet_l3_cpk_to_ppm()
+    sheet_l08_two_voices()
+    sheet_l08_cpk_to_ppm()

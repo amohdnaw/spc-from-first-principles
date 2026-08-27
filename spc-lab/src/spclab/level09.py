@@ -4,7 +4,7 @@ Sheet 1: ARL vs shift size — Monte Carlo comparison of Shewhart vs EWMA.
          (ARL = average number of subgroups until the alarm.)
 Sheet 2: the same drifting process under both charts, detection moments marked.
 
-    PYTHONPATH=src .venv/bin/python -m spclab.level4
+    PYTHONPATH=src .venv/bin/python -m spclab.level09
 """
 from __future__ import annotations
 
@@ -84,7 +84,7 @@ def _run_custom(c_mult, lam=LAM, n_sims=6000, seed=7):
     return np.mean(rls)
 
 
-def sheet_l4_arl():
+def sheet_l09_arl():
     shifts = np.array([0, .25, .5, .75, 1.0, 1.5, 2.0])
     c_mult = _calibrate_ewma()
     print(f"EWMA limit multiplier calibrated to c={c_mult:.3f} "
@@ -122,12 +122,12 @@ def sheet_l4_arl():
     ax.set_xlabel("process shift when it happens (in σx̄ units)")
     ax.set_ylabel("average subgroups until alarm (log scale)")
     ax.legend(frameon=False); ax.grid(alpha=.5, which="both")
-    fig.savefig("docs/41_l4_arl.png", dpi=150, bbox_inches="tight")
+    fig.savefig("docs/l09_1_arl.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
-    print("wrote docs/41_l4_arl.png")
+    print("wrote docs/l09_1_arl.png")
 
 
-def sheet_l4_race():
+def sheet_l09_race():
     """One drifting process, two charts racing to detect it."""
     rng = np.random.default_rng(55)
     n = 60
@@ -176,13 +176,13 @@ def sheet_l4_race():
 
     fig.suptitle("Same process. Same false-alarm rate. Different memory.",
                  fontsize=15, y=1.03)
-    fig.savefig("docs/42_l4_race.png", dpi=150, bbox_inches="tight")
+    fig.savefig("docs/l09_2_race.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
-    print("wrote docs/42_l4_race.png")
+    print("wrote docs/l09_2_race.png")
 
 
 if __name__ == "__main__":
     import os
     os.makedirs("docs", exist_ok=True)
-    sheet_l4_arl()
-    sheet_l4_race()
+    sheet_l09_arl()
+    sheet_l09_race()
