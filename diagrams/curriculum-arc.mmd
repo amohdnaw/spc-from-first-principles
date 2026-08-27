@@ -1,0 +1,45 @@
+graph TD
+  subgraph P1["PART I · FOUNDATIONS"]
+    L1["1 · Variation<br/>nothing repeats<br/>— NEW ACT —"]
+    L2["2 · Chance<br/>what 0.27% claims<br/>— NEW ACT —"]
+    L3["3 · Centre and spread<br/>balance point, n−1<br/>exists: level-0"]
+    L4["4 · The average is predictable<br/>CLT, sigma over root n<br/>exists: level-1"]
+    L5["5 · Estimation and uncertainty<br/>standard error to interval<br/>— NEW ACT —"]
+  end
+
+  subgraph P2["PART II · THE CHART"]
+    L6["6 · Limits are a hypothesis test<br/>three sigma, ARL 370<br/>exists: level-2"]
+    L7["7 · Evidence and decisions<br/>alpha, beta, power, WE rules<br/>— NEW ACT —"]
+    L8["8 · Capability<br/>Cp, Cpk, ppm<br/>exists: level-3"]
+    L9["9 · Detection<br/>ARL, Shewhart vs EWMA<br/>exists: level-4"]
+  end
+
+  subgraph P3["PART III · APPLIED"]
+    L10["10 · Counting, not measuring<br/>binomial, Poisson, p np c u<br/>— NEW LAB —"]
+    L11["11 · Relationships<br/>regression, then ANOVA<br/>— NEW LAB —"]
+    L12["12 · Experiments<br/>factorial DOE, interactions<br/>— NEW LAB —"]
+  end
+
+  MSA["MSA · SIBLING SITE<br/>gage R and R by ANOVA<br/>bias, linearity, stability, kappa<br/>own contract first"]
+
+  L1 -->|"can scatter be predicted?"| L2
+  L2 -->|"how do you summarise a shape?"| L3
+  L3 -->|"which number do you monitor?"| L4
+  L4 -->|"how sure is one estimate?"| L5
+  L5 -->|"when is far enough to act?"| L6
+  L6 -->|"what else counts as evidence?"| L7
+  L7 -->|"in control, but good enough?"| L8
+  L8 -->|"how fast would you notice?"| L9
+  L9 -->|"what if data is not measured?"| L10
+  L10 -->|"what drives the variation?"| L11
+  L11 -->|"can you cause it on purpose?"| L12
+
+  L11 ==>|"same variance decomposition"| MSA
+  MSA ==>|"a Cpk is only as good as the gage"| L8
+
+  RN["RENUMBER ONCE · first job<br/>0 to 3 · 1 to 4 · 2 to 6 · 3 to 8 · 4 to 9<br/>15 spoken and titled numbers edited<br/>old paths keep redirect stubs"]
+  RN -.->|"blocks every existing page"| L3
+  RN -.-> L4
+  RN -.-> L6
+  RN -.-> L8
+  RN -.-> L9

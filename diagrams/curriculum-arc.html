@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The twelve-level arc — workflow explainer</title>
+<style>
+  @font-face{font-family:'EB Garamond';src:url('../fonts/eb-garamond-roman.woff2') format('woff2');font-weight:400 600;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('../fonts/ibm-plex-mono-400.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('../fonts/ibm-plex-mono-600.woff2') format('woff2');font-weight:600;font-display:swap}
+  :root{
+    --ground:#0d1114; --panel:#14181c; --rule:#2a3138; --rule-strong:#3d4650;
+    --ink:#c8d0d8; --ink-bright:#e8eef4; --ink-dim:#7d8894;
+    --amber:#ffae00; --salmon:#de6a5d; --teal:#65ccaf;
+    --serif:'EB Garamond',Georgia,serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:19px;line-height:1.6}
+  .wrap{max-width:1240px;margin:0 auto;padding:48px 24px 96px}
+  .micro{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+  h1{font-size:40px;font-weight:600;color:var(--ink-bright);margin:8px 0 6px;letter-spacing:-.01em}
+  h2{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);
+     margin:56px 0 18px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+  h3{font-size:22px;font-weight:600;color:var(--ink-bright);margin:0 0 4px}
+  .dek{color:var(--ink-dim);max-width:62ch;margin:0 0 4px}
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+  .lane{background:var(--panel);border:1px solid var(--rule);border-radius:2px;padding:16px 16px 8px}
+  .lane > .micro{display:block;margin-bottom:14px;color:var(--ink)}
+  .lane .medium{color:var(--teal)}
+  .lvl{border-left:2px solid var(--rule-strong);padding:8px 0 12px 12px;margin-bottom:12px}
+  .lvl.new{border-left-color:var(--amber)}
+  .lvl .n{font-family:var(--mono);font-size:12px;color:var(--ink-dim)}
+  .lvl .t{font-size:18px;color:var(--ink-bright);display:block;margin:2px 0 4px}
+  .lvl .idea{font-size:16px;color:var(--ink);line-height:1.45}
+  .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+       padding:2px 6px;border:1px solid var(--rule-strong);border-radius:2px;color:var(--ink-dim);white-space:nowrap}
+  .tag.newt{color:var(--amber);border-color:var(--amber)}
+  .q{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);padding:6px 0 10px 12px;
+     border-left:1px dashed var(--rule-strong);margin:-6px 0 10px}
+  .q::before{content:"↳ raises: "}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:16px}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);
+     text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule-strong)}
+  td{padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+  td code,.path{font-family:var(--mono);font-size:13.5px;color:var(--ink-bright);overflow-wrap:anywhere}
+  .traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+  .trap{background:var(--panel);border:1px solid var(--rule);border-left:2px solid var(--salmon);
+        border-radius:2px;padding:14px 16px}
+  .trap .micro{color:var(--salmon);display:block;margin-bottom:6px}
+  .trap p{margin:0;font-size:16.5px;line-height:1.5}
+  ol.order{counter-reset:s;list-style:none;padding:0;margin:0}
+  ol.order li{counter-increment:s;position:relative;padding:10px 0 10px 44px;border-bottom:1px solid var(--rule)}
+  ol.order li::before{content:counter(s);position:absolute;left:0;top:10px;font-family:var(--mono);font-size:12px;
+    color:var(--amber);border:1px solid var(--rule-strong);width:26px;height:26px;display:grid;place-items:center;border-radius:2px}
+  figure{margin:0}
+  figure img{width:100%;border:1px solid var(--rule);border-radius:2px;background:#fff}
+  figcaption{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);margin-top:8px}
+  @media(max-width:900px){.lanes{grid-template-columns:1fr}h1{font-size:31px}body{font-size:18px}}
+  /* A three-column reference table cannot fit a phone. Stack each row into a
+     labelled block rather than trapping it in a sideways scroll. */
+  @media(max-width:700px){
+    .traps{grid-template-columns:1fr}
+    table,tbody,tr,td{display:block;width:100%}
+    thead{display:none}
+    tr{border-bottom:1px solid var(--rule-strong);padding:10px 0}
+    td{border:0;padding:3px 0}
+    td::before{content:attr(data-label);display:block;font-family:var(--mono);font-size:10.5px;
+      letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:2px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="micro">Workflow explainer · agreed 2026-08-27 · contract: specs/curriculum-arc-contract.md</span>
+  <h1>The twelve-level arc</h1>
+  <p class="dek">Five levels exist. Seven do not. This page is the map of how a reader with no
+  statistics gets to designing an experiment, what each level owes the one after it, and which
+  hops have traps in them.</p>
+
+  <h2>The chain — three parts, twelve levels</h2>
+  <div class="lanes">
+
+    <div class="lane">
+      <span class="micro">Part I · Foundations · <span class="medium">video</span></span>
+
+      <div class="lvl new"><span class="n">LEVEL 1</span><span class="t">Variation <span class="tag newt">new act</span></span>
+        <span class="idea">Nothing repeats. Two identical parts differ, and many parts make a shape nobody chose.</span></div>
+      <div class="q">can scatter be predicted?</div>
+
+      <div class="lvl new"><span class="n">LEVEL 2</span><span class="t">Chance <span class="tag newt">new act</span></span>
+        <span class="idea">Probability as long-run frequency. What a claim like “0.27 %” is a claim <em>about</em>.</span></div>
+      <div class="q">how do you summarise a shape in two numbers?</div>
+
+      <div class="lvl"><span class="n">LEVEL 3</span><span class="t">Centre and spread <span class="tag">exists · level-0</span></span>
+        <span class="idea">The mean is a balance point; spread has to be squared first; why the divisor is n−1.</span></div>
+      <div class="q">which of those two do you monitor?</div>
+
+      <div class="lvl"><span class="n">LEVEL 4</span><span class="t">The average is predictable <span class="tag">exists · level-1</span></span>
+        <span class="idea">One part is noise, many parts are information. CLT, and σ⁄√n.</span></div>
+      <div class="q">how sure is any one estimate?</div>
+
+      <div class="lvl new"><span class="n">LEVEL 5</span><span class="t">Estimation and uncertainty <span class="tag newt">new act</span></span>
+        <span class="idea">Standard error becomes a confidence interval — including for the constants the rest of the arc uses.</span></div>
+      <div class="q">when is a value far enough away to act on?</div>
+    </div>
+
+    <div class="lane">
+      <span class="micro">Part II · The control chart · <span class="medium">video</span></span>
+
+      <div class="lvl"><span class="n">LEVEL 6</span><span class="t">Limits are a hypothesis test <span class="tag">exists · level-2</span></span>
+        <span class="idea">±3σ is not taste, it is a bet: 99.73 % inside, one false alarm per 370 subgroups.</span></div>
+      <div class="q">what else counts as evidence?</div>
+
+      <div class="lvl new"><span class="n">LEVEL 7</span><span class="t">Evidence and decisions <span class="tag newt">new act</span></span>
+        <span class="idea">α and β, p-values, power — and the Western Electric rules as evidence rules. More rules buy
+        sensitivity with false alarms, and the trade is arithmetic.</span></div>
+      <div class="q">in control, but good enough — compared to what?</div>
+
+      <div class="lvl"><span class="n">LEVEL 8</span><span class="t">Capability <span class="tag">exists · level-3</span></span>
+        <span class="idea">Cp, Cpk, ppm. Voice of the process against voice of the customer.</span></div>
+      <div class="q">how fast would you notice if it moved?</div>
+
+      <div class="lvl"><span class="n">LEVEL 9</span><span class="t">Detection <span class="tag">exists · level-4</span></span>
+        <span class="idea">ARL. Shewhart forgets every point, EWMA remembers, and memory wins on drift.</span></div>
+      <div class="q">all of this assumed measured, continuous, normal data. What if it isn’t?</div>
+    </div>
+
+    <div class="lane">
+      <span class="micro">Part III · Applied · <span class="medium">interactive labs</span></span>
+
+      <div class="lvl new"><span class="n">LEVEL 10</span><span class="t">Counting, not measuring <span class="tag newt">new lab</span></span>
+        <span class="idea">Binomial and Poisson. p, np, c and u charts, chart selection, rational subgrouping.
+        Annex: capability when the distribution is not normal.</span></div>
+      <div class="q">what drives the variation you are watching?</div>
+
+      <div class="lvl new"><span class="n">LEVEL 11</span><span class="t">Relationships <span class="tag newt">new lab</span></span>
+        <span class="idea">Least squares, residuals, R², prediction intervals — then ANOVA as variance
+        decomposition, which is the same arithmetic a Gage R&amp;R runs on.</span></div>
+      <div class="q">can you cause the effect on purpose?</div>
+
+      <div class="lvl new"><span class="n">LEVEL 12</span><span class="t">Experiments <span class="tag newt">new lab</span></span>
+        <span class="idea">Factorial DOE. Interactions are why one-factor-at-a-time fails. Screening, then response surface.</span></div>
+
+      <div class="lvl" style="border-left-color:var(--teal)">
+        <span class="n">SIBLING SITE</span><span class="t">MSA <span class="tag">own contract first</span></span>
+        <span class="idea">Measurement as its own process: repeatability against reproducibility, GR&amp;R by ANOVA,
+        %GRR and ndc, bias, linearity, stability, attribute agreement.</span></div>
+    </div>
+  </div>
+
+  <h2>The traps in the hops</h2>
+  <div class="traps">
+    <div class="trap">
+      <span class="micro">Renumbering reaches into the videos</span>
+      <p>Fifteen places name a level number, and they are not all HTML. Title cards read
+      “Level 2 · ±3σ is not taste”, and narration <em>speaks</em> “Level one told us which distribution
+      every subgroup mean is drawn from”. Renaming files alone leaves nine acts contradicting their own pages.</p>
+    </div>
+    <div class="trap">
+      <span class="micro">This is the last cheap moment</span>
+      <p>Renumbering costs a rebuild and nothing else, because the voice is local and free. Do it after any
+      line is recorded in Ammar’s own voice and those takes are wasted. Renumber first, record later.</p>
+    </div>
+    <div class="trap">
+      <span class="micro">The old URLs are already published</span>
+      <p><code>level-0…4.html</code> are live on Pages and cited in an open PR against
+      <code>portfolio-site</code>. Every old path keeps a stub that redirects to its new number and carries
+      <code>rel="canonical"</code>, or shared links start 404-ing.</p>
+    </div>
+    <div class="trap">
+      <span class="micro">Empty slots must hold still</span>
+      <p>A twelve-slot map with five things in it only works if the numbers are frozen before anything is
+      authored against them. Moving one topic later renumbers everything downstream a second time.</p>
+    </div>
+    <div class="trap">
+      <span class="micro">The MSA boundary is a rule, not a preference</span>
+      <p>The SPC site never teaches GR&amp;R; the MSA site never teaches control limits. They link once each,
+      at the seam: Level 11 hands over mid-thought on variance decomposition, and MSA hands back to Level 8
+      with “a Cpk is only as good as the gage”.</p>
+    </div>
+    <div class="trap">
+      <span class="micro">Part III is labs by decision</span>
+      <p>Not a shortfall. DOE at the acts’ quality bar is weeks of authoring, and a surface you drag teaches
+      an interaction better than a video of one. Video stays available for anything that later earns it.</p>
+    </div>
+  </div>
+
+  <h2>Where things live</h2>
+  <table>
+    <thead><tr><th>What</th><th>Path</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td data-label="What">This contract</td><td class="path" data-label="Path">specs/curriculum-arc-contract.md</td><td data-label="Note">numbers, medium, the §4 checklist re-read before each level is called done</td></tr>
+      <tr><td data-label="What">Frozen design</td><td class="path" data-label="Path">DESIGN.md</td><td data-label="Note">tokens, two voices, the ban list. Unchanged by this work</td></tr>
+      <tr><td data-label="What">Act craft rules</td><td class="path" data-label="Path">specs/spc-manim-craft-contract.md</td><td data-label="Note">derive by motion, explicit <code>rate_func</code>, closed 6/6 checkpoints</td></tr>
+      <tr><td data-label="What">Level pages</td><td class="path" data-label="Path">level-*.html</td><td data-label="Note">renumbered; old paths become redirect stubs</td></tr>
+      <tr><td data-label="What">Acts and library</td><td class="path" data-label="Path">spc-lab/src/spclab/</td><td data-label="Note">nine scenes; every on-screen number computed here, tested in <code>spc-lab/tests</code></td></tr>
+      <tr><td data-label="What">Narration and voice</td><td class="path" data-label="Path">spclab/narration.py · kokoro_voice.py</td><td data-label="Note"><code>say()</code> drives pacing; Kokoro <code>am_michael</code> runs locally</td></tr>
+      <tr><td data-label="What">One-command build</td><td class="path" data-label="Path">spc-lab/build-media.sh</td><td data-label="Note">mp4 + poster + VTT for all nine, faststart re-muxed</td></tr>
+      <tr><td data-label="What">This map</td><td class="path" data-label="Path">diagrams/curriculum-arc.{mmd,svg,png,excalidraw}</td><td data-label="Note">edit the <code>.mmd</code> and re-render; the excalidraw opens at excalidraw.com</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Order of work</h2>
+  <ol class="order">
+    <li><strong>Renumber, once.</strong> Sources, pages, redirect stubs, then rebuild all nine acts. Blocks everything else.</li>
+    <li><strong>Levels 1, 2, 5.</strong> The three foundation acts, one at a time, verified before the next starts.</li>
+    <li><strong>Level 7.</strong> The evidence act, absorbing the existing <code>WERules</code> scene.</li>
+    <li><strong>Levels 10, 11, 12.</strong> The three labs.</li>
+    <li><strong>MSA sibling.</strong> Its own contract first, then its own build.</li>
+  </ol>
+
+  <h2>The map</h2>
+  <figure>
+    <img src="curriculum-arc.svg" alt="Flow diagram of the twelve-level arc, the questions each level raises, the renumbering that blocks the five existing pages, and the two-way seam with the MSA sibling site">
+    <figcaption>FIGURE 1 · The arc as a graph. Dotted edges are the renumber blocking the five pages that already exist; heavy edges are the seam with the MSA site.</figcaption>
+  </figure>
+
+</div>
+</body>
+</html>
