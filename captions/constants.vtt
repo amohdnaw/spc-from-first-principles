@@ -1,62 +1,62 @@
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:03.700
+00:00:00.000 --> 00:00:03.873
 Every constant on a control chart is derived, not
 
 2
-00:00:03.800 --> 00:00:07.268
+00:00:03.973 --> 00:00:07.604
 decreed. Here is the one that sets the limits.
 
 3
-00:00:07.366 --> 00:00:13.120
+00:00:07.700 --> 00:00:13.006
 Take five parts off the process. Each one lands somewhere, and sigma — the
 
 4
-00:00:13.220 --> 00:00:17.946
+00:00:13.106 --> 00:00:17.464
 thing you actually want — is not one of the numbers you have.
 
 5
-00:00:18.033 --> 00:00:22.013
+00:00:17.550 --> 00:00:21.890
 The range you can measure: largest minus smallest.
 
 6
-00:00:22.100 --> 00:00:25.560
+00:00:21.983 --> 00:00:25.431
 Now do that again, and again. Twenty thousand
 
 7
-00:00:25.660 --> 00:00:29.200
+00:00:25.531 --> 00:00:29.059
 subgroups of five, and watch their mean range.
 
 8
-00:00:29.300 --> 00:00:34.230
+00:00:29.150 --> 00:00:34.117
 It settles. The mean range of n standard normals is a fixed
 
 9
-00:00:34.330 --> 00:00:38.920
+00:00:34.217 --> 00:00:38.842
 multiple of sigma, and that multiple has a name: d two.
 
 10
-00:00:39.616 --> 00:00:41.881
+00:00:39.533 --> 00:00:41.998
 So R bar over d two estimates
 
 11
-00:00:41.981 --> 00:00:45.468
+00:00:42.098 --> 00:00:45.889
 sigma, out of ranges you genuinely measured.
 
 12
-00:00:45.566 --> 00:00:50.579
+00:00:45.983 --> 00:00:50.590
 Feed it into three sigma limits, divide by root n because you
 
 13
-00:00:50.679 --> 00:00:56.362
+00:00:50.690 --> 00:00:55.915
 are charting subgroup means, and gather the constants. That is A two.
 
 14
-00:00:56.450 --> 00:01:02.036
+00:00:56.000 --> 00:01:01.098
 At n of five, 0.5769 — the number in the AIAG table,
 
 15
-00:01:02.136 --> 00:01:08.926
+00:01:01.198 --> 00:01:07.396
 computed here from the simulation rather than copied out of it.
 

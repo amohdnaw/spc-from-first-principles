@@ -1,140 +1,140 @@
 1
-00:00:00,000 --> 00:00:03,549
+00:00:00,000 --> 00:00:03,433
 Slow drift is the most expensive failure mode in
 
 2
-00:00:03,649 --> 00:00:08,948
+00:00:03,533 --> 00:00:08,660
 manufacturing, because every single measurement of it looks acceptable.
 
 3
-00:00:09,033 --> 00:00:13,760
+00:00:08,750 --> 00:00:13,380
 A Shewhart chart, limits at plus and minus three sigma, which
 
 4
-00:00:13,860 --> 00:00:18,509
+00:00:13,480 --> 00:00:18,034
 buys one false alarm in three hundred and seventy subgroups.
 
 5
-00:00:18,600 --> 00:00:22,388
+00:00:18,133 --> 00:00:22,233
 The first twenty subgroups are noise around the target.
 
 6
-00:00:22,483 --> 00:00:26,082
+00:00:22,333 --> 00:00:25,852
 Then the mean starts walking, 0.06 sigma per
 
 7
-00:00:26,182 --> 00:00:30,623
+00:00:25,952 --> 00:00:30,295
 subgroup. Slow enough that no single measurement looks
 
 8
-00:00:30,723 --> 00:00:34,575
+00:00:30,395 --> 00:00:34,161
 wrong, and the chart carries on saying nothing.
 
 9
-00:00:34,666 --> 00:00:40,705
+00:00:34,250 --> 00:00:40,436
 The first violation lands at subgroup 64. That is 43 subgroups after the
 
 10
-00:00:40,805 --> 00:00:46,248
+00:00:40,536 --> 00:00:46,112
 drift began, by which time the mean has moved 2.6 sigma and every
 
 11
-00:00:46,348 --> 00:00:51,534
+00:00:46,212 --> 00:00:51,526
 part in between was made by a process nobody knew had changed.
 
 12
-00:00:51,633 --> 00:00:55,709
+00:00:51,616 --> 00:00:55,476
 Each point was judged on its own and then forgotten.
 
 13
-00:00:55,809 --> 00:00:59,885
+00:00:55,576 --> 00:00:59,436
 That is the whole weakness: the chart has no memory.
 
 14
-00:01:01,283 --> 00:01:06,575
+00:01:00,833 --> 00:01:05,927
 Same process, same data, same false alarm budget — and a statistic
 
 15
-00:01:06,675 --> 00:01:12,295
+00:01:06,027 --> 00:01:11,437
 that remembers. The faint points are the raw measurements from before.
 
 16
-00:01:12,383 --> 00:01:14,717
+00:01:11,533 --> 00:01:14,149
 Each new subgroup gets a fifth of the
 
 17
-00:01:14,817 --> 00:01:17,875
+00:01:14,249 --> 00:01:17,673
 weight and the running statistic keeps the rest.
 
 18
-00:01:17,966 --> 00:01:20,952
+00:01:17,766 --> 00:01:20,864
 With lambda at zero point two, that is
 
 19
-00:01:21,052 --> 00:01:23,794
+00:01:20,964 --> 00:01:23,810
 one part new and four parts memory.
 
 20
-00:01:23,883 --> 00:01:29,193
+00:01:23,900 --> 00:01:29,468
 Its limits are not plus and minus three. They are calibrated
 
 21
-00:01:29,293 --> 00:01:34,423
+00:01:29,568 --> 00:01:34,947
 by simulation until this chart cries wolf as rarely as the
 
 22
-00:01:34,523 --> 00:01:39,383
+00:01:35,047 --> 00:01:40,144
 last one: one alarm in 370 quiet subgroups against 370.
 
 23
-00:01:39,483 --> 00:01:44,714
+00:01:40,233 --> 00:01:45,262
 Watch the same 80 subgroups again. While the process is quiet the
 
 24
-00:01:44,814 --> 00:01:50,783
+00:01:45,362 --> 00:01:51,101
 statistic wanders near zero, because new noise keeps cancelling old noise.
 
 25
-00:01:50,883 --> 00:01:56,056
+00:01:51,200 --> 00:01:56,089
 Once the drift starts, the noise still cancels but the drift does
 
 26
-00:01:56,156 --> 00:02:00,599
+00:01:56,189 --> 00:02:00,388
 not. It is the same direction every time, so it adds up.
 
 27
-00:02:00,683 --> 00:02:05,417
+00:02:00,483 --> 00:02:05,156
 It crosses the limit at subgroup 34, with the mean only
 
 28
-00:02:05,517 --> 00:02:10,779
+00:02:05,256 --> 00:02:10,450
 0.8 sigma off, and the raw measurement there sitting at +2.48
 
 29
-00:02:10,879 --> 00:02:15,438
+00:02:10,550 --> 00:02:15,049
 sigma — a number no Shewhart chart would ever look at
 
 30
-00:02:15,538 --> 00:02:21,415
+00:02:15,149 --> 00:02:20,951
 twice. The other chart waited until subgroup 64, 30 subgroups later.
 
 31
-00:02:21,500 --> 00:02:25,793
+00:02:21,050 --> 00:02:25,438
 That is one drift. Run thousands of them and the average
 
 32
-00:02:25,893 --> 00:02:29,560
+00:02:25,538 --> 00:02:29,286
 wait to detect a one sigma shift comes out at 44
 
 33
-00:02:29,660 --> 00:02:33,640
+00:02:29,386 --> 00:02:33,454
 subgroups for the Shewhart rule and 10 for this one.
 
 34
-00:02:33,733 --> 00:02:39,419
+00:02:33,550 --> 00:02:38,945
 Divide them: 4.4 times sooner, bought with no extra false alarms
 
 35
-00:02:39,519 --> 00:02:44,121
+00:02:39,045 --> 00:02:43,410
 at all. That trade is the whole of detection theory.
 

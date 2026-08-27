@@ -184,6 +184,15 @@
   .eq-body .katex-display{margin:0}
   .eq-body .katex{font-size:1.05em}
   p .katex,figcaption .katex,li .katex{font-size:.98em}
+  /* Display maths cannot wrap. On a narrow screen it scrolls inside its own
+     block instead of dragging the page sideways — DESIGN.md bans the page
+     scrolling horizontally, not a figure doing it. min-width:0 is required or
+     the grid item refuses to shrink. */
+  .eq-body{min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;
+           -webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .eq-body .katex-display{margin:0;padding-bottom:2px}
+  @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
+  @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
 </style>
 </head>
 <body>

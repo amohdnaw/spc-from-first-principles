@@ -1,124 +1,124 @@
 1
-00:00:00,000 --> 00:00:06,428
+00:00:00,000 --> 00:00:05,412
 One part tells you almost nothing. Many parts obey a law. Start with
 
 2
-00:00:06,528 --> 00:00:12,860
+00:00:05,512 --> 00:00:10,844
 the simplest part there is: one die, six faces, all equally likely.
 
 3
-00:00:12,950 --> 00:00:17,056
+00:00:10,933 --> 00:00:14,594
 Ten rolls tell you nothing: the worst face is out
 
 4
-00:00:17,156 --> 00:00:22,378
+00:00:14,694 --> 00:00:19,353
 by two hundred percent. Keep rolling, and watch that distance.
 
 5
-00:00:22,466 --> 00:00:27,738
+00:00:19,450 --> 00:00:24,452
 Ten thousand rolls, and the worst face is within a few percent of
 
 6
-00:00:27,838 --> 00:00:33,358
+00:00:24,552 --> 00:00:29,790
 one sixth. Nobody arranged that. It is what randomness does in bulk.
 
 7
-00:00:33,450 --> 00:00:38,244
+00:00:29,883 --> 00:00:34,012
 Predictable in bulk. But this is still one die at a time,
 
 8
-00:00:38,344 --> 00:00:42,710
+00:00:34,112 --> 00:00:37,871
 and one die is flat. Nothing here looks like a bell.
 
 9
-00:00:44,100 --> 00:00:49,760
+00:00:39,266 --> 00:00:44,926
 One die is the baseline: every face equally likely, no shape at all.
 
 10
-00:00:49,850 --> 00:00:53,638
+00:00:45,016 --> 00:00:49,500
 Average two of them and the flat top is already gone.
 
 11
-00:00:53,733 --> 00:00:57,713
+00:00:49,600 --> 00:00:53,484
 Average five, and there is a shape where there was none.
 
 12
-00:00:57,800 --> 00:01:01,179
+00:00:53,583 --> 00:00:56,669
 Thirty, and it is a bell. Nothing about a
 
 13
-00:01:01,279 --> 00:01:04,828
+00:00:56,769 --> 00:01:00,011
 die is bell shaped. The averaging did this.
 
 14
-00:01:04,916 --> 00:01:09,734
+00:01:00,100 --> 00:01:04,567
 Two numbers, measured separately, agreeing to three decimals:
 
 15
-00:01:09,834 --> 00:01:13,039
+00:01:04,667 --> 00:01:07,637
 the spread of the averages, and one die's
 
 16
-00:01:13,139 --> 00:01:16,264
+00:01:07,737 --> 00:01:10,632
 spread divided by the root of the count.
 
 17
-00:01:16,350 --> 00:01:22,202
+00:01:10,716 --> 00:01:16,568
 That agreement is the law. Sigma of x bar equals sigma over root n.
 
 18
-00:01:23,700 --> 00:01:27,136
+00:01:18,066 --> 00:01:21,801
 Put subgroup size along the bottom and the spread of
 
 19
-00:01:27,236 --> 00:01:30,128
+00:01:21,901 --> 00:01:25,046
 the mean up the side, with sigma set to one.
 
 20
-00:01:30,216 --> 00:01:34,233
+00:01:25,133 --> 00:01:29,187
 Now walk the subgroup size up from one to twenty five and
 
 21
-00:01:34,333 --> 00:01:38,060
+00:01:29,287 --> 00:01:33,049
 read the spread of the mean off the curve as it goes.
 
 22
-00:01:38,150 --> 00:01:42,439
+00:01:33,133 --> 00:01:37,188
 Twenty five parts, and the spread of the mean is a fifth
 
 23
-00:01:42,539 --> 00:01:46,594
+00:01:37,288 --> 00:01:41,121
 of one part's spread. The root is doing all the work.
 
 24
-00:01:46,683 --> 00:01:49,415
+00:01:41,216 --> 00:01:44,404
 But look at the shape of what you are buying.
 
 25
-00:01:49,500 --> 00:01:53,800
+00:01:44,500 --> 00:01:48,827
 The second part halves your uncertainty. The twenty fifth part
 
 26
-00:01:53,900 --> 00:01:57,703
+00:01:48,927 --> 00:01:52,755
 buys four thousandths of a sigma. Averaging is cheap at
 
 27
-00:01:57,803 --> 00:02:00,968
+00:01:52,855 --> 00:01:56,040
 the start and almost free of value at the end.
 
 28
-00:02:01,066 --> 00:02:03,742
+00:01:56,133 --> 00:01:58,917
 Which is why subgroups of four and five
 
 29
-00:02:03,842 --> 00:02:07,086
+00:01:59,017 --> 00:02:02,393
 are everywhere, and subgroups of fifty are not.
 
 30
-00:02:07,183 --> 00:02:11,518
+00:02:02,483 --> 00:02:06,923
 And it is why a control chart plots subgroup means. A shift
 
 31
-00:02:11,618 --> 00:02:16,179
+00:02:07,023 --> 00:02:11,695
 that hides inside single parts moves a mean far enough to see.
 

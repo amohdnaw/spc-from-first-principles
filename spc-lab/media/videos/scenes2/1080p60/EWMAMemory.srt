@@ -1,84 +1,84 @@
 1
-00:00:00,000 --> 00:00:05,453
+00:00:00,000 --> 00:00:05,502
 An EWMA chart has exactly one knob, and everything else follows from
 
 2
-00:00:05,553 --> 00:00:10,844
+00:00:05,602 --> 00:00:10,940
 it. Each new subgroup is blended with everything that came before.
 
 3
-00:00:10,933 --> 00:00:15,521
+00:00:11,033 --> 00:00:15,621
 Unroll the recursion and the weights fall away geometrically.
 
 4
-00:00:15,621 --> 00:00:18,750
+00:00:15,721 --> 00:00:18,850
 At lambda one half the chart has almost no
 
 5
-00:00:18,850 --> 00:00:22,593
+00:00:18,950 --> 00:00:22,693
 memory: one subgroup back already counts for half.
 
 6
-00:00:22,683 --> 00:00:27,349
+00:00:22,783 --> 00:00:27,328
 Turn it down and the tail grows: the chart starts remembering a
 
 7
-00:00:27,449 --> 00:00:32,039
+00:00:27,428 --> 00:00:31,899
 dozen subgroups at a time, and reacts to none of them quickly.
 
 8
-00:00:32,133 --> 00:00:35,996
+00:00:31,983 --> 00:00:35,933
 Zero point two is the usual compromise: half
 
 9
-00:00:36,096 --> 00:00:39,689
+00:00:36,033 --> 00:00:39,707
 the weight is gone by 3.1 subgroups back.
 
 10
-00:00:40,883 --> 00:00:45,600
+00:00:40,900 --> 00:00:45,352
 That memory changes the limits themselves. A Shewhart chart
 
 11
-00:00:45,700 --> 00:00:49,519
+00:00:45,452 --> 00:00:49,056
 holds the same three sigma either side, forever.
 
 12
-00:00:49,616 --> 00:00:54,800
+00:00:49,150 --> 00:00:53,993
 The EWMA limits start wide, because at subgroup one there is
 
 13
-00:00:54,900 --> 00:01:00,700
+00:00:54,093 --> 00:00:59,514
 no accumulated evidence, then close as the weighted history builds.
 
 14
-00:01:00,800 --> 00:01:04,608
+00:00:59,600 --> 00:01:03,206
 They settle near one third of a sigma times three
 
 15
-00:01:04,708 --> 00:01:08,596
+00:01:03,306 --> 00:01:06,988
 — a band 3.0 times narrower than the Shewhart one.
 
 16
-00:01:08,683 --> 00:01:12,616
+00:01:07,083 --> 00:01:11,354
 The width comes from one expression, and at lambda zero
 
 17
-00:01:12,716 --> 00:01:15,183
+00:01:11,454 --> 00:01:14,135
 point two it is a third of a sigma.
 
 18
-00:01:15,283 --> 00:01:20,655
+00:01:14,233 --> 00:01:19,713
 Tighter limits on smoothed data catch a small shift much earlier.
 
 19
-00:01:20,755 --> 00:01:26,127
+00:01:19,813 --> 00:01:25,293
 Simulated at a matched false alarm rate: 44 subgroups against 10.
 
 20
-00:01:26,216 --> 00:01:29,716
+00:01:25,383 --> 00:01:29,039
 4.4 times sooner, and lambda is the knob that
 
 21
-00:01:29,816 --> 00:01:33,316
+00:01:29,139 --> 00:01:32,795
 decides how much of the past the chart keeps.
 

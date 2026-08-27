@@ -41,7 +41,7 @@ MIN_BEAT = 1.4
 TAIL_PAUSE = 0.45
 
 VOICE = os.environ.get("SPCLAB_VOICE", "").strip().lower() in {"1", "true", "yes", "on"}
-SERVICE = os.environ.get("SPCLAB_VOICE_SERVICE", "gtts").strip().lower()
+SERVICE = os.environ.get("SPCLAB_VOICE_SERVICE", "kokoro").strip().lower()
 
 
 def spoken_duration(text: str) -> float:
@@ -67,18 +67,37 @@ else:
 
 
 def _speech_service():
-    """The voice. gTTS is the default because it needs no key and no model.
+    """The voice. Kokoro `am_michael` is the default, running locally.
 
-    To narrate in your own voice instead:
-        sudo apt install portaudio19-dev          # pyaudio needs this
+    Chosen by measurement, not taste: 118 Hz median pitch at 143 wpm, against
+    gTTS's 209 Hz. An explainer voice sits between 110 and 125 Hz, and gTTS does
+    not. The table is in `specs/narration-voice.md`.
+
+    Kokoro needs torch, so it runs in a separate interpreter and this process
+    only shells out to it — see `spclab/kokoro_voice.py`. If that interpreter is
+    missing, the render falls back to gTTS with a warning rather than dying,
+    because a voice regression should not stop a build.
+
+        SPCLAB_VOICE=1 ./build-media.sh                      # kokoro
+        SPCLAB_VOICE=1 SPCLAB_VOICE_SERVICE=gtts ./build-media.sh
+        SPCLAB_VOICE=1 SPCLAB_VOICE_SERVICE=recorder ./build-media.sh   # your voice
+
+    RecorderService prompts per line and caches each take, so a re-render only
+    re-records lines whose text changed. It needs:
+        sudo apt install portaudio19-dev
         .venv/bin/pip install "manim-voiceover[recorder]"
-        SPCLAB_VOICE=1 SPCLAB_VOICE_SERVICE=recorder .venv/bin/manim ...
-    RecorderService prompts you per line and caches each take, so a re-render
-    reuses the audio and only re-records lines whose text changed.
     """
     if SERVICE == "recorder":
         from manim_voiceover.services.recorder import RecorderService
         return RecorderService(trim_buffer_end=50, trim_buffer_start=50)
+
+    if SERVICE in {"", "kokoro"}:
+        try:
+            from spclab.kokoro_voice import KokoroService
+            return KokoroService()
+        except Exception as exc:                       # noqa: BLE001 — see docstring
+            print(f"\n  kokoro unavailable ({exc}); falling back to gTTS\n")
+
     from manim_voiceover.services.gtts import GTTSService
     # en-GB reads a little slower and flatter than en-US, which suits
     # technical narration.

@@ -1,54 +1,54 @@
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:03.645
+00:00:00.000 --> 00:00:03.576
 A control limit sees one point at a time. The
 
 2
-00:00:03.745 --> 00:00:07.973
+00:00:03.676 --> 00:00:07.825
 Western Electric rules read the run, so the chart is
 
 3
-00:00:08.073 --> 00:00:11.636
+00:00:07.925 --> 00:00:11.420
 divided into one, two and three sigma zones.
 
 4
-00:00:11.733 --> 00:00:15.367
+00:00:11.516 --> 00:00:15.102
 Forty subgroups from a process that looks calm at
 
 5
-00:00:15.467 --> 00:00:19.025
+00:00:15.202 --> 00:00:18.712
 a glance. Only one point ever leaves the limits.
 
 6
-00:00:19.116 --> 00:00:24.296
+00:00:18.800 --> 00:00:23.428
 Rule one: point beyond 3 sigma. Subgroup 11.
 
 7
-00:00:24.383 --> 00:00:31.243
+00:00:23.516 --> 00:00:29.704
 Rule two: 2 of 3 beyond 2 sigma, same side. Subgroup 16.
 
 8
-00:00:31.333 --> 00:00:38.025
+00:00:29.800 --> 00:00:36.228
 Rule three: 4 of 5 beyond 1 sigma, same side. Subgroup 24.
 
 9
-00:00:38.116 --> 00:00:43.728
+00:00:36.316 --> 00:00:41.400
 Rule four: 8 in a row, same side. Subgroup 32.
 
 10
-00:00:43.816 --> 00:00:48.882
+00:00:41.500 --> 00:00:46.541
 The last one is the point of the whole idea. Eight subgroups in a row
 
 11
-00:00:48.982 --> 00:00:53.748
+00:00:46.641 --> 00:00:51.384
 on one side of centre, and not one of them anywhere near a limit.
 
 12
-00:00:53.833 --> 00:00:57.039
+00:00:51.483 --> 00:00:54.958
 A shift too small to breach a limit still shows up
 
 13
-00:00:57.139 --> 00:01:00.213
+00:00:55.058 --> 00:00:58.391
 in the pattern, which is what the rules are for.
 
