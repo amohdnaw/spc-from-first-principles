@@ -14,14 +14,25 @@ import pathlib
 
 # ---------------------------------------------------------------- CSS injected once
 CHAPTER_CSS = """
-  /* ---------- chapter grammar (DESIGN.md §3, added 2026-08-27) ----------
-     A level page is a chapter: opener, contents, numbered sections, and an
-     outer column holding the section's chart plus the margin apparatus. */
+  /* ---------- chapter grammar (DESIGN.md §3) ----------
+     Layout follows the book convention rather than an invented one. Tufte CSS:
+     figures are constrained to the main column by default, a *small* figure may
+     go in the margin, and anything larger takes the full text block. Margin notes
+     sit "as close as possible to the text that references them" - which is done
+     with a float at the note's position in the flow, never with grid rows. Grid
+     rows put the note in a row of its own and cut an L-shaped hole in the page. */
+  :root{ --marg:320px; --marg-gap:48px; }
+
+  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
+  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
+
   .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
     text-transform:uppercase;color:var(--accent);margin:0 0 18px}
 
   .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
-    padding:22px 0 24px;margin:8px 0 0}
+    padding:22px 0 24px;margin:8px 0 0;
+    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
   .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
   .toc-head .est{margin-left:auto}
   .toc ol{list-style:none;margin:0;padding:0;display:grid;
@@ -33,45 +44,57 @@ CHAPTER_CSS = """
   .toc a:hover{color:var(--accent)}
   .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
 
+  /* a heading must clear the sticky nav when jumped to from the contents */
+  main section{scroll-margin-top:96px}
   .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
     color:var(--accent);display:block;margin-bottom:10px}
   main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
     color:var(--ink-bright);margin:0 0 14px;max-width:26em}
-  /* the first paragraph of the chapter opens like a book */
   .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
 
-  /* margin apparatus: instrument voice only */
-  .side{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink-dim);
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:0 32px}
-  .note{border-left:1px solid var(--rule);padding-left:14px;margin:0 0 26px}
+  /* margin notes: instrument voice, level with the paragraph they annotate.
+     Below the margin breakpoint they simply follow the prose at measure width. */
+  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
+    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
+    margin:0 0 26px;max-width:var(--measure);text-indent:0}
   .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
     font-size:11px;margin-bottom:5px}
   .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
   .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
     line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
   .note.speak{border-left-color:var(--accent)}
-  /* an act this section references but is not about */
-  .note.watch{display:block;text-decoration:none;color:inherit;border-left-color:var(--accent)}
-  .note.watch img{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
+  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
+    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
+  .note.data .row:last-child{border-bottom:0}
+  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+  /* a value may be a sentence, not just a number: it must be allowed to wrap */
+  .note.data .rv{color:var(--ink-bright);font-size:16px;font-variant-numeric:tabular-nums;
+    min-width:0;overflow-wrap:anywhere;text-align:right}
+  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
+    line-height:1.5;overflow-wrap:anywhere}
+  /* a margin figure - Tufte's one case for a figure outside the main flow */
+  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
   .note.watch:hover .k{color:var(--ink-bright)}
 
-  /* a player must not eat a whole screen: bound its width by a height budget so the
-     16:9 box stays intact instead of letterboxing */
+  /* figures take the whole text block and share its left edge */
+  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
   figure video{max-width:min(100%,calc(68vh * 16 / 9))}
 
   @media (min-width:1500px){
-    :root{ --body:26px }
-    /* the spread: argument left, chart and apparatus in the outer column */
-    .leaf{display:grid;grid-template-columns:minmax(0,var(--measure)) minmax(0,1fr);
-      gap:56px;align-items:start}
-    .leaf > .side,.leaf > .leaf-fig{grid-column:2}
-    .side{grid-template-columns:1fr;max-width:340px}
-    .leaf-fig{margin-top:8px}
-    .leaf-fig figure{margin-top:0;max-width:100%}
-    .leaf-fig figure + figure{margin-top:40px}
-    .leaf > div > p,.leaf > div > .eq{max-width:var(--measure)}
+    :root{ --body:26px; --marg:340px; }
+    /* the note floats into the margin at its position in the flow. This is the
+       whole trick: no row of its own, so no hole beside it. */
+    /* tufte-css's mechanism: a negative right margin pulls the float out of the
+       text column so it consumes no horizontal space there. Without it the float
+       lives inside the 702px paragraph and shortens every line beside it, which
+       destroys the measure the whole design is built on. */
+    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
+      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
+      position:relative;z-index:1}
+    /* the demoted act carries a player: it stays in the flow at block width */
+    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
+    .leaf > div::after{content:"";display:block;clear:both}
   }
-  @media (min-width:1900px){ .leaf{gap:64px} }
 """
 
 # ---------------------------------------------------------------- chapter specs
@@ -98,6 +121,30 @@ LEVEL6 = {
 }
 
 
+def take_div(s: str, start: int) -> str:
+    """Return the complete <div> beginning at `start`, matching nesting.
+
+    Regex cannot do this: the equation block contains rendered KaTeX, which is
+    hundreds of nested divs and spans, so a non-greedy `</div>\\s*</div>` match
+    stops in the middle of the formula and leaves the document unbalanced. The
+    symptom is later blocks nesting inside the equation - a 2032px "lab".
+    """
+    depth = 0
+    i = start
+    while i < len(s):
+        if s.startswith("<div", i) and (i + 4 >= len(s) or s[i + 4] in " >\t\n"):
+            depth += 1
+            i += 4
+        elif s.startswith("</div>", i):
+            depth -= 1
+            i += 6
+            if depth == 0:
+                return s[start:i]
+        else:
+            i += 1
+    raise ValueError("unbalanced div")
+
+
 def extract(html: str) -> dict:
     """Pull the blocks that must survive untouched."""
     body = html[html.index("<main"):html.index("</main>")]
@@ -109,11 +156,8 @@ def extract(html: str) -> dict:
             sys.exit(f"chapterise: could not find {name}")
         return m.group(0)
 
-    out["eq"] = block(r'<div class="eq">.*?</div>\s*</div>', "equation block")
-    # the lab: balanced enough to take by its own closing comment-free shape
-    lab_start = body.index('<div class="lab">')
-    lab_end = body.index('<aside class="sys">')
-    out["lab"] = body[lab_start:lab_end].rstrip()
+    out["eq"] = take_div(body, body.index('<div class="eq">'))
+    out["lab"] = take_div(body, body.index('<div class="lab">'))
     out["sys"] = block(r'<aside class="sys">.*?</aside>', "sys note")
     out["next"] = block(r'<a class="next".*?</a>', "next link")
 
@@ -128,31 +172,59 @@ def extract(html: str) -> dict:
 
 
 def note(k, v=None, text=None, speak=False, serif=False):
+    """A margin note.
+
+    Emitted as a span so it can live *inside* a paragraph: a float only rises to
+    the line box where it appears, so a note that is a sibling of the paragraph
+    lands at the paragraph's foot instead of level with its reference.
+    """
     cls = "note speak" if speak else "note"
     inner = f'<span class="k">{k}</span>'
     if v:
         inner += f'<span class="v">{v}</span>'
     if text:
         inner += f"<em>{text}</em>" if serif else text
-    return f'        <div class="{cls}">{inner}</div>'
+    return f'<span class="{cls}">{inner}</span>'
+
+
+def datanote(*rows, k=None):
+    """One margin block carrying several label/value rows.
+
+    Three separate notes on one paragraph stack to 246px of float and stretch the
+    section; one block with three rows is shorter and reads as a table.
+    """
+    out = []
+    if k:
+        out.append(f'<span class="k">{k}</span>')
+    for label, value, *rest in rows:
+        tail = f'<span class="rn">{rest[0]}</span>' if rest else ""
+        out.append(f'<span class="row"><span class="rk">{label}</span>'
+                   f'<span class="rv">{value}</span>{tail}</span>')
+    return '<span class="note data">' + "".join(out) + "</span>"
 
 
 def build_main(spec: dict, keep: dict) -> str:
+    """Assemble the chapter.
+
+    Note placement follows the book convention: a margin note is emitted
+    immediately after the paragraph it annotates, so the float lands level with
+    its referent. Figures sit in the flow at full text-block width.
+    """
     n = spec["number"]
     figs = keep["figs"]
 
-    def fig(name, wide=True):
+    def fig(name):
         f = figs.get(name)
         if f is None:
             sys.exit(f"chapterise: figure {name} missing")
-        return re.sub(r'<figure[^>]*>',
-                      '<figure class="wide">' if wide else '<figure>', f, count=1)
+        return re.sub(r"<figure[^>]*>", "<figure>", f, count=1)
 
     toc_items = "\n".join(
         f'          <li><span class="n">{num}</span><a href="#{anchor}">{title}'
         f'<span class="sub">{sub}</span></a></li>'
         for num, anchor, title, sub in spec["toc"])
 
+    P = "          "   # prose indent
     L = []
     A = L.append
     A("  <main>")
@@ -161,15 +233,12 @@ def build_main(spec: dict, keep: dict) -> str:
     A('    <header class="ch">')
     A('      <div class="leaf">')
     A("        <div>")
-    A(f'          <p class="ch-no">Level {n} · chapter {spec["word"]}</p>')
+    A('          <p class="eyebrow">Level 6</p>')
+    A(f'          <p class="ch-no">Chapter {spec["word"]}</p>')
     A('          <h1 class="page-title"></h1>')
-    A('          <p class="dek page-dek"></p>')
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("before this", text=f'{spec["before"][0]} {spec["before"][1]}'))
-    A(note("after this", text=f'{spec["after"][0]} {spec["after"][1]}'))
-    A(note("watch instead", text="The whole chapter is also a narrated act — figure 6.1.",
-           serif=True))
+    A('          <p class="dek page-dek">'
+      + datanote(("before this", spec["before"][0]), ("after this", spec["after"][0]),
+                 k="where this sits") + '</p>')
     A("        </div>")
     A("      </div>")
     A('      <div class="toc">')
@@ -181,164 +250,134 @@ def build_main(spec: dict, keep: dict) -> str:
     A("      </div>")
     A("    </header>")
 
+    def section(anchor, num, title, blocks):
+        A(f'    <section id="{anchor}">')
+        A('      <div class="leaf">')
+        A("        <div>")
+        A(f'          <span class="sec-no">{num}</span>')
+        A(f"          <h2>{title}</h2>")
+        for b in blocks:
+            A(b)
+        A("        </div>")
+        A("      </div>")
+        A("    </section>")
+
+    def para(text, *notes, lead=False):
+        """A paragraph, with its margin notes injected after the first sentence."""
+        cls = ' class="lead"' if lead else ""
+        if notes:
+            m = re.search(r"(?<=[.?!])\s", text)
+            cut = m.end() if m else len(text)
+            text = text[:cut] + "".join(notes) + text[cut:]
+        return f"{P}<p{cls}>{text}</p>"
+
     # ---- 6.1 -----------------------------------------------------------
-    A('    <section id="s1">')
-    A('      <div class="leaf">')
-    A("        <div>")
-    A('          <span class="sec-no">6.1</span>')
-    A("          <h2>A curve that is a claim</h2>")
-    A('          <p class="lead">Level 4 told us which distribution every subgroup mean is'
-      " drawn from, so long as nothing about the process has changed. Draw that"
-      " distribution and you have not drawn a picture of your parts. You have drawn a"
-      " claim.</p>")
-    A("          <p>The claim is that the process is unchanged — one stable stream, every"
-      " subgroup mean pulled from the same curve. That is the null hypothesis, and it is"
-      " worth being pedantic about what it is a hypothesis <em>about</em>. Not this part."
-      " Not this batch. The process.</p>")
-    A("          <p>Everything that follows in this chapter is a consequence of taking that"
-      " claim seriously enough to test it.</p>")
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("H₀ — the null", text="The process is unchanged: every subgroup mean is drawn "
-           "from one distribution."))
-    A(note("not H₀", text="A statement about any individual part. A part is never in or "
-           "out of control."))
-    A(note("spoken · 0:11", text="“That curve is the null hypothesis. Not an assumption "
-           "about the parts, but a claim about the process.”", speak=True, serif=True))
-    A("        </div>")
-    A('        <div class="leaf-fig">')
-    A("      " + fig("21_l2_null_distribution.png", wide=False))
-    A("        </div>")
-    A("      </div>")
-    A("    </section>")
+    section("s1", "6.1", "A curve that is a claim", [
+        para("Level 4 told us which distribution every subgroup mean is drawn from, so long"
+             " as nothing about the process has changed. Draw that distribution and you have"
+             " not drawn a picture of your parts. You have drawn a claim.",
+             note("H₀ — the null", text="The process is unchanged: every subgroup mean is "
+                  "drawn from one distribution."), lead=True),
+        para("The claim is that the process is unchanged — one stable stream, every subgroup"
+             " mean pulled from the same curve. That is the null hypothesis, and it is worth"
+             " being pedantic about what it is a hypothesis <em>about</em>. Not this part."
+             " Not this batch. The process.",
+             note("not H₀", text="A statement about any individual part. A part is never in "
+                  "or out of control.")),
+        para("Everything that follows in this chapter is a consequence of taking that claim"
+             " seriously enough to test it.",
+             note("spoken · 0:11", text="“That curve is the null hypothesis. Not an "
+                  "assumption about the parts, but a claim about the process.”",
+                  speak=True, serif=True)),
+        "      " + fig("21_l2_null_distribution.png"),
+    ])
 
     # ---- 6.2 -----------------------------------------------------------
-    A('    <section id="s2">')
-    A('      <div class="leaf">')
-    A("        <div>")
-    A('          <span class="sec-no">6.2</span>')
-    A("          <h2>Pricing ±3σ</h2>")
-    A("          <p>Put a pair of limits on that curve and sweep them outward from the"
-      " centre. At every position the question has an exact answer: how much of the"
-      " distribution is inside? Not looked up in a table — it is the integral of the curve"
-      " between the limits, evaluated as they move.</p>")
-    A("          <p>Stop at three sigma and the answer is 99.73%. Nobody chose that number."
-      " It is simply what ±3σ is worth, and everything the process should ever do lives"
-      " inside it.</p>")
-    A("      " + keep["eq"])
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("in-control area", v="99.73 %"))
-    A(note("outside", v="0.27 %"))
-    A(note("Φ", text="The standard normal CDF, computed from erf — not a table."))
-    A(note("spoken · 0:38", text="“Ninety-nine point seven three percent. Nobody chose "
-           "that number.”", speak=True, serif=True))
-    A("        </div>")
-    A("      </div>")
-    A("  " + keep["lab"])
-    A("      " + fig("Level06.mp4"))
-    A("    </section>")
+    section("s2", "6.2", "Pricing ±3σ", [
+        para("Put a pair of limits on that curve and sweep them outward from the centre. At"
+             " every position the question has an exact answer: how much of the distribution"
+             " is inside? Not looked up in a table — it is the integral of the curve between"
+             " the limits, evaluated as they move.",
+             datanote(("in-control", "99.73 %"), ("outside", "0.27 %"),
+                      k="what ±3σ is worth")),
+        para("Stop at three sigma and the answer is 99.73%. Nobody chose that number. It is"
+             " simply what ±3σ is worth, and everything the process should ever do lives"
+             " inside it.",
+             note("Φ", text="The standard normal CDF, computed from erf — not a table."),
+             note("spoken · 0:38", text="“Ninety-nine point seven three percent. Nobody "
+                  "chose that number.”", speak=True, serif=True)),
+        "      " + keep["eq"],
+        "  " + keep["lab"],
+        "      " + fig("Level06.mp4"),
+    ])
 
     # ---- 6.3 -----------------------------------------------------------
-    A('    <section id="s3">')
-    A('      <div class="leaf">')
-    A("        <div>")
-    A('          <span class="sec-no">6.3</span>')
-    A("          <h2>Where the price hides</h2>")
-    A("          <p>The whole of the rest — the part that makes the chart worth running —"
-      " is out in the tails, and at the scale of the last figure you cannot see it at all."
-      " So stretch the vertical axis and let the tails grow. The peak goes straight out of"
-      " frame, which is the point: the tails are about seventy times smaller than anything"
-      " else on the chart.</p>")
-    A("          <p>Each wing is one tenth of one percent of everything, and there are two"
-      " of them. Together they are the tail integral, and it has a closed form: 0.0027."
-      " Invert it and the bet is priced — one false alarm in 370 subgroups.</p>")
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("each wing", v="0.135 %"))
-    A(note("both wings", v="0.0027"))
-    A(note("false alarm", v="1 in 370"))
-    A(note("axis stretch", v="×70", text="needed before the tails are visible at all."))
-    A("        </div>")
-    A("      </div>")
-    A("    </section>")
+    section("s3", "6.3", "Where the price hides", [
+        para("The whole of the rest — the part that makes the chart worth running — is out in"
+             " the tails, and at the scale of the last figure you cannot see it at all. So"
+             " stretch the vertical axis and let the tails grow. The peak goes straight out"
+             " of frame, which is the point: the tails are about seventy times smaller than"
+             " anything else on the chart.",
+             note("axis stretch", v="×70", text="needed before the tails are visible at all.")),
+        para("Each wing is one tenth of one percent of everything, and there are two of them."
+             " Together they are the tail integral, and it has a closed form: 0.0027. Invert"
+             " it and the bet is priced — one false alarm in 370 subgroups.",
+             datanote(("each wing", "0.135 %"), ("both wings", "0.0027"),
+                      ("false alarm", "1 in 370"), k="the tail, priced")),
+    ])
 
     # ---- 6.4 -----------------------------------------------------------
-    A('    <section id="s4">')
-    A('      <div class="leaf">')
-    A("        <div>")
-    A('          <span class="sec-no">6.4</span>')
-    A("          <h2>The chart is that test, repeated</h2>")
-    A("          <p>A control chart is not a new idea on top of this one. It is the same"
-      " test, run again on every subgroup, forever. The limits are the boundary we just"
-      " drew, turned on its side. Every point inside is the process agreeing with the null"
-      " hypothesis, and that is what boring looks like. Boring is the goal.</p>")
-    A("          <p>Then one point steps outside — say 4.1σ above the centre line, where"
-      " the null allows one point in 370. That point is not a bad part, and scrapping it"
-      " changes nothing. It is evidence against the hypothesis that nothing changed. The"
-      " correct response is to go and find what did.</p>")
-    A("      " + keep["sys"])
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("the violation", v="4.1 σ"))
-    A(note("allowed by H₀", v="1 in 370"))
-    A(note("spoken · 2:09", text="“This is not a bad part, and scrapping it changes "
-           "nothing. It is evidence against the hypothesis that nothing changed.”",
-           speak=True, serif=True))
-    A("        </div>")
-    A("      </div>")
-    A("    </section>")
+    section("s4", "6.4", "The chart is that test, repeated", [
+        para("A control chart is not a new idea on top of this one. It is the same test, run"
+             " again on every subgroup, forever. The limits are the boundary we just drew,"
+             " turned on its side. Every point inside is the process agreeing with the null"
+             " hypothesis, and that is what boring looks like. Boring is the goal.",
+             note("allowed by H₀", v="1 in 370")),
+        para("Then one point steps outside — say 4.1σ above the centre line, where the null"
+             " allows one point in 370. That point is not a bad part, and scrapping it changes"
+             " nothing. It is evidence against the hypothesis that nothing changed. The"
+             " correct response is to go and find what did.",
+             note("the violation", v="4.1 σ"),
+             note("spoken · 2:09", text="“This is not a bad part, and scrapping it changes "
+                  "nothing. It is evidence against the hypothesis that nothing changed.”",
+                  speak=True, serif=True)),
+        "      " + keep["sys"],
+    ])
 
     # ---- 6.5 -----------------------------------------------------------
-    A('    <section id="s5">')
-    A('      <div class="leaf">')
-    A("        <div>")
-    A('          <span class="sec-no">6.5</span>')
-    A("          <h2>How good is σ̂?</h2>")
-    A("          <p>Everything so far assumed we know σ. On a real line we do not — we"
-      " estimate it, usually from the average range of the subgroups divided by a"
-      " constant. That estimate is unbiased on average, but a chart built from twenty-five"
-      " subgroups carries real fuzz in its own limits, which is why Phase I needs enough"
-      " data before the limits mean anything.</p>")
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("σ̂ from ranges", v="R̄ / d₂"))
-    A(note("at 25 subgroups", v="±0.075 σ", text="spread in the estimate itself."))
-    A("        </div>")
-    A('        <div class="leaf-fig">')
-    A("      " + fig("22_l2_rbar_plumbing.png", wide=False))
-    A("        </div>")
-    A("      </div>")
-    A("    </section>")
+    section("s5", "6.5", "How good is σ̂?", [
+        para("Everything so far assumed we know σ. On a real line we do not — we estimate it,"
+             " usually from the average range of the subgroups divided by a constant. That"
+             " estimate is unbiased on average, but a chart built from twenty-five subgroups"
+             " carries real fuzz in its own limits, which is why Phase I needs enough data"
+             " before the limits mean anything.",
+             datanote(("σ̂ from ranges", "R̄ / d₂"),
+                      ("at 25 subgroups", "±0.075 σ", "spread in the estimate itself"),
+                      k="estimating σ")),
+        "      " + fig("22_l2_rbar_plumbing.png"),
+    ])
 
     # ---- 6.6 -----------------------------------------------------------
-    A('    <section id="s6">')
-    A('      <div class="leaf">')
-    A("        <div>")
-    A('          <span class="sec-no">6.6</span>')
-    A("          <h2>Where the constants come from</h2>")
-    A("          <p>d₂ is the expected range of n standard normals. A₂, D₃ and D₄ are the"
-      " numbers printed on every shop-floor chart form. None of them is looked up here:"
-      " each one is simulated, and then checked against the published table in a test"
-      " suite. If the simulation and the table ever disagreed, the test would fail rather"
-      " than the page quietly lying.</p>")
-    A("        </div>")
-    A('        <div class="side">')
-    A(note("d₂ at n = 5", v="2.326"))
-    A(note("A₂ at n = 5", v="0.577"))
-    A(note("simulated", v="400 000", text="subgroups, checked against AIAG Table B."))
-    A('        <a class="note watch" href="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4">'
-      '<span class="k">watch · figure 6.4</span>'
-      '<img src="posters/constants.jpg" alt="Where the constants come from" loading="lazy">'
-      "<em>Where the constants come from — d₂ simulated from 400 000 subgroups, landing on "
-      "the published value.</em></a>")
-    A("        </div>")
-    A("      </div>")
-    A('      <div class="figpair">')
-    A("      " + fig("01_d2.png", wide=False))
-    A("      " + fig("02_A2_D3_D4.png", wide=False))
-    A("      </div>")
-    A("    </section>")
+    section("s6", "6.6", "Where the constants come from", [
+        para("d₂ is the expected range of n standard normals. A₂, D₃ and D₄ are the numbers"
+             " printed on every shop-floor chart form. None of them is looked up here: each"
+             " one is simulated, and then checked against the published table in a test suite."
+             " If the simulation and the table ever disagreed, the test would fail rather than"
+             " the page quietly lying.",
+             datanote(("d₂ at n = 5", "2.326"), ("A₂ at n = 5", "0.577"),
+                      ("simulated", "400 000", "subgroups, checked against AIAG Table B"),
+                      k="the constants")),
+        '        <div class="note watch nofloat"><span class="k">watch · figure 6.4</span>'
+        '<video controls playsinline preload="none" poster="posters/constants.jpg">'
+        '<source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">'
+        '<track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>'
+        "</video><em>Where the constants come from — d₂ simulated from 400 000 subgroups, "
+        "landing on the published value.</em></div>",
+        '      <div class="figpair">',
+        "      " + fig("01_d2.png"),
+        "      " + fig("02_A2_D3_D4.png"),
+        "      </div>",
+    ])
 
     A("    " + keep["next"])
     A("  </main>")
