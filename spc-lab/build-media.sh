@@ -21,11 +21,11 @@ CAPTIONS=../captions
 
 # scene file : class : poster name
 SCENES=(
-  "level0_scene:Level0:level0"
-  "level1_scene:Level1:level1"
-  "level2_scene:Level2:level2"
-  "level3_scene:Level3:level3"
-  "level4_scene:Level4:level4"
+  "level03_scene:Level03:level03"
+  "level04_scene:Level04:level04"
+  "level06_scene:Level06:level06"
+  "level08_scene:Level08:level08"
+  "level09_scene:Level09:level09"
   "scenes:SPCGallery:gallery"
   "scenes2:ConstantsAct:constants"
   "scenes2:EWMAMemory:ewma"
@@ -33,7 +33,7 @@ SCENES=(
 )
 
 mkdir -p "$POSTERS" "$CAPTIONS"
-echo "voice=${SPCLAB_VOICE:-0} service=${SPCLAB_VOICE_SERVICE:-gtts} quality=$QUALITY"
+echo "voice=${SPCLAB_VOICE:-0} service=${SPCLAB_VOICE_SERVICE:-kokoro} quality=$QUALITY"
 echo
 
 for entry in "${SCENES[@]}"; do

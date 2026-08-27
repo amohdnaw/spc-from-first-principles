@@ -81,15 +81,25 @@ and the MSA closing back to Level 8.
 
 ## 3. Renumbering — done once, now
 
-The five published pages move into the single sequence:
+The five published pages move into the single sequence. New paths are **zero-padded**,
+and that is load-bearing rather than cosmetic: with plain numbers, `level-3.html` would
+be both an old path (Capability) and a new path (Centre and spread), so a bookmark to
+Capability would silently open the wrong topic. Silently wrong content is worse than a
+404. Padding means no string is ever both an old path and a new one.
 
 | Old URL | New URL | Old title | New title |
 |---|---|---|---|
-| `level-0.html` | `level-3.html` | Level 0 | Level 3 |
-| `level-1.html` | `level-4.html` | Level 1 | Level 4 |
-| `level-2.html` | `level-6.html` | Level 2 | Level 6 |
-| `level-3.html` | `level-8.html` | Level 3 | Level 8 |
-| `level-4.html` | `level-9.html` | Level 4 | Level 9 |
+| `level-0.html` | `level-03.html` | Level 0 | Level 3 |
+| `level-1.html` | `level-04.html` | Level 1 | Level 4 |
+| `level-2.html` | `level-06.html` | Level 2 | Level 6 |
+| `level-3.html` | `level-08.html` | Level 3 | Level 8 |
+| `level-4.html` | `level-09.html` | Level 4 | Level 9 |
+
+The same padding applies inside `spc-lab`, for the same reason — `level3_scene.py`
+would otherwise mean Capability today and Centre-and-spread tomorrow. Modules become
+`level03_scene.py` … `level09_scene.py`, scene classes `Level03` … `Level09`, and the
+media, poster and caption basenames follow. On-screen and spoken text stays unpadded:
+a title card reads **Level 3**, never "Level 03".
 
 Consequences, all of them accepted:
 
@@ -112,9 +122,10 @@ Consequences, all of them accepted:
 Checkable in a browser, in order of delivery.
 
 ### After the renumber
-1. `level-3.html` exists and its rail reads **Level 3**; the video's own title card
+1. `level-03.html` exists and its rail reads **Level 3**; the video's own title card
    reads **Level 3**, and the narration says "Level three".
-2. Opening the old `level-0.html` lands you on `level-3.html` without a 404.
+2. Opening the old `level-0.html` lands you on `level-03.html` without a 404, and no
+   old path resolves to a page about a different topic than it used to name.
 3. No page anywhere says "Level 0", and no act speaks a number that disagrees with
    the page it sits on. Checked by grep across sources and by playing each act.
 4. The index rail shows **twelve slots**, five live and seven marked as not yet

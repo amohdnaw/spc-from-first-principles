@@ -24,8 +24,8 @@ asserted* cannot afford that. What replaces it:
 
 Pacing still lives in the narration script — see narration.py.
 
-    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level3_scene.py Level3
-    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level3_scene.py Level3
+    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level08_scene.py Level08
+    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level08_scene.py Level08
 """
 from __future__ import annotations
 
@@ -86,14 +86,14 @@ def ppm_compact(ppm: float) -> str:
     return f"1 in {round(one_in):,}"
 
 
-class Level3(NarratedCameraScene):
+class Level08(NarratedCameraScene):
     def construct(self):
         self.part1_two_voices()
         self.part2_promise()
 
     # ------------- part 1: two voices, then Cp, then the drift --------------
     def part1_two_voices(self):
-        title = prose("Level 3 · two voices, one axis", 28, GREY)
+        title = prose("Level 8 · two voices, one axis", 28, GREY)
         title.to_edge(UP, buff=0.38)
         axes = Axes(x_range=[49.55, 50.45, 0.2], y_range=[0, 7.0, 2],
                     x_length=9.4, y_length=4.3, tips=False,

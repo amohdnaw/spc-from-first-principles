@@ -22,8 +22,8 @@ four". Nothing on screen produced those numbers. Now:
 
 Pacing still lives in the narration script — see narration.py.
 
-    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level4_scene.py Level4
-    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level4_scene.py Level4
+    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level09_scene.py Level09
+    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level09_scene.py Level09
 """
 from __future__ import annotations
 
@@ -76,7 +76,7 @@ OFF_SHEW = (DET_SHEW - SHIFT_AT) * DRIFT
 OFF_EWMA = (DET_EWMA - SHIFT_AT) * DRIFT
 
 
-class Level4(NarratedCameraScene):
+class Level09(NarratedCameraScene):
     def construct(self):
         self.part1_blind_spot()
         self.part2_memory_wins()
@@ -84,7 +84,7 @@ class Level4(NarratedCameraScene):
     # --------------- part 1: single points cannot see slow drift ------------
     def part1_blind_spot(self):
         raw, _ = drifting_process()
-        title = prose("Level 4 · the blind spot: drift hides inside noise",
+        title = prose("Level 9 · the blind spot: drift hides inside noise",
                       30, GREY).to_edge(UP, buff=0.38)
         axes = Axes(x_range=[0, N_SUB, 10], y_range=[-3.8, 3.8, 1],
                     x_length=9.6, y_length=4.3, tips=False,

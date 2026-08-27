@@ -1,144 +1,146 @@
+WEBVTT
+
 1
-00:00:00,000 --> 00:00:03,247
+00:00:00.000 --> 00:00:03.247
 Three sigma is not a matter of taste. It
 
 2
-00:00:03,347 --> 00:00:06,428
+00:00:03.347 --> 00:00:06.428
 is a bet, and we can price it exactly.
 
 3
-00:00:06,516 --> 00:00:10,382
-Level one told us which distribution every subgroup
+00:00:06.516 --> 00:00:10.506
+Level four told us which distribution every subgroup
 
 4
-00:00:10,482 --> 00:00:14,192
+00:00:10.606 --> 00:00:14.360
 mean is drawn from, assuming nothing has changed.
 
 5
-00:00:14,283 --> 00:00:19,070
+00:00:14.450 --> 00:00:19.237
 That curve is the null hypothesis. Not an assumption about the
 
 6
-00:00:19,170 --> 00:00:23,327
+00:00:19.337 --> 00:00:23.494
 parts, but a claim about the process: it is unchanged.
 
 7
-00:00:23,416 --> 00:00:27,111
+00:00:23.583 --> 00:00:27.278
 So put a pair of limits on it and sweep them outward
 
 8
-00:00:27,211 --> 00:00:31,052
+00:00:27.378 --> 00:00:31.218
 from the centre. The readout is not a table: it is the
 
 9
-00:00:31,152 --> 00:00:35,868
+00:00:31.318 --> 00:00:36.035
 integral of that curve between the limits, evaluated as they move.
 
 10
-00:00:35,966 --> 00:00:41,014
+00:00:36.133 --> 00:00:41.181
 Ninety nine point seven three percent. Nobody chose that number.
 
 11
-00:00:41,114 --> 00:00:44,794
+00:00:41.281 --> 00:00:44.961
 It is what plus and minus three sigma is worth.
 
 12
-00:00:44,883 --> 00:00:49,237
+00:00:45.050 --> 00:00:49.404
 Everything the process should ever do lives inside. The whole
 
 13
-00:00:49,337 --> 00:00:52,231
+00:00:49.504 --> 00:00:52.398
 of the rest is out here in the tails, and
 
 14
-00:00:52,331 --> 00:00:55,079
+00:00:52.498 --> 00:00:55.246
 at this scale you cannot see it at all.
 
 15
-00:00:55,166 --> 00:00:59,161
+00:00:55.333 --> 00:00:59.327
 So stretch the vertical axis and let them grow. The peak
 
 16
-00:00:59,261 --> 00:01:02,890
+00:00:59.427 --> 00:01:03.056
 goes straight out of frame — that is the point. The
 
 17
-00:01:02,990 --> 00:01:07,642
+00:01:03.156 --> 00:01:07.809
 tails are seventy times smaller than anything else on this chart.
 
 18
-00:01:07,733 --> 00:01:10,445
+00:01:07.900 --> 00:01:10.612
 Each wing is one tenth of one percent
 
 19
-00:01:10,545 --> 00:01:13,561
+00:01:10.712 --> 00:01:13.728
 of everything, and there are two of them.
 
 20
-00:01:13,650 --> 00:01:18,518
+00:01:13.816 --> 00:01:18.684
 Together they are the tail integral, and it has a closed form.
 
 21
-00:01:18,616 --> 00:01:22,884
+00:01:18.783 --> 00:01:23.051
 Evaluate it: zero point zero zero two seven.
 
 22
-00:01:22,983 --> 00:01:26,171
+00:01:23.150 --> 00:01:26.338
 Which is the two wings added together.
 
 23
-00:01:26,266 --> 00:01:30,323
+00:01:26.433 --> 00:01:30.490
 Invert it and the bet is priced. Zero point two seven
 
 24
-00:01:30,423 --> 00:01:35,500
+00:01:30.590 --> 00:01:35.667
 percent is one false alarm in three hundred and seventy subgroups.
 
 25
-00:01:35,600 --> 00:01:39,030
+00:01:35.767 --> 00:01:39.197
 A point outside the limit is that bet, taken.
 
 26
-00:01:40,616 --> 00:01:43,488
+00:01:40.783 --> 00:01:43.655
 A control chart is simply that same
 
 27
-00:01:43,588 --> 00:01:47,140
+00:01:43.755 --> 00:01:47.307
 test, run again on every subgroup, forever.
 
 28
-00:01:47,233 --> 00:01:51,885
+00:01:47.400 --> 00:01:52.052
 The limits are the boundary we just drew, turned on its side.
 
 29
-00:01:51,983 --> 00:01:57,336
+00:01:52.150 --> 00:01:57.503
 Every point inside is the process agreeing with the null hypothesis.
 
 30
-00:01:57,436 --> 00:02:01,747
+00:01:57.603 --> 00:02:01.914
 This is what boring looks like, and boring is the goal.
 
 31
-00:02:01,833 --> 00:02:04,589
+00:02:02.000 --> 00:02:04.756
 Then one point steps outside.
 
 32
-00:02:04,683 --> 00:02:08,775
+00:02:04.850 --> 00:02:08.942
 Four point one sigma above the centre line, where the
 
 33
-00:02:08,875 --> 00:02:13,679
+00:02:09.042 --> 00:02:13.846
 null hypothesis allows one point in three hundred and seventy.
 
 34
-00:02:13,766 --> 00:02:18,466
+00:02:13.933 --> 00:02:18.633
 So this is not a bad part, and scrapping it changes nothing.
 
 35
-00:02:18,550 --> 00:02:23,494
+00:02:18.716 --> 00:02:23.661
 It is evidence against the hypothesis that nothing changed. The
 
 36
-00:02:23,594 --> 00:02:27,018
+00:02:23.761 --> 00:02:27.184
 correct response is to go and find what did.
 

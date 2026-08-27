@@ -29,19 +29,19 @@ A four-level walk from raw variation to detection theory. Each level: exact shee
 *The big idea:* individual parts are unpredictable; aggregates obey a law.
 - ![dice](docs/11_l1_dice_to_bell.png) One die is uniform chaos; the average of 30 dice is a bell with σ/√30 the width. The yellow annotations are measured, not drawn: 2.449 → 0.447 → 0.447… each panel’s spread lands exactly on σ/√k.
 - ![sqrtn](docs/12_l1_sqrt_n.png) The √n curve itself — and the same process seen through three lenses (individuals vs means-of-5 vs means-of-25). This one curve is why control charts watch subgroup means.
-- Video: `media/videos/level1_scene/1080p60/Level1.mp4` — histogram piling up live as rolls accumulate, then the σ/√n line deriving itself.
+- Video: `media/videos/level04_scene/1080p60/Level04.mp4` — histogram piling up live as rolls accumulate, then the σ/√n line deriving itself.
 
 ### Level 2 — Control limits are a hypothesis test
 *The big idea:* ±3σ isn’t taste. If the process is stable, the sampling distribution from Level 1 tells you exactly how often a point lands outside: 0.27% → one false alarm per ~370 subgroups. A violation is a bet at 370:1 odds that something changed.
 - ![null](docs/21_l2_null_distribution.png) The null distribution of x̄ with the exact integral Φ(3)−Φ(−3) = 0.9973 and its tails annotated with the false-alarm arithmetic.
 - ![plumbing](docs/22_l2_rbar_plumbing.png) How good is σ̂ = R̄/d₂? 4 000 simulated stable processes: unbiased, but with only 25 subgroups the limits themselves carry real fuzz — why Phase I needs enough data.
-- Video: `media/videos/level2_scene/1080p60/Level2.mp4` — the bell becomes a hypothesis, the ±3σ region fills to 99.73%, then the same picture wearing chart clothes: in-control points, one genuine shift, and the verdict “not a bad part — evidence against H₀”.
+- Video: `media/videos/level06_scene/1080p60/Level06.mp4` — the bell becomes a hypothesis, the ±3σ region fills to 99.73%, then the same picture wearing chart clothes: in-control points, one genuine shift, and the verdict “not a bad part — evidence against H₀”.
 
 ### Level 3 — Capability is comparing two distributions
 *The big idea:* spec limits are the customer’s voice, the process distribution is the process’s voice. Cp is pure geometry (two widths compared); Cpk adds where the mean actually sits; every threshold is an exact tail integral.
 - ![voices](docs/31_l3_two_voices.png) Both voices on one axis, twice: centered (Cp = width ratio) then drifted (Cpk = nearer gap ÷ 3σ), with dimension-line measurements.
 - ![cpk2ppm](docs/32_l3_cpk_to_ppm.png) The exact mapping from Cpk to promised defects, both with and without the 1.5σ drift convention — showing 1.00/1.33/1.67 are just chosen points on a continuous curve.
-- Video: `media/videos/level3_scene/1080p60/Level3.mp4` — tolerance bracket vs natural spread drawn as dimension lines; the bell drifts and its red tail grows; then the promise table: Cpk 0.80→16 400 ppm … 1.67→0.6 ppm.
+- Video: `media/videos/level08_scene/1080p60/Level08.mp4` — tolerance bracket vs natural spread drawn as dimension lines; the bell drifts and its red tail grows; then the promise table: Cpk 0.80→16 400 ppm … 1.67→0.6 ppm.
 Spec limits are the customer’s voice, control limits the process’s voice; Cpk measures their mismatch in tail-probability terms.
 
 ### Level 4 — Detection theory: EWMA/CUSUM & ARL *(planned)*
@@ -51,7 +51,7 @@ Charts as sequential hypothesis tests; evidence accumulation beats single points
 *The big idea:* a chart is a sequential hypothesis test. Single points wait for extremes; EWMA/CUSUM accumulate evidence, catching slow drift far sooner — at the *same* false-alarm rate.
 - ![arl](docs/41_l4_arl.png) Simulated ARL vs shift size (8 000 runs/point), with the EWMA limits **calibrated to match Shewhart’s ARL₀ ≈ 368** so the comparison is honest: at 1σ drift, detection in ~10 subgroups vs ~44 — about 4× sooner.
 - ![race](docs/42_l4_race.png) One drifting process, both charts racing: Shewhart waits for an extreme point; EWMA’s smoothed line crosses its tighter limit while every raw point still sits inside ±3σ.
-- Video: `media/videos/level4_scene/1080p60/Level4.mp4` — drift hiding inside noise, then the memory-bearing line crossing its limit early. This is exactly Line C from [Line of Sight](../line-of-sight.html).
+- Video: `media/videos/level09_scene/1080p60/Level09.mp4` — drift hiding inside noise, then the memory-bearing line crossing its limit early. This is exactly Line C from [Line of Sight](../line-of-sight.html).
 
 ## Formula sheets — each formula plotted as itself
 

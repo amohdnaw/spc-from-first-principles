@@ -23,8 +23,8 @@ Each line is literally checkable in a browser after the build.
    No amber anywhere in the data itself.
 4. Directly under the chart, **four phase doors** in a row: `PHASE I · BASELINE`,
    `PHASE II · THE LIMITS`, `PHASE III · VIOLATION`, `PHASE IV · CORRECTIVE ACTION`.
-   Clicking each one lands on the level page that explains it (I → `level-1.html`,
-   II → `level-2.html`, III → `level-3.html`, IV → `level-4.html`).
+   Clicking each one lands on the level page that explains it (I → `level-04.html`,
+   II → `level-06.html`, III → `level-08.html`, IV → `level-09.html`).
 
 ### The syllabus
 5. Below the opening act, **five numbered rows** — `0`, `I`, `II`, `III`, `IV` — set as
@@ -61,7 +61,7 @@ Each line is literally checkable in a browser after the build.
 
 ### The absorption
 14. `spc-from-first-principles.html` **no longer exists**, and every link that pointed at
-    it now points at `index.html`: the nav item, the in-page deep link, `level-0.html`'s
+    it now points at `index.html`: the nav item, the in-page deep link, `level-03.html`'s
     back-link, `WRAP.md`, `DESIGN.md`, and `specs/spc-curriculum-contract.md`.
 15. **No dead links anywhere on the site.** Every `href` on every page resolves to a file
     that exists.
@@ -69,7 +69,7 @@ Each line is literally checkable in a browser after the build.
 ### Doesn't break anything
 16. At **320px** the page has no horizontal overflow (`scrollWidth == clientWidth`) and
     the nav neither collides nor clips.
-17. `level-0.html` … `level-4.html` and `line-of-sight.html` still open and still navigate.
+17. `level-03.html` … `level-09.html` and `line-of-sight.html` still open and still navigate.
 18. `cd spc-lab && PYTHONPATH=src .venv/bin/python -m pytest tests -q` still passes
     (9 tests). No `spclab` behaviour changes in this work.
 19. A `diagrams/spc-landing-flow.{mmd,excalidraw,svg,png}` set exists showing how the
@@ -98,7 +98,7 @@ Mock file deleted after the pick, per the throwaway rule.
 - No new Manim renders, no re-render for colour.
 - Narration stays **gTTS**, not your voice.
 - No real Line of Sight case studies — the placeholder narratives stay.
-- No changes to `level-0.html` … `level-4.html` beyond repointing `level-0`'s back-link.
+- No changes to `level-03.html` … `level-09.html` beyond repointing `level-03`'s back-link.
 - No changes to `spclab` Python, formulas, or test expectations.
 - No print stylesheet.
 - No mobile-specific redesign beyond check 16 (must not overflow or collide at 320px).

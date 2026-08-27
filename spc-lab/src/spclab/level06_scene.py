@@ -27,8 +27,8 @@ Build rules carried from the style test, all of them earned:
 
 Pacing still lives in the narration script — see narration.py.
 
-    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level2_scene.py Level2
-    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level2_scene.py Level2
+    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level06_scene.py Level06
+    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level06_scene.py Level06
 """
 from __future__ import annotations
 
@@ -49,14 +49,14 @@ from spclab.act_style import (
 from spclab.narration import NarratedCameraScene
 
 
-class Level2(NarratedCameraScene):
+class Level06(NarratedCameraScene):
     def construct(self):
         self.part1_derive()
         self.part2_chart()
 
     # ---------------- part 1: derive the number, then the odds -------------
     def part1_derive(self):
-        title = prose("Level 2 · ±3σ is not taste, it is a bet", 30, GREY)
+        title = prose("Level 6 · ±3σ is not taste, it is a bet", 30, GREY)
         title.to_edge(UP, buff=0.38)
         with self.say("Three sigma is not a matter of taste. It is a bet, and "
                       "we can price it exactly."):
@@ -79,7 +79,7 @@ class Level2(NarratedCameraScene):
 
         # the curve is drawn inside this beat, not the next one: holding an
         # empty pair of axes for the length of a spoken line is dead air.
-        with self.say("Level one told us which distribution every subgroup mean "
+        with self.say("Level four told us which distribution every subgroup mean "
                       "is drawn from, assuming nothing has changed."):
             self.play(Create(axes), FadeIn(xlab), FadeIn(ylab),
                       run_time=1.0, rate_func=rf.ease_in_out_sine)

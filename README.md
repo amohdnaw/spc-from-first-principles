@@ -31,11 +31,11 @@ If a formula changes, the video changes with it. That is the whole design.
 | Page | What it covers |
 |---|---|
 | `index.html` | front door and curriculum hub, with the chart as the syllabus |
-| `level-0.html` | what a measurement is: mean, σ, the shape, sample vs population |
-| `level-1.html` | variation is predictable: the central limit theorem and σ/√n |
-| `level-2.html` | control limits are a hypothesis test: ±3σ, 0.27 %, ARL 370 |
-| `level-3.html` | capability: two voices, Cp, Cpk, and ppm as a promise |
-| `level-4.html` | detection theory: charts as evidence accumulators |
+| `level-03.html` | what a measurement is: mean, σ, the shape, sample vs population |
+| `level-04.html` | variation is predictable: the central limit theorem and σ/√n |
+| `level-06.html` | control limits are a hypothesis test: ±3σ, 0.27 %, ARL 370 |
+| `level-08.html` | capability: two voices, Cp, Cpk, and ppm as a promise |
+| `level-09.html` | detection theory: charts as evidence accumulators |
 | `line-of-sight.html` | a long-form essay on the same discipline applied to a browser |
 
 ## The library

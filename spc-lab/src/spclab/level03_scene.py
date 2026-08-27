@@ -1,10 +1,10 @@
 """LEVEL 0 act — 'What a measurement is.'
 
-The prerequisite the curriculum was missing. Level 1 opens with "variation is
+The prerequisite the curriculum was missing. Level 4 opens with "variation is
 predictable", which already assumes the viewer owns a mean, a standard
 deviation and a distribution. This act supplies exactly those and stops: no
 control limits, no subgroups, no charts. It ends by handing the one open
-question — how far a sample estimate can sit from the truth — to Level 1.
+question — how far a sample estimate can sit from the truth — to Level 4.
 
 Rebuilt 2026-08-26 under specs/spc-manim-craft-contract.md, checkpoint 4:
 
@@ -24,8 +24,8 @@ Rebuilt 2026-08-26 under specs/spc-manim-craft-contract.md, checkpoint 4:
 
 Pacing still lives in the narration script — see narration.py.
 
-    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level0_scene.py Level0
-    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level0_scene.py Level0
+    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level03_scene.py Level03
+    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level03_scene.py Level03
 """
 from __future__ import annotations
 
@@ -115,7 +115,7 @@ def closest_pair(values):
     return int(order[k]), int(order[k + 1])
 
 
-class Level0(NarratedCameraScene):
+class Level03(NarratedCameraScene):
     def construct(self):
         self.part1_parts_vary()
         self.part2_balance_point()
@@ -125,7 +125,7 @@ class Level0(NarratedCameraScene):
 
     # ------------------------------------------- 1: nominally identical parts
     def part1_parts_vary(self):
-        self.title = prose("Level 0 · twelve identical parts, twelve numbers",
+        self.title = prose("Level 3 · twelve identical parts, twelve numbers",
                            30, GREY).to_edge(UP, buff=0.38)
         vline = ValueLine(X_LO, X_HI, TICKS).shift(DOWN * 1.35)
         xlab = micro("SHAFT DIAMETER (mm) · NOMINAL 12.000").next_to(
@@ -205,7 +205,7 @@ class Level0(NarratedCameraScene):
     # ------------------------------------------------- 2: the balance point
     def part2_balance_point(self):
         vline, dots = self.vline, self.dots
-        t2 = prose("Level 0 · the mean is the balance point", 30, GREY)
+        t2 = prose("Level 3 · the mean is the balance point", 30, GREY)
         t2.to_edge(UP, buff=0.38)
         with self.say("Twelve numbers are not an answer. You need one number "
                       "for the centre — so guess one, and check it."):
@@ -304,7 +304,7 @@ class Level0(NarratedCameraScene):
 
     # ------------------------------------------------- 3: why spread squares
     def part3_squaring(self):
-        t3 = prose("Level 0 · spread has to be squared first", 30, GREY)
+        t3 = prose("Level 3 · spread has to be squared first", 30, GREY)
         t3.to_edge(UP, buff=0.38)
         dead_end = prose("the average deviation is 0.0000 mm — for every data "
                          "set that ever existed", 26, RED).move_to(UP * 0.6)
@@ -402,7 +402,7 @@ class Level0(NarratedCameraScene):
 
     # ------------------------------------------------ 4: the shape emerges
     def part4_the_shape(self):
-        t4 = prose("Level 0 · many parts make a shape nobody chose", 30, GREY)
+        t4 = prose("Level 3 · many parts make a shape nobody chose", 30, GREY)
         t4.to_edge(UP, buff=0.38)
         axes = Axes(x_range=[X_LO, X_HI, 0.02], y_range=[0, 1.08, 0.25],
                     x_length=10.0, y_length=3.8, tips=False,
@@ -491,7 +491,7 @@ class Level0(NarratedCameraScene):
 
     # -------------------------------------- 5: a sample is not the population
     def part5_sample_is_not_population(self):
-        t5 = prose("Level 0 · you never measure everything", 30, GREY)
+        t5 = prose("Level 3 · you never measure everything", 30, GREY)
         t5.to_edge(UP, buff=0.38)
         axes = Axes(x_range=[11.94, 12.06, 0.02], y_range=[0, 1.15, 0.5],
                     x_length=6.6, y_length=3.1, tips=False,
@@ -509,7 +509,7 @@ class Level0(NarratedCameraScene):
         never = prose("the process owns these two numbers, and never shows them",
                       22, GREY).next_to(truth, UP, buff=0.16)
 
-        with self.say("One more thing, and then Level 1. You never measure "
+        with self.say("One more thing, and then Level 4. You never measure "
                       "everything. The true centre and spread belong to the "
                       "process itself."):
             self.play(FadeOut(self.p4_all), run_time=0.6, rate_func=rf.ease_in_sine)
@@ -566,11 +566,11 @@ class Level0(NarratedCameraScene):
                       run_time=1.1, rate_func=rf.ease_out_sine)
 
         handoff = prose("every estimate carries uncertainty", 26, TEAL)
-        handoff2 = MathTex(r"\text{Level 1 measures it: }",
+        handoff2 = MathTex(r"\text{Level 4 measures it: }",
                            r"\sigma_{\bar{x}} = \frac{\sigma}{\sqrt{n}}",
                            font_size=34, color=TEAL)
         VGroup(handoff, handoff2).arrange(DOWN, buff=0.28).move_to([2.4, -2.35, 0])
-        with self.say("Every estimate carries uncertainty. Level 1 puts a "
+        with self.say("Every estimate carries uncertainty. Level 4 puts a "
                       "number on exactly how much."):
             self.play(FadeIn(handoff, shift=UP * 0.1), Write(handoff2),
                       run_time=1.4, rate_func=rf.ease_out_sine)

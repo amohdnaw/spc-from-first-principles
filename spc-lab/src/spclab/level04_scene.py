@@ -18,8 +18,8 @@ the patterns Level II proved:
 
 Pacing still lives in the narration script — see narration.py.
 
-    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level1_scene.py Level1
-    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level1_scene.py Level1
+    silent:   PYTHONPATH=src .venv/bin/manim -qh src/spclab/level04_scene.py Level04
+    narrated: SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level04_scene.py Level04
 """
 from __future__ import annotations
 
@@ -75,7 +75,7 @@ def hist_bars(axes, values, bins, color):
     return bars
 
 
-class Level1(NarratedCameraScene):
+class Level04(NarratedCameraScene):
     def construct(self):
         self.part1_dice()
         self.part2_averaging()
@@ -92,7 +92,7 @@ class Level1(NarratedCameraScene):
         def share(n: int) -> np.ndarray:
             return cum[min(max(n, 1), ROLLS) - 1] / float(min(max(n, 1), ROLLS))
 
-        title = prose("Level 1 · one part is noise, many parts are information",
+        title = prose("Level 4 · one part is noise, many parts are information",
                       28, GREY).to_edge(UP, buff=0.38)
         axes = Axes(x_range=[0.4, 6.6, 1], y_range=[0, 0.52, 0.1],
                     x_length=9.0, y_length=4.3, tips=False,

@@ -34,7 +34,7 @@ Each line is literally checkable in a browser after the build.
    teal `#65ccaf` and any alarm value in salmon `#de6a5d`.
 9. **Five levels exist** as pages (0 Basics, I Variation, II Limits, III Capability,
    IV Detection) and the level rail highlights the current one in amber.
-10. **All 9 Manim scenes appear somewhere.** Was 2 of 8 used. Now: Level0/1/2/3/4 on
+10. **All 9 Manim scenes appear somewhere.** Was 2 of 8 used. Now: Level 3/4/6/8/9 (then `level03`…`level09`) on
     their own pages, and SPCGallery, ConstantsAct, EWMAMemory, WERules embedded in
     the level whose argument they support.
 
@@ -102,7 +102,7 @@ Mock files deleted after the pick, per the throwaway rule.
 Approving this contract confirms these. Each is reversible; say so and I change it.
 
 1. ~~**Level 0 is deferred, not dropped.**~~ **SUPERSEDED 2026-08-25** — you said
-   "do all". Level 0 was built as new Manim (`level0_scene.py`, 102.5s) rather than
+   "do all". Level 0 was built as new Manim (`level03_scene.py`, 102.5s) rather than
    reusing Level 1 footage, and every act was re-rendered. The cost reasoning behind
    the original default was wrong and is corrected here for the record: a full
    1080p60 render is **8 seconds per scene**, so all nine rebuild in under two

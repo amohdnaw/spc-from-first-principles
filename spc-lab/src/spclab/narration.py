@@ -18,10 +18,10 @@ So the narration script *is* the pacing. Every beat is wrapped in `self.say`:
 Same source, same pacing, audio optional. Nothing to re-tune.
 
     # silent, correctly paced
-    PYTHONPATH=src .venv/bin/manim -qh src/spclab/level2_scene.py Level2
+    PYTHONPATH=src .venv/bin/manim -qh src/spclab/level06_scene.py Level06
 
     # narrated
-    SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level2_scene.py Level2
+    SPCLAB_VOICE=1 PYTHONPATH=src .venv/bin/manim -qh src/spclab/level06_scene.py Level06
 
 Swapping the synthetic voice for a real one is a one-line change in
 `_speech_service` — see SPCLAB_VOICE_SERVICE below.

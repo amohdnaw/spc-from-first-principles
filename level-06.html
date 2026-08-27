@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 6 — Control limits are a hypothesis test · SPC from First Principles</title>
+<meta name="description" content="±3σ isn't taste. It's a bet at 370:1 odds. Why control limits are a hypothesis test, derived rather than asserted — with the exact integral, the R̄/d₂ plumbing, and an interactive threshold picker.">
+
+<link rel="icon" href="favicon.svg">
+<link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
+<link rel="stylesheet" href="vendor/katex/katex.css">
+
+<style>
+  /* ---------- self-hosted, two families, two voices ---------- */
+  @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
+    font-weight:400 600;font-style:normal;font-display:swap}
+  @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-italic.woff2') format('woff2');
+    font-weight:400 500;font-style:italic;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-400.woff2') format('woff2');
+    font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-600.woff2') format('woff2');
+    font-weight:600;font-style:normal;font-display:swap}
+
+  /* ---------- tokens: DESIGN.md ---------- */
+  :root{
+    --ground:#0d1114; --panel:#14181c; --panel-high:#1b2026;
+    --rule:#2a3138; --rule-strong:#3d4650;
+    --ink-dim:#7d8b98; --ink:#d7dee4; --ink-bright:#eef3f7;
+    --accent:#ffae00; --accent-wash:rgba(255,174,0,.14);
+    --signal-ok:#65ccaf; --signal-alarm:#de6a5d; --fill-ok:#2a534b;
+
+    --serif:'EB Garamond',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+    --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
+    --figure:44rem;              /* figures step wider than text, still not full bleed */
+    --gutter:clamp(24px,5vw,72px);
+    --rhythm:32px;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
+    font-variant-numeric:oldstyle-nums;
+  }
+  ::selection{background:var(--accent);color:var(--ground)}
+
+  .wrap{max-width:76rem;margin:0 auto;padding:0 var(--gutter)}
+  .col{max-width:var(--measure)}
+
+  /* mono voice: labels, units, status, data */
+  .m{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .micro{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:30;background:var(--ground);
+    border-bottom:1px solid var(--rule)}
+  .nav-in{max-width:76rem;margin:0 auto;padding:14px var(--gutter);
+    display:flex;align-items:center;gap:28px}
+  .wordmark{font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-bright);
+    text-decoration:none;white-space:nowrap}
+  .wordmark span{color:var(--accent)}
+  .rail{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+  .rail a{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);text-decoration:none;
+    display:flex;align-items:center;gap:7px;padding:3px 0;transition:color .18s}
+  .rail a::before{content:"";width:7px;height:7px;background:var(--rule-strong);flex:none}
+  .rail a:hover{color:var(--ink)}
+  /* The rail wraps to two rows below 1024px. A sticky nav that tall is the
+     'fixed chrome squeezing the reading column' the ban list forbids, so it
+     only sticks while it is a single 52px row. */
+  @media(max-width:1023px){nav{position:static}}
+  .rail a[aria-current="page"]{color:var(--accent)}
+  /* Twelve slots, five written. The seven that are not are present and inert:
+     an explicit gap the reader can see, never a silent one. */
+  .rail span.soon{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    color:var(--ink-dim);opacity:.45;display:inline-flex;align-items:center;gap:7px;cursor:default}
+  .rail span.soon::before{content:"";width:7px;height:7px;border:1px solid var(--rule-strong);flex:none}
+  .rail a[aria-current="page"]::before{background:var(--accent)}
+
+  /* ---------- level opener ---------- */
+  header.opener{padding:88px 0 0}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 20px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(33px,5.2vw,56px);
+    line-height:1.04;letter-spacing:-.01em;color:var(--ink-bright);margin:0 0 20px;
+    max-width:20em}
+  .dek{font-style:italic;font-size:26px;line-height:1.4;color:var(--ink-dim);
+    margin:0 0 var(--rhythm);max-width:24em}
+
+  main{padding-bottom:64px}
+  section{padding-top:48px}
+  p{margin:0 0 var(--rhythm)}
+
+  /* ---------- equation ---------- */
+  .eq{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+    max-width:var(--measure);
+    margin:48px 0;padding:40px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .eq-body{font-size:33px;text-align:center;color:var(--ink-bright);letter-spacing:.02em}
+  .eq-num{font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+  .eq-cap{font-family:var(--mono);font-size:13px;color:var(--ink-dim);
+    margin:14px 0 0;text-align:center;grid-column:1/-1}
+
+  /* ---------- figures ---------- */
+  figure{margin:64px 0 0;max-width:var(--figure)}
+  figure .rule{height:1px;background:var(--rule);margin-bottom:20px}
+  figure img,figure video{display:block;width:100%;height:auto;background:var(--ground)}
+  figcaption{margin-top:16px;max-width:var(--measure)}
+  figcaption .fignum{font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+    display:block;margin-bottom:6px}
+  figcaption .figtext{font-size:17px;line-height:1.5;color:var(--ink-dim)}
+
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+
+  /* ---------- SYS note ---------- */
+  /* component 7 is a pull-quote with an amber left border and NO fill — an amber
+     area carries no information, and DESIGN.md 6 bans decorative ornament. */
+  .sys{margin:64px 0 0;border-left:2px solid var(--accent);
+    padding-left:24px;max-width:34em}
+  .sys .micro{color:var(--accent);display:block;margin-bottom:8px}
+  .sys p{font-size:26px;line-height:1.35;color:var(--ink-bright);margin:0;font-style:italic}
+
+  /* ---------- next + footer ---------- */
+  .next{display:inline-flex;align-items:baseline;gap:12px;margin-top:96px;
+    padding-bottom:6px;border-bottom:1px solid var(--rule-strong);
+    color:var(--ink-bright);text-decoration:none;font-size:26px;transition:border-color .18s}
+  .next:hover{border-bottom-color:var(--accent)}
+  .next .m{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+
+  footer{border-top:1px solid var(--rule);margin-top:64px}
+  .foot-in{max-width:76rem;margin:0 auto;padding:24px var(--gutter);
+    display:flex;flex-wrap:wrap;gap:16px 32px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
+  .foot-in a{color:var(--ink-dim);text-decoration:none}
+  .foot-in a:hover{color:var(--accent)}
+  .foot-in .sp{margin-left:auto}
+
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
+  @media(max-width:560px){
+    body{font-size:19px}
+    .dek,.sys p,.next{font-size:21px}
+    /* long formulas (Level 9's EWMA limit) blow past a 320px viewport;
+       stack the reference number and let the expression wrap */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+    .eq-body{font-size:26px;overflow-wrap:anywhere;line-height:1.35}
+    .rail{gap:12px;width:100%;margin-left:0}
+    .nav-in{flex-wrap:wrap;gap:12px}
+    /* the wrapped two-row rail would eat a quarter of a phone viewport;
+       fixed chrome must not squeeze the reading column (DESIGN.md ban list) */
+    nav{position:static}
+    header.opener{padding-top:48px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* maths — KaTeX, pre-rendered by tools/typeset.mjs. Computer Modern here for
+     the same reason the videos use it: a formula should read the same on the
+     page as it does in the act. */
+  .katex{color:var(--ink-bright);font-size:1em}
+  .eq-body .katex-display{margin:0}
+  .eq-body .katex{font-size:1.05em}
+  p .katex,figcaption .katex,li .katex{font-size:.98em}
+  /* Display maths cannot wrap. On a narrow screen it scrolls inside its own
+     block instead of dragging the page sideways — DESIGN.md bans the page
+     scrolling horizontally, not a figure doing it. min-width:0 is required or
+     the grid item refuses to shrink. */
+  .eq-body{min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;
+           -webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .eq-body .katex-display{margin:0;padding-bottom:2px}
+  @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
+  @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="wordmark" href="index.html">Ammar <span>/ SPC</span></a>
+    <div class="rail">
+      <span class="soon" title="Level 1 — Variation — not written yet">01</span>
+      <span class="soon" title="Level 2 — Chance — not written yet">02</span>
+      <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
+      <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
+      <span class="soon" title="Level 5 — Estimation and uncertainty — not written yet">05</span>
+      <a href="level-06.html" title="Level 6 — Limits are a hypothesis test" aria-current="page">06</a>
+      <span class="soon" title="Level 7 — Evidence and decisions — not written yet">07</span>
+      <a href="level-08.html" title="Level 8 — Capability">08</a>
+      <a href="level-09.html" title="Level 9 — Detection">09</a>
+      <span class="soon" title="Level 10 — Counting, not measuring — not written yet">10</span>
+      <span class="soon" title="Level 11 — Relationships — not written yet">11</span>
+      <span class="soon" title="Level 12 — Experiments — not written yet">12</span>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="opener">
+    <p class="eyebrow">Level 6</p>
+    <h1>Control limits are a hypothesis test</h1>
+    <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="col">
+        <p>If a process is stable, Level 4's logic tells us exactly which distribution
+        every subgroup mean is drawn from. Choose limits at ±3σ of that distribution
+        and you've defined a test: points inside are boring, a point outside happens
+        0.27% of the time by pure chance — once per ~370 subgroups. So when one
+        appears, it's rational to bet something changed.</p>
+      </div>
+
+      <div class="eq">
+        <div class="eq-body" data-tex="\Phi(3) - \Phi(-3) = 0.9973"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>−</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.9973</mn></mrow><annotation encoding="application/x-tex">\Phi(3) - \Phi(-3) = 0.9973</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.9973</span></span></span></span></span></div>
+        <div class="eq-num">(6.1)</div>
+        <p class="eq-cap">The exact integral. 0.27% outside → one false alarm per ~370 subgroups.</p>
+      </div>
+
+      <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — choose your alarm threshold</span>
+          <span class="status" id="lab-status">SYSTEM-OK</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="null-canvas" height="300"
+              aria-label="Null distribution of subgroup means with the chosen limits marked"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="z-slider">Limit at ± <b id="z-val">3.00</b> σx̄</label>
+              <input type="range" id="z-slider" min="100" max="400" value="300" step="1">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>In-control area</dt><dd class="ok" id="r-in">—</dd></div>
+              <div class="tile"><dt>False-alarm rate</dt><dd class="alarm" id="r-fa">—</dd></div>
+              <div class="tile"><dt>False alarm every</dt><dd class="neutral" id="r-arl">—</dd></div>
+            </dl>
+            <p class="lab-note">Shewhart picked ±3σ as the balance point: sensitive
+            enough to matter, quiet enough that operators trust the alarm.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>A violation is not a bad part. It is evidence against the null.</p>
+      </aside>
+
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/level06.jpg">
+          <source src="spc-lab/media/videos/level06_scene/1080p60/Level06.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level06.vtt" srclang="en" label="English" default>
+        </video>
+        <figcaption>
+          <span class="fignum">Figure 6.1</span>
+          <span class="figtext">Rendered in Manim — the bell becomes H₀, the ±3σ region
+          fills to 99.73%, and a violation becomes “evidence against the null.”</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/21_l2_null_distribution.png" width="1495" height="782" decoding="async"
+             alt="Null distribution of x-bar with both tails annotated">
+        <figcaption>
+          <span class="fignum">Figure 6.2</span>
+          <span class="figtext">The null distribution of x̄, with the exact integral and
+          both tails annotated with the false-alarm arithmetic.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/22_l2_rbar_plumbing.png" width="1263" height="741" decoding="async"
+             alt="Sampling distribution of sigma-hat from R-bar over d2">
+        <figcaption>
+          <span class="fignum">Figure 6.3</span>
+          <span class="figtext">How good is <span class="tex" data-tex="\hat{\sigma} = \bar{R}/d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mo>=</mo><mover accent="true"><mi>R</mi><mo>ˉ</mo></mover><mi mathvariant="normal">/</mi><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\hat{\sigma} = \bar{R}/d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.0701em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8201em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>? 4 000 simulated stable processes:
+          unbiased, but with only 25 subgroups the limits themselves carry real fuzz —
+          why Phase I needs enough data.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/constants.jpg">
+          <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
+          <track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>
+        </video>
+        <figcaption>
+          <span class="fignum">Figure 6.4</span>
+          <span class="figtext">Where the constants come from. d₂ is the expected range of
+          n standard normals, computed here by simulating 400 000 subgroups rather than
+          read off a table; A₂ = 3/(d₂√n) follows from it.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
+             alt="Monte Carlo derivation of the d2 control chart constant">
+        <figcaption>
+          <span class="fignum">Figure 6.5</span>
+          <span class="figtext"><span class="tex" data-tex="d_2 = \mathrm{E}(R/\sigma)"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false">(</mo><mi>R</mi><mi mathvariant="normal">/</mi><mi>σ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d_2 = \mathrm{E}(R/\sigma)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathrm">E</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mclose">)</span></span></span></span></span>, the bridge from an average range to a σ estimate.
+          Simulated, then checked against AIAG Table B in the test suite — n=5 lands on 2.326.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
+             alt="A2, D3 and D4 constants plotted against subgroup size">
+        <figcaption>
+          <span class="fignum">Figure 6.6</span>
+          <span class="figtext">A₂, D₃ and D₄ against subgroup size. These are the numbers on
+          every shop-floor chart form; nothing here is looked up, all of it is derived.</span>
+        </figcaption>
+      </figure>
+
+      <a class="next" href="level-08.html">
+        <span class="m">Level 8</span>
+        <span>Capability is comparing two distributions →</span>
+      </a>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <span><a href="index.html">← SPC from First Principles — Ammar, SPC Engineer</a></span>
+    <span class="sp">All figures computed</span>
+    <span>© 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = {
+  ok: css('--signal-ok'), alarm: css('--signal-alarm'),
+  accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
+};
+
+/* Abramowitz & Stegun 7.1.26 — same approximation the rest of the site uses. */
+function erf(x){
+  const s = x < 0 ? -1 : 1; x = Math.abs(x);
+  const t = 1/(1 + .3275911*x);
+  const y = 1 - (((((1.061405429*t - 1.453152027)*t + 1.421413741)*t
+              - .284496736)*t + .254829592)*t*Math.exp(-x*x));
+  return s*y;
+}
+const phi = z => 0.5*(1 + erf(z/Math.SQRT2));
+
+const cv   = document.getElementById('null-canvas');
+const ctx  = cv.getContext('2d');
+const sl   = document.getElementById('z-slider');
+const zVal = document.getElementById('z-val');
+const rIn  = document.getElementById('r-in');
+const rFa  = document.getElementById('r-fa');
+const rArl = document.getElementById('r-arl');
+const stat = document.getElementById('lab-status');
+
+function draw(){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = 300;
+  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const z = +sl.value/100;
+  const pad = {l:16,r:16,t:22,b:30};
+  const npdf = v => Math.exp(-v*v/2)/Math.sqrt(2*Math.PI);
+  const pdfMax = npdf(0);
+  const innerW = W - pad.l - pad.r;
+  const x = v => pad.l + (v+4)/8*innerW;
+  const y = p => H - pad.b - p/pdfMax*(H - pad.t - pad.b)*0.94;
+
+  /* filled region: inside = in control, outside = false alarm */
+  for (let i=0; i<innerW; i++){
+    const v = -4 + i/innerW*8;
+    const p = npdf(v);
+    ctx.fillStyle = Math.abs(v) <= z ? 'rgba(101,204,175,.30)' : 'rgba(222,106,93,.55)';
+    ctx.fillRect(pad.l+i, y(p), 1, H - pad.b - y(p));
+  }
+
+  /* curve */
+  ctx.beginPath();
+  for (let i=0; i<=innerW; i++){
+    const v = -4 + i/innerW*8;
+    i ? ctx.lineTo(pad.l+i, y(npdf(v))) : ctx.moveTo(pad.l+i, y(npdf(v)));
+  }
+  ctx.strokeStyle = COL.ok; ctx.lineWidth = 2; ctx.stroke();
+
+  /* baseline */
+  ctx.strokeStyle = 'rgba(125,139,152,.4)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, H-pad.b); ctx.lineTo(W-pad.r, H-pad.b); ctx.stroke();
+
+  /* limit lines */
+  ctx.font = '600 11px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  [-z, z].forEach(v => {
+    ctx.strokeStyle = COL.accent; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(x(v), pad.t); ctx.lineTo(x(v), H-pad.b); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = COL.accent;
+    ctx.fillText((v>0?'+':'\u2212') + z.toFixed(2) + '\u03C3', x(v), H-pad.b+18);
+  });
+
+  ctx.fillStyle = COL.dim;
+  ctx.fillText('DISTRIBUTION OF SUBGROUP MEANS IF STABLE', W/2, pad.t - 6);
+
+  const inside = phi(z) - phi(-z);
+  const fa = 1 - inside;
+  rIn.textContent  = (inside*100).toFixed(2) + '%';
+  rFa.textContent  = (fa*100).toFixed(3) + '%';
+  rArl.textContent = Math.round(1/fa).toLocaleString() + ' subgroups';
+  zVal.textContent = z.toFixed(2);
+
+  /* status reflects the trade the reader just made */
+  if (z >= 2.9 && z <= 3.1)      { stat.textContent = 'SYSTEM-OK';   stat.style.color = COL.ok; }
+  else if (z < 2.9)              { stat.textContent = 'NOISY';       stat.style.color = COL.alarm; }
+  else                           { stat.textContent = 'INSENSITIVE'; stat.style.color = COL.accent; }
+}
+
+sl.addEventListener('input', draw);
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+</script>
+</body>
+</html>

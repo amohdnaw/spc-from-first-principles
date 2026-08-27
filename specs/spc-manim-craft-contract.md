@@ -28,7 +28,7 @@ It is slideware rendered in Manim. Things appear, then other things appear.
 Nothing morphs, nothing is followed, nothing moves continuously. The 3b1b feel
 comes almost entirely from the verbs that are absent.
 
-Concrete instance, `level2_scene.py`: the ±3σ region and both tails `FadeIn` as
+Concrete instance, `level06_scene.py`: the ±3σ region and both tails `FadeIn` as
 static polygons, then the punchline is typed —
 `Write(Text("outside: 0.27% → false alarm ≈ once per 370 subgroups"))`. The
 number is **asserted**. For a curriculum whose claim is *"derived, not
@@ -41,7 +41,7 @@ asserted"*, that is the wrong verb.
 Checkable after the first act is rebuilt.
 
 ### The rebuilt Level II
-1. Open the rebuilt `Level2.mp4` → the 99.73% figure **arrives as the result of
+1. Open the rebuilt `Level06.mp4` → the 99.73% figure **arrives as the result of
    a movement**: the ±σ limits sweep outward from the centre while the filled
    area and a live readout follow them continuously. No frame of the video
    contains that number before the sweep produces it.

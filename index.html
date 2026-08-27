@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPC from First Principles — an interactive curriculum by Ammar</title>
-<meta name="description" content="Why control charts work, derived rather than asserted. Five levels, narrated video, and every constant computed from source — plus the shop-floor cases where it paid.">
+<meta name="description" content="Why control charts work, derived rather than asserted. Twelve levels &mdash; five written &mdash; narrated video, and every constant computed from source — plus the shop-floor cases where it paid.">
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
@@ -125,6 +125,11 @@
   .lv-idea{max-width:58ch;color:var(--ink)}
   .lv-hook{font-family:var(--inst);font-size:16px;color:var(--accent);text-align:right;
     font-variant-numeric:tabular-nums;padding-top:10px}
+  /* Seven of the twelve are not written. They sit in the spine, inert and dimmed:
+     the gap is the honest thing to show, and it is what stops the arc reading as five. */
+  .lv.soon{cursor:default;opacity:.42}
+  .lv.soon:hover{background:transparent}
+  .lv.soon .lv-hook{color:var(--ink-dim);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
 
   /* ---------- figure + video (components 4, 8) ---------- */
   figure{margin:0}
@@ -252,7 +257,7 @@
 
 <!-- ================= the opening act — the chart IS the syllabus ================= -->
 <header class="hero wrap">
-  <span class="micro" style="display:block;margin-bottom:24px">An interactive curriculum · five levels · fourteen minutes of narrated video</span>
+  <span class="micro" style="display:block;margin-bottom:24px">An interactive curriculum · twelve levels, five written · fourteen minutes of narrated video</span>
   <h1>Every number on this chart can be derived.</h1>
   <p class="dek">Start anywhere on the trace. Each phase links to the level that explains it.</p>
 </header>
@@ -267,25 +272,25 @@
 
 <div class="wrap">
   <div class="phases">
-    <a class="phase" href="level-1.html">
+    <a class="phase" href="level-04.html">
       <span class="micro">Phase I · baseline</span>
       <span class="pt">Noise, not information</span>
-      <span class="pl">Level I — variation · σ/√n →</span>
+      <span class="pl">Level 4 — variation · σ/√n →</span>
     </a>
-    <a class="phase" href="level-2.html">
+    <a class="phase" href="level-06.html">
       <span class="micro">Phase II · the limits</span>
       <span class="pt">Where the lines come from</span>
-      <span class="pl">Level II — limits · 370:1 →</span>
+      <span class="pl">Level 6 — limits · 370:1 →</span>
     </a>
-    <a class="phase" href="level-3.html">
+    <a class="phase" href="level-08.html">
       <span class="micro">Phase III · violation</span>
       <span class="pt">What it costs the customer</span>
-      <span class="pl">Level III — capability · ppm →</span>
+      <span class="pl">Level 8 — capability · ppm →</span>
     </a>
-    <a class="phase" href="level-4.html">
+    <a class="phase" href="level-09.html">
       <span class="micro">Phase IV · corrective action</span>
       <span class="pt">Catching it four times sooner</span>
-      <span class="pl">Level IV — detection · ARL →</span>
+      <span class="pl">Level 9 — detection · ARL →</span>
     </a>
   </div>
 </div>
@@ -309,51 +314,102 @@
   </div>
 
   <div class="spine" style="margin-top:clamp(48px,6vw,96px)">
-    <a class="lv" href="level-0.html">
-      <div class="lv-num num">0</div>
+    <div class="lv soon">
+      <div class="lv-num num">1</div>
+      <div>
+        <div class="lv-title">Variation</div>
+        <p class="lv-idea">Nothing repeats. Two identical parts differ, and many parts together make a shape nobody chose.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
+    <div class="lv soon">
+      <div class="lv-num num">2</div>
+      <div>
+        <div class="lv-title">Chance</div>
+        <p class="lv-idea">Probability as long-run frequency. What a claim like &ldquo;0.27&nbsp;%&rdquo; is actually a claim about.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
+    <a class="lv" href="level-03.html">
+      <div class="lv-num num">3</div>
       <div>
         <div class="lv-title">What the numbers mean</div>
-        <p class="lv-idea">The prerequisite. What a mean actually is, why spread has to be squared,
-        and where the bell comes from — measured on twelve real shafts. No control charts.</p>
+        <p class="lv-idea">The prerequisite. What a mean actually is, why spread has to be squared, and where the bell comes from &mdash; measured on twelve real shafts. No control charts.</p>
       </div>
-      <div class="lv-hook">start here →</div>
+      <div class="lv-hook">start here &rarr;</div>
     </a>
-    <a class="lv" href="level-1.html">
-      <div class="lv-num num">I</div>
+    <a class="lv" href="level-04.html">
+      <div class="lv-num num">4</div>
       <div>
         <div class="lv-title">Variation is predictable</div>
-        <p class="lv-idea">Individual parts are unpredictable; aggregates obey a law. One die is
-        chaos, the average of thirty is a bell exactly σ/√30 wide.</p>
+        <p class="lv-idea">Individual parts are unpredictable; aggregates obey a law. One die is chaos, the average of thirty is a bell exactly &sigma;/&radic;30 wide.</p>
       </div>
-      <div class="lv-hook">σ/√n →</div>
+      <div class="lv-hook">&sigma;/&radic;n &rarr;</div>
     </a>
-    <a class="lv" href="level-2.html">
-      <div class="lv-num num">II</div>
+    <div class="lv soon">
+      <div class="lv-num num">5</div>
+      <div>
+        <div class="lv-title">Estimation and uncertainty</div>
+        <p class="lv-idea">Every estimate carries error. The standard error becomes a confidence interval &mdash; including for the constants the rest of the arc leans on.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
+    <a class="lv" href="level-06.html">
+      <div class="lv-num num">6</div>
       <div>
         <div class="lv-title">Control limits are a hypothesis test</div>
-        <p class="lv-idea">±3σ isn't taste. If the process is stable, a point lands outside 0.27% of
-        the time — so a violation is a bet at 370:1 that something changed.</p>
+        <p class="lv-idea">&plusmn;3&sigma; isn&rsquo;t taste. If the process is stable, a point lands outside 0.27% of the time &mdash; so a violation is a bet at 370:1 that something changed.</p>
       </div>
-      <div class="lv-hook">370:1 →</div>
+      <div class="lv-hook">370:1 &rarr;</div>
     </a>
-    <a class="lv" href="level-3.html">
-      <div class="lv-num num">III</div>
+    <div class="lv soon">
+      <div class="lv-num num">7</div>
+      <div>
+        <div class="lv-title">Evidence and decisions</div>
+        <p class="lv-idea">&alpha;, &beta; and power &mdash; and the Western Electric rules as evidence rules. More rules buy sensitivity with false alarms.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
+    <a class="lv" href="level-08.html">
+      <div class="lv-num num">8</div>
       <div>
         <div class="lv-title">Capability is comparing two distributions</div>
-        <p class="lv-idea">Spec limits are the customer's voice, the spread is the process's. Cpk
-        prices the mismatch as an exact tail integral.</p>
+        <p class="lv-idea">Spec limits are the customer&rsquo;s voice, the spread is the process&rsquo;s. Cpk prices the mismatch as an exact tail integral.</p>
       </div>
-      <div class="lv-hook">Cpk → ppm →</div>
+      <div class="lv-hook">Cpk &rarr; ppm &rarr;</div>
     </a>
-    <a class="lv" href="level-4.html">
-      <div class="lv-num num">IV</div>
+    <a class="lv" href="level-09.html">
+      <div class="lv-num num">9</div>
       <div>
         <div class="lv-title">Detection theory: memory beats points</div>
-        <p class="lv-idea">Slow drift never looks alarming in any single point. EWMA accumulates
-        evidence and catches a 1σ shift about four times sooner, at the same false-alarm cost.</p>
+        <p class="lv-idea">Slow drift never looks alarming in any single point. EWMA accumulates evidence and catches a 1&sigma; shift about four times sooner, at the same false-alarm cost.</p>
       </div>
-      <div class="lv-hook">ARL 10 vs 44 →</div>
+      <div class="lv-hook">ARL 10 vs 44 &rarr;</div>
     </a>
+    <div class="lv soon">
+      <div class="lv-num num">10</div>
+      <div>
+        <div class="lv-title">Counting, not measuring</div>
+        <p class="lv-idea">Attribute data: binomial and Poisson, p, np, c and u charts, and what makes a subgroup rational.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
+    <div class="lv soon">
+      <div class="lv-num num">11</div>
+      <div>
+        <div class="lv-title">Relationships</div>
+        <p class="lv-idea">Least squares and residuals, then ANOVA as variance decomposition &mdash; the arithmetic a gage study runs on.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
+    <div class="lv soon">
+      <div class="lv-num num">12</div>
+      <div>
+        <div class="lv-title">Experiments</div>
+        <p class="lv-idea">Factorial designs. Interactions are the reason one-factor-at-a-time misses the answer.</p>
+      </div>
+      <div class="lv-hook">not written yet</div>
+    </div>
   </div>
 
   <figure style="margin-top:clamp(64px,8vw,96px)">

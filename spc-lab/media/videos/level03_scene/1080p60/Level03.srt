@@ -1,170 +1,168 @@
-WEBVTT
-
 1
-00:00:00.000 --> 00:00:03.752
+00:00:00,000 --> 00:00:03,752
 Take twelve parts off one machine. Same tool,
 
 2
-00:00:03.852 --> 00:00:07.604
+00:00:03,852 --> 00:00:07,604
 same operator, same gauge, one after another.
 
 3
-00:00:07.700 --> 00:00:11.528
+00:00:07,700 --> 00:00:11,528
 Every reading is different, and nothing is broken.
 
 4
-00:00:11.628 --> 00:00:15.064
+00:00:11,628 --> 00:00:15,064
 The twelve of them cover forty seven microns.
 
 5
-00:00:15.150 --> 00:00:19.316
+00:00:15,150 --> 00:00:19,316
 Two of them differ by a single micron, which is exactly
 
 6
-00:00:19.416 --> 00:00:23.738
+00:00:19,416 --> 00:00:23,738
 where this gauge stops. Below that it has nothing to say.
 
 7
-00:00:23.833 --> 00:00:27.398
+00:00:23,833 --> 00:00:27,398
 Spread is not a defect. It is what every real
 
 8
-00:00:27.498 --> 00:00:30.981
+00:00:27,498 --> 00:00:30,981
 process does, and the job is to describe it.
 
 9
-00:00:31.066 --> 00:00:34.848
+00:00:31,066 --> 00:00:34,848
 Twelve numbers are not an answer. You need one number
 
 10
-00:00:34.948 --> 00:00:38.070
+00:00:34,948 --> 00:00:38,070
 for the centre — so guess one, and check it.
 
 11
-00:00:38.166 --> 00:00:42.218
+00:00:38,166 --> 00:00:42,218
 Here is a guess, with every part's distance to it drawn
 
 12
-00:00:42.318 --> 00:00:46.068
+00:00:42,318 --> 00:00:46,068
 in. Add the distances on each side and the guess is
 
 13
-00:00:46.168 --> 00:00:49.994
+00:00:46,168 --> 00:00:49,994
 out: the two sides do not cancel, and the beam tips.
 
 14
-00:00:50.083 --> 00:00:54.417
+00:00:50,083 --> 00:00:54,417
 So walk the guess along until they do. One position makes
 
 15
-00:00:54.517 --> 00:00:59.007
+00:00:54,517 --> 00:00:59,007
 the two sides equal and opposite, and the beam comes level.
 
 16
-00:00:59.100 --> 00:01:02.869
+00:00:59,100 --> 00:01:02,869
 That position is the mean. Not a formula you were
 
 17
-00:01:02.969 --> 00:01:06.896
+00:01:02,969 --> 00:01:06,896
 handed — the one place where the deviations cancel.
 
 18
-00:01:07.483 --> 00:01:11.747
+00:01:07,483 --> 00:01:11,747
 Now the spread. Averaging those deviations is useless:
 
 19
-00:01:11.847 --> 00:01:15.303
+00:01:11,847 --> 00:01:15,303
 we just proved they cancel, by construction.
 
 20
-00:01:15.400 --> 00:01:21.769
+00:01:15,400 --> 00:01:21,769
 Square each deviation instead. Negatives turn positive, the cancelling stops, and
 
 21
-00:01:21.869 --> 00:01:25.524
+00:01:21,869 --> 00:01:25,524
 every square is an area you can put on a shelf.
 
 22
-00:01:25.616 --> 00:01:31.403
+00:01:25,616 --> 00:01:31,403
 Twelve squares averaged, then rooted, which puts the answer back in millimetres.
 
 23
-00:01:31.503 --> 00:01:35.524
+00:01:31,503 --> 00:01:35,524
 That is sigma, and it is the side of the average square.
 
 24
-00:01:35.616 --> 00:01:39.812
+00:01:35,616 --> 00:01:39,812
 For these twelve parts, 12.7 microns.
 
 25
-00:01:40.400 --> 00:01:43.549
+00:01:40,400 --> 00:01:43,549
 Twelve parts say nothing about shape. Keep
 
 26
-00:01:43.649 --> 00:01:46.180
+00:01:43,649 --> 00:01:46,180
 measuring, and keep the same bins.
 
 27
-00:01:46.266 --> 00:01:50.098
+00:01:46,266 --> 00:01:50,098
 A hundred parts. A thousand. Twenty thousand, off
 
 28
-00:01:50.198 --> 00:01:53.870
+00:01:50,198 --> 00:01:53,870
 the same machine, measured with the same gauge.
 
 29
-00:01:53.966 --> 00:01:58.042
+00:01:53,966 --> 00:01:58,042
 And a shape appears that nobody chose or asked for.
 
 30
-00:01:58.133 --> 00:02:03.934
+00:01:58,133 --> 00:02:03,934
 Many small independent effects, added together, land on this curve. The bell
 
 31
-00:02:04.034 --> 00:02:08.593
+00:02:04,034 --> 00:02:08,593
 is a consequence of the process, not an assumption about it.
 
 32
-00:02:09.183 --> 00:02:13.822
-One more thing, and then Level 1. You never measure everything.
+00:02:09,183 --> 00:02:13,873
+One more thing, and then Level 4. You never measure everything.
 
 33
-00:02:13.922 --> 00:02:18.035
+00:02:13,973 --> 00:02:18,131
 The true centre and spread belong to the process itself.
 
 34
-00:02:18.133 --> 00:02:21.207
+00:02:18,216 --> 00:02:21,290
 Your twelve parts only estimate them, and
 
 35
-00:02:21.307 --> 00:02:23.529
+00:02:21,390 --> 00:02:23,612
 the estimate is not the thing.
 
 36
-00:02:23.616 --> 00:02:27.044
+00:02:23,700 --> 00:02:27,128
 Four more handfuls of twelve, off the same
 
 37
-00:02:27.144 --> 00:02:31.244
+00:02:27,228 --> 00:02:31,328
 untouched machine, land somewhere else every time.
 
 38
-00:02:31.333 --> 00:02:35.279
+00:02:31,416 --> 00:02:35,362
 It is also why a sample's spread divides by n minus one.
 
 39
-00:02:35.379 --> 00:02:40.120
+00:02:35,462 --> 00:02:40,204
 Twelve parts spread around their own mean sit a little tighter than
 
 40
-00:02:40.220 --> 00:02:44.817
+00:02:40,304 --> 00:02:44,900
 they do around the truth, so the smaller divisor corrects for it.
 
 41
-00:02:44.916 --> 00:02:49.125
-Every estimate carries uncertainty. Level 1 puts
+00:02:45,000 --> 00:02:49,163
+Every estimate carries uncertainty. Level 4 puts
 
 42
-00:02:49.225 --> 00:02:51.728
+00:02:49,263 --> 00:02:51,740
 a number on exactly how much.
 
