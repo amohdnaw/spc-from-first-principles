@@ -100,7 +100,16 @@ CHAPTER_CSS = """
   .act > summary::-webkit-details-marker{display:none}
   .act > summary::marker{content:""}
   .act > summary:hover .k{color:var(--ink-bright)}
-  .act .thumb{width:180px;height:auto;flex:none;display:block;border:1px solid var(--rule)}
+  /* the closed strip has to look like a video, or it reads as a footnote. A poster
+     at 280px with a play glyph over it does that; 180px and a word did not. */
+  .act .thumb-wrap{position:relative;flex:none;display:block;line-height:0}
+  .act .thumb{width:280px;height:auto;display:block;border:1px solid var(--rule)}
+  .act .thumb-wrap::after{content:"";position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);width:0;height:0;
+    border-left:18px solid var(--ink-bright);border-top:11px solid transparent;
+    border-bottom:11px solid transparent;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
+  .act > summary:hover .thumb-wrap::after{border-left-color:var(--accent)}
+  .act[open] > summary .thumb-wrap{display:none}
   .act .meta{min-width:0}
   .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
     text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
@@ -108,11 +117,10 @@ CHAPTER_CSS = """
     max-width:52ch;text-wrap:pretty}
   .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
-  .act[open] > summary .thumb{display:none}
   .act[open] > summary .cue{color:var(--accent)}
   .act video{display:block;width:100%;height:auto;background:var(--ground);
     margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
-  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:120px} }
+  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:160px} }
   /* a margin figure - Tufte's one case for a figure outside the main flow */
   .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
   .note.watch:hover .k{color:var(--ink-bright)}
@@ -728,7 +736,9 @@ def build_main(spec: dict, keep: dict) -> str:
         dur = re.search(r"(\d+:\d\d)", caption)
         return ('      <details class="act">\n'
                 '        <summary>\n'
-                f'          <img class="thumb" src="posters/{poster}.jpg" alt="" loading="lazy">\n'
+                '          <span class="thumb-wrap">'
+                f'<img class="thumb" src="posters/{poster}.jpg" alt="" loading="lazy">'
+                '</span>\n'
                 '          <span class="meta">'
                 f'<span class="k">{label}</span>'
                 f'<span class="cap">{caption}</span></span>\n'

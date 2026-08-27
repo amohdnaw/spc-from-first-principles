@@ -241,6 +241,13 @@ textbook chapter, and the grammar is:
    measured **323×182 on screen**: not a player but a thumbnail with controls, and
    unreadable for a 1920-wide render. **No video on this site renders under 400px at
    desktop widths** — that is now a checked invariant.
+6a. **Collapsed by default, and the closed state must read as a video.** A level's own
+   act is always open; an act borrowed from another scene is collapsed. Collapsing buys
+   no bandwidth — `preload="none"` fetches only the poster either way — so the only
+   thing it buys is ~590px of vertical space each, and the only thing it costs is
+   discoverability. That cost is paid off in the closed state, not by opening
+   everything: a **280px poster with a play glyph over it**, the figure number, the
+   caption and a `PLAY` cue. At 180px with a word it read as a footnote.
 
 Measured on Level 6: 104 → **555 words**, 20 → **79 words per screen**, 0 → 6 headings.
 The page is 34% taller, which is the correct trade — the fix for "scrolling away" is
