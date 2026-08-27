@@ -46,6 +46,18 @@ for entry in "${SCENES[@]}"; do
 
   mp4=$(find "$OUTDIR/$file" -name "$klass.mp4" -not -path '*partial*' | head -1)
   [ -z "$mp4" ] && { echo "   no mp4 produced"; exit 1; }
+
+  # Move the moov atom to the front. Manim's ffmpeg writes it after mdat, so a
+  # browser opening the file over HTTP has no index until it has range-fetched
+  # the tail — which shows up as the first play stuttering or refusing to seek,
+  # and then being fine once cached. The re-mux is a stream copy: the video and
+  # audio bytes are identical, only the container layout changes.
+  if ! ffprobe -v error -show_entries format_tags -of default=nw=1 "$mp4" >/dev/null 2>&1; then
+    echo "   ffprobe failed on $mp4"; exit 1
+  fi
+  ffmpeg -v error -i "$mp4" -c copy -movflags +faststart "${mp4%.mp4}.fs.mp4" -y \
+    || { echo "   FASTSTART REMUX FAILED"; exit 1; }
+  mv -f "${mp4%.mp4}.fs.mp4" "$mp4"
   dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$mp4")
   has_audio=$(ffprobe -v error -select_streams a -show_entries stream=codec_type -of csv=p=0 "$mp4" | head -1)
 
