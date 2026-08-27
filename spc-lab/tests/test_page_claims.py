@@ -81,3 +81,40 @@ def test_runtime_claim_matches_the_rendered_acts():
         f"index claims {claimed} minutes; {len(acts)} level acts total "
         f"{int(total)//60} min {int(total)%60:02d} s"
     )
+
+
+def test_no_equation_is_double_escaped():
+    """`\\\\` in a one-line equation is a KaTeX line break, never what was meant.
+
+    Level 1's and Level 2's display equations shipped with doubled backslashes
+    because the source was written through a shell heredoc into a Python string.
+    KaTeX read `\\\\alpha` as "line break, then the word alpha", so the page
+    rendered the literal words `operatorname`, `sigma`, `alpha` and
+    `longrightarrow` — visible on the live site, and invisible to every check
+    that only asked whether KaTeX had produced *some* output.
+    """
+    offenders = []
+    pages = sorted(REPO.glob("*.html")) + sorted((REPO / "tools/page-sources").glob("*.html"))
+    for p in pages:
+        for m in re.finditer(r'data-tex="([^"]*)"', p.read_text()):
+            if r"\\" in m.group(1):
+                offenders.append(f"{p.name}: {m.group(1)[:60]}")
+    assert not offenders, "double-escaped equations:\n  " + "\n  ".join(offenders)
+
+
+def test_rendered_equations_contain_no_latex_command_words():
+    """The positive form: a rendered equation must not show a command as text."""
+    words = ("operatorname", "longrightarrow", "alpha", "sigma", "lambda",
+             "dfrac", "sqrt", "approx", "mathbb", "binom")
+    offenders = []
+    for p in sorted(REPO.glob("level-*.html")) + [INDEX]:
+        html = p.read_text()
+        # the visible KaTeX layer only; the MathML annotation legitimately holds the source
+        for m in re.finditer(r'<span class="katex-html"[^>]*>(.*?)</span></span></span>',
+                             html, re.S):
+            visible = re.sub(r"<[^>]+>", "", m.group(1))
+            for w in words:
+                if w in visible:
+                    offenders.append(f"{p.name}: rendered {w!r}")
+                    break
+    assert not offenders, "LaTeX commands rendered as text:\n  " + "\n  ".join(sorted(set(offenders)))
