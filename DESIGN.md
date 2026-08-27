@@ -77,12 +77,23 @@ Body is the anchor: **21px / 1.55**. Everything else is a step from it.
 - Reading measure **58–64ch**. Never full width.
 - Readouts and any figure use **tabular lining numerals** (`font-variant-numeric: tabular-nums`).
 - Mono labels: uppercase, `letter-spacing: .14em`. Serif: normal tracking, never letter-spaced.
-- **An uppercased label may not contain Greek.** `text-transform: uppercase` maps σ to Σ
-  and λ to Λ — the summation sign and a different letter, not styling. Either keep the
-  label ASCII ("what three sigma is worth") or opt the glyph out with `.nc`
+- **An uppercased label may not contain a symbol whose case carries meaning.** This is
+  wider than Greek, and every instance below shipped before being noticed.
+  - *Greek:* `text-transform: uppercase` maps σ to Σ and λ to Λ — the summation sign and
+    a different letter, not styling. Two more were found in `line-of-sight.html` on
+    2026-08-28 (`±3σ limits from baseline`, `Process spread — σ`), because the first
+    audit only checked the level pages.
+  - *Latin, added 2026-08-28:* in SPC **`n` is the subgroup size and `N` is the lot
+    size**, so `at n = 100` rendered `AT N = 100` — a different quantity. Likewise
+    **`d₂` is the R̄/σ bias correction while `D₃`/`D₄` are the R-chart limit factors**, so
+    `d₂ at n=5` rendered `D₂ AT N=5`, naming a constant that does not exist.
+  Either keep the label free of symbols, or opt each one out with `.nc`
   (`text-transform: none`), which keeps the label uppercase and the symbol correct.
-  Four instances shipped before this was noticed, including the interactive's own
-  "LIMIT AT ± 3.00 Σx̄".
+  `tools/chapterise.py` exposes `nc()` for exactly this, so a generated label states the
+  intent at its callsite.
+  The Greek half is cheap to test and worth a permanent gate; the Latin half is not —
+  a check for bare single letters cannot tell the article "a" from a variable, so it
+  belongs in review, not in CI.
 - **Maths inside serif prose goes through KaTeX, not Unicode.** EB Garamond has no
   combining hat and no subscript digits, so `σ̂` renders as sigma plus a stray caret and
   `d₂` falls back mid-word to another face. Use `<span class="tex" data-tex="…">`, which

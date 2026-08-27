@@ -127,6 +127,18 @@ def _phi(z: float) -> float:
     return 0.5 * (1 + math.erf(z / math.sqrt(2)))
 
 
+def inside(k: float) -> float:
+    """Exact area within ±k σ: Φ(k) − Φ(−k) = erf(k/√2). Not a table lookup.
+
+    This lives here rather than in act_style because it is arithmetic, not
+    style: Level 2 needs it from a module that does not import manim, and two
+    copies of the same integral is how a curriculum ends up disagreeing with
+    itself.
+    """
+    import math
+    return math.erf(k / math.sqrt(2.0))
+
+
 def ewma_limits(lam: float, k: int = 50) -> tuple[np.ndarray, np.ndarray]:
     """Time-varying EWMA control limits after observation i (i = 1..k):
 

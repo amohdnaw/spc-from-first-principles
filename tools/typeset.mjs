@@ -21,7 +21,7 @@ import { dirname, join } from "node:path";
 import katex from "katex";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PAGES = ["index.html", "level-01.html", "level-03.html", "level-04.html", "level-06.html",
+const PAGES = ["index.html", "level-01.html", "level-02.html", "level-03.html", "level-04.html", "level-06.html",
                "level-08.html", "level-09.html", "line-of-sight.html"];
 
 // `<div class="eq-body" data-tex="…">` renders in display mode,

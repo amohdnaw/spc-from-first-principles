@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPC from First Principles — an interactive curriculum by Ammar</title>
-<meta name="description" content="Why control charts work, derived rather than asserted. Twelve levels &mdash; six written &mdash; narrated video, and every constant computed from source — plus the shop-floor cases where it paid.">
+<meta name="description" content="Why control charts work, derived rather than asserted. Twelve levels &mdash; seven written &mdash; narrated video, and every constant computed from source — plus the shop-floor cases where it paid.">
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
@@ -290,14 +290,14 @@
 
 <!-- ================= the opening act — the chart IS the syllabus ================= -->
 <header class="hero wrap">
-  <span class="micro" style="display:block;margin-bottom:24px">An interactive curriculum · twelve levels, six written · sixteen minutes of narrated video</span>
+  <span class="micro" style="display:block;margin-bottom:24px">An interactive curriculum · twelve levels, seven written · twenty minutes of narrated video</span>
   <h1>Every number on this chart can be derived.</h1>
   <p class="dek">Start anywhere on the trace. Each phase links to the level that explains it.</p>
 </header>
 
 <div class="chart-block wrap">
   <div class="chart-head">
-    <span class="micro">Fig. 0.0 — X̄ chart · n=5 · 120 subgroups · one shift, start to finish</span>
+    <span class="micro">Fig. 0.0 — X̄ chart · <span class="nc">n</span>=5 · 120 subgroups · one shift, start to finish</span>
     <span class="status" id="hero-status">● trace complete — four phases</span>
   </div>
   <svg id="hero-chart" role="img" aria-label="Control chart running from a stable baseline through slow drift, a point beyond three sigma, and corrective action back into control"></svg>
@@ -341,8 +341,8 @@
 
   <div class="readouts" style="margin-top:48px">
     <dl class="ro"><dt class="micro">Subgroups simulated</dt><dd class="num">400 000</dd></dl>
-    <dl class="ro"><dt class="micro">d₂ at n=5</dt><dd class="ok num">2.326</dd></dl>
-    <dl class="ro"><dt class="micro">A₂ at n=5</dt><dd class="ok num">0.577</dd></dl>
+    <dl class="ro"><dt class="micro"><span class="nc">d₂</span> at <span class="nc">n</span>=5</dt><dd class="ok num">2.326</dd></dl>
+    <dl class="ro"><dt class="micro">A₂ at <span class="nc">n</span>=5</dt><dd class="ok num">0.577</dd></dl>
     <dl class="ro"><dt class="micro">Checked against</dt><dd class="num">AIAG&nbsp;Table&nbsp;B</dd></dl>
   </div>
 
@@ -356,14 +356,16 @@
       </div>
       <div class="lv-hook">start here &rarr;</div>
     </a>
-    <div class="lv soon">
+    <a class="lv" href="level-02.html">
       <div class="lv-num num">2</div>
       <div>
         <div class="lv-title">Chance</div>
-        <p class="lv-idea">Probability as long-run frequency. What a claim like &ldquo;0.27&nbsp;%&rdquo; is actually a claim about.</p>
+        <p class="lv-idea">A proportion is a long-run frequency. The gap between heads and tails grows
+        while the rate settles, so nothing is ever owed &mdash; and &ldquo;0.27&nbsp;%&rdquo; turns out to
+        be a claim about a repeated process, never about a part.</p>
       </div>
-      <div class="lv-hook">not written yet</div>
-    </div>
+      <div class="lv-hook">read it &rarr;</div>
+    </a>
     <a class="lv" href="level-03.html">
       <div class="lv-num num">3</div>
       <div>
@@ -484,7 +486,7 @@
       <div class="lab">
         <div class="lab-head">
           <span class="micro">Lab A — why EWMA catches what X̄ misses</span>
-          <span class="status"><span class="nc">λ</span> = 0.20 · n = 40</span>
+          <span class="status"><span class="nc">λ</span> = 0.20 · <span class="nc">n</span> = 40</span>
         </div>
         <div class="lab-grid">
           <svg id="labA-svg" viewBox="0 0 520 240" aria-label="Interactive EWMA versus Shewhart chart"></svg>

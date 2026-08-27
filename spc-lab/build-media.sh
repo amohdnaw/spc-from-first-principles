@@ -22,6 +22,7 @@ CAPTIONS=../captions
 # scene file : class : poster name
 SCENES=(
   "level01_scene:Level01:level01"
+  "level02_scene:Level02:level02"
   "level03_scene:Level03:level03"
   "level04_scene:Level04:level04"
   "level06_scene:Level06:level06"

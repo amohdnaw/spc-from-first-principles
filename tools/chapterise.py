@@ -215,6 +215,17 @@ def extract(html: str) -> dict:
     return out
 
 
+def nc(sym: str) -> str:
+    """A symbol that must keep its case inside an uppercased label.
+
+    Margin labels are `text-transform: uppercase`, which does not merely restyle
+    a variable — it renames it. In SPC `n` is the subgroup size and `N` is the
+    lot size, so "at n = 100" rendered "AT N = 100", which is a different
+    quantity. Greek is worse: sigma becomes the summation sign.
+    """
+    return f'<span class="nc">{sym}</span>'
+
+
 def note(k, v=None, text=None, speak=False, serif=False):
     """A margin note.
 
@@ -260,6 +271,10 @@ from spclab.variation import (  # noqa: E402
     PAIR_N, PAIR_RUN_DRIFTING, PAIR_RUN_STABLE,
     TAMPER_SIGMA_RATIO_EXACT, TAMPER_VAR_RATIO_EXACT,
     TWELVE_CLOSEST_UM, TWELVE_SPAN_UM,
+)
+from spclab.chance import (  # noqa: E402
+    ARL0, DIE_E, GAP_AT, MEDIAN_WAIT, MEMORY, MEMORY_WORST, MILESTONES,
+    P_IN_ARL0, P_IN_SHIFT, RATE_ERR_AT, SHIFT_SUBGROUPS,
 )
 
 # ---------------------------------------------------------------- chapters
@@ -369,7 +384,7 @@ def chapter_06(K):
                          " one is simulated, and then checked against the published table in a test suite."
                          " If the simulation and the table ever disagreed, the test would fail rather than"
                          " the page quietly lying.",
-                         datanote(("d₂ at n = 5", "2.326"), ("A₂ at n = 5", "0.577"),
+                         datanote((f"{nc('d₂')} at {nc(chr(110))} = 5", "2.326"), (f"A₂ at {nc(chr(110))} = 5", "0.577"),
                                   ("simulated", "400 000", "subgroups, checked against AIAG Table B"),
                                   k="the constants")),
                     K["watch"]("ConstantsAct.mp4", "constants", "figure 6.4",
@@ -379,6 +394,123 @@ def chapter_06(K):
                     "      " + K["fig"]("01_d2.png"),
                     "      " + K["fig"]("02_A2_D3_D4.png"),
                     "      </div>",
+        ]),
+    ]
+
+
+def chapter_02(K):
+    lo, mid, hi = MILESTONES
+    return [
+        ("s1", "2.1", "A long-run frequency", [
+            para("Level 1 ended with a shape nobody chose. Putting a number on that shape"
+                 " means saying something like “99.73 % inside”, and before this curriculum"
+                 " is allowed to say it, it has to be honest about what such a number is a"
+                 " statement <em>about</em>.",
+                 note("the claim ahead", text="Level 6 prices a pair of limits at 99.73 %. "
+                      "This level earns the right to say it."), lead=True),
+            para("Flip a fair coin once and the proportion of heads is nought or one. No"
+                 " single flip is ever half a head. Flip it again and again and the"
+                 " proportion goes wherever the flips send it — and then it stops wandering,"
+                 " and settles.",
+                 note("not a property", text="A probability describes a repeated process, "
+                      "never the next trial.")),
+            para("That settling <em>is</em> the definition. A probability is a long-run"
+                 " frequency: a statement about what a repeated process does, and never a"
+                 " statement about the next part off the machine.",
+                 note("spoken · 0:31", text="“A probability is a long-run frequency — a "
+                      "statement about what a repeated process does.”",
+                      speak=True, serif=True)),
+        ]),
+        ("s2", "2.2", "The gap grows, the rate settles", [
+            para("The belief worth killing lives here. If heads are behind, are they owed?"
+                 " Read one sequence of flips two ways at once and the answer is exact"
+                 " rather than rhetorical.",
+                 datanote((f"at {nc('n')} = {lo:,}", f"gap {GAP_AT[lo]:.0f}"),
+                          (f"at {nc('n')} = {mid:,}", f"gap {GAP_AT[mid]:.0f}"),
+                          (f"at {nc('n')} = {hi:,}", f"gap {GAP_AT[hi]:.0f}"),
+                          k="the surplus, expected"), lead=True),
+            para("Above, the surplus of heads over tails. It climbs, and it has an exact"
+                 " expected size — " + tex(r"\mathbb{E}|S_n| = 2^{1-n} n \binom{n-1}"
+                                          r"{\lfloor (n-1)/2 \rfloor}") + ", which for any"
+                 " n worth plotting is " + tex(r"\sqrt{2n/\pi}") + ". A hundredfold in n"
+                 " multiplies it by ten.",
+                 note("no repayment", text="The expected surplus never returns toward "
+                      "zero. There is nothing to repay it.")),
+            para("Below, the proportion, from the same flips. Its error is that same"
+                 " quantity divided by the number of flips, so the same hundredfold"
+                 " <em>divides</em> it by ten. Root n in the numerator, n in the"
+                 " denominator.",
+                 datanote((f"at {nc('n')} = {lo:,}", f"{RATE_ERR_AT[lo]:.5f}"),
+                          (f"at {nc('n')} = {mid:,}", f"{RATE_ERR_AT[mid]:.5f}"),
+                          (f"at {nc('n')} = {hi:,}", f"{RATE_ERR_AT[hi]:.5f}"),
+                          k="error in the rate")),
+            para("There is no law of averages. Nothing is owed and nothing is repaid; the"
+                 " proportion converges because the denominator outruns the gap. Both"
+                 " statements are about one sequence, which is what makes them impossible"
+                 " to argue with."),
+            "      " + K["fig"]("l02_1_long_run.png"),
+            "      " + K["fig"]("Level02.mp4"),
+        ]),
+        ("s3", "2.3", "The coin has no memory", [
+            para("Two million flips, sorted by the run that came immediately before each"
+                 " one. After a single head, after two, after six — how often is the next"
+                 " flip a head?",
+                 datanote(("after 1 head", f"{MEMORY[1]:.4f}"),
+                          ("after 3 heads", f"{MEMORY[3]:.4f}"),
+                          ("after 6 heads", f"{MEMORY[6]:.4f}"),
+                          ("worst departure", f"{MEMORY_WORST:.4f}"),
+                          k="next flip is a head"), lead=True),
+            para("Every answer is one half. Nothing happens, and the fact that nothing"
+                 " happens is the result: the sequence carries no debt. That is"
+                 " independence, and it is also the assumption every control limit in"
+                 " Part II quietly rests on.",
+                 note("why it is here", text="Limits computed from independent subgroups "
+                      "are wrong the moment the points inform each other.")),
+        ]),
+        ("s4", "2.4", "Expectation", [
+            para("One more idea before the chart. Slide a fulcrum under six equal weights,"
+                 " one per face of a fair die, until they balance. It settles between three"
+                 " and four.",
+                 datanote(("balance point", f"{DIE_E:.1f}"),
+                          ("a face of the die", "no"), k="a fair die"), lead=True),
+            para("Three point five is not a face. The die can never show it, and it is"
+                 " still the value to expect. An expected value is a balance point, not a"
+                 " prediction — and it need not be attainable at all.",
+                 note("forward", text="Level 3 puts this same balance point on real "
+                      "measurements and calls it the mean.")),
+        ]),
+        ("s5", "2.5", "What a percentage claims", [
+            para("Now the number this level was written to protect. Nought point two seven"
+                 " percent — the other side of 99.73 % — has three readings, and only one"
+                 " of them is true.",
+                 note("not the part", text="A part is never a probability. It is one part."),
+                 lead=True),
+            para("It is not the chance this part is bad. It is not the fraction of parts out"
+                 " of tolerance — that is capability, and it waits until Level 8. It is the"
+                 " rate at which a chart on an unchanged process trips its own limits.",
+                 note("not capability", text="Parts against tolerance is Level 8. This is "
+                      "the chart against itself.")),
+            para("Which has a consequence worth doing the arithmetic for. Run a shift of"
+                 f" {SHIFT_SUBGROUPS} subgroups with nothing wrong and the chance of having"
+                 f" been alarmed at least once is already {P_IN_SHIFT*100:.1f} %. Run the"
+                 f" {ARL0:.0f} that the phrase “one alarm in {ARL0:.0f}” actually names, and"
+                 f" it is {P_IN_ARL0*100:.1f} % — not certainty.",
+                 datanote((f"over {SHIFT_SUBGROUPS} subgroups", f"{P_IN_SHIFT*100:.1f} %"),
+                          (f"over {ARL0:.0f} subgroups", f"{P_IN_ARL0*100:.1f} %"),
+                          ("the limit", "1 − 1/e"),
+                          k="at least one false alarm")),
+            "      " + K["eq"],
+            para("And because the waiting time is geometric, the typical wait is shorter"
+                 f" than the average one: half of all first false alarms arrive by subgroup"
+                 f" {MEDIAN_WAIT:.0f}, not {ARL0:.0f}. An average is not a deadline.",
+                 datanote(("mean wait", f"{ARL0:.1f}"),
+                          ("median wait", f"{MEDIAN_WAIT:.0f}"),
+                          k="subgroups to the first alarm")),
+            para("A percentage on a control chart is a claim about a repeated process, never"
+                 " about a part. Level 6 can price the limits now.",
+                 note("spoken · 3:52", text="“A rate is a claim about the process, not "
+                      "about a part.”", speak=True, serif=True)),
+            "      " + K["fig"]("l02_2_what_a_rate_claims.png"),
         ]),
     ]
 
@@ -532,7 +664,7 @@ def chapter_03(K):
                  " their own mean sit a little tighter than they do around the truth, so the"
                  " smaller divisor corrects for it. Every estimate carries uncertainty, and Level"
                  " 4 puts a number on exactly how much.",
-                 datanote(("divisor", "n − 1"), k="why not n")),
+                 datanote(("divisor", "n − 1"), k=f"why not {nc(chr(110))}")),
             "      " + K["sys"],
         ]),
     ]
@@ -728,7 +860,7 @@ CHAPTERS = {
     "level-01.html": {
         "number": 1, "word": "one",
         "before": "nothing — this is where the curriculum starts",
-        "after": "Level 2 — chance, not yet written",
+        "after": "Level 2 — chance, and what a percentage claims",
         "estimate": "5 sections · 1 act · ~7 min read",
         "toc": [("1.1", "s1", "Nothing repeats",
                  "twelve parts off one machine, and no two the same"),
@@ -741,6 +873,23 @@ CHAPTERS = {
                 ("1.5", "s5", "Reacting to noise makes it worse",
                  "Deming's funnel: correcting every part doubles the variance")],
         "sections": chapter_01,
+    },
+    "level-02.html": {
+        "number": 2, "word": "two",
+        "before": "Level 1 — variation, and a shape nobody chose",
+        "after": "Level 3 — centre and spread",
+        "estimate": "5 sections · 1 act · ~7 min read",
+        "toc": [("2.1", "s1", "A long-run frequency",
+                 "a proportion describes a process, never the next part"),
+                ("2.2", "s2", "The gap grows, the rate settles",
+                 "one sequence read twice — there is no law of averages"),
+                ("2.3", "s3", "The coin has no memory",
+                 "independence, shown as an absence"),
+                ("2.4", "s4", "Expectation",
+                 "a balance point the die does not have"),
+                ("2.5", "s5", "What a percentage claims",
+                 tex(r"1-(1-\alpha)^{1/\alpha}") + " — and why 370 is not a deadline")],
+        "sections": chapter_02,
     },
     "level-06.html": {
         "number": 6, "word": "six",
@@ -763,7 +912,7 @@ CHAPTERS = {
     },
     "level-03.html": {
         "number": 3, "word": "three",
-        "before": "Level 2 — chance, not yet written",
+        "before": "Level 2 — chance, and what a percentage claims",
         "after": "Level 4 — the average is predictable",
         "estimate": "5 sections · 1 act · ~7 min read",
         "toc": [("3.1", "s1", "Twelve parts, twelve numbers",

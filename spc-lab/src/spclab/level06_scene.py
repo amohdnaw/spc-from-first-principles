@@ -44,8 +44,9 @@ from manim.utils import rate_functions as rf
 
 from spclab.act_style import (
     BLUE, GREY, INK, PANEL, RED, TEAL, YELLOW,
-    gauge, inside, micro, norm_pdf, phi, prose,
+    gauge, micro, norm_pdf, phi, prose,
 )
+from spclab.formulas import inside
 from spclab.narration import NarratedCameraScene
 
 

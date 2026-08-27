@@ -1,0 +1,224 @@
+1
+00:00:00,800 --> 00:00:04,324
+A fair coin. Not a claim about any one flip
+
+2
+00:00:04,424 --> 00:00:07,444
+— no single flip is ever half a head.
+
+3
+00:00:08,033 --> 00:00:12,424
+Flip it once and the proportion of heads is nought or one. Flip
+
+4
+00:00:12,524 --> 00:00:17,485
+it again and again, and the proportion goes wherever the flips send it.
+
+5
+00:00:17,583 --> 00:00:21,227
+Keep going. It stops wandering, and it settles.
+
+6
+00:00:21,683 --> 00:00:25,960
+That settling is the whole definition. A probability is
+
+7
+00:00:26,060 --> 00:00:29,701
+a long-run frequency — a statement about what a
+
+8
+00:00:29,801 --> 00:00:33,919
+repeated process does, and never about the next flip.
+
+9
+00:00:36,216 --> 00:00:41,638
+Now the same sequence, read two ways at once. Above, the surplus of
+
+10
+00:00:41,738 --> 00:00:47,324
+heads over tails. Below, the proportion. One set of flips feeds both.
+
+11
+00:00:47,916 --> 00:00:53,330
+Watch the two readouts move in opposite directions. The surplus climbs and
+
+12
+00:00:53,430 --> 00:00:57,800
+never comes back. The error in the rate falls the whole way.
+
+13
+00:00:57,900 --> 00:01:01,629
+Neither is an accident. The surplus has an exact
+
+14
+00:01:01,729 --> 00:01:05,937
+expected size, and the proportion's error is that same
+
+15
+00:01:06,037 --> 00:01:09,128
+quantity divided by the number of flips.
+
+16
+00:01:09,216 --> 00:01:14,912
+Two to the one minus n, times n, times a binomial coefficient — which
+
+17
+00:01:15,012 --> 00:01:20,036
+for any n worth plotting is the square root of two n over pi.
+
+18
+00:01:20,133 --> 00:01:24,879
+Root n in the numerator, n in the denominator. That is the
+
+19
+00:01:24,979 --> 00:01:31,145
+whole reason a deficit is never repaid and the proportion converges anyway.
+
+20
+00:01:31,233 --> 00:01:35,079
+There is no law of averages. Nothing is owed and
+
+21
+00:01:35,179 --> 00:01:39,437
+nothing is repaid. The denominator does all the work.
+
+22
+00:01:41,833 --> 00:01:47,277
+Here is the belief worth killing. After a run of heads, is a tail due?
+
+23
+00:01:47,966 --> 00:01:52,218
+Two million flips, sorted by the run that came before
+
+24
+00:01:52,318 --> 00:01:56,406
+each one. After a single head, after two, after six
+
+25
+00:01:56,506 --> 00:01:59,362
+— how often is the next flip a head?
+
+26
+00:01:59,450 --> 00:02:03,333
+Every bar lands on one half. Nothing happens, and
+
+27
+00:02:03,433 --> 00:02:06,910
+the fact that nothing happens is the result.
+
+28
+00:02:07,000 --> 00:02:11,544
+That is independence. The sequence carries no debt, and it
+
+29
+00:02:11,644 --> 00:02:16,188
+is also the assumption every control limit later rests on.
+
+30
+00:02:18,483 --> 00:02:22,175
+One more idea before the chart. A fair die:
+
+31
+00:02:22,275 --> 00:02:25,703
+six faces, each as likely as the others.
+
+32
+00:02:26,200 --> 00:02:30,512
+Slide a fulcrum until the six weights balance. It settles
+
+33
+00:02:30,612 --> 00:02:33,996
+between three and four — at three point five.
+
+34
+00:02:34,083 --> 00:02:37,799
+Three point five is not a face. The die can never
+
+35
+00:02:37,899 --> 00:02:41,303
+show it, and it is still the value to expect.
+
+36
+00:02:41,400 --> 00:02:44,710
+An expected value is a balance point, not a
+
+37
+00:02:44,810 --> 00:02:48,596
+prediction, and it need not be attainable at all.
+
+38
+00:02:50,883 --> 00:02:53,663
+Level 6 will put a number on a pair of
+
+39
+00:02:53,763 --> 00:02:58,591
+limits: nought point two seven percent outside. Three readings of
+
+40
+00:02:58,691 --> 00:03:01,775
+that number, and only one of them is true.
+
+41
+00:03:01,866 --> 00:03:05,793
+Not the part — a part is never a probability. Not the
+
+42
+00:03:05,893 --> 00:03:10,351
+parts out of tolerance — that is capability, and it is Level
+
+43
+00:03:10,451 --> 00:03:13,694
+8. It is a rate at which a chart cries wolf.
+
+44
+00:03:15,183 --> 00:03:18,864
+So run the chart on a process where nothing is wrong,
+
+45
+00:03:18,964 --> 00:03:23,003
+and count the chance of having been alarmed at least once.
+
+46
+00:03:23,600 --> 00:03:29,020
+A shift of a hundred subgroups, and it is already 24 percent.
+
+47
+00:03:29,116 --> 00:03:32,783
+Keep plotting. The phrase is one alarm in three
+
+48
+00:03:32,883 --> 00:03:37,272
+hundred and seventy subgroups, so run exactly that many.
+
+49
+00:03:37,366 --> 00:03:42,666
+Not certainty — 63 percent. And that is not a coincidence.
+
+50
+00:03:42,750 --> 00:03:46,378
+Because the number of subgroups is one over the rate,
+
+51
+00:03:46,478 --> 00:03:49,826
+the expression collapses to one minus one over e.
+
+52
+00:03:49,916 --> 00:03:54,518
+And because the waiting time is geometric, the typical
+
+53
+00:03:54,618 --> 00:03:58,435
+wait is shorter than the average one: half of
+
+54
+00:03:58,535 --> 00:04:02,440
+all first false alarms arrive by subgroup 256.
+
+55
+00:04:02,533 --> 00:04:07,196
+A percentage on a control chart is a claim about a repeated
+
+56
+00:04:07,296 --> 00:04:12,201
+process. Never about a part. Level 6 can price the limits now.
+

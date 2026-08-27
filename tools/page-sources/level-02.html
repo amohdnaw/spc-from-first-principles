@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level 3 — What the numbers mean · SPC from First Principles</title>
-<meta name="description" content="Before control charts: what a mean actually is, why spread needs squaring, where the bell comes from, and why a sample is never the population. Twelve real measured shafts.">
+<title>Level 2 — Chance · SPC from First Principles</title>
+<meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -249,8 +249,8 @@
     <a class="wordmark" href="index.html">Ammar Nawawi <span>/ SPC</span></a>
     <div class="rail">
       <a href="level-01.html" title="Level 1 — Variation">01</a>
-      <a href="level-02.html" title="Level 2 — Chance">02</a>
-      <a href="level-03.html" title="Level 3 — Centre and spread" aria-current="page">03</a>
+      <a href="level-02.html" title="Level 2 — Chance" aria-current="page">02</a>
+      <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
       <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
       <span class="soon" title="Level 5 — Estimation and uncertainty — not written yet">05</span>
       <a href="level-06.html" title="Level 6 — Limits are a hypothesis test">06</a>
@@ -266,9 +266,9 @@
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level 3</p>
-    <h1>What the numbers mean</h1>
-    <p class="dek">A mean, a spread, and a shape. Everything after this is built on three ideas.</p>
+    <p class="eyebrow">Level 2</p>
+    <h1>Chance</h1>
+    <p class="dek">A proportion is a long-run frequency. Before a chart may claim 99.73 %, this is what such a number is a statement about.</p>
   </header>
 
   <main>
@@ -329,19 +329,9 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body" data-tex="\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>σ</mi><mo>=</mo><msqrt><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mo>∑</mo><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mover accent="true"><mi>x</mi><mo>ˉ</mo></mover><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow><mi>n</mi></mfrac></mstyle></msqrt></mrow><annotation encoding="application/x-tex">\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.7036em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7364em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.6964em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
-c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
-c0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20
-s-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121
-s209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081
-l0 -0c4,-6.7,10,-10,18,-10 H400000
-v40H1014.6
-s-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185
-c-2,6,-10,9,-24,9
-c-8,0,-12,-0.7,-12,-2z M1001 80
-h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7036em;"><span></span></span></span></span></span></span></span></span></span></div>
-        <div class="eq-num">(3.1)</div>
-        <p class="eq-cap">Square to kill the signs, average, then root back into the original units.</p>
+        <div class="eq-body" data-tex="1-(1-\\alpha)^{1/\\alpha} \\;\\longrightarrow\\; 1-e^{-1} \\approx 0.632"></div>
+        <div class="eq-num">(2.1)</div>
+        <p class="eq-cap">Run the very number of subgroups that “one alarm in 370” names, on a process where nothing has changed, and the chance of having been alarmed at least once is not certainty — it is 1 − 1/e.</p>
       </div>
 
       <h2>The shape is a consequence</h2>
@@ -355,8 +345,7 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
 
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>You never measure the population. Every number you have is an estimate
-        made from a handful.</p>
+        <p>A rate is a claim about a repeated process. A part is never a probability.</p>
       </aside>
 
       <h2>A sample is not the population</h2>
@@ -372,21 +361,36 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
 
       <figure>
         <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/level03.jpg">
-          <source src="spc-lab/media/videos/level03_scene/1080p60/Level03.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level03.vtt" srclang="en" label="English">
+        <video controls playsinline preload="metadata" poster="posters/level02.jpg">
+          <source src="spc-lab/media/videos/level02_scene/1080p60/Level02.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level02.vtt" srclang="en" label="English">
         </video>
-        <figcaption>
-          <span class="fignum">Figure 3.1</span>
-          <span class="figtext">The five ideas in order — parts vary, the mean
-          balances, spread needs squaring, the shape emerges from twenty thousand
-          parts, and a handful is never the whole. Narrated, with captions.</span>
-        </figcaption>
+        <figcaption><span class="fignum">Figure 2.1</span><span class="figtext">Rendered in
+        Manim — the span opens as parts arrive, the bin width turns into a knob, and the same
+        240 measurements are re-ordered while the histogram cannot move.</span></figcaption>
       </figure>
 
-      <a class="next" href="level-04.html">
-        <span class="m">Level 4</span>
-        <span>Variation is predictable →</span>
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l02_1_long_run.png" width="1721" height="986" loading="lazy"
+             alt="One sequence of fair flips: the surplus of heads grows while the proportion converges">
+        <figcaption><span class="fignum">Figure 2.2</span><span class="figtext">One set of
+        measurements, written down twice. Identical histogram bin for bin, identical mean and
+        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l02_2_what_a_rate_claims.png" width="1768" height="929" loading="lazy"
+             alt="The accumulated chance of a false alarm against subgroups run, and the geometric wait beneath it">
+        <figcaption><span class="fignum">Figure 2.3</span><span class="figtext">Deming's funnel
+        on the same random draws. Correcting after every part doubles the variance exactly, so
+        the spread the customer receives is √2 times wider.</span></figcaption>
+      </figure>
+
+      <a class="next" href="level-03.html">
+        <span class="m">Level 3</span>
+        <span>Centre and spread — describing it in three numbers →</span>
       </a>
     </section>
   </main>

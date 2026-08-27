@@ -91,7 +91,3 @@ def phi(x: float) -> float:
 def norm_pdf(xs, mu=0.0, sg=1.0):
     return np.exp(-((xs - mu) ** 2) / (2 * sg ** 2)) / (sg * np.sqrt(2 * np.pi))
 
-
-def inside(k: float) -> float:
-    """Exact area within ±k σ: Φ(k) − Φ(−k) = erf(k/√2). Not a table lookup."""
-    return math.erf(k / math.sqrt(2.0))
