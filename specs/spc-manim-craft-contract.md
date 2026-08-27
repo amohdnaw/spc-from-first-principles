@@ -183,3 +183,42 @@ After each checkpoint, checks 1–12 are re-run against the rendered mp4 — rea
 back from this file, not from memory — and the act is watched end to end at
 1080p60 before it is called done. A correction from you updates this contract,
 not just the instance.
+
+---
+
+## 8. Closed — 2026-08-27
+
+All six checkpoints are done and reviewed. What the build order produced, and
+the decisions taken at the end of it:
+
+| # | Checkpoint | Landed |
+|---|---|---|
+| 1 | LaTeX + camera-capable narration base | `9d879f1` |
+| 2 | Level II rebuilt | `8fd8783` |
+| 3 | Levels I and III | `f28d14a` |
+| 4 | Level 0 and IV | `798632b` |
+| 5 | The four embedded scenes | `b573b82` |
+| 6 | `--renderer=opengl` comparison | `e26a5ab` |
+
+**Runtime: accepted at 18:59 for all nine acts** (five levels 13:30). Default 2
+said 14–18 min; the extra minute is where the derivations landed, and it stands
+as approved rather than trimmed. `index.html` quotes the five levels, which is
+what its own sentence measures.
+
+**OpenGL: dropped, and not to be revisited** unless a ManimCE release both
+restores `MovingCameraScene`'s frame API and beats cairo on this content. On
+this machine GL was 23.7 % slower with no visual gain — measured, with evidence
+in `spc-lab/docs/opengl-verdict.html`.
+
+**Four asserted numbers were found and killed** in acts that predate this
+contract: Level III's spoken 0.89 against its own computed 0.80, Level IV's
+typed "~4× faster", EWMAMemory's "~2× sooner" contradicting it, and WERules
+flagging a Rule 3 that `western_electric_violations` never detects. Every
+figure on screen is now computed at render time by the library the tests check.
+
+**The gate that made the difference**: `act_style.at_panel` raises when a
+readout runs off the frame. It caught a clipped label that three rounds of
+frame review had missed. Any new readout inherits the check for free.
+
+Narration remains gTTS by decision, not by default — the voice choice is a
+separate open question with samples, not a build task.
