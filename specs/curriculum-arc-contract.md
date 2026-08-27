@@ -158,7 +158,17 @@ Checkable in a browser, in order of delivery.
 
 ## 5. Order of work
 
-1. **Renumber** — sources, pages, redirect stubs, rebuild all nine acts. One session.
+1. ~~**Renumber**~~ — **DONE 2026-08-27 (`4fad4ec`)**, verified on the live Pages site.
+   Sources, pages, redirect stubs, and all nine acts rebuilt. Checks 1–4 pass: five old
+   paths each land on the topic they used to name (old `level-3.html` → Level 8
+   Capability, which is the case the padding fix exists for); title cards read
+   Level 3/4/6/8/9 and the caption tracks — generated from the spoken script — say
+   "Level four told us"; rails show twelve slots with seven inert; figures and equations
+   renumbered per page; 7 pages at 320 and 1440 with zero overflow; every internal link
+   200; all nine mp4s play with poster, faststart and cues.
+   One defect in this contract was found and fixed while executing it: the §3 table
+   originally mapped to unpadded paths, which would have made `level-3.html` mean two
+   different topics.
 2. **Level 1, 2, 5** — the three foundation acts, in that order, one at a time.
 3. **Level 7** — the evidence act, absorbing `WERules`.
 4. **Levels 10, 11, 12** — the three labs.
