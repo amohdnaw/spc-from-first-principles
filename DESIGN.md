@@ -235,8 +235,12 @@ textbook chapter, and the grammar is:
    carries the instrument voice only: a constant and its value, a symbol defined, the
    line the narrator speaks and its timestamp. Decoration here is the banned fake
    telemetry.
-6. **A referenced act that is not this section's subject** becomes a margin card with a
-   poster, not a second full-width player. Two players cost 1800px of height.
+6. **A referenced act that is not this section's subject becomes a collapsed player** —
+   `<details class="act">`: a poster strip closed (135px), the full text-block width
+   open (1090px), no JavaScript. The first attempt made it a 340px margin card, which
+   measured **323×182 on screen**: not a player but a thumbnail with controls, and
+   unreadable for a 1920-wide render. **No video on this site renders under 400px at
+   desktop widths** — that is now a checked invariant.
 
 Measured on Level 6: 104 → **555 words**, 20 → **79 words per screen**, 0 → 6 headings.
 The page is 34% taller, which is the correct trade — the fix for "scrolling away" is

@@ -301,6 +301,29 @@
     line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
   .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
     line-height:1.5;overflow-wrap:anywhere}
+
+  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
+     at the full text-block width. The previous version was a 340px margin card,
+     which measured 323x182 on screen - not a player, a thumbnail with controls. */
+  .act{border-top:1px solid var(--rule);margin:40px 0 0}
+  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
+    padding:16px 0;list-style:none}
+  .act > summary::-webkit-details-marker{display:none}
+  .act > summary::marker{content:""}
+  .act > summary:hover .k{color:var(--ink-bright)}
+  .act .thumb{width:180px;height:auto;flex:none;display:block;border:1px solid var(--rule)}
+  .act .meta{min-width:0}
+  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
+  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
+    max-width:52ch;text-wrap:pretty}
+  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
+  .act[open] > summary .thumb{display:none}
+  .act[open] > summary .cue{color:var(--accent)}
+  .act video{display:block;width:100%;height:auto;background:var(--ground);
+    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
+  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:120px} }
   /* a margin figure - Tufte's one case for a figure outside the main flow */
   .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
   .note.watch:hover .k{color:var(--ink-bright)}
@@ -320,7 +343,7 @@
     .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
       margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
       position:relative;z-index:1}
-    /* the demoted act carries a player: it stays in the flow at block width */
+    /* a note that must not float (it holds something wide) */
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
@@ -502,7 +525,18 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="sec-no">9.6</span>
           <h2>Rules that read the run</h2>
           <p>A limit is not the only evidence on a chart. <span class="note data"><span class="k">beyond one point</span><span class="row num"><span class="rk">rules</span><span class="rv">4</span></span><span class="row num"><span class="rk">what they read</span><span class="rv">the run</span></span></span>Four more rules read the run rather than the point — two of three beyond 2σ, four of five beyond 1σ, eight in a row on one side of centre — and each of them catches a pattern that no single point would fail.</p>
-          <p>Every rule you add buys sensitivity and pays in false alarms, and the arithmetic of that trade is Level 7's subject rather than this one's.        <div class="note watch nofloat"><span class="k">watch · figure 9.5</span><video controls playsinline preload="none" poster="posters/werules.jpg"><source src="spc-lab/media/videos/scenes2/1080p60/WERules.mp4" type="video/mp4"><track kind="captions" src="captions/werules.vtt" srclang="en" label="English" default></video><em>The four rules firing on a series built to trip all of them.</em></div></p>
+          <p>Every rule you add buys sensitivity and pays in false alarms, and the arithmetic of that trade is Level 7's subject rather than this one's.</p>
+      <details class="act">
+        <summary>
+          <img class="thumb" src="posters/werules.jpg" alt="" loading="lazy">
+          <span class="meta"><span class="k">figure 9.5</span><span class="cap">The four rules firing on a series built to trip all of them.</span></span>
+          <span class="cue">play</span>
+        </summary>
+        <video controls playsinline preload="none" poster="posters/werules.jpg">
+          <source src="spc-lab/media/videos/scenes2/1080p60/WERules.mp4" type="video/mp4">
+          <track kind="captions" src="captions/werules.vtt" srclang="en" label="English" default>
+        </video>
+      </details>
       <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/07_western_electric.png" width="1370" height="812" alt="The four rules drawn against the zone bands they test" decoding="async">

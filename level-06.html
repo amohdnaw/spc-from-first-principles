@@ -297,6 +297,29 @@
     line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
   .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
     line-height:1.5;overflow-wrap:anywhere}
+
+  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
+     at the full text-block width. The previous version was a 340px margin card,
+     which measured 323x182 on screen - not a player, a thumbnail with controls. */
+  .act{border-top:1px solid var(--rule);margin:40px 0 0}
+  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
+    padding:16px 0;list-style:none}
+  .act > summary::-webkit-details-marker{display:none}
+  .act > summary::marker{content:""}
+  .act > summary:hover .k{color:var(--ink-bright)}
+  .act .thumb{width:180px;height:auto;flex:none;display:block;border:1px solid var(--rule)}
+  .act .meta{min-width:0}
+  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
+  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
+    max-width:52ch;text-wrap:pretty}
+  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
+  .act[open] > summary .thumb{display:none}
+  .act[open] > summary .cue{color:var(--accent)}
+  .act video{display:block;width:100%;height:auto;background:var(--ground);
+    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
+  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:120px} }
   /* a margin figure - Tufte's one case for a figure outside the main flow */
   .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
   .note.watch:hover .k{color:var(--ink-bright)}
@@ -316,7 +339,7 @@
     .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
       margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
       position:relative;z-index:1}
-    /* the demoted act carries a player: it stays in the flow at block width */
+    /* a note that must not float (it holds something wide) */
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
@@ -490,7 +513,17 @@
           <span class="sec-no">6.6</span>
           <h2>Where the constants come from</h2>
           <p><span class="tex" data-tex="d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> is the expected range of n standard normals. <span class="note data"><span class="k">the constants</span><span class="row num"><span class="rk">d₂ at n = 5</span><span class="rv">2.326</span></span><span class="row num"><span class="rk">A₂ at n = 5</span><span class="rv">0.577</span></span><span class="row num"><span class="rk">simulated</span><span class="rv">400 000</span><span class="rn">subgroups, checked against AIAG Table B</span></span></span><span class="tex" data-tex="A_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">A_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>, <span class="tex" data-tex="D_3"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">D_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> and <span class="tex" data-tex="D_4"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">D_4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> are the numbers printed on every shop-floor chart form. None of them is looked up here: each one is simulated, and then checked against the published table in a test suite. If the simulation and the table ever disagreed, the test would fail rather than the page quietly lying.</p>
-        <div class="note watch nofloat"><span class="k">watch · figure 6.4</span><video controls playsinline preload="none" poster="posters/constants.jpg"><source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4"><track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default></video><em>Where the constants come from — <span class="tex" data-tex="d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> simulated from 400 000 subgroups, landing on the published value.</em></div>
+      <details class="act">
+        <summary>
+          <img class="thumb" src="posters/constants.jpg" alt="" loading="lazy">
+          <span class="meta"><span class="k">figure 6.4</span><span class="cap">Where the constants come from: d₂ simulated from 400 000 subgroups, landing on the published value.</span></span>
+          <span class="cue">play</span>
+        </summary>
+        <video controls playsinline preload="none" poster="posters/constants.jpg">
+          <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
+          <track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>
+        </video>
+      </details>
       <div class="figpair">
       <figure>
         <div class="rule"></div>

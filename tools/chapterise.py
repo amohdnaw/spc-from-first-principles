@@ -90,6 +90,29 @@ CHAPTER_CSS = """
     line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
   .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
     line-height:1.5;overflow-wrap:anywhere}
+
+  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
+     at the full text-block width. The previous version was a 340px margin card,
+     which measured 323x182 on screen - not a player, a thumbnail with controls. */
+  .act{border-top:1px solid var(--rule);margin:40px 0 0}
+  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
+    padding:16px 0;list-style:none}
+  .act > summary::-webkit-details-marker{display:none}
+  .act > summary::marker{content:""}
+  .act > summary:hover .k{color:var(--ink-bright)}
+  .act .thumb{width:180px;height:auto;flex:none;display:block;border:1px solid var(--rule)}
+  .act .meta{min-width:0}
+  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
+  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
+    max-width:52ch;text-wrap:pretty}
+  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
+  .act[open] > summary .thumb{display:none}
+  .act[open] > summary .cue{color:var(--accent)}
+  .act video{display:block;width:100%;height:auto;background:var(--ground);
+    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
+  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:120px} }
   /* a margin figure - Tufte's one case for a figure outside the main flow */
   .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
   .note.watch:hover .k{color:var(--ink-bright)}
@@ -109,7 +132,7 @@ CHAPTER_CSS = """
     .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
       margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
       position:relative;z-index:1}
-    /* the demoted act carries a player: it stays in the flow at block width */
+    /* a note that must not float (it holds something wide) */
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
@@ -325,12 +348,9 @@ def chapter_06(K):
                          datanote(("d₂ at n = 5", "2.326"), ("A₂ at n = 5", "0.577"),
                                   ("simulated", "400 000", "subgroups, checked against AIAG Table B"),
                                   k="the constants")),
-                    '        <div class="note watch nofloat"><span class="k">watch · figure 6.4</span>'
-                    '<video controls playsinline preload="none" poster="posters/constants.jpg">'
-                    '<source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">'
-                    '<track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>'
-                    "</video><em>Where the constants come from — " + tex(r"d_2") + " simulated from 400 000 subgroups, "
-                    "landing on the published value.</em></div>",
+                    K["watch"]("ConstantsAct.mp4", "constants", "figure 6.4",
+                               "Where the constants come from: d₂ simulated from 400 000 subgroups,"
+                               " landing on the published value."),
                     '      <div class="figpair">',
                     "      " + K["fig"]("01_d2.png"),
                     "      " + K["fig"]("02_A2_D3_D4.png"),
@@ -502,10 +522,10 @@ def chapter_08(K):
                           ("Cpk 1.67", "0.27 ppm"), k="the promise")),
             para("Which is why the difference between 1.33 and 1.67 is not a rounding argument. It"
                  " is two orders of magnitude of scrap. A capability index is a defect rate"
-                 " wearing a friendlier number.",
-                 K["watch"]("SPCGallery.mp4", "gallery", "figure 8.4",
-                            "The overview act: a chart and its limits drawing themselves from the"
-                            " data, and where capability geometry sits among them.")),
+                 " wearing a friendlier number."),
+            K["watch"]("SPCGallery.mp4", "gallery", "figure 8.4",
+                       "The overview act: a chart and its limits drawing themselves from the data,"
+                       " and where capability geometry sits among them."),
             "      " + K["sys"],
             "      " + K["fig"]("32_l3_cpk_to_ppm.png"),
         ]),
@@ -580,9 +600,9 @@ def chapter_09(K):
                  " would fail.",
                  datanote(("rules", "4"), ("what they read", "the run"), k="beyond one point")),
             para("Every rule you add buys sensitivity and pays in false alarms, and the arithmetic"
-                 " of that trade is Level 7's subject rather than this one's.",
-                 K["watch"]("WERules.mp4", "werules", "figure 9.5",
-                            "The four rules firing on a series built to trip all of them.")),
+                 " of that trade is Level 7's subject rather than this one's."),
+            K["watch"]("WERules.mp4", "werules", "figure 9.5",
+                       "The four rules firing on a series built to trip all of them."),
             "      " + K["fig"]("07_western_electric.png"),
         ]),
     ]
@@ -694,22 +714,33 @@ def build_main(spec: dict, keep: dict) -> str:
     def watch(mp4, poster, label, caption):
         """A referenced act that is not this section's subject.
 
-        Keeps a real player and its caption track rather than becoming a bare
-        link, but at margin width: two full-width players cost 1800px of height.
-        The media path is lifted from the figure being demoted, so it cannot drift.
+        It was a 340px margin card, which measured 323x182 on screen - an
+        unwatchable player for a 1920-wide render, where an axis label is a
+        smear. It is now a collapsed player in the text block: a poster strip
+        closed, the full text-block width open. Compact by default, watchable on
+        demand, and no JavaScript. The media path is lifted from the figure being
+        demoted so it cannot drift.
         """
         src = next((s for s in figs.values() if mp4 in s), None)
         if src is None:
             sys.exit(f"chapterise: no figure to demote for {mp4}")
         path = re.search(r'src="([^"]+' + re.escape(mp4) + r')"', src).group(1)
-        return ('        <div class="note watch nofloat">'
-                f'<span class="k">watch · {label}</span>'
-                '<video controls playsinline preload="none" '
-                f'poster="posters/{poster}.jpg">'
-                f'<source src="{path}" type="video/mp4">'
-                f'<track kind="captions" src="captions/{poster}.vtt" srclang="en" '
-                'label="English" default>'
-                f"</video><em>{caption}</em></div>")
+        dur = re.search(r"(\d+:\d\d)", caption)
+        return ('      <details class="act">\n'
+                '        <summary>\n'
+                f'          <img class="thumb" src="posters/{poster}.jpg" alt="" loading="lazy">\n'
+                '          <span class="meta">'
+                f'<span class="k">{label}</span>'
+                f'<span class="cap">{caption}</span></span>\n'
+                f'          <span class="cue">play{" · " + dur.group(1) if dur else ""}</span>\n'
+                '        </summary>\n'
+                '        <video controls playsinline preload="none" '
+                f'poster="posters/{poster}.jpg">\n'
+                f'          <source src="{path}" type="video/mp4">\n'
+                f'          <track kind="captions" src="captions/{poster}.vtt" srclang="en" '
+                'label="English" default>\n'
+                '        </video>\n'
+                '      </details>')
 
     K = {**keep, "fig": fig, "watch": watch}
 
