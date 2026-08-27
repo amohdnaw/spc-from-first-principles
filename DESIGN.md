@@ -190,8 +190,21 @@ textbook chapter, and the grammar is:
 3. **Prose is the act's own narration, adapted.** `narration.py` already renders one
    script two ways, silent and voiced; the page is the third render. Spoken register is
    edited for reading — never pasted. This is why the page and the video agree.
-4. **The section's chart sits beside its prose** in the outer column, not under it, so a
-   section is as tall as its taller half. Videos still cross the whole spread.
+4. **Three figure positions, and only three** — taken from tufte-css, not invented:
+   the main column by default, the margin for a *small* figure, and the full text
+   block for anything larger. **Every element shares one left edge**: contents,
+   prose, figures, the interactive and the headings all start at the same offset,
+   verified at nine widths. A figure in the outer column at a vertical offset — which
+   is what I built first — cuts an L-shaped hole and belongs to no book.
+4a. **Margin notes are spans inside the paragraph they annotate**, injected after the
+   first sentence, and they carry a negative right margin. Both halves matter: a
+   float only rises to the line box where it appears, so a note that is a *sibling*
+   of the paragraph lands at the paragraph's foot; and without the negative margin
+   the float sits inside the 702px column and shortens every line beside it. With
+   both, the longest rendered line measures 698px of 702.
+4b. **Several data notes on one paragraph become one multi-row block.** Three stacked
+   notes outrun the prose and stretch the section; one block with three rows reads as
+   a small table, which is what a textbook margin actually looks like.
 5. **Margin apparatus at 340px** — capped at a note width, never a column width. It
    carries the instrument voice only: a constant and its value, a symbol defined, the
    line the narrator speaks and its timestamp. Decoration here is the banned fake
