@@ -9,6 +9,7 @@
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
+<link rel="stylesheet" href="vendor/katex/katex.css">
 
 <style>
   /* ---------- self-hosted, two families, two voices ---------- */
@@ -181,6 +182,14 @@
     header.opener{padding-top:48px}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* maths — KaTeX, pre-rendered by tools/typeset.mjs. Computer Modern here for
+     the same reason the videos use it: a formula should read the same on the
+     page as it does in the act. */
+  .katex{color:var(--ink-bright);font-size:1em}
+  .eq-body .katex-display{margin:0}
+  .eq-body .katex{font-size:1.05em}
+  p .katex,figcaption .katex,li .katex{font-size:.98em}
 </style>
 </head>
 <body>
@@ -216,7 +225,7 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body">Φ(3) − Φ(−3) = 0.9973</div>
+        <div class="eq-body" data-tex="\Phi(3) - \Phi(-3) = 0.9973"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>−</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.9973</mn></mrow><annotation encoding="application/x-tex">\Phi(3) - \Phi(-3) = 0.9973</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.9973</span></span></span></span></span></div>
         <div class="eq-num">(2.1)</div>
         <p class="eq-cap">The exact integral. 0.27% outside → one false alarm per ~370 subgroups.</p>
       </div>
@@ -254,7 +263,7 @@
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="metadata" poster="posters/level2.jpg">
+        <video controls playsinline preload="metadata" poster="posters/level2.jpg">
           <source src="spc-lab/media/videos/level2_scene/1080p60/Level2.mp4" type="video/mp4">
           <track kind="captions" src="captions/level2.vtt" srclang="en" label="English" default>
         </video>
@@ -282,7 +291,7 @@
              alt="Sampling distribution of sigma-hat from R-bar over d2">
         <figcaption>
           <span class="fignum">Figure 2.3</span>
-          <span class="figtext">How good is σ̂ = R̄/d₂? 4 000 simulated stable processes:
+          <span class="figtext">How good is <span class="tex" data-tex="\hat{\sigma} = \bar{R}/d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mo>=</mo><mover accent="true"><mi>R</mi><mo>ˉ</mo></mover><mi mathvariant="normal">/</mi><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\hat{\sigma} = \bar{R}/d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.0701em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8201em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>? 4 000 simulated stable processes:
           unbiased, but with only 25 subgroups the limits themselves carry real fuzz —
           why Phase I needs enough data.</span>
         </figcaption>
@@ -290,7 +299,7 @@
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="metadata" poster="posters/constants.jpg">
+        <video controls playsinline preload="metadata" poster="posters/constants.jpg">
           <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
           <track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>
         </video>
@@ -308,7 +317,7 @@
              alt="Monte Carlo derivation of the d2 control chart constant">
         <figcaption>
           <span class="fignum">Figure 2.5</span>
-          <span class="figtext">d₂ = E(R/σ), the bridge from an average range to a σ estimate.
+          <span class="figtext"><span class="tex" data-tex="d_2 = \mathrm{E}(R/\sigma)"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false">(</mo><mi>R</mi><mi mathvariant="normal">/</mi><mi>σ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d_2 = \mathrm{E}(R/\sigma)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathrm">E</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mclose">)</span></span></span></span></span>, the bridge from an average range to a σ estimate.
           Simulated, then checked against AIAG Table B in the test suite — n=5 lands on 2.326.</span>
         </figcaption>
       </figure>

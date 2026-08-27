@@ -9,6 +9,7 @@
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
+<link rel="stylesheet" href="vendor/katex/katex.css">
 
 <style>
   /* ---------- self-hosted, two families, two voices ---------- */
@@ -175,6 +176,14 @@
     header.opener{padding-top:48px}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* maths — KaTeX, pre-rendered by tools/typeset.mjs. Computer Modern here for
+     the same reason the videos use it: a formula should read the same on the
+     page as it does in the act. */
+  .katex{color:var(--ink-bright);font-size:1em}
+  .eq-body .katex-display{margin:0}
+  .eq-body .katex{font-size:1.05em}
+  p .katex,figcaption .katex,li .katex{font-size:.98em}
 </style>
 </head>
 <body>
@@ -257,7 +266,17 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body">σ = √( Σ(x − x̄)² / n )</div>
+        <div class="eq-body" data-tex="\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>σ</mi><mo>=</mo><msqrt><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mo>∑</mo><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mover accent="true"><mi>x</mi><mo>ˉ</mo></mover><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow><mi>n</mi></mfrac></mstyle></msqrt></mrow><annotation encoding="application/x-tex">\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.7036em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7364em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.6964em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
+c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
+c0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20
+s-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121
+s209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081
+l0 -0c4,-6.7,10,-10,18,-10 H400000
+v40H1014.6
+s-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185
+c-2,6,-10,9,-24,9
+c-8,0,-12,-0.7,-12,-2z M1001 80
+h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7036em;"><span></span></span></span></span></span></span></span></span></span></div>
         <div class="eq-num">(0.1)</div>
         <p class="eq-cap">Square to kill the signs, average, then root back into the original units.</p>
       </div>
@@ -290,7 +309,7 @@
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="metadata" poster="posters/level0.jpg">
+        <video controls playsinline preload="metadata" poster="posters/level0.jpg">
           <source src="spc-lab/media/videos/level0_scene/1080p60/Level0.mp4" type="video/mp4">
           <track kind="captions" src="captions/level0.vtt" srclang="en" label="English" default>
         </video>

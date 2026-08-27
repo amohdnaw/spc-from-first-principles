@@ -13,3 +13,6 @@ spc-lab/media/images/
 spc-lab/media/texts/
 spc-lab/media/Tex/
 cv-*.pdf
+tools/node_modules/
+tools/package-lock.json
+tools/package.json

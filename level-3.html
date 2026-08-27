@@ -9,6 +9,7 @@
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
+<link rel="stylesheet" href="vendor/katex/katex.css">
 
 <style>
   /* ---------- self-hosted, two families, two voices ---------- */
@@ -181,6 +182,14 @@
     header.opener{padding-top:48px}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* maths — KaTeX, pre-rendered by tools/typeset.mjs. Computer Modern here for
+     the same reason the videos use it: a formula should read the same on the
+     page as it does in the act. */
+  .katex{color:var(--ink-bright);font-size:1em}
+  .eq-body .katex-display{margin:0}
+  .eq-body .katex{font-size:1.05em}
+  p .katex,figcaption .katex,li .katex{font-size:.98em}
 </style>
 </head>
 <body>
@@ -212,7 +221,7 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body">Cpk = min(USL − μ, μ − LSL) / 3σ</div>
+        <div class="eq-body" data-tex="C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>p</mi><mi>k</mi></mrow></msub><mo>=</mo><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mi>min</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo>−</mo><mi>μ</mi><mo separator="true">,</mo><mtext> </mtext><mi>μ</mi><mo>−</mo><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo fence="true">)</mo></mrow></mrow><mrow><mn>3</mn><mi>σ</mi></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0715em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.0315em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.113em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">min</span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathrm">USL</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">μ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathrm">LSL</span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
         <div class="eq-num">(3.1)</div>
         <p class="eq-cap">The nearer gap decides. Cp is pure geometry; Cpk is honest about where the mean actually sits.</p>
       </div>
@@ -249,7 +258,7 @@
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="metadata" poster="posters/level3.jpg">
+        <video controls playsinline preload="metadata" poster="posters/level3.jpg">
           <source src="spc-lab/media/videos/level3_scene/1080p60/Level3.mp4" type="video/mp4">
           <track kind="captions" src="captions/level3.vtt" srclang="en" label="English" default>
         </video>
@@ -282,7 +291,7 @@
 
       <figure>
         <div class="rule"></div>
-        <video controls preload="metadata" poster="posters/gallery.jpg">
+        <video controls playsinline preload="metadata" poster="posters/gallery.jpg">
           <source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4">
           <track kind="captions" src="captions/gallery.vtt" srclang="en" label="English" default>
         </video>
