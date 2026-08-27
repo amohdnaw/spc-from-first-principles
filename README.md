@@ -4,7 +4,7 @@ An interactive statistical process control curriculum, where every number is der
 rather than asserted. Five levels, nine Manim acts, and a Python library whose tests
 check the same functions the videos read from.
 
-**Live: <https://learn.amohdnaw.xyz>** · a teaching project from
+**Live: <https://amohdnaw.github.io/spc-from-first-principles/>** · a teaching project from
 **<https://portfolio.amohdnaw.xyz>**, which is the front door, and
 **<https://amohdnaw.github.io/case-studies>**, which holds the applied work.
 This repository is the curriculum only: it teaches the statistics, it does not
