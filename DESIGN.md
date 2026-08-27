@@ -175,6 +175,53 @@ rather than filling with decoration that carries no information. Margin apparatu
 available later for a level that genuinely has units, definitions and spoken lines to
 put there, and it would be contracted then.
 
+### The level page is a chapter — added 2026-08-27
+
+Diagnosed by measurement, not taste. `level-06.html` carried **104 words** across 5.3
+screens, with 77% of its height spent on images and **zero headings**. It read as
+scrolling past things because there was nothing to read. A level page is now a
+textbook chapter, and the grammar is:
+
+1. **Chapter opener** — `Level N · chapter n`, headline, dek, then a **contents block**:
+   every numbered section with a one-line summary, plus a count of sections, acts and
+   interactives. The reader knows what they are in for before scrolling once.
+2. **Numbered sections** `n.1 … n.6`, one per movement of the argument, each with a
+   heading. A section that cannot be named is not a section.
+3. **Prose is the act's own narration, adapted.** `narration.py` already renders one
+   script two ways, silent and voiced; the page is the third render. Spoken register is
+   edited for reading — never pasted. This is why the page and the video agree.
+4. **The section's chart sits beside its prose** in the outer column, not under it, so a
+   section is as tall as its taller half. Videos still cross the whole spread.
+5. **Margin apparatus at 340px** — capped at a note width, never a column width. It
+   carries the instrument voice only: a constant and its value, a symbol defined, the
+   line the narrator speaks and its timestamp. Decoration here is the banned fake
+   telemetry.
+6. **A referenced act that is not this section's subject** becomes a margin card with a
+   poster, not a second full-width player. Two players cost 1800px of height.
+
+Measured on Level 6: 104 → **555 words**, 20 → **79 words per screen**, 0 → 6 headings.
+The page is 34% taller, which is the correct trade — the fix for "scrolling away" is
+substance per screen, not fewer pixels.
+
+**Body steps to 26px at ≥1500px.** A documented substitution, the mirror of the ≤560px
+one in §2: 26px is already a step on the scale, and at `27em` it holds **59 characters**,
+inside the frozen 58–64. The measure token does not change — `em` does the work.
+
+### Identity — three sites, one grammar (2026-08-27)
+
+`portfolio.amohdnaw.xyz` is white, Manrope sans, lowercase and personal.
+`amohdnaw.github.io/case-studies` is white, Palatino serif, formal. They already differ
+from each other more than either differs from this site, so there is no single house
+skin to adopt.
+
+**The dark ground stays, and it is functional.** Tested directly: the chapter rendered on
+the case-studies palette turns every Manim video into a black rectangle punched into a
+white page — the exact failure §6 names. Going light would mean re-rendering nine acts
+and fourteen matplotlib sheets on a white ground and re-freezing every signal colour.
+
+What converges is the furniture: the mono wordmark string, the eyebrow device, teal for
+links, and reciprocal navigation between the three. Palette and body font stay per site.
+
 ## 4. Radius
 
 **0 everywhere.** Hard edges where edges meet.

@@ -33,6 +33,7 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
+    --body:21px;
     --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
     --figure:44rem;              /* figures step wider than text, still not full bleed */
     --gutter:clamp(24px,5vw,72px);
@@ -43,7 +44,7 @@
   html{-webkit-text-size-adjust:100%}
   body{
     margin:0;background:var(--ground);color:var(--ink);
-    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
+    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
     font-variant-numeric:oldstyle-nums;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -222,6 +223,68 @@
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
     gap:var(--gutter);align-items:start;max-width:var(--figure)}
   .figpair figure{margin:64px 0 0;max-width:none}
+
+  /* ---------- chapter grammar (DESIGN.md §3, added 2026-08-27) ----------
+     A level page is a chapter: opener, contents, numbered sections, and an
+     outer column holding the section's chart plus the margin apparatus. */
+  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+
+  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
+    padding:22px 0 24px;margin:8px 0 0}
+  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
+  .toc-head .est{margin-left:auto}
+  .toc ol{list-style:none;margin:0;padding:0;display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
+  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
+    border-bottom:1px solid rgba(42,49,56,.55)}
+  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
+  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
+  .toc a:hover{color:var(--accent)}
+  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
+
+  /* the measure is not viewport-gated: prose holds 58-64ch at every width, and
+     without this the chapter columns run to full page width below 1500px */
+  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
+  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
+    color:var(--accent);display:block;margin-bottom:10px}
+  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
+    color:var(--ink-bright);margin:0 0 14px;max-width:26em}
+  /* the first paragraph of the chapter opens like a book */
+  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
+
+  /* margin apparatus: instrument voice only */
+  .side{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink-dim);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:0 32px}
+  .note{border-left:1px solid var(--rule);padding-left:14px;margin:0 0 26px}
+  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
+    font-size:11px;margin-bottom:5px}
+  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
+  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
+    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
+  .note.speak{border-left-color:var(--accent)}
+  /* an act this section references but is not about */
+  .note.watch{display:block;text-decoration:none;color:inherit;border-left-color:var(--accent)}
+  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;
+    border:1px solid var(--rule);max-width:100%}
+  .note.watch:hover .k{color:var(--ink-bright)}
+
+  /* a player must not eat a whole screen: bound its width by a height budget so the
+     16:9 box stays intact instead of letterboxing */
+  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
+
+  @media (min-width:1500px){
+    :root{ --body:26px }
+    /* the spread: argument left, chart and apparatus in the outer column */
+    .leaf{display:grid;grid-template-columns:minmax(0,var(--measure)) minmax(0,1fr);
+      gap:56px;align-items:start}
+    .leaf > .side,.leaf > .leaf-fig{grid-column:2}
+    .side{grid-template-columns:1fr;max-width:340px}
+    .leaf-fig{margin-top:8px}
+    .leaf-fig figure{margin-top:0;max-width:100%}
+    .leaf-fig figure + figure{margin-top:40px}
+  }
+  @media (min-width:1900px){ .leaf{gap:64px} }
 </style>
 </head>
 <body>
@@ -247,22 +310,68 @@
 </nav>
 
 <div class="wrap">
-  <header class="opener">
-    <p class="eyebrow">Level 6</p>
-    <h1>Control limits are a hypothesis test</h1>
-    <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
-  </header>
-
-  <main>
-    <section>
-      <div class="col">
-        <p>If a process is stable, Level 4's logic tells us exactly which distribution
-        every subgroup mean is drawn from. Choose limits at ±3σ of that distribution
-        and you've defined a test: points inside are boring, a point outside happens
-        0.27% of the time by pure chance — once per ~370 subgroups. So when one
-        appears, it's rational to bet something changed.</p>
+    <main>
+    <header class="ch">
+      <div class="leaf">
+        <div>
+          <p class="eyebrow">Level 6</p>
+          <p class="ch-no">Chapter six</p>
+          <h1>Control limits are a hypothesis test</h1>
+          <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">before this</span>Level 4 — the average is predictable. You need σ⁄√n to be here.</div>
+        <div class="note"><span class="k">after this</span>Level 8 — capability. In control is not the same as good enough.</div>
+        <div class="note"><span class="k">watch instead</span><em>The whole chapter is also a narrated act — figure 6.1.</em></div>
+        </div>
       </div>
-
+      <div class="toc">
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 interactive · 2 acts · ~9 min read</span></div>
+        <ol>
+          <li><span class="n">6.1</span><a href="#s1">A curve that is a claim<span class="sub">why the bell is a hypothesis about the process, not the parts</span></a></li>
+          <li><span class="n">6.2</span><a href="#s2">Pricing ±3σ<span class="sub">the integral between the limits, evaluated as they move</span></a></li>
+          <li><span class="n">6.3</span><a href="#s3">Where the price hides<span class="sub">the tails are 70× smaller than the chart — stretch the axis to see them</span></a></li>
+          <li><span class="n">6.4</span><a href="#s4">The chart is that test, repeated<span class="sub">limits turned on their side, and why boring is the goal</span></a></li>
+          <li><span class="n">6.5</span><a href="#s5">How good is σ̂?<span class="sub">R̄/d₂ — the bridge from a range to a standard deviation</span></a></li>
+          <li><span class="n">6.6</span><a href="#s6">Where the constants come from<span class="sub">d₂, A₂, D₃, D₄ — simulated, never looked up</span></a></li>
+        </ol>
+      </div>
+    </header>
+    <section id="s1">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">6.1</span>
+          <h2>A curve that is a claim</h2>
+          <p class="lead">Level 4 told us which distribution every subgroup mean is drawn from, so long as nothing about the process has changed. Draw that distribution and you have not drawn a picture of your parts. You have drawn a claim.</p>
+          <p>The claim is that the process is unchanged — one stable stream, every subgroup mean pulled from the same curve. That is the null hypothesis, and it is worth being pedantic about what it is a hypothesis <em>about</em>. Not this part. Not this batch. The process.</p>
+          <p>Everything that follows in this chapter is a consequence of taking that claim seriously enough to test it.</p>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">H₀ — the null</span>The process is unchanged: every subgroup mean is drawn from one distribution.</div>
+        <div class="note"><span class="k">not H₀</span>A statement about any individual part. A part is never in or out of control.</div>
+        <div class="note speak"><span class="k">spoken · 0:11</span><em>“That curve is the null hypothesis. Not an assumption about the parts, but a claim about the process.”</em></div>
+        </div>
+        <div class="leaf-fig">
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/21_l2_null_distribution.png" width="1495" height="782" decoding="async"
+             alt="Null distribution of x-bar with both tails annotated">
+        <figcaption>
+          <span class="fignum">Figure 6.2</span>
+          <span class="figtext">The null distribution of x̄, with the exact integral and
+          both tails annotated with the false-alarm arithmetic.</span>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </section>
+    <section id="s2">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">6.2</span>
+          <h2>Pricing ±3σ</h2>
+          <p>Put a pair of limits on that curve and sweep them outward from the centre. At every position the question has an exact answer: how much of the distribution is inside? Not looked up in a table — it is the integral of the curve between the limits, evaluated as they move.</p>
+          <p>Stop at three sigma and the answer is 99.73%. Nobody chose that number. It is simply what ±3σ is worth, and everything the process should ever do lives inside it.</p>
       <div class="eq">
         <div class="eq-body" data-tex="\Phi(3) - \Phi(-3) = 0.9973"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>−</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.9973</mn></mrow><annotation encoding="application/x-tex">\Phi(3) - \Phi(-3) = 0.9973</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.9973</span></span></span></span></span></div>
         <div class="eq-num">(6.1)</div>
@@ -293,14 +402,40 @@
             enough to matter, quiet enough that operators trust the alarm.</p>
           </div>
         </div>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">in-control area</span><span class="v">99.73 %</span></div>
+        <div class="note"><span class="k">outside</span><span class="v">0.27 %</span></div>
+        <div class="note"><span class="k">Φ</span>The standard normal CDF, computed from erf — not a table.</div>
+        <div class="note speak"><span class="k">spoken · 0:38</span><em>“Ninety-nine point seven three percent. Nobody chose that number.”</em></div>
+        </div>
       </div>
-
-      <aside class="sys">
-        <span class="micro">SYS_MSG</span>
-        <p>A violation is not a bad part. It is evidence against the null.</p>
-      </aside>
-
-      <figure>
+  <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — choose your alarm threshold</span>
+          <span class="status" id="lab-status">SYSTEM-OK</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="null-canvas" height="300"
+              aria-label="Null distribution of subgroup means with the chosen limits marked"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="z-slider">Limit at ± <b id="z-val">3.00</b> σx̄</label>
+              <input type="range" id="z-slider" min="100" max="400" value="300" step="1">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>In-control area</dt><dd class="ok" id="r-in">—</dd></div>
+              <div class="tile"><dt>False-alarm rate</dt><dd class="alarm" id="r-fa">—</dd></div>
+              <div class="tile"><dt>False alarm every</dt><dd class="neutral" id="r-arl">—</dd></div>
+            </dl>
+            <p class="lab-note">Shewhart picked ±3σ as the balance point: sensitive
+            enough to matter, quiet enough that operators trust the alarm.</p>
+          </div>
+        </div>
+      </div>
+      <figure class="wide">
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level06.jpg">
           <source src="spc-lab/media/videos/level06_scene/1080p60/Level06.mp4" type="video/mp4">
@@ -312,20 +447,55 @@
           fills to 99.73%, and a violation becomes “evidence against the null.”</span>
         </figcaption>
       </figure>
-
-      <div class="figpair">
-<figure style="max-width:min(var(--figure),1495px)">
-        <div class="rule"></div>
-        <img src="spc-lab/docs/21_l2_null_distribution.png" width="1495" height="782" decoding="async"
-             alt="Null distribution of x-bar with both tails annotated">
-        <figcaption>
-          <span class="fignum">Figure 6.2</span>
-          <span class="figtext">The null distribution of x̄, with the exact integral and
-          both tails annotated with the false-alarm arithmetic.</span>
-        </figcaption>
-      </figure>
-
-      <figure style="max-width:min(var(--figure),1263px)">
+    </section>
+    <section id="s3">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">6.3</span>
+          <h2>Where the price hides</h2>
+          <p>The whole of the rest — the part that makes the chart worth running — is out in the tails, and at the scale of the last figure you cannot see it at all. So stretch the vertical axis and let the tails grow. The peak goes straight out of frame, which is the point: the tails are about seventy times smaller than anything else on the chart.</p>
+          <p>Each wing is one tenth of one percent of everything, and there are two of them. Together they are the tail integral, and it has a closed form: 0.0027. Invert it and the bet is priced — one false alarm in 370 subgroups.</p>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">each wing</span><span class="v">0.135 %</span></div>
+        <div class="note"><span class="k">both wings</span><span class="v">0.0027</span></div>
+        <div class="note"><span class="k">false alarm</span><span class="v">1 in 370</span></div>
+        <div class="note"><span class="k">axis stretch</span><span class="v">×70</span>needed before the tails are visible at all.</div>
+        </div>
+      </div>
+    </section>
+    <section id="s4">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">6.4</span>
+          <h2>The chart is that test, repeated</h2>
+          <p>A control chart is not a new idea on top of this one. It is the same test, run again on every subgroup, forever. The limits are the boundary we just drew, turned on its side. Every point inside is the process agreeing with the null hypothesis, and that is what boring looks like. Boring is the goal.</p>
+          <p>Then one point steps outside — say 4.1σ above the centre line, where the null allows one point in 370. That point is not a bad part, and scrapping it changes nothing. It is evidence against the hypothesis that nothing changed. The correct response is to go and find what did.</p>
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>A violation is not a bad part. It is evidence against the null.</p>
+      </aside>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">the violation</span><span class="v">4.1 σ</span></div>
+        <div class="note"><span class="k">allowed by H₀</span><span class="v">1 in 370</span></div>
+        <div class="note speak"><span class="k">spoken · 2:09</span><em>“This is not a bad part, and scrapping it changes nothing. It is evidence against the hypothesis that nothing changed.”</em></div>
+        </div>
+      </div>
+    </section>
+    <section id="s5">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">6.5</span>
+          <h2>How good is σ̂?</h2>
+          <p>Everything so far assumed we know σ. On a real line we do not — we estimate it, usually from the average range of the subgroups divided by a constant. That estimate is unbiased on average, but a chart built from twenty-five subgroups carries real fuzz in its own limits, which is why Phase I needs enough data before the limits mean anything.</p>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">σ̂ from ranges</span><span class="v">R̄ / d₂</span></div>
+        <div class="note"><span class="k">at 25 subgroups</span><span class="v">±0.075 σ</span>spread in the estimate itself.</div>
+        </div>
+        <div class="leaf-fig">
+      <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/22_l2_rbar_plumbing.png" width="1263" height="741" decoding="async"
              alt="Sampling distribution of sigma-hat from R-bar over d2">
@@ -336,24 +506,33 @@
           why Phase I needs enough data.</span>
         </figcaption>
       </figure>
-</div>
-
-      <figure>
-        <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/constants.jpg">
-          <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
-          <track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 6.4</span>
-          <span class="figtext">Where the constants come from. d₂ is the expected range of
-          n standard normals, computed here by simulating 400 000 subgroups rather than
-          read off a table; A₂ = 3/(d₂√n) follows from it.</span>
-        </figcaption>
-      </figure>
-
+        </div>
+      </div>
+    </section>
+    <section id="s6">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">6.6</span>
+          <h2>Where the constants come from</h2>
+          <p>d₂ is the expected range of n standard normals. A₂, D₃ and D₄ are the numbers printed on every shop-floor chart form. None of them is looked up here: each one is simulated, and then checked against the published table in a test suite. If the simulation and the table ever disagreed, the test would fail rather than the page quietly lying.</p>
+        </div>
+        <div class="side">
+        <div class="note"><span class="k">d₂ at n = 5</span><span class="v">2.326</span></div>
+        <div class="note"><span class="k">A₂ at n = 5</span><span class="v">0.577</span></div>
+        <div class="note"><span class="k">simulated</span><span class="v">400 000</span>subgroups, checked against AIAG Table B.</div>
+        <div class="note watch">
+          <span class="k">watch · figure 6.4</span>
+          <video controls playsinline preload="none" poster="posters/constants.jpg">
+            <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
+            <track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>
+          </video>
+          <em>Where the constants come from — d₂ simulated from 400 000 subgroups, landing
+          on the published value.</em>
+        </div>
+        </div>
+      </div>
       <div class="figpair">
-<figure style="max-width:min(var(--figure),1153px)">
+      <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
              alt="Monte Carlo derivation of the d2 control chart constant">
@@ -363,8 +542,7 @@
           Simulated, then checked against AIAG Table B in the test suite — n=5 lands on 2.326.</span>
         </figcaption>
       </figure>
-
-      <figure style="max-width:min(var(--figure),1817px)">
+      <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
              alt="A2, D3 and D4 constants plotted against subgroup size">
@@ -374,13 +552,12 @@
           every shop-floor chart form; nothing here is looked up, all of it is derived.</span>
         </figcaption>
       </figure>
-</div>
-
-      <a class="next" href="level-08.html">
+      </div>
+    </section>
+    <a class="next" href="level-08.html">
         <span class="m">Level 8</span>
         <span>Capability is comparing two distributions →</span>
       </a>
-    </section>
   </main>
 </div>
 
