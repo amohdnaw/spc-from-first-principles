@@ -243,9 +243,9 @@
     <a class="wordmark" href="index.html">Ammar <i>/ SPC</i></a>
     <div class="nav-links">
       <a class="on" href="#curriculum">Curriculum</a>
+      <a href="#labs">Labs</a>
       <a href="line-of-sight.html">Line of Sight</a>
-      <a href="#applied">Applied</a>
-      <a href="cv-ammar-nawawi.pdf" target="_blank" rel="noopener">CV</a>
+      <a href="https://portfolio.amohdnaw.xyz" target="_blank" rel="noopener">Portfolio ↗</a>
     </div>
   </div>
 </nav>
@@ -375,22 +375,20 @@
   </aside>
 </section>
 
-<!-- ================= applied ================= -->
-<section class="section wrap" id="applied">
-  <h2>The curriculum, applied</h2>
+<!-- ================= labs — simulations, not case studies ================= -->
+<section class="section wrap" id="labs">
+  <h2>Two labs</h2>
   <div class="measure" style="margin-top:24px">
-    <p>Three times that trace was a real line and the fix had to survive an audit. I find the drift
-    before it finds the scrap bin — the two labs below are the actual detection problems, live.</p>
+    <p>Both are simulations you drive, not war stories. Each holds one detection problem, and one
+    slider is enough to feel it.</p>
   </div>
 
   <article class="case">
     <div class="case-idx">a.</div>
     <div>
-      <h3>Cutting diameter variation on a CNC line by half</h3>
-      <p>A critical bore was failing Cpk audits (1.1) with no assignable cause. Layering an EWMA
-      chart over the X̄-R exposed slow tool wear invisible to the Shewhart chart. Fixing coolant
-      temperature cycling and tying tool changes to the EWMA signal brought the process back to
-      centre. Drag the slider — or watch it at full scale in
+      <h3>Why EWMA catches what X̄ misses</h3>
+      <p>Slow tool wear stays inside ±3σ long after a chart with memory has flagged it. Drag the
+      wear rate — or watch it at full scale in
       <a class="link" href="line-of-sight.html">Line of Sight</a>, where four lines stream and one
       is drifting.</p>
       <div class="lab">
@@ -415,22 +413,15 @@
           </div>
         </div>
       </div>
-      <div class="results">
-        <span>Cpk <b>1.1 → 1.6</b></span>
-        <span>Std. dev <b>−52%</b></span>
-        <span>Scrap cost <b>−38%</b></span>
-      </div>
     </div>
   </article>
 
   <article class="case">
     <div class="case-idx">b.</div>
     <div>
-      <h3>Proving the measurement system before blaming the process</h3>
-      <p>Two engineers had already tried — and failed — to fix a "chaotic" filling line. A crossed
-      Gage R&amp;R showed the measurement system itself consumed 61% of tolerance. After a fixture
-      redesign, %GRR fell to 9%, and the "process problem" turned out to be over-adjustment. Slide
-      the gage error and watch the verdict flip.</p>
+      <h3>Measurement error dressed as process variation</h3>
+      <p>Observed variation is the process and the gauge together, squared and added. Slide the
+      gauge error and watch the AIAG verdict flip while the process itself never moves.</p>
       <div class="lab">
         <div class="lab-head">
           <span class="micro">Lab B — measurement error masquerading as process variation</span>
@@ -450,26 +441,6 @@
             every "process fix" is a guess.</p>
           </div>
         </div>
-      </div>
-      <div class="results">
-        <span>%GRR <b>61% → 9%</b></span>
-        <span>False alarms <b>−70%</b></span>
-      </div>
-    </div>
-  </article>
-
-  <article class="case">
-    <div class="case-idx">c.</div>
-    <div>
-      <h3>A daily quality dashboard executives actually open</h3>
-      <p>The plant's quality reporting was a 40-slide deck nobody read. I replaced it with a
-      one-page daily dashboard: every line's Cpk trend, violations flagged in plain language, and a
-      "what changed since yesterday" panel. Adoption hit 100% of tier meetings, and
-      signal-to-containment dropped from two shifts to under three hours.</p>
-      <div class="results">
-        <span>Signal→containment <b>&lt; 3 hrs</b></span>
-        <span>1 page replaced 40 slides</span>
-        <span>Power BI / Python</span>
       </div>
     </div>
   </article>
@@ -498,56 +469,13 @@
   </div>
 </section>
 
-<!-- ================= toolbox band + contact ================= -->
-<section class="section wrap" id="toolbox">
-  <span class="micro">Toolbox</span>
-  <div class="tools">
-    <div>
-      <h3>Statistics &amp; SPC</h3>
-      <ul>
-        <li>Control charts — X̄-R, I-MR, p/np, c/u, EWMA, CUSUM</li>
-        <li>Capability — Cp, Cpk, Pp, Ppk, non-normal methods</li>
-        <li>MSA — Gage R&amp;R, bias &amp; linearity</li>
-        <li>DOE, hypothesis testing, regression, ANOVA</li>
-        <li>Acceptance sampling (AQL)</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Tools &amp; code</h3>
-      <ul>
-        <li>Python — pandas, NumPy, SciPy, matplotlib, Plotly</li>
-        <li>R — qcc, SixSigma</li>
-        <li>Minitab, JMP</li>
-        <li>Power BI / Tableau dashboards</li>
-        <li>SQL, Excel (advanced), VBA</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Manufacturing context</h3>
-      <ul>
-        <li>IATF 16949 / ISO 9001 quality systems</li>
-        <li>AIAG core tools — SPC, MSA, APQP, PPAP, FMEA</li>
-        <li>8D, 5-Why, Ishikawa</li>
-        <li>Lean / Six Sigma (Green Belt)</li>
-        <li>Tier meetings, layered process audits</li>
-      </ul>
-    </div>
-  </div>
-
-  <div style="margin-top:clamp(48px,6vw,96px)">
-    <h2>The process is stable. <em style="font-style:italic;color:var(--accent)">The inbox is open.</em></h2>
-    <div class="contact">
-      <a href="mailto:ammar.mnawawi@gmail.com">ammar.mnawawi@gmail.com</a>
-      <a href="https://linkedin.com/in/aammarmnawawi/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="cv-ammar-nawawi.pdf" target="_blank" rel="noopener">Download résumé (PDF)</a>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="foot-in">
-    <span>Ammar — SPC engineer</span>
-    <span><a class="link" href="line-of-sight.html">Line of Sight</a></span>
+    <span>A teaching project · <a class="link" href="https://portfolio.amohdnaw.xyz"
+      target="_blank" rel="noopener">portfolio.amohdnaw.xyz</a></span>
+    <span>Applied work · <a class="link" href="https://amohdnaw.github.io/case-studies"
+      target="_blank" rel="noopener">case studies</a></span>
     <span>All figures computed from source</span>
     <span>© 2026</span>
   </div>

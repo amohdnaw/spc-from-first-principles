@@ -4,3 +4,12 @@ spc-lab/src/spclab.egg-info/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+# renders and caches — the tracked 1080p60 mp4s are the deliverable
+spc-lab/media/videos/**/partial_movie_files/
+spc-lab/media/videos/**/480p15/
+spc-lab/media/videos/**/*.wav
+spc-lab/media/voiceovers/
+spc-lab/media/images/
+spc-lab/media/texts/
+spc-lab/media/Tex/
+cv-*.pdf
