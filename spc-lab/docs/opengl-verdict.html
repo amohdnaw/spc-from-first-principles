@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenGL renderer trial — verdict · spc-lab</title>
+<style>
+  :root{
+    --ground:#0d1114; --panel:#14181c; --rule:#2a3138; --rule-strong:#3d4650;
+    --ink-dim:#7d8b98; --ink:#d7dee4; --ink-bright:#eef3f7;
+    --accent:#ffae00; --signal-ok:#65ccaf; --signal-alarm:#de6a5d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:"EB Garamond",Georgia,serif; font-weight:500;
+    font-size:21px; line-height:1.55;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 clamp(24px,5vw,72px)}
+  .micro{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    text-transform:uppercase; letter-spacing:.14em; color:var(--ink-dim);
+  }
+  h1{font-size:42px; line-height:1.15; margin:16px 0 8px; color:var(--ink-bright); font-weight:500}
+  h2{font-size:33px; margin:96px 0 24px; color:var(--ink-bright); font-weight:500}
+  .dek{font-size:26px; font-style:italic; color:var(--ink-dim); margin:0 0 48px}
+  p{max-width:62ch}
+  header{padding-top:64px}
+  .verdict{
+    border:1px solid var(--rule-strong); border-left:3px solid var(--accent);
+    padding:24px; margin:48px 0;
+  }
+  .verdict p{margin:8px 0 0; font-size:26px; color:var(--ink-bright)}
+  table{border-collapse:collapse; width:100%; margin:24px 0; font-size:17px}
+  th,td{border-bottom:1px solid var(--rule); padding:8px 12px; text-align:left; vertical-align:top}
+  th{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+     text-transform:uppercase; letter-spacing:.14em; color:var(--ink-dim); font-weight:400}
+  td.num{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:16px;
+         font-variant-numeric:tabular-nums; white-space:nowrap}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:16px}
+  .ok{color:var(--signal-ok)} .bad{color:var(--signal-alarm)} .amber{color:var(--accent)}
+  figure{margin:32px 0}
+  figure img{display:block; width:100%; height:auto; background:var(--ground)}
+  figcaption{margin-top:8px; font-size:17px; color:var(--ink-dim)}
+  figcaption .fignum{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:13px;
+                     color:var(--accent); margin-right:12px; letter-spacing:.08em}
+  .rule{height:1px; background:var(--rule); margin:0}
+  ul{max-width:62ch} li{margin:8px 0}
+  footer{margin:96px 0 64px; color:var(--ink-dim); font-size:17px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="micro">spc-lab · manim craft contract · checkpoint 6</span>
+  <h1>The OpenGL renderer, measured</h1>
+  <p class="dek">One act rendered both ways on the same machine, then a keep-or-drop call.</p>
+</header>
+
+<div class="rule"></div>
+
+<div class="verdict">
+  <span class="micro">verdict</span>
+  <p><strong class="bad">Drop it.</strong> On this machine ManimCE's OpenGL renderer is
+  <strong>24&nbsp;% slower</strong> than cairo on the same content, renders no better, and breaks
+  every camera move in the curriculum. There is nothing to buy.</p>
+</div>
+
+<h2>What was compared</h2>
+
+<p>Level II part one — the ±kσ sweep, the ×70 axis stretch, two <code>ValueTracker</code>
+passages, per-frame <code>always_redraw</code> polygons, LaTeX and both site fonts. 105&nbsp;s of
+1080p60 video, 27 <code>play()</code> calls. The act's camera move is in part two, which was
+excluded so the two renderers were given identical work.</p>
+
+<p>Both runs: <code>-qh --disable_caching</code>, silent, output redirected to
+<code>/tmp</code> so the production files were untouched. The OpenGL run used real hardware:
+<span class="mono">AMD Radeon 780M (radeonsi, Mesa 25.2.8), OpenGL 4.6 Core</span>, reached
+headlessly through EGL — Manim's own fallback when there is no X display.</p>
+
+<table>
+  <tr><th>Measure</th><th>cairo</th><th>opengl</th><th>Reading</th></tr>
+  <tr>
+    <td>Wall time</td>
+    <td class="num">1m&nbsp;51.5s</td>
+    <td class="num bad">2m&nbsp;17.9s</td>
+    <td>OpenGL is <strong>23.7&nbsp;% slower</strong></td>
+  </tr>
+  <tr>
+    <td>Output</td>
+    <td class="num">1920×1080@60, 105.25&nbsp;s</td>
+    <td class="num">1920×1080@60, 105.22&nbsp;s</td>
+    <td>two frames shorter, otherwise identical</td>
+  </tr>
+  <tr>
+    <td>File size</td>
+    <td class="num">3.48&nbsp;MB</td>
+    <td class="num">3.59&nbsp;MB</td>
+    <td>+3&nbsp;%, from slightly heavier edges</td>
+  </tr>
+  <tr>
+    <td>Voiceover</td>
+    <td class="num ok">works</td>
+    <td class="num ok">works</td>
+    <td>aac track and .srt both produced under GL</td>
+  </tr>
+  <tr>
+    <td>Camera moves</td>
+    <td class="num ok">works</td>
+    <td class="num bad">AttributeError</td>
+    <td><code>'OpenGLCamera' object has no attribute 'frame'</code></td>
+  </tr>
+</table>
+
+<h2>The camera is a hard blocker</h2>
+
+<p>Under cairo, <code>MovingCameraScene</code> exposes <code>self.camera.frame</code> — a mobject
+you animate like any other. Under the OpenGL renderer the camera <em>is</em> the frame, so
+<code>self.camera.frame</code> does not exist. The full-act GL render died on that line after
+rendering all of part one.</p>
+
+<p>Seven of the nine acts move the camera, and each does it the same way: save state, scale and
+move the frame, restore. Adopting the GL renderer means either a compatibility shim inside
+<code>NarratedCameraScene</code> with two code paths, or rewriting every camera move — to buy a
+renderer that is slower. That is the whole argument.</p>
+
+<h2>Quality: no visible difference</h2>
+
+<p>Matched frames were sampled at eight timestamps and differenced pixel by pixel. Mean absolute
+difference ran between <span class="mono">0.26</span> and <span class="mono">1.26</span> out of 255,
+and every pixel that differed by more than 16 sat on a glyph or stroke boundary — 1.4&nbsp;% to
+1.9&nbsp;% of the frame. Layout, numbers, fonts and colours are the same.</p>
+
+<figure>
+  <div class="rule"></div>
+  <img src="opengl-sbs.jpg" width="900" height="1012" loading="lazy"
+       alt="The same frame rendered by cairo above and by OpenGL below; visually identical">
+  <figcaption>
+    <span class="fignum">FIGURE 1</span>
+    The same frame from each renderer. The ×70 stretched tails, the LaTeX, the readout column and
+    both fonts land identically.
+  </figcaption>
+</figure>
+
+<figure>
+  <div class="rule"></div>
+  <img src="opengl-diff.jpg" width="900" height="506" loading="lazy"
+       alt="Difference map showing edge-only differences at glyph and stroke boundaries">
+  <figcaption>
+    <span class="fignum">FIGURE 2</span>
+    Every pixel that differs by more than 16 of 255, painted in alarm salmon — 1.94&nbsp;% of the
+    frame, and all of it edges: anti-aliasing on glyphs and strokes, plus the dash phase of the ±3σ
+    limits. OpenGL's ink coverage runs 15–30&nbsp;% higher in relative terms, which is a slightly
+    fatter stroke, not a sharper one.
+  </figcaption>
+</figure>
+
+<h2>What this closes</h2>
+
+<ul>
+  <li><strong>Kept:</strong> cairo, ManimCE 0.21, the existing toolchain. No second renderer, no
+  shim, no branch in <code>narration.py</code>.</li>
+  <li><strong>Decided: not doing this.</strong> The OpenGL renderer is not revisited unless
+  something changes the arithmetic — a CE release that fixes the camera API <em>and</em> makes GL
+  faster than cairo on this content.</li>
+  <li>The trial cost three renders and left nothing behind in the repo but this page and its two
+  images. Reproduce it with
+  <code>manim --renderer=opengl -qh --write_to_movie --media_dir /tmp/glmedia …</code>.</li>
+</ul>
+
+<footer>
+  <span class="micro">measured 2026-08-27 · ManimCE 0.21.0 · Mesa 25.2.8 · AMD Radeon 780M ·
+  8 cores</span>
+</footer>
+
+</div>
+</body>
+</html>
