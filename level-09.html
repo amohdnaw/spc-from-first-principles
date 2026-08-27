@@ -204,6 +204,24 @@
   .eq-body .katex-display{margin:0;padding-bottom:2px}
   @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
   @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
+
+  /* ---------- wide viewports (DESIGN.md ยง3, added 2026-08-27) ----------
+     The measure never moves; figures spend the width the prose refuses.
+     Each figure is additionally capped at its own native resolution by an
+     inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
+  /* A run of chart figures sits two-up once there is room for two of them
+     without either dropping below 560px. Videos never join a pair. */
+  .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
+    gap:var(--gutter);align-items:start;max-width:var(--figure)}
+  .figpair figure{margin:64px 0 0;max-width:none}
 </style>
 </head>
 <body>
@@ -287,7 +305,8 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">โ
         <p>At a 1ฯ drift, EWMA detects in ~10 subgroups against Shewhart's ~44 โ€” four times sooner, at identical false-alarm cost.</p>
       </aside>
 
-      <figure>
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),1332px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/41_l4_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async">
         <figcaption>
@@ -296,7 +315,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">โ
         </figcaption>
       </figure>
 
-      <figure>
+      <figure style="max-width:min(var(--figure),1667px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/42_l4_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async">
         <figcaption>
@@ -304,6 +323,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">โ
           <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
         </figcaption>
       </figure>
+</div>
 
       <figure>
         <div class="rule"></div>
@@ -337,7 +357,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">โ
         </figcaption>
       </figure>
 
-      <figure>
+      <figure style="max-width:min(var(--figure),1370px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/07_western_electric.png" width="1370" height="812" alt="The four rules drawn against the zone bands they test" decoding="async">
         <figcaption>

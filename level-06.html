@@ -204,6 +204,24 @@
   .eq-body .katex-display{margin:0;padding-bottom:2px}
   @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
   @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
+
+  /* ---------- wide viewports (DESIGN.md §3, added 2026-08-27) ----------
+     The measure never moves; figures spend the width the prose refuses.
+     Each figure is additionally capped at its own native resolution by an
+     inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
+  /* A run of chart figures sits two-up once there is room for two of them
+     without either dropping below 560px. Videos never join a pair. */
+  .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
+    gap:var(--gutter);align-items:start;max-width:var(--figure)}
+  .figpair figure{margin:64px 0 0;max-width:none}
 </style>
 </head>
 <body>
@@ -295,7 +313,8 @@
         </figcaption>
       </figure>
 
-      <figure>
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),1495px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/21_l2_null_distribution.png" width="1495" height="782" decoding="async"
              alt="Null distribution of x-bar with both tails annotated">
@@ -306,7 +325,7 @@
         </figcaption>
       </figure>
 
-      <figure>
+      <figure style="max-width:min(var(--figure),1263px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/22_l2_rbar_plumbing.png" width="1263" height="741" decoding="async"
              alt="Sampling distribution of sigma-hat from R-bar over d2">
@@ -317,6 +336,7 @@
           why Phase I needs enough data.</span>
         </figcaption>
       </figure>
+</div>
 
       <figure>
         <div class="rule"></div>
@@ -332,7 +352,8 @@
         </figcaption>
       </figure>
 
-      <figure>
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),1153px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
              alt="Monte Carlo derivation of the d2 control chart constant">
@@ -343,7 +364,7 @@
         </figcaption>
       </figure>
 
-      <figure>
+      <figure style="max-width:min(var(--figure),1817px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
              alt="A2, D3 and D4 constants plotted against subgroup size">
@@ -353,6 +374,7 @@
           every shop-floor chart form; nothing here is looked up, all of it is derived.</span>
         </figcaption>
       </figure>
+</div>
 
       <a class="next" href="level-08.html">
         <span class="m">Level 8</span>

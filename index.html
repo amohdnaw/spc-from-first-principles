@@ -53,7 +53,9 @@
   :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
   .wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--gutter)}
-  .measure{max-width:61ch}
+  /* 27em measures 64 characters in EB Garamond at 21px; 61ch measured 71,
+     which is outside the 58-64 the type scale freezes. */
+  .measure{max-width:27em}
   .micro{font-family:var(--inst);font-size:11px;font-weight:600;text-transform:uppercase;
     letter-spacing:.14em;color:var(--ink-dim)}
   .num{font-variant-numeric:tabular-nums lining-nums}
@@ -239,6 +241,13 @@
     .toggle button+button{border-left:0;border-top:1px solid var(--rule)}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+
+  /* ---------- wide viewports (DESIGN.md §3, added 2026-08-27) ----------
+     The reading measure is untouched; the hub's figures and the gallery video
+     take the extra width, capped at the 1920 native of the Manim renders. */
+  @media (min-width:1440px){ :root{ --max:1344px } }
+  @media (min-width:1800px){ :root{ --max:1760px } }
+  @media (min-width:1440px){ figure video,figure img{max-width:1920px;margin-inline:auto} }
 </style>
 </head>
 <body>

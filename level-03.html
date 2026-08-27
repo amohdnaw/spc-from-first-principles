@@ -198,6 +198,24 @@
   .eq-body .katex-display{margin:0;padding-bottom:2px}
   @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
   @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
+
+  /* ---------- wide viewports (DESIGN.md §3, added 2026-08-27) ----------
+     The measure never moves; figures spend the width the prose refuses.
+     Each figure is additionally capped at its own native resolution by an
+     inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
+  /* A run of chart figures sits two-up once there is room for two of them
+     without either dropping below 560px. Videos never join a pair. */
+  .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
+    gap:var(--gutter);align-items:start;max-width:var(--figure)}
+  .figpair figure{margin:64px 0 0;max-width:none}
 </style>
 </head>
 <body>

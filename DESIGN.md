@@ -140,6 +140,41 @@ Base unit **8px**. Vertical rhythm **32px** (equals body line-height — blocks 
 Section gap 96. Block gap 48. Inside a panel 24. Label-to-value 8.
 Page gutter `clamp(24px, 5vw, 72px)`.
 
+### Wide viewports (≥1440px) — added 2026-08-27
+
+The pages were built for a laptop and did nothing with a desktop. At 2560px the
+content capped at 1216px, so **52% of the viewport was empty** and the 1920-native
+video rendered at 704px — 37% of its own resolution. Direction picked from a
+three-way mock (breakout / two tracks / margin apparatus).
+
+**The measure never moves.** `--measure: 27em` (567px, measured at 64 characters) is
+the same on a phone and on a 2560px monitor. Widening prose is still banned by §2.
+What changes is that **figures spend the width the prose refuses**.
+
+| Viewport | `--figure` band | Page `--max` |
+|---|---|---|
+| < 1440px | 44rem — 704px | 76rem — 1216px |
+| ≥ 1440px | 64rem — 1024px | 84rem — 1344px |
+| ≥ 1800px | 94rem — 1504px | 110rem — 1760px |
+
+**No raster is ever displayed above its native width.** Each figure carries a cap
+taken from its own source resolution, so the band is a ceiling, not a stretch. The
+Manim renders are 1920 wide and reach the full 1504 band; the matplotlib sheets run
+1153–2117, and the narrow ones stop at their own size rather than going soft. A
+figure that looks blurry on a big screen is this rule being violated.
+
+**Level pages pair their chart figures.** A run of consecutive image figures becomes
+a two-up grid at wide widths — `repeat(auto-fit, minmax(560px, 1fr))` — because the
+level pages are a short prose head followed by a stack of six charts, and two charts
+side by side both fills the width and keeps each one under its native size. Video
+figures never join a pair; they take the whole band.
+
+Two things this deliberately does not do: no sticky media column (it is one step from
+the fixed-chrome ban in §6), and no margin apparatus — the right margin stays empty
+rather than filling with decoration that carries no information. Margin apparatus is
+available later for a level that genuinely has units, definitions and spoken lines to
+put there, and it would be contracted then.
+
 ## 4. Radius
 
 **0 everywhere.** Hard edges where edges meet.

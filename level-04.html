@@ -204,6 +204,24 @@
   .eq-body .katex-display{margin:0;padding-bottom:2px}
   @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
   @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
+
+  /* ---------- wide viewports (DESIGN.md Â§3, added 2026-08-27) ----------
+     The measure never moves; figures spend the width the prose refuses.
+     Each figure is additionally capped at its own native resolution by an
+     inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
+  /* A run of chart figures sits two-up once there is room for two of them
+     without either dropping below 560px. Videos never join a pair. */
+  .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
+    gap:var(--gutter);align-items:start;max-width:var(--figure)}
+  .figpair figure{margin:64px 0 0;max-width:none}
 </style>
 </head>
 <body>
@@ -275,7 +293,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
         </figcaption>
       </figure>
 
-      <figure>
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),2117px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/11_l1_dice_to_bell.png" width="2117" height="665" decoding="async"
              alt="The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice.">
@@ -285,7 +304,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
         </figcaption>
       </figure>
 
-      <figure>
+      <figure style="max-width:min(var(--figure),1967px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/12_l1_sqrt_n.png" width="1967" height="772" decoding="async"
              alt="Why we chart means, not parts. Same process, three lenses â€” individuals, means of 5, means of 25.">
@@ -294,6 +313,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
           <span class="figtext">Why we chart means, not parts. Same process, three lenses â€” individuals, means of 5, means of 25. Means of 5 cluster far tighter, so a shift moves the mean visibly instead of drowning in noise.</span>
         </figcaption>
       </figure>
+</div>
 
       <a class="next" href="level-06.html">
         <span class="m">Level 6</span>

@@ -180,6 +180,12 @@
   .reveal.in{opacity:1;transform:none}
   @media(max-width:560px){body{font-size:19px}.nav-id{font-size:18px}}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+  /* ---------- wide viewports (DESIGN.md §3, added 2026-08-27) ----------
+     The essay is a reading document, so it widens far less than the curriculum
+     pages: enough to give the four streaming charts room, no more. */
+  @media (min-width:1440px){ :root{ --max:1240px } }
+  @media (min-width:1800px){ :root{ --max:1400px } }
 </style>
 </head>
 <body>
