@@ -351,6 +351,21 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
+
+  /* ---------- captions ----------
+     The tracks stay (WCAG 1.2.2 asks that captions be PROVIDED, not forced on) but
+     they are no longer `default`. Three reasons they were wrong on by default here:
+     the audio IS narration so the cues duplicate it, the page prose now carries the
+     same argument in text, and every Manim frame already has on-screen text - axis
+     labels and the readout column sit exactly where a cue lands. Turned on from the
+     player, they now render small and on a translucent ground instead of a slab. */
+  ::cue{
+    font-family:var(--mono, ui-monospace, monospace);
+    font-size:58%;
+    line-height:1.35;
+    color:#e8eef4;
+    background:rgba(13,17,20,.74);
+  }
 </style>
 </head>
 <body>
@@ -460,7 +475,7 @@
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level06.jpg">
           <source src="spc-lab/media/videos/level06_scene/1080p60/Level06.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level06.vtt" srclang="en" label="English" default>
+          <track kind="captions" src="captions/level06.vtt" srclang="en" label="English">
         </video>
         <figcaption>
           <span class="fignum">Figure 6.1</span>
@@ -529,7 +544,7 @@
         </summary>
         <video controls playsinline preload="none" poster="posters/constants.jpg">
           <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
-          <track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>
+          <track kind="captions" src="captions/constants.vtt" srclang="en" label="English">
         </video>
       </details>
       <div class="figpair">

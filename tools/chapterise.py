@@ -748,7 +748,7 @@ def build_main(spec: dict, keep: dict) -> str:
                 f'poster="posters/{poster}.jpg">\n'
                 f'          <source src="{path}" type="video/mp4">\n'
                 f'          <track kind="captions" src="captions/{poster}.vtt" srclang="en" '
-                'label="English" default>\n'
+                'label="English">\n'
                 '        </video>\n'
                 '      </details>')
 

@@ -313,6 +313,24 @@ Eight components. Anything not on this list needs a reason.
 8. **Video block** — `<video>` with a **required `poster`** frame. No visible
    box; it bleeds into the ground.
 
+### Captions — added 2026-08-27
+
+**Tracks are provided, never forced on.** Every act carries a WebVTT `<track kind="captions">`
+so the captions exist and the player can show them, but **no track carries `default`**.
+WCAG 1.2.2 asks that captions be *available*, not enabled — and on this site three
+things already say what the cue says: the audio is narration, the chapter prose now
+carries the same argument in text, and **every Manim frame has its own on-screen text**.
+Axis labels and the readout column sit exactly where a cue lands, so an on-by-default
+cue covers the content it is describing.
+
+When a reader does turn them on, `::cue` renders them at **58%** of the browser default
+(Chrome's default is 5% of video height — about 31px on a 613px-tall player, so about
+18px), in the mono voice, on a translucent `rgba(13,17,20,.74)` ground rather than an
+opaque slab.
+
+Captions are **not** burned into the mp4s — `build-media.sh` writes them as sidecar
+`.vtt` files, so this is a page decision and always reversible.
+
 ## 6. Ban list
 
 House bans:
