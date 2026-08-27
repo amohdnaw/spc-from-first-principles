@@ -44,9 +44,6 @@
   /* typography hygiene (better-typography 3, 16) */
   html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
   html,body{font-synthesis:none}
-  /* text-transform:uppercase maps σ to Σ and λ to Λ — different symbols
-     entirely (summation, and the lambda of a different meaning). A label may
-     be uppercase and still carry a correct lowercase glyph: opt that span out. */
   .nc{text-transform:none}
 
   html{-webkit-text-size-adjust:100%}
@@ -218,14 +215,6 @@
      The measure never moves; figures spend the width the prose refuses.
      Each figure is additionally capped at its own native resolution by an
      inline max-width, so the band is a ceiling and never a stretch. */
-  @media (min-width:1440px){
-    :root{ --figure:64rem }
-    .wrap{ max-width:84rem }
-  }
-  @media (min-width:1800px){
-    :root{ --figure:94rem }
-    .wrap{ max-width:110rem }
-  }
   /* A run of chart figures sits two-up once there is room for two of them
      without either dropping below 560px. Videos never join a pair. */
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
@@ -241,6 +230,11 @@
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
 
+  /* The page IS the grid. Before this the container was 110rem while the text
+     block was 1090px and left-aligned inside it, so the margins came out 149px
+     left and 675px right - the dead right column. The page width is now computed
+     from the same tokens the grid uses, so it can never drift from it again. */
+  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
   /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
   .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
   .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}

@@ -23,6 +23,11 @@ CHAPTER_CSS = """
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
 
+  /* The page IS the grid. Before this the container was 110rem while the text
+     block was 1090px and left-aligned inside it, so the margins came out 149px
+     left and 675px right - the dead right column. The page width is now computed
+     from the same tokens the grid uses, so it can never drift from it again. */
+  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
   /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
   .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
   .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
