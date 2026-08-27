@@ -43,6 +43,15 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
+  /* typography hygiene (better-typography 3, 16): a missing weight must fail
+     visibly rather than render a faked bold, and macOS renders serif text
+     heavier than intended without grayscale smoothing. */
+  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html,body{font-synthesis:none}
+  /* text-transform:uppercase maps σ to Σ and λ to Λ — different symbols
+     entirely (summation, and the lambda of a different meaning). A label may
+     be uppercase and still carry a correct lowercase glyph: opt that span out. */
+  .nc{text-transform:none}
   body{
     background:var(--ground);color:var(--ink);
     font-family:var(--doc);font-size:21px;font-weight:500;line-height:1.55;
@@ -459,7 +468,7 @@
       <div class="lab">
         <div class="lab-head">
           <span class="micro">Lab A — why EWMA catches what X̄ misses</span>
-          <span class="status">λ = 0.20 · n = 40</span>
+          <span class="status"><span class="nc">λ</span> = 0.20 · n = 40</span>
         </div>
         <div class="lab-grid">
           <svg id="labA-svg" viewBox="0 0 520 240" aria-label="Interactive EWMA versus Shewhart chart"></svg>
@@ -490,12 +499,12 @@
       <div class="lab">
         <div class="lab-head">
           <span class="micro">Lab B — measurement error masquerading as process variation</span>
-          <span class="status">tolerance = 10 · σ_process = 2.0</span>
+          <span class="status">tolerance = 10 · <span class="nc">σ</span>_process = 2.0</span>
         </div>
         <div class="lab-grid">
           <svg id="labB-svg" viewBox="0 0 520 240" aria-label="Interactive Gage R&R variance decomposition"></svg>
           <div>
-            <label class="micro" for="labB-gage">Gage repeatability — σ of the measurement system</label>
+            <label class="micro" for="labB-gage">Gage repeatability — <span class="nc">σ</span> of the measurement system</label>
             <input type="range" id="labB-gage" min="2" max="100" value="62">
             <dl class="lab-readout">
               <div><dt class="micro">%GRR of tolerance</dt><dd id="labB-grr">—</dd></div>

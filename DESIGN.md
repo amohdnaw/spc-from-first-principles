@@ -77,6 +77,17 @@ Body is the anchor: **21px / 1.55**. Everything else is a step from it.
 - Reading measure **58–64ch**. Never full width.
 - Readouts and any figure use **tabular lining numerals** (`font-variant-numeric: tabular-nums`).
 - Mono labels: uppercase, `letter-spacing: .14em`. Serif: normal tracking, never letter-spaced.
+- **An uppercased label may not contain Greek.** `text-transform: uppercase` maps σ to Σ
+  and λ to Λ — the summation sign and a different letter, not styling. Either keep the
+  label ASCII ("what three sigma is worth") or opt the glyph out with `.nc`
+  (`text-transform: none`), which keeps the label uppercase and the symbol correct.
+  Four instances shipped before this was noticed, including the interactive's own
+  "LIMIT AT ± 3.00 Σx̄".
+- **Maths inside serif prose goes through KaTeX, not Unicode.** EB Garamond has no
+  combining hat and no subscript digits, so `σ̂` renders as sigma plus a stray caret and
+  `d₂` falls back mid-word to another face. Use `<span class="tex" data-tex="…">`, which
+  `tools/typeset.mjs` renders. **Headings are the exception** — Computer Modern beside
+  EB Garamond at 33px reads as a mistake, so reword the heading instead.
 
 **Added 2026-08-25.** The 17px serif step was missing and got improvised as 15px and 17px
 in shipped code (`line-of-sight` `.verdict p`, `index` `.lab-note` / `.tools li` /

@@ -37,6 +37,15 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
+  /* typography hygiene (better-typography 3, 16): a missing weight must fail
+     visibly rather than render a faked bold, and macOS renders serif text
+     heavier than intended without grayscale smoothing. */
+  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html,body{font-synthesis:none}
+  /* text-transform:uppercase maps σ to Σ and λ to Λ — different symbols
+     entirely (summation, and the lambda of a different meaning). A label may
+     be uppercase and still carry a correct lowercase glyph: opt that span out. */
+  .nc{text-transform:none}
   body{
     background:var(--ground);color:var(--ink-bright);
     font-family:'EB Garamond',Georgia,serif;

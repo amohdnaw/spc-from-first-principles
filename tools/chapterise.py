@@ -42,14 +42,21 @@ CHAPTER_CSS = """
   .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
   .toc a{color:var(--ink);text-decoration:none;font-size:19px}
   .toc a:hover{color:var(--accent)}
+  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
+    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
+  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
   .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
 
   /* a heading must clear the sticky nav when jumped to from the contents */
   main section{scroll-margin-top:96px}
   .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
     color:var(--accent);display:block;margin-bottom:10px}
+  /* headings balance across lines; body prose gets pretty so no line is left
+     carrying a single word (better-typography principle 9) */
   main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
-    color:var(--ink-bright);margin:0 0 14px;max-width:26em}
+    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
+  .leaf > div > p{text-wrap:pretty}
+  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
   .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
 
   /* margin notes: instrument voice, level with the paragraph they annotate.
@@ -66,10 +73,16 @@ CHAPTER_CSS = """
   .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
     align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
   .note.data .row:last-child{border-bottom:0}
+  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
+     Keep label text ASCII and put Greek in the value. */
   .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
-  /* a value may be a sentence, not just a number: it must be allowed to wrap */
-  .note.data .rv{color:var(--ink-bright);font-size:16px;font-variant-numeric:tabular-nums;
-    min-width:0;overflow-wrap:anywhere;text-align:right}
+  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
+    overflow-wrap:anywhere}
+  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
+  /* a sentence is not data: own line, left aligned, in the reading voice */
+  .note.data .row.txt{display:block}
+  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
+    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
   .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
     line-height:1.5;overflow-wrap:anywhere}
   /* a margin figure - Tufte's one case for a figure outside the main flow */
@@ -97,6 +110,17 @@ CHAPTER_CSS = """
   }
 """
 
+def tex(latex: str) -> str:
+    """Inline maths, rendered by tools/typeset.mjs.
+
+    EB Garamond has no combining hat and no subscript digits, so a literal
+    "sigma-hat" arrives on screen as sigma followed by a stray caret, and a
+    subscript falls back mid-word to another font. Anything mathematical inside
+    serif prose goes through KaTeX instead of hoping for the glyph.
+    """
+    return '<span class="tex" data-tex="' + latex + '"></span>'
+
+
 # ---------------------------------------------------------------- chapter specs
 LEVEL6 = {
     "number": 6,
@@ -113,10 +137,10 @@ LEVEL6 = {
          "the tails are 70× smaller than the chart — stretch the axis to see them"),
         ("6.4", "s4", "The chart is that test, repeated",
          "limits turned on their side, and why boring is the goal"),
-        ("6.5", "s5", "How good is σ̂?",
-         "R̄/d₂ — the bridge from a range to a standard deviation"),
+        ("6.5", "s5", "How good is the σ estimate?",
+         tex(r"\bar R / d_2") + " — the bridge from a range to a standard deviation"),
         ("6.6", "s6", "Where the constants come from",
-         "d₂, A₂, D₃, D₄ — simulated, never looked up"),
+         tex(r"d_2, A_2, D_3, D_4") + " — simulated, never looked up"),
     ],
 }
 
@@ -198,7 +222,11 @@ def datanote(*rows, k=None):
         out.append(f'<span class="k">{k}</span>')
     for label, value, *rest in rows:
         tail = f'<span class="rn">{rest[0]}</span>' if rest else ""
-        out.append(f'<span class="row"><span class="rk">{label}</span>'
+        # under ~14 characters it is data and aligns right against its label;
+        # longer than that it is a sentence, and right-aligning a sentence is
+        # exactly what made the chapter opener unreadable
+        kind = "num" if len(str(value)) <= 14 else "txt"
+        out.append(f'<span class="row {kind}"><span class="rk">{label}</span>'
                    f'<span class="rv">{value}</span>{tail}</span>')
     return '<span class="note data">' + "".join(out) + "</span>"
 
@@ -233,17 +261,17 @@ def build_main(spec: dict, keep: dict) -> str:
     A('    <header class="ch">')
     A('      <div class="leaf">')
     A("        <div>")
-    A('          <p class="eyebrow">Level 6</p>')
-    A(f'          <p class="ch-no">Chapter {spec["word"]}</p>')
+    A(f'          <p class="ch-no">Level {n} · chapter {spec["word"]}</p>')
     A('          <h1 class="page-title"></h1>')
-    A('          <p class="dek page-dek">'
-      + datanote(("before this", spec["before"][0]), ("after this", spec["after"][0]),
-                 k="where this sits") + '</p>')
+    A('          <p class="dek page-dek"></p>')
     A("        </div>")
     A("      </div>")
     A('      <div class="toc">')
     A('        <div class="toc-head"><span class="micro">What this chapter derives</span>'
       f'<span class="micro est">{spec["estimate"]}</span></div>')
+    A('        <p class="toc-chain"><span class="micro">after</span> '
+      f'{spec["before"][0].rstrip(".")}<span class="sep">·</span>'
+      f'<span class="micro">leads to</span> {spec["after"][0].rstrip(".")}</p>')
     A("        <ol>")
     A(toc_items)
     A("        </ol>")
@@ -299,7 +327,7 @@ def build_main(spec: dict, keep: dict) -> str:
              " is inside? Not looked up in a table — it is the integral of the curve between"
              " the limits, evaluated as they move.",
              datanote(("in-control", "99.73 %"), ("outside", "0.27 %"),
-                      k="what ±3σ is worth")),
+                      k="what three sigma is worth")),
         para("Stop at three sigma and the answer is 99.73%. Nobody chose that number. It is"
              " simply what ±3σ is worth, and everything the process should ever do lives"
              " inside it.",
@@ -345,21 +373,22 @@ def build_main(spec: dict, keep: dict) -> str:
     ])
 
     # ---- 6.5 -----------------------------------------------------------
-    section("s5", "6.5", "How good is σ̂?", [
+    section("s5", "6.5", "How good is the σ estimate?", [
         para("Everything so far assumed we know σ. On a real line we do not — we estimate it,"
              " usually from the average range of the subgroups divided by a constant. That"
              " estimate is unbiased on average, but a chart built from twenty-five subgroups"
              " carries real fuzz in its own limits, which is why Phase I needs enough data"
              " before the limits mean anything.",
-             datanote(("σ̂ from ranges", "R̄ / d₂"),
+             datanote(("sigma-hat from ranges", "R̄ / d₂"),
                       ("at 25 subgroups", "±0.075 σ", "spread in the estimate itself"),
-                      k="estimating σ")),
+                      k="estimating sigma")),
         "      " + fig("22_l2_rbar_plumbing.png"),
     ])
 
     # ---- 6.6 -----------------------------------------------------------
     section("s6", "6.6", "Where the constants come from", [
-        para("d₂ is the expected range of n standard normals. A₂, D₃ and D₄ are the numbers"
+        para(tex(r"d_2") + " is the expected range of n standard normals. "
+             + tex(r"A_2") + ", " + tex(r"D_3") + " and " + tex(r"D_4") + " are the numbers"
              " printed on every shop-floor chart form. None of them is looked up here: each"
              " one is simulated, and then checked against the published table in a test suite."
              " If the simulation and the table ever disagreed, the test would fail rather than"
@@ -371,7 +400,7 @@ def build_main(spec: dict, keep: dict) -> str:
         '<video controls playsinline preload="none" poster="posters/constants.jpg">'
         '<source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">'
         '<track kind="captions" src="captions/constants.vtt" srclang="en" label="English" default>'
-        "</video><em>Where the constants come from — d₂ simulated from 400 000 subgroups, "
+        "</video><em>Where the constants come from — " + tex(r"d_2") + " simulated from 400 000 subgroups, "
         "landing on the published value.</em></div>",
         '      <div class="figpair">',
         "      " + fig("01_d2.png"),
