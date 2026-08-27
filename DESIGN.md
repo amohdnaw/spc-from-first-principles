@@ -151,7 +151,22 @@ Base unit **8px**. Vertical rhythm **32px** (equals body line-height — blocks 
 Section gap 96. Block gap 48. Inside a panel 24. Label-to-value 8.
 Page gutter `clamp(24px, 5vw, 72px)`.
 
-### Wide viewports (≥1440px) — added 2026-08-27
+### Wide viewports (≥1440px) — added 2026-08-27, revised the same day
+
+**Superseded in part.** The `--figure` band and the raised page widths below were the
+first answer to a wide screen. The chapter grammar replaced them: the text block is now
+the constraint, and **the page width is computed from the grid tokens** —
+
+```
+.wrap { max-width: calc(var(--measure) + var(--marg-gap) + var(--marg) + 2*var(--gutter)) }
+```
+
+The failure this fixes is worth naming, because it shipped twice. Raising the container
+to 110rem while the text block stayed 1090px left-aligned inside it produced margins of
+**149px left and 675px right** — the page looked broken on any wide monitor. A hardcoded
+page width that is not derived from the grid *will* drift from it. Measured after:
+253/253 at 1440, 412/412 at 1913, 735/735 at 2560, 1175/1175 at 3440.
+
 
 The pages were built for a laptop and did nothing with a desktop. At 2560px the
 content capped at 1216px, so **52% of the viewport was empty** and the 1920-native
