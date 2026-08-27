@@ -33,7 +33,6 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
-    --body:21px;
     --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
     --figure:44rem;              /* figures step wider than text, still not full bleed */
     --gutter:clamp(24px,5vw,72px);
@@ -49,7 +48,7 @@
   html{-webkit-text-size-adjust:100%}
   body{
     margin:0;background:var(--ground);color:var(--ink);
-    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
+    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
     font-variant-numeric:oldstyle-nums;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -236,137 +235,6 @@
     background:rgba(13,17,20,.74);
   }
 
-
-  /* ---------- chapter grammar (DESIGN.md §3) ----------
-     Layout follows the book convention rather than an invented one. Tufte CSS:
-     figures are constrained to the main column by default, a *small* figure may
-     go in the margin, and anything larger takes the full text block. Margin notes
-     sit "as close as possible to the text that references them" - which is done
-     with a float at the note's position in the flow, never with grid rows. Grid
-     rows put the note in a row of its own and cut an L-shaped hole in the page. */
-  :root{ --marg:320px; --marg-gap:48px; }
-
-  /* The page IS the grid. Before this the container was 110rem while the text
-     block was 1090px and left-aligned inside it, so the margins came out 149px
-     left and 675px right - the dead right column. The page width is now computed
-     from the same tokens the grid uses, so it can never drift from it again. */
-  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
-  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
-  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
-
-  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
-
-  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
-    padding:22px 0 24px;margin:8px 0 0;
-    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
-  .toc-head .est{margin-left:auto}
-  .toc ol{list-style:none;margin:0;padding:0;display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
-  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
-    border-bottom:1px solid rgba(42,49,56,.55)}
-  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
-  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
-  .toc a:hover{color:var(--accent)}
-  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
-    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
-  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
-  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
-
-  /* a heading must clear the sticky nav when jumped to from the contents */
-  main section{scroll-margin-top:96px}
-  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
-    color:var(--accent);display:block;margin-bottom:10px}
-  /* headings balance across lines; body prose gets pretty so no line is left
-     carrying a single word (better-typography principle 9) */
-  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
-    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
-  .leaf > div > p{text-wrap:pretty}
-  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
-  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
-
-  /* margin notes: instrument voice, level with the paragraph they annotate.
-     Below the margin breakpoint they simply follow the prose at measure width. */
-  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
-    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
-    margin:0 0 26px;max-width:var(--measure);text-indent:0}
-  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
-    font-size:11px;margin-bottom:5px}
-  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
-  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
-    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
-  .note.speak{border-left-color:var(--accent)}
-  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
-    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
-  .note.data .row:last-child{border-bottom:0}
-  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
-     Keep label text ASCII and put Greek in the value. */
-  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
-  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
-    overflow-wrap:anywhere}
-  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
-  /* a sentence is not data: own line, left aligned, in the reading voice */
-  .note.data .row.txt{display:block}
-  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
-    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
-  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
-    line-height:1.5;overflow-wrap:anywhere}
-
-  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
-     at the full text-block width. The previous version was a 340px margin card,
-     which measured 323x182 on screen - not a player, a thumbnail with controls. */
-  .act{border-top:1px solid var(--rule);margin:40px 0 0}
-  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
-    padding:16px 0;list-style:none}
-  .act > summary::-webkit-details-marker{display:none}
-  .act > summary::marker{content:""}
-  .act > summary:hover .k{color:var(--ink-bright)}
-  /* the closed strip has to look like a video, or it reads as a footnote. A poster
-     at 280px with a play glyph over it does that; 180px and a word did not. */
-  .act .thumb-wrap{position:relative;flex:none;display:block;line-height:0}
-  .act .thumb{width:280px;height:auto;display:block;border:1px solid var(--rule)}
-  .act .thumb-wrap::after{content:"";position:absolute;left:50%;top:50%;
-    transform:translate(-50%,-50%);width:0;height:0;
-    border-left:18px solid var(--ink-bright);border-top:11px solid transparent;
-    border-bottom:11px solid transparent;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
-  .act > summary:hover .thumb-wrap::after{border-left-color:var(--accent)}
-  .act[open] > summary .thumb-wrap{display:none}
-  .act .meta{min-width:0}
-  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
-  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
-    max-width:52ch;text-wrap:pretty}
-  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
-  .act[open] > summary .cue{color:var(--accent)}
-  .act video{display:block;width:100%;height:auto;background:var(--ground);
-    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
-  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:160px} }
-  /* a margin figure - Tufte's one case for a figure outside the main flow */
-  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
-  .note.watch:hover .k{color:var(--ink-bright)}
-
-  /* figures take the whole text block and share its left edge */
-  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
-
-  @media (min-width:1500px){
-    :root{ --body:26px; --marg:340px; }
-    /* the note floats into the margin at its position in the flow. This is the
-       whole trick: no row of its own, so no hole beside it. */
-    /* tufte-css's mechanism: a negative right margin pulls the float out of the
-       text column so it consumes no horizontal space there. Without it the float
-       lives inside the 702px paragraph and shortens every line beside it, which
-       destroys the measure the whole design is built on. */
-    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
-      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
-      position:relative;z-index:1}
-    /* a note that must not float (it holds something wide) */
-    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
-    .leaf > div::after{content:"";display:block;clear:both}
-  }
 </style>
 </head>
 <body>
@@ -392,62 +260,29 @@
 </nav>
 
 <div class="wrap">
-    <main>
-    <header class="ch">
-      <div class="leaf">
-        <div>
-          <p class="ch-no">Level 6 · chapter six</p>
-          <h1>Control limits are a hypothesis test</h1>
-          <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
-        </div>
+  <header class="opener">
+    <p class="eyebrow">Level 6</p>
+    <h1>Control limits are a hypothesis test</h1>
+    <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="col">
+        <p>If a process is stable, Level 4's logic tells us exactly which distribution
+        every subgroup mean is drawn from. Choose limits at ±3σ of that distribution
+        and you've defined a test: points inside are boring, a point outside happens
+        0.27% of the time by pure chance — once per ~370 subgroups. So when one
+        appears, it's rational to bet something changed.</p>
       </div>
-      <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 interactive · 2 acts · ~9 min read</span></div>
-        <p class="toc-chain"><span class="micro">after</span> Level 4 — the average is predictable<span class="sep">·</span><span class="micro">leads to</span> Level 8 — capability</p>
-        <ol>
-          <li><span class="n">6.1</span><a href="#s1">A curve that is a claim<span class="sub">why the bell is a hypothesis about the process, not the parts</span></a></li>
-          <li><span class="n">6.2</span><a href="#s2">Pricing ±3σ<span class="sub">the integral between the limits, evaluated as they move</span></a></li>
-          <li><span class="n">6.3</span><a href="#s3">Where the price hides<span class="sub">the tails are 70× smaller than the chart — stretch the axis to see them</span></a></li>
-          <li><span class="n">6.4</span><a href="#s4">The chart is that test, repeated<span class="sub">limits turned on their side, and why boring is the goal</span></a></li>
-          <li><span class="n">6.5</span><a href="#s5">How good is the σ estimate?<span class="sub"><span class="tex" data-tex="\bar R / d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>R</mi><mo>ˉ</mo></mover><mi mathvariant="normal">/</mi><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\bar R / d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0701em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8201em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> — the bridge from a range to a standard deviation</span></a></li>
-          <li><span class="n">6.6</span><a href="#s6">Where the constants come from<span class="sub"><span class="tex" data-tex="d_2, A_2, D_3, D_4"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>A</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">d_2, A_2, D_3, D_4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> — simulated, never looked up</span></a></li>
-        </ol>
-      </div>
-    </header>
-    <section id="s1">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">6.1</span>
-          <h2>A curve that is a claim</h2>
-          <p class="lead">Level 4 told us which distribution every subgroup mean is drawn from, so long as nothing about the process has changed. <span class="note"><span class="k">H₀ — the null</span>The process is unchanged: every subgroup mean is drawn from one distribution.</span>Draw that distribution and you have not drawn a picture of your parts. You have drawn a claim.</p>
-          <p>The claim is that the process is unchanged — one stable stream, every subgroup mean pulled from the same curve. <span class="note"><span class="k">not H₀</span>A statement about any individual part. A part is never in or out of control.</span>That is the null hypothesis, and it is worth being pedantic about what it is a hypothesis <em>about</em>. Not this part. Not this batch. The process.</p>
-          <p>Everything that follows in this chapter is a consequence of taking that claim seriously enough to test it.<span class="note speak"><span class="k">spoken · 0:11</span><em>“That curve is the null hypothesis. Not an assumption about the parts, but a claim about the process.”</em></span></p>
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/l06_1_null_distribution.png" width="1495" height="782" decoding="async"
-             alt="Null distribution of x-bar with both tails annotated">
-        <figcaption>
-          <span class="fignum">Figure 6.2</span>
-          <span class="figtext">The null distribution of x̄, with the exact integral and
-          both tails annotated with the false-alarm arithmetic.</span>
-        </figcaption>
-      </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s2">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">6.2</span>
-          <h2>Pricing ±3σ</h2>
-          <p>Put a pair of limits on that curve and sweep them outward from the centre. <span class="note data"><span class="k">what three sigma is worth</span><span class="row num"><span class="rk">in-control</span><span class="rv">99.73 %</span></span><span class="row num"><span class="rk">outside</span><span class="rv">0.27 %</span></span></span>At every position the question has an exact answer: how much of the distribution is inside? Not looked up in a table — it is the integral of the curve between the limits, evaluated as they move.</p>
-          <p>Stop at three sigma and the answer is 99.73%. <span class="note"><span class="k">Φ</span>The standard normal CDF, computed from erf — not a table.</span><span class="note speak"><span class="k">spoken · 0:38</span><em>“Ninety-nine point seven three percent. Nobody chose that number.”</em></span>Nobody chose that number. It is simply what ±3σ is worth, and everything the process should ever do lives inside it.</p>
+
       <div class="eq">
         <div class="eq-body" data-tex="\Phi(3) - \Phi(-3) = 0.9973"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>−</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.9973</mn></mrow><annotation encoding="application/x-tex">\Phi(3) - \Phi(-3) = 0.9973</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.9973</span></span></span></span></span></div>
         <div class="eq-num">(6.1)</div>
         <p class="eq-cap">The exact integral. 0.27% outside → one false alarm per ~370 subgroups.</p>
       </div>
-  <div class="lab">
+
+      <div class="lab">
         <div class="lab-head">
           <span class="micro">Interactive — choose your alarm threshold</span>
           <span class="status" id="lab-status">SYSTEM-OK</span>
@@ -472,6 +307,12 @@
           </div>
         </div>
       </div>
+
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>A violation is not a bad part. It is evidence against the null.</p>
+      </aside>
+
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level06.jpg">
@@ -484,40 +325,20 @@
           fills to 99.73%, and a violation becomes “evidence against the null.”</span>
         </figcaption>
       </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s3">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">6.3</span>
-          <h2>Where the price hides</h2>
-          <p>The whole of the rest — the part that makes the chart worth running — is out in the tails, and at the scale of the last figure you cannot see it at all. <span class="note"><span class="k">axis stretch</span><span class="v">×70</span>needed before the tails are visible at all.</span>So stretch the vertical axis and let the tails grow. The peak goes straight out of frame, which is the point: the tails are about seventy times smaller than anything else on the chart.</p>
-          <p>Each wing is one tenth of one percent of everything, and there are two of them. <span class="note data"><span class="k">the tail, priced</span><span class="row num"><span class="rk">each wing</span><span class="rv">0.135 %</span></span><span class="row num"><span class="rk">both wings</span><span class="rv">0.0027</span></span><span class="row num"><span class="rk">false alarm</span><span class="rv">1 in 370</span></span></span>Together they are the tail integral, and it has a closed form: 0.0027. Invert it and the bet is priced — one false alarm in 370 subgroups.</p>
-        </div>
-      </div>
-    </section>
-    <section id="s4">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">6.4</span>
-          <h2>The chart is that test, repeated</h2>
-          <p>A control chart is not a new idea on top of this one. <span class="note"><span class="k">allowed by H₀</span><span class="v">1 in 370</span></span>It is the same test, run again on every subgroup, forever. The limits are the boundary we just drew, turned on its side. Every point inside is the process agreeing with the null hypothesis, and that is what boring looks like. Boring is the goal.</p>
-          <p>Then one point steps outside — say 4.1σ above the centre line, where the null allows one point in 370. <span class="note"><span class="k">the violation</span><span class="v">4.1 σ</span></span><span class="note speak"><span class="k">spoken · 2:09</span><em>“This is not a bad part, and scrapping it changes nothing. It is evidence against the hypothesis that nothing changed.”</em></span>That point is not a bad part, and scrapping it changes nothing. It is evidence against the hypothesis that nothing changed. The correct response is to go and find what did.</p>
-      <aside class="sys">
-        <span class="micro">SYS_MSG</span>
-        <p>A violation is not a bad part. It is evidence against the null.</p>
-      </aside>
-        </div>
-      </div>
-    </section>
-    <section id="s5">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">6.5</span>
-          <h2>How good is the σ estimate?</h2>
-          <p>Everything so far assumed we know σ. <span class="note data"><span class="k">estimating sigma</span><span class="row num"><span class="rk">sigma-hat from ranges</span><span class="rv">R̄ / d₂</span></span><span class="row num"><span class="rk">at 25 subgroups</span><span class="rv">±0.075 σ</span><span class="rn">spread in the estimate itself</span></span></span>On a real line we do not — we estimate it, usually from the average range of the subgroups divided by a constant. That estimate is unbiased on average, but a chart built from twenty-five subgroups carries real fuzz in its own limits, which is why Phase I needs enough data before the limits mean anything.</p>
-      <figure>
+
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),1495px)">
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l06_1_null_distribution.png" width="1495" height="782" decoding="async"
+             alt="Null distribution of x-bar with both tails annotated">
+        <figcaption>
+          <span class="fignum">Figure 6.2</span>
+          <span class="figtext">The null distribution of x̄, with the exact integral and
+          both tails annotated with the false-alarm arithmetic.</span>
+        </figcaption>
+      </figure>
+
+      <figure style="max-width:min(var(--figure),1263px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/l06_2_rbar_plumbing.png" width="1263" height="741" decoding="async"
              alt="Sampling distribution of sigma-hat from R-bar over d2">
@@ -528,28 +349,24 @@
           why Phase I needs enough data.</span>
         </figcaption>
       </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s6">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">6.6</span>
-          <h2>Where the constants come from</h2>
-          <p><span class="tex" data-tex="d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> is the expected range of n standard normals. <span class="note data"><span class="k">the constants</span><span class="row num"><span class="rk">d₂ at n = 5</span><span class="rv">2.326</span></span><span class="row num"><span class="rk">A₂ at n = 5</span><span class="rv">0.577</span></span><span class="row num"><span class="rk">simulated</span><span class="rv">400 000</span><span class="rn">subgroups, checked against AIAG Table B</span></span></span><span class="tex" data-tex="A_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">A_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>, <span class="tex" data-tex="D_3"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">D_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> and <span class="tex" data-tex="D_4"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">D_4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> are the numbers printed on every shop-floor chart form. None of them is looked up here: each one is simulated, and then checked against the published table in a test suite. If the simulation and the table ever disagreed, the test would fail rather than the page quietly lying.</p>
-      <details class="act">
-        <summary>
-          <span class="thumb-wrap"><img class="thumb" src="posters/constants.jpg" alt="" loading="lazy"></span>
-          <span class="meta"><span class="k">figure 6.4</span><span class="cap">Where the constants come from: d₂ simulated from 400 000 subgroups, landing on the published value.</span></span>
-          <span class="cue">play</span>
-        </summary>
-        <video controls playsinline preload="none" poster="posters/constants.jpg">
+</div>
+
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/constants.jpg">
           <source src="spc-lab/media/videos/scenes2/1080p60/ConstantsAct.mp4" type="video/mp4">
           <track kind="captions" src="captions/constants.vtt" srclang="en" label="English">
         </video>
-      </details>
+        <figcaption>
+          <span class="fignum">Figure 6.4</span>
+          <span class="figtext">Where the constants come from. d₂ is the expected range of
+          n standard normals, computed here by simulating 400 000 subgroups rather than
+          read off a table; A₂ = 3/(d₂√n) follows from it.</span>
+        </figcaption>
+      </figure>
+
       <div class="figpair">
-      <figure>
+<figure style="max-width:min(var(--figure),1153px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
              alt="Monte Carlo derivation of the d2 control chart constant">
@@ -559,7 +376,8 @@
           Simulated, then checked against AIAG Table B in the test suite — n=5 lands on 2.326.</span>
         </figcaption>
       </figure>
-      <figure>
+
+      <figure style="max-width:min(var(--figure),1817px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
              alt="A2, D3 and D4 constants plotted against subgroup size">
@@ -569,14 +387,13 @@
           every shop-floor chart form; nothing here is looked up, all of it is derived.</span>
         </figcaption>
       </figure>
-      </div>
-        </div>
-      </div>
-    </section>
-    <a class="next" href="level-08.html">
+</div>
+
+      <a class="next" href="level-08.html">
         <span class="m">Level 8</span>
         <span>Capability is comparing two distributions →</span>
       </a>
+    </section>
   </main>
 </div>
 

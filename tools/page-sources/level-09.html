@@ -33,7 +33,6 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
-    --body:21px;
     --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
     --figure:44rem;              /* figures step wider than text, still not full bleed */
     --gutter:clamp(24px,5vw,72px);
@@ -53,7 +52,7 @@
   .nc{text-transform:none}
   body{
     margin:0;background:var(--ground);color:var(--ink);
-    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
+    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
     font-variant-numeric:oldstyle-nums;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -219,6 +218,14 @@
      The measure never moves; figures spend the width the prose refuses.
      Each figure is additionally capped at its own native resolution by an
      inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
   /* A run of chart figures sits two-up once there is room for two of them
      without either dropping below 560px. Videos never join a pair. */
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
@@ -238,137 +245,6 @@
     line-height:1.35;
     color:#e8eef4;
     background:rgba(13,17,20,.74);
-  }
-
-  /* ---------- chapter grammar (DESIGN.md §3) ----------
-     Layout follows the book convention rather than an invented one. Tufte CSS:
-     figures are constrained to the main column by default, a *small* figure may
-     go in the margin, and anything larger takes the full text block. Margin notes
-     sit "as close as possible to the text that references them" - which is done
-     with a float at the note's position in the flow, never with grid rows. Grid
-     rows put the note in a row of its own and cut an L-shaped hole in the page. */
-  :root{ --marg:320px; --marg-gap:48px; }
-
-  /* The page IS the grid. Before this the container was 110rem while the text
-     block was 1090px and left-aligned inside it, so the margins came out 149px
-     left and 675px right - the dead right column. The page width is now computed
-     from the same tokens the grid uses, so it can never drift from it again. */
-  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
-  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
-  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
-
-  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
-
-  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
-    padding:22px 0 24px;margin:8px 0 0;
-    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
-  .toc-head .est{margin-left:auto}
-  .toc ol{list-style:none;margin:0;padding:0;display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
-  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
-    border-bottom:1px solid rgba(42,49,56,.55)}
-  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
-  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
-  .toc a:hover{color:var(--accent)}
-  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
-    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
-  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
-  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
-
-  /* a heading must clear the sticky nav when jumped to from the contents */
-  main section{scroll-margin-top:96px}
-  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
-    color:var(--accent);display:block;margin-bottom:10px}
-  /* headings balance across lines; body prose gets pretty so no line is left
-     carrying a single word (better-typography principle 9) */
-  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
-    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
-  .leaf > div > p{text-wrap:pretty}
-  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
-  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
-
-  /* margin notes: instrument voice, level with the paragraph they annotate.
-     Below the margin breakpoint they simply follow the prose at measure width. */
-  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
-    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
-    margin:0 0 26px;max-width:var(--measure);text-indent:0}
-  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
-    font-size:11px;margin-bottom:5px}
-  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
-  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
-    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
-  .note.speak{border-left-color:var(--accent)}
-  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
-    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
-  .note.data .row:last-child{border-bottom:0}
-  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
-     Keep label text ASCII and put Greek in the value. */
-  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
-  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
-    overflow-wrap:anywhere}
-  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
-  /* a sentence is not data: own line, left aligned, in the reading voice */
-  .note.data .row.txt{display:block}
-  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
-    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
-  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
-    line-height:1.5;overflow-wrap:anywhere}
-
-  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
-     at the full text-block width. The previous version was a 340px margin card,
-     which measured 323x182 on screen - not a player, a thumbnail with controls. */
-  .act{border-top:1px solid var(--rule);margin:40px 0 0}
-  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
-    padding:16px 0;list-style:none}
-  .act > summary::-webkit-details-marker{display:none}
-  .act > summary::marker{content:""}
-  .act > summary:hover .k{color:var(--ink-bright)}
-  /* the closed strip has to look like a video, or it reads as a footnote. A poster
-     at 280px with a play glyph over it does that; 180px and a word did not. */
-  .act .thumb-wrap{position:relative;flex:none;display:block;line-height:0}
-  .act .thumb{width:280px;height:auto;display:block;border:1px solid var(--rule)}
-  .act .thumb-wrap::after{content:"";position:absolute;left:50%;top:50%;
-    transform:translate(-50%,-50%);width:0;height:0;
-    border-left:18px solid var(--ink-bright);border-top:11px solid transparent;
-    border-bottom:11px solid transparent;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
-  .act > summary:hover .thumb-wrap::after{border-left-color:var(--accent)}
-  .act[open] > summary .thumb-wrap{display:none}
-  .act .meta{min-width:0}
-  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
-  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
-    max-width:52ch;text-wrap:pretty}
-  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
-  .act[open] > summary .cue{color:var(--accent)}
-  .act video{display:block;width:100%;height:auto;background:var(--ground);
-    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
-  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:160px} }
-  /* a margin figure - Tufte's one case for a figure outside the main flow */
-  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
-  .note.watch:hover .k{color:var(--ink-bright)}
-
-  /* figures take the whole text block and share its left edge */
-  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
-
-  @media (min-width:1500px){
-    :root{ --body:26px; --marg:340px; }
-    /* the note floats into the margin at its position in the flow. This is the
-       whole trick: no row of its own, so no hole beside it. */
-    /* tufte-css's mechanism: a negative right margin pulls the float out of the
-       text column so it consumes no horizontal space there. Without it the float
-       lives inside the 702px paragraph and shortens every line beside it, which
-       destroys the measure the whole design is built on. */
-    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
-      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
-      position:relative;z-index:1}
-    /* a note that must not float (it holds something wide) */
-    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
-    .leaf > div::after{content:"";display:block;clear:both}
   }
 </style>
 </head>
@@ -395,65 +271,18 @@
 </nav>
 
 <div class="wrap">
-    <main>
-    <header class="ch">
-      <div class="leaf">
-        <div>
-          <p class="ch-no">Level 9 · chapter nine</p>
-          <h1>Detection theory: memory beats points</h1>
-          <p class="dek">A chart with a memory catches drift while every raw point still looks innocent.</p>
-        </div>
+  <header class="opener">
+    <p class="eyebrow">Level 9</p>
+    <h1>Detection theory: memory beats points</h1>
+    <p class="dek">A chart with a memory catches drift while every raw point still looks innocent.</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="col">
+        <p>Slow drift is the most expensive failure mode in manufacturing precisely because no single measurement ever looks alarming. Shewhart charts wait for extremes; EWMA and CUSUM charts accumulate evidence across subgroups. How much sooner? Simulated honestly — with EWMA's limits calibrated so both charts share the same false-alarm rate first.</p>
       </div>
-      <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 3 acts · ~9 min read</span></div>
-        <p class="toc-chain"><span class="micro">after</span> Level 8 — capability<span class="sep">·</span><span class="micro">leads to</span> Level 10 — counting, not measuring, not yet written</p>
-        <ol>
-          <li><span class="n">9.1</span><a href="#s1">The most expensive failure mode<span class="sub">every single measurement of a drift looks acceptable</span></a></li>
-          <li><span class="n">9.2</span><a href="#s2">A chart with no memory<span class="sub">43 subgroups late, and 2.6 sigma of movement</span></a></li>
-          <li><span class="n">9.3</span><a href="#s3">A statistic that remembers<span class="sub">one part new, four parts memory, same alarm budget</span></a></li>
-          <li><span class="n">9.4</span><a href="#s4">The same eighty subgroups again<span class="sub">caught at 34, with the mean only 0.8 sigma off</span></a></li>
-          <li><span class="n">9.5</span><a href="#s5">One drift is an anecdote<span class="sub">44 subgroups against 10, and what the trade means</span></a></li>
-          <li><span class="n">9.6</span><a href="#s6">Rules that read the run<span class="sub">four rules that judge the series, not the point</span></a></li>
-        </ol>
-      </div>
-    </header>
-    <section id="s1">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">9.1</span>
-          <h2>The most expensive failure mode</h2>
-          <p class="lead">Slow drift is the most expensive failure mode in manufacturing, because every single measurement of it looks acceptable. <span class="note data"><span class="k">the setup</span><span class="row num"><span class="rk">false alarm budget</span><span class="rv">1 in 370</span></span><span class="row txt"><span class="rk">drift rate</span><span class="rv">0.06 σ / subgroup</span></span></span>Here is a Shewhart chart with limits at ±3σ, which buys one false alarm in 370 subgroups.</p>
-          <p>The first twenty subgroups are noise around the target. Then the mean starts walking at 0.06 sigma per subgroup — slow enough that no single measurement looks wrong, and the chart carries on saying nothing.</p>
-      <figure>
-        <div class="rule"></div>
-        <video src="spc-lab/media/videos/level09_scene/1080p60/Level09.mp4" poster="posters/level09.jpg" width="1920" height="1080" controls playsinline preload="metadata">
-          <track kind="captions" src="captions/level09.vtt" srclang="en" label="English">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 9.1</span>
-          <span class="figtext">Rendered in Manim — drift hiding between ±3σ until the evidence line crosses. This is “Line C” from Line of Sight.</span>
-        </figcaption>
-      </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s2">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">9.2</span>
-          <h2>A chart with no memory</h2>
-          <p>The first violation lands at subgroup 64. <span class="note data"><span class="k">what it cost</span><span class="row num"><span class="rk">drift starts</span><span class="rv">subgroup 20</span></span><span class="row num"><span class="rk">first alarm</span><span class="rv">subgroup 64</span></span><span class="row num"><span class="rk">mean moved by then</span><span class="rv">2.6 σ</span></span></span>That is 43 subgroups after the drift began, by which time the mean has moved 2.6 sigma and every part in between was made by a process nobody knew had changed.</p>
-          <p>Each point was judged on its own and then forgotten. <span class="note speak"><span class="k">spoken · 1:12</span><em>“Each point was judged on its own and then forgotten. That is the whole weakness.”</em></span>That is the whole weakness, and it is not a tuning problem: the chart has no memory.</p>
-        </div>
-      </div>
-    </section>
-    <section id="s3">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">9.3</span>
-          <h2>A statistic that remembers</h2>
-          <p>Same process, same data, same false-alarm budget — and a statistic that remembers. <span class="note data"><span class="k">how much it keeps</span><span class="row num"><span class="rk">lambda</span><span class="rv">0.20</span></span><span class="row txt"><span class="rk">weighting</span><span class="rv">1 new : 4 memory</span></span></span>Each new subgroup gets a fifth of the weight and the running statistic keeps the rest: with lambda at 0.2 that is one part new and four parts memory.</p>
-          <p>Its limits are not ±3. They are calibrated by simulation until this chart cries wolf exactly as rarely as the last one — one alarm in 370 quiet subgroups against 370, so the comparison that follows is fair.</p>
+
       <div class="eq">
         <div class="eq-body" data-tex="\pm L\sigma\sqrt{\dfrac{\lambda}{2-\lambda}\left(1-(1-\lambda)^{2i}\right)}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo>±</mo><mi>L</mi><mi>σ</mi><msqrt><mrow><mstyle scriptlevel="0" displaystyle="true"><mfrac><mi>λ</mi><mrow><mn>2</mn><mo>−</mo><mi>λ</mi></mrow></mfrac></mstyle><mrow><mo fence="true">(</mo><mn>1</mn><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>λ</mi><msup><mo stretchy="false">)</mo><mrow><mn>2</mn><mi>i</mi></mrow></msup><mo fence="true">)</mo></mrow></mrow></msqrt></mrow><annotation encoding="application/x-tex">\pm L\sigma\sqrt{\dfrac{\lambda}{2-\lambda}\left(1-(1-\lambda)^{2i}\right)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.8051em;"></span><span class="mord">±</span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6349em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">λ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7507em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathnormal mtight">i</span></span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span><span style="top:-3.5949em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
 c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
@@ -479,6 +308,47 @@ s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
 c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
 M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305em;"><span></span></span></span></span></span></span></span></span></span> as memory accumulates.</div>
       </div>
+
+      <figure>
+        <div class="rule"></div>
+        <video src="spc-lab/media/videos/level09_scene/1080p60/Level09.mp4" poster="posters/level09.jpg" width="1920" height="1080" controls playsinline preload="metadata">
+          <track kind="captions" src="captions/level09.vtt" srclang="en" label="English">
+        </video>
+        <figcaption>
+          <span class="fignum">Figure 9.1</span>
+          <span class="figtext">Rendered in Manim — drift hiding between ±3σ until the evidence line crosses. This is “Line C” from Line of Sight.</span>
+        </figcaption>
+      </figure>
+
+      <div class="col">
+        <p>Patterns catch shifts before limits do. The Western Electric rules read the shape of the run, not just the extremes — two of three beyond 2σ on the same side, four of five beyond 1σ, eight in a row on one side.</p>
+      </div>
+
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>At a 1σ drift, EWMA detects in ~10 subgroups against Shewhart's ~44 — 4.4 times sooner, at identical false-alarm cost.</p>
+      </aside>
+
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),1332px)">
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l09_1_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async">
+        <figcaption>
+          <span class="fignum">Figure 9.2</span>
+          <span class="figtext">Average Run Length against shift size. At a 1σ drift: detection in ~10 subgroups versus ~44, 4.4 times sooner at identical false-alarm cost. Simulated, 8 000 runs per point.</span>
+        </figcaption>
+      </figure>
+
+      <figure style="max-width:min(var(--figure),1667px)">
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l09_2_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async">
+        <figcaption>
+          <span class="fignum">Figure 9.3</span>
+          <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
+        </figcaption>
+      </figure>
+</div>
+
       <figure>
         <div class="rule"></div>
         <video src="spc-lab/media/videos/scenes2/1080p60/EWMAMemory.mp4" poster="posters/ewma.jpg" width="1920" height="1080" controls playsinline preload="metadata">
@@ -499,68 +369,19 @@ c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
 M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305em;"><span></span></span></span></span></span></span></span></span></span> as weighted evidence accumulates.</span>
         </figcaption>
       </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s4">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">9.4</span>
-          <h2>The same eighty subgroups again</h2>
-          <p>While the process is quiet the statistic wanders near zero, because new noise keeps cancelling old noise. <span class="note data"><span class="k">caught early</span><span class="row num"><span class="rk">crosses at</span><span class="rv">subgroup 34</span></span><span class="row num"><span class="rk">mean off by</span><span class="rv">0.8 σ</span></span><span class="row num"><span class="rk">raw point there</span><span class="rv">+2.48 σ</span></span></span>Once the drift starts the noise still cancels but the drift does not: it is the same direction every time, so it adds up.</p>
-          <p>It crosses the limit at subgroup 34, with the mean only 0.8 sigma off and the raw measurement sitting at +2.48 sigma — a number no Shewhart chart would look at twice. The other chart waited until subgroup 64, thirty subgroups later.</p>
+
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l09_2_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 9.3</span>
-          <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
-        </figcaption>
-      </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s5">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">9.5</span>
-          <h2>One drift is an anecdote</h2>
-          <p>That is one drift. <span class="note data"><span class="k">thousands of drifts</span><span class="row num"><span class="rk">Shewhart ARL</span><span class="rv">44</span></span><span class="row num"><span class="rk">EWMA ARL</span><span class="rv">10</span></span><span class="row num"><span class="rk">speed-up</span><span class="rv">4.4×</span></span></span>Run thousands of them and the average wait to detect a one sigma shift comes out at 44 subgroups for the Shewhart rule and 10 for this one. Divide them: 4.4 times sooner, bought with no extra false alarms at all.</p>
-          <p>That trade — sensitivity bought without paying in false alarms — is the whole of detection theory.<span class="note speak"><span class="k">spoken · 3:41</span><em>“4.4 times sooner, bought with no extra false alarms at all.”</em></span></p>
-      <aside class="sys">
-        <span class="micro">SYS_MSG</span>
-        <p>At a 1σ drift, EWMA detects in ~10 subgroups against Shewhart's ~44 — 4.4 times sooner, at identical false-alarm cost.</p>
-      </aside>
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/l09_1_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 9.2</span>
-          <span class="figtext">Average Run Length against shift size. At a 1σ drift: detection in ~10 subgroups versus ~44, 4.4 times sooner at identical false-alarm cost. Simulated, 8 000 runs per point.</span>
-        </figcaption>
-      </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s6">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">9.6</span>
-          <h2>Rules that read the run</h2>
-          <p>A limit is not the only evidence on a chart. <span class="note data"><span class="k">beyond one point</span><span class="row num"><span class="rk">rules</span><span class="rv">4</span></span><span class="row num"><span class="rk">what they read</span><span class="rv">the run</span></span></span>Four more rules read the run rather than the point — two of three beyond 2σ, four of five beyond 1σ, eight in a row on one side of centre — and each of them catches a pattern that no single point would fail.</p>
-          <p>Every rule you add buys sensitivity and pays in false alarms, and the arithmetic of that trade is Level 7's subject rather than this one's.</p>
-      <details class="act">
-        <summary>
-          <span class="thumb-wrap"><img class="thumb" src="posters/werules.jpg" alt="" loading="lazy"></span>
-          <span class="meta"><span class="k">figure 9.5</span><span class="cap">The four rules firing on a series built to trip all of them.</span></span>
-          <span class="cue">play</span>
-        </summary>
-        <video controls playsinline preload="none" poster="posters/werules.jpg">
-          <source src="spc-lab/media/videos/scenes2/1080p60/WERules.mp4" type="video/mp4">
+        <video src="spc-lab/media/videos/scenes2/1080p60/WERules.mp4" poster="posters/werules.jpg" width="1920" height="1080" controls playsinline preload="metadata">
           <track kind="captions" src="captions/werules.vtt" srclang="en" label="English">
         </video>
-      </details>
-      <figure>
+        <figcaption>
+          <span class="fignum">Figure 9.5</span>
+          <span class="figtext">Western Electric rules 1–4 — a point beyond 3σ, two of three beyond 2σ the same side, four of five beyond 1σ, eight in a row on one side.</span>
+        </figcaption>
+      </figure>
+
+      <figure style="max-width:min(var(--figure),1370px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/07_western_electric.png" width="1370" height="812" alt="The four rules drawn against the zone bands they test" decoding="async">
         <figcaption>
@@ -568,13 +389,12 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="figtext">The four rules drawn against the zone bands they test.</span>
         </figcaption>
       </figure>
-        </div>
-      </div>
-    </section>
-    <a class="next" href="index.html">
+
+      <a class="next" href="index.html">
         <span class="m">Ammar / SPC</span>
         <span>Back to the portfolio →</span>
       </a>
+    </section>
   </main>
 </div>
 

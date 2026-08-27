@@ -33,7 +33,6 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
-    --body:21px;
     --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
     --figure:44rem;              /* figures step wider than text, still not full bleed */
     --gutter:clamp(24px,5vw,72px);
@@ -53,7 +52,7 @@
   .nc{text-transform:none}
   body{
     margin:0;background:var(--ground);color:var(--ink);
-    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
+    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
     font-variant-numeric:oldstyle-nums;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -219,6 +218,14 @@
      The measure never moves; figures spend the width the prose refuses.
      Each figure is additionally capped at its own native resolution by an
      inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
   /* A run of chart figures sits two-up once there is room for two of them
      without either dropping below 560px. Videos never join a pair. */
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
@@ -238,137 +245,6 @@
     line-height:1.35;
     color:#e8eef4;
     background:rgba(13,17,20,.74);
-  }
-
-  /* ---------- chapter grammar (DESIGN.md §3) ----------
-     Layout follows the book convention rather than an invented one. Tufte CSS:
-     figures are constrained to the main column by default, a *small* figure may
-     go in the margin, and anything larger takes the full text block. Margin notes
-     sit "as close as possible to the text that references them" - which is done
-     with a float at the note's position in the flow, never with grid rows. Grid
-     rows put the note in a row of its own and cut an L-shaped hole in the page. */
-  :root{ --marg:320px; --marg-gap:48px; }
-
-  /* The page IS the grid. Before this the container was 110rem while the text
-     block was 1090px and left-aligned inside it, so the margins came out 149px
-     left and 675px right - the dead right column. The page width is now computed
-     from the same tokens the grid uses, so it can never drift from it again. */
-  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
-  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
-  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
-
-  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
-
-  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
-    padding:22px 0 24px;margin:8px 0 0;
-    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
-  .toc-head .est{margin-left:auto}
-  .toc ol{list-style:none;margin:0;padding:0;display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
-  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
-    border-bottom:1px solid rgba(42,49,56,.55)}
-  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
-  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
-  .toc a:hover{color:var(--accent)}
-  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
-    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
-  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
-  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
-
-  /* a heading must clear the sticky nav when jumped to from the contents */
-  main section{scroll-margin-top:96px}
-  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
-    color:var(--accent);display:block;margin-bottom:10px}
-  /* headings balance across lines; body prose gets pretty so no line is left
-     carrying a single word (better-typography principle 9) */
-  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
-    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
-  .leaf > div > p{text-wrap:pretty}
-  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
-  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
-
-  /* margin notes: instrument voice, level with the paragraph they annotate.
-     Below the margin breakpoint they simply follow the prose at measure width. */
-  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
-    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
-    margin:0 0 26px;max-width:var(--measure);text-indent:0}
-  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
-    font-size:11px;margin-bottom:5px}
-  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
-  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
-    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
-  .note.speak{border-left-color:var(--accent)}
-  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
-    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
-  .note.data .row:last-child{border-bottom:0}
-  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
-     Keep label text ASCII and put Greek in the value. */
-  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
-  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
-    overflow-wrap:anywhere}
-  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
-  /* a sentence is not data: own line, left aligned, in the reading voice */
-  .note.data .row.txt{display:block}
-  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
-    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
-  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
-    line-height:1.5;overflow-wrap:anywhere}
-
-  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
-     at the full text-block width. The previous version was a 340px margin card,
-     which measured 323x182 on screen - not a player, a thumbnail with controls. */
-  .act{border-top:1px solid var(--rule);margin:40px 0 0}
-  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
-    padding:16px 0;list-style:none}
-  .act > summary::-webkit-details-marker{display:none}
-  .act > summary::marker{content:""}
-  .act > summary:hover .k{color:var(--ink-bright)}
-  /* the closed strip has to look like a video, or it reads as a footnote. A poster
-     at 280px with a play glyph over it does that; 180px and a word did not. */
-  .act .thumb-wrap{position:relative;flex:none;display:block;line-height:0}
-  .act .thumb{width:280px;height:auto;display:block;border:1px solid var(--rule)}
-  .act .thumb-wrap::after{content:"";position:absolute;left:50%;top:50%;
-    transform:translate(-50%,-50%);width:0;height:0;
-    border-left:18px solid var(--ink-bright);border-top:11px solid transparent;
-    border-bottom:11px solid transparent;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
-  .act > summary:hover .thumb-wrap::after{border-left-color:var(--accent)}
-  .act[open] > summary .thumb-wrap{display:none}
-  .act .meta{min-width:0}
-  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
-  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
-    max-width:52ch;text-wrap:pretty}
-  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
-  .act[open] > summary .cue{color:var(--accent)}
-  .act video{display:block;width:100%;height:auto;background:var(--ground);
-    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
-  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:160px} }
-  /* a margin figure - Tufte's one case for a figure outside the main flow */
-  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
-  .note.watch:hover .k{color:var(--ink-bright)}
-
-  /* figures take the whole text block and share its left edge */
-  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
-
-  @media (min-width:1500px){
-    :root{ --body:26px; --marg:340px; }
-    /* the note floats into the margin at its position in the flow. This is the
-       whole trick: no row of its own, so no hole beside it. */
-    /* tufte-css's mechanism: a negative right margin pulls the float out of the
-       text column so it consumes no horizontal space there. Without it the float
-       lives inside the 702px paragraph and shortens every line beside it, which
-       destroys the measure the whole design is built on. */
-    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
-      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
-      position:relative;z-index:1}
-    /* a note that must not float (it holds something wide) */
-    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
-    .leaf > div::after{content:"";display:block;clear:both}
   }
 </style>
 </head>
@@ -395,72 +271,18 @@
 </nav>
 
 <div class="wrap">
-    <main>
-    <header class="ch">
-      <div class="leaf">
-        <div>
-          <p class="ch-no">Level 4 · chapter four</p>
-          <h1>Variation is predictable</h1>
-          <p class="dek">One part is noise. Many parts are information.</p>
-        </div>
+  <header class="opener">
+    <p class="eyebrow">Level 4</p>
+    <h1>Variation is predictable</h1>
+    <p class="dek">One part is noise. Many parts are information.</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="col">
+        <p>A single measurement tells you almost nothing — its value is chaos. But averages of repeated measurements obey a law so reliable that entire industries are built on it. Watch one die become a bell as we average more of them; then notice the yellow numbers: the spread shrinks by exactly σ/√n. That single fact is the engine under everything else in this curriculum.</p>
       </div>
-      <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">4 sections · 1 act · ~6 min read</span></div>
-        <p class="toc-chain"><span class="micro">after</span> Level 3 — centre and spread<span class="sep">·</span><span class="micro">leads to</span> Level 6 — limits are a hypothesis test</p>
-        <ol>
-          <li><span class="n">4.1</span><a href="#s1">One part tells you nothing<span class="sub">one die, ten rolls, then ten thousand</span></a></li>
-          <li><span class="n">4.2</span><a href="#s2">Averaging makes a shape<span class="sub">a flat die becomes a bell by averaging alone</span></a></li>
-          <li><span class="n">4.3</span><a href="#s3">The law<span class="sub">two numbers agreeing to three decimals</span></a></li>
-          <li><span class="n">4.4</span><a href="#s4">What averaging buys<span class="sub">why subgroups of four and five, and never fifty</span></a></li>
-        </ol>
-      </div>
-    </header>
-    <section id="s1">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">4.1</span>
-          <h2>One part tells you nothing</h2>
-          <p class="lead">One part tells you almost nothing; many parts obey a law. <span class="note data"><span class="k">predictable in bulk</span><span class="row num"><span class="rk">10 rolls</span><span class="rv">200 % off</span></span><span class="row num"><span class="rk">10 000 rolls</span><span class="rv">a few % off</span></span></span>Start with the simplest part there is — one die, six faces, all equally likely. Ten rolls tell you nothing: the worst face is out by two hundred percent.</p>
-          <p>Keep rolling and watch that distance close. <span class="note speak"><span class="k">spoken · 0:28</span><em>“Nobody arranged that. It is what randomness does in bulk.”</em></span>At ten thousand rolls the worst face is within a few percent of one sixth. Nobody arranged that; it is what randomness does in bulk.</p>
-      <figure>
-        <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/level04.jpg">
-          <source src="spc-lab/media/videos/level04_scene/1080p60/Level04.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level04.vtt" srclang="en" label="English">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 4.1</span>
-          <span class="figtext">Rendered in Manim — the histogram piles up live as rolls accumulate, then the σ/√n line derives itself.</span>
-        </figcaption>
-      </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s2">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">4.2</span>
-          <h2>Averaging makes a shape</h2>
-          <p>One die is the baseline: every face equally likely, no shape at all. <span class="note"><span class="k">the point</span>Nothing about a die is bell shaped. The averaging did this.</span>Average two of them and the flat top is already gone. Average five, and there is a shape where there was none. Thirty, and it is a bell.</p>
-          <p>That matters because nothing about a die is bell shaped. The shape did not come from the parts; it came from averaging them.</p>
-      <figure>
-        <div class="rule"></div>
-        <img src="spc-lab/docs/l04_1_dice_to_bell.png" width="2117" height="665" decoding="async"
-             alt="The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice.">
-        <figcaption>
-          <span class="fignum">Figure 4.2</span>
-          <span class="figtext">The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice. Measured spreads land exactly on σ/√k — 2.449 → 0.447, annotated from the simulation, not drawn by hand.</span>
-        </figcaption>
-      </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s3">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">4.3</span>
-          <h2>The law</h2>
-          <p>Two numbers, measured separately, agree to three decimals: the spread of the averages, and one die's spread divided by the root of the count. <span class="note data"><span class="k">measured, not assumed</span><span class="row num"><span class="rk">agreement</span><span class="rv">3 decimals</span></span></span>That agreement is the law, and it is the reason a control chart can exist at all.</p>
+
       <div class="eq">
         <div class="eq-body" data-tex="\sigma_{\bar{x}} = \dfrac{\sigma}{\sqrt{n}}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>σ</mi><mover accent="true"><mi>x</mi><mo>ˉ</mo></mover></msub><mo>=</mo><mstyle scriptlevel="0" displaystyle="true"><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\sigma_{\bar{x}} = \dfrac{\sigma}{\sqrt{n}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2474em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord katex-accent mtight"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-2.7em;"><span class="pstrut" style="height:2.7em;"></span><span class="mord mathnormal mtight">x</span></span><span style="top:-2.7em;"><span class="pstrut" style="height:2.7em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord mtight">ˉ</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.0376em;vertical-align:-0.93em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1076em;"><span style="top:-2.3097em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8003em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord mathnormal">n</span></span></span><span style="top:-2.7603em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
 c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
@@ -477,22 +299,36 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div class="eq-num">(4.1)</div>
         <p class="eq-cap">The standard error. Average n parts and the spread of that average shrinks by the square root of n.</p>
       </div>
-        </div>
-      </div>
-    </section>
-    <section id="s4">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">4.4</span>
-          <h2>What averaging buys</h2>
-          <p>Put subgroup size along the bottom and the spread of the mean up the side, with sigma set to one, then walk the subgroup size from one to twenty-five. <span class="note data"><span class="k">the shape of the deal</span><span class="row num"><span class="rk">2nd part buys</span><span class="rv">half the error</span></span><span class="row num"><span class="rk">25th part buys</span><span class="rv">0.004 σ</span></span></span>At twenty-five parts the spread of the mean is a fifth of one part's spread — the root is doing all the work.</p>
-          <p>But look at the shape of what you are buying. The second part halves your uncertainty; the twenty-fifth buys four thousandths of a sigma. Averaging is cheap at the start and almost free of value at the end, which is why subgroups of four and five are everywhere and subgroups of fifty are not.</p>
-          <p>It is also why a control chart plots subgroup means rather than parts: a shift that hides inside single measurements moves a mean far enough to see.<span class="note speak"><span class="k">spoken · 2:04</span><em>“A shift that hides inside single parts moves a mean far enough to see.”</em></span></p>
+
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
         <p>One part is noise. Many parts are information.</p>
       </aside>
+
       <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/level04.jpg">
+          <source src="spc-lab/media/videos/level04_scene/1080p60/Level04.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level04.vtt" srclang="en" label="English">
+        </video>
+        <figcaption>
+          <span class="fignum">Figure 4.1</span>
+          <span class="figtext">Rendered in Manim — the histogram piles up live as rolls accumulate, then the σ/√n line derives itself.</span>
+        </figcaption>
+      </figure>
+
+      <div class="figpair">
+<figure style="max-width:min(var(--figure),2117px)">
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l04_1_dice_to_bell.png" width="2117" height="665" decoding="async"
+             alt="The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice.">
+        <figcaption>
+          <span class="fignum">Figure 4.2</span>
+          <span class="figtext">The sampling distribution being born. Each panel is the same 100 000 rolls, averaged over 1, 2, 5 and 30 dice. Measured spreads land exactly on σ/√k — 2.449 → 0.447, annotated from the simulation, not drawn by hand.</span>
+        </figcaption>
+      </figure>
+
+      <figure style="max-width:min(var(--figure),1967px)">
         <div class="rule"></div>
         <img src="spc-lab/docs/l04_2_sqrt_n.png" width="1967" height="772" decoding="async"
              alt="Why we chart means, not parts. Same process, three lenses — individuals, means of 5, means of 25.">
@@ -501,13 +337,13 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="figtext">Why we chart means, not parts. Same process, three lenses — individuals, means of 5, means of 25. Means of 5 cluster far tighter, so a shift moves the mean visibly instead of drowning in noise.</span>
         </figcaption>
       </figure>
-        </div>
-      </div>
-    </section>
-    <a class="next" href="level-06.html">
+</div>
+
+      <a class="next" href="level-06.html">
         <span class="m">Level 6</span>
         <span>Control limits are a hypothesis test →</span>
       </a>
+    </section>
   </main>
 </div>
 

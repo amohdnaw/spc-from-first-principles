@@ -5,7 +5,12 @@ Rebuilds <main> from a chapter spec while preserving, byte for byte, the blocks 
 already carry verified content: the KaTeX equation, the interactive lab, the SYS note,
 every figure, and the next-level link. Nothing is re-typeset or re-rendered here.
 
-    python3 tools/chapterise.py level-06.html
+Input  is tools/page-sources/<page>, tracked, pre-chapter.
+Output is <page> at the repo root, overwritten.
+
+    python3 tools/chapterise.py level-06.html      # one page
+    for f in level-01 level-03 level-04 level-06 level-08 level-09; do \
+        python3 tools/chapterise.py $f.html; done  # all of them
 """
 from __future__ import annotations
 import re
@@ -927,7 +932,16 @@ def main() -> int:
     if spec is None:
         sys.exit(f"chapterise: no chapter defined for {p.name} "
                  f"(have: {', '.join(sorted(CHAPTERS))})")
-    html = p.read_text()
+
+    # The pre-chapter source is tracked in the repo. The transform is not
+    # idempotent, so it must never read its own output: regenerating from the
+    # generated page would chapterise a chapter. These sources lived in /tmp for
+    # one session, which is cleared at boot - a build input that does not survive
+    # a reboot is not a build input.
+    source = pathlib.Path(__file__).resolve().parent / "page-sources" / p.name
+    if not source.exists():
+        sys.exit(f"chapterise: no page source at {source}")
+    html = source.read_text()
 
     if ".sec-no" not in html:
         html = html.replace("</style>", CHAPTER_CSS + "</style>", 1)

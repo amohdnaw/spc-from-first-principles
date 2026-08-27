@@ -33,7 +33,6 @@
     --serif:'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
-    --body:21px;
     --measure:27em;
     --figure:44rem;
     --gutter:clamp(24px,5vw,72px);
@@ -53,7 +52,7 @@
   .nc{text-transform:none}
   body{
     margin:0;background:var(--ground);color:var(--ink);
-    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
+    font-family:var(--serif);font-size:21px;line-height:1.55;font-weight:500;
     font-variant-numeric:oldstyle-nums;
   }
   ::selection{background:var(--accent);color:var(--ground)}
@@ -213,6 +212,14 @@
      The measure never moves; figures spend the width the prose refuses.
      Each figure is additionally capped at its own native resolution by an
      inline max-width, so the band is a ceiling and never a stretch. */
+  @media (min-width:1440px){
+    :root{ --figure:64rem }
+    .wrap{ max-width:84rem }
+  }
+  @media (min-width:1800px){
+    :root{ --figure:94rem }
+    .wrap{ max-width:110rem }
+  }
   /* A run of chart figures sits two-up once there is room for two of them
      without either dropping below 560px. Videos never join a pair. */
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
@@ -232,137 +239,6 @@
     line-height:1.35;
     color:#e8eef4;
     background:rgba(13,17,20,.74);
-  }
-
-  /* ---------- chapter grammar (DESIGN.md §3) ----------
-     Layout follows the book convention rather than an invented one. Tufte CSS:
-     figures are constrained to the main column by default, a *small* figure may
-     go in the margin, and anything larger takes the full text block. Margin notes
-     sit "as close as possible to the text that references them" - which is done
-     with a float at the note's position in the flow, never with grid rows. Grid
-     rows put the note in a row of its own and cut an L-shaped hole in the page. */
-  :root{ --marg:320px; --marg-gap:48px; }
-
-  /* The page IS the grid. Before this the container was 110rem while the text
-     block was 1090px and left-aligned inside it, so the margins came out 149px
-     left and 675px right - the dead right column. The page width is now computed
-     from the same tokens the grid uses, so it can never drift from it again. */
-  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
-  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
-  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
-
-  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
-
-  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
-    padding:22px 0 24px;margin:8px 0 0;
-    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
-  .toc-head .est{margin-left:auto}
-  .toc ol{list-style:none;margin:0;padding:0;display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
-  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
-    border-bottom:1px solid rgba(42,49,56,.55)}
-  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
-  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
-  .toc a:hover{color:var(--accent)}
-  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
-    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
-  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
-  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
-
-  /* a heading must clear the sticky nav when jumped to from the contents */
-  main section{scroll-margin-top:96px}
-  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
-    color:var(--accent);display:block;margin-bottom:10px}
-  /* headings balance across lines; body prose gets pretty so no line is left
-     carrying a single word (better-typography principle 9) */
-  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
-    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
-  .leaf > div > p{text-wrap:pretty}
-  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
-  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
-
-  /* margin notes: instrument voice, level with the paragraph they annotate.
-     Below the margin breakpoint they simply follow the prose at measure width. */
-  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
-    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
-    margin:0 0 26px;max-width:var(--measure);text-indent:0}
-  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
-    font-size:11px;margin-bottom:5px}
-  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
-  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
-    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
-  .note.speak{border-left-color:var(--accent)}
-  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
-    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
-  .note.data .row:last-child{border-bottom:0}
-  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
-     Keep label text ASCII and put Greek in the value. */
-  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
-  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
-    overflow-wrap:anywhere}
-  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
-  /* a sentence is not data: own line, left aligned, in the reading voice */
-  .note.data .row.txt{display:block}
-  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
-    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
-  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
-    line-height:1.5;overflow-wrap:anywhere}
-
-  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
-     at the full text-block width. The previous version was a 340px margin card,
-     which measured 323x182 on screen - not a player, a thumbnail with controls. */
-  .act{border-top:1px solid var(--rule);margin:40px 0 0}
-  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
-    padding:16px 0;list-style:none}
-  .act > summary::-webkit-details-marker{display:none}
-  .act > summary::marker{content:""}
-  .act > summary:hover .k{color:var(--ink-bright)}
-  /* the closed strip has to look like a video, or it reads as a footnote. A poster
-     at 280px with a play glyph over it does that; 180px and a word did not. */
-  .act .thumb-wrap{position:relative;flex:none;display:block;line-height:0}
-  .act .thumb{width:280px;height:auto;display:block;border:1px solid var(--rule)}
-  .act .thumb-wrap::after{content:"";position:absolute;left:50%;top:50%;
-    transform:translate(-50%,-50%);width:0;height:0;
-    border-left:18px solid var(--ink-bright);border-top:11px solid transparent;
-    border-bottom:11px solid transparent;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
-  .act > summary:hover .thumb-wrap::after{border-left-color:var(--accent)}
-  .act[open] > summary .thumb-wrap{display:none}
-  .act .meta{min-width:0}
-  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
-  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
-    max-width:52ch;text-wrap:pretty}
-  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
-  .act[open] > summary .cue{color:var(--accent)}
-  .act video{display:block;width:100%;height:auto;background:var(--ground);
-    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
-  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:160px} }
-  /* a margin figure - Tufte's one case for a figure outside the main flow */
-  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
-  .note.watch:hover .k{color:var(--ink-bright)}
-
-  /* figures take the whole text block and share its left edge */
-  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
-  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
-
-  @media (min-width:1500px){
-    :root{ --body:26px; --marg:340px; }
-    /* the note floats into the margin at its position in the flow. This is the
-       whole trick: no row of its own, so no hole beside it. */
-    /* tufte-css's mechanism: a negative right margin pulls the float out of the
-       text column so it consumes no horizontal space there. Without it the float
-       lives inside the 702px paragraph and shortens every line beside it, which
-       destroys the measure the whole design is built on. */
-    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
-      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
-      position:relative;z-index:1}
-    /* a note that must not float (it holds something wide) */
-    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
-    .leaf > div::after{content:"";display:block;clear:both}
   }
 </style>
 </head>
@@ -389,53 +265,69 @@
 </nav>
 
 <div class="wrap">
-    <main>
-    <header class="ch">
-      <div class="leaf">
-        <div>
-          <p class="ch-no">Level 3 · chapter three</p>
-          <h1>What the numbers mean</h1>
-          <p class="dek">A mean, a spread, and a shape. Everything after this is built on three ideas.</p>
+  <header class="opener">
+    <p class="eyebrow">Level 3</p>
+    <h1>What the numbers mean</h1>
+    <p class="dek">A mean, a spread, and a shape. Everything after this is built on three ideas.</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="col">
+        <p>The rest of this curriculum starts by claiming that variation is
+        predictable. That claim already assumes you own three things: what an
+        average actually is, what a standard deviation measures, and where the
+        bell shape comes from. This level supplies them and stops. There are no
+        control charts here.</p>
+
+        <p>Twelve shafts, turned to a nominal twelve millimetres, measured to a
+        thousandth. No two are identical. That is not a defect — it is what every
+        real process does, and the whole discipline exists because of it.</p>
+      </div>
+
+      <div class="data">
+        <div class="data-head">
+          <span class="micro">12 measured shafts · nominal 12.000 mm · gauge 0.001 mm</span>
+          <span class="status">SEEDED · REPRODUCIBLE</span>
         </div>
-      </div>
-      <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · ~7 min read</span></div>
-        <p class="toc-chain"><span class="micro">after</span> Level 2 — chance, not yet written<span class="sep">·</span><span class="micro">leads to</span> Level 4 — the average is predictable</p>
-        <ol>
-          <li><span class="n">3.1</span><a href="#s1">Twelve parts, twelve numbers<span class="sub">every reading differs and nothing is broken</span></a></li>
-          <li><span class="n">3.2</span><a href="#s2">The mean is a balance point<span class="sub">the one position where the deviations cancel</span></a></li>
-          <li><span class="n">3.3</span><a href="#s3">Spread has to be squared first<span class="sub">why averaging the deviations cannot work</span></a></li>
-          <li><span class="n">3.4</span><a href="#s4">A shape nobody chose<span class="sub">twelve parts to twenty thousand, and a bell arrives</span></a></li>
-          <li><span class="n">3.5</span><a href="#s5">You never measure everything<span class="sub">sample against process, and why the divisor is n − 1</span></a></li>
-        </ol>
-      </div>
-    </header>
-    <section id="s1">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">3.1</span>
-          <h2>Twelve parts, twelve numbers</h2>
-          <p class="lead">Take twelve parts off one machine — same tool, same operator, same gauge, one after another. <span class="note data"><span class="k">what one machine did</span><span class="row num"><span class="rk">span of twelve</span><span class="rv">47 µm</span></span><span class="row num"><span class="rk">gauge resolution</span><span class="rv">1 µm</span></span></span>Every reading is different, and nothing is broken. The twelve of them cover forty-seven microns, and two differ by a single micron, which is exactly where this gauge stops. Below that it has nothing to say.</p>
-          <p>Spread is not a defect. <span class="note speak"><span class="k">spoken · 0:21</span><em>“Spread is not a defect. It is what every real process does, and the job is to describe it.”</em></span>It is what every real process does, and the job of this chapter is to describe it with three numbers instead of twelve.</p>
+        <div class="parts">
+          <div class="part">12.000</div><div class="part">12.006</div>
+          <div class="part">11.995</div><div class="part">11.982</div>
+          <div class="part">11.991</div><div class="part lo">11.980</div>
+          <div class="part">12.001</div><div class="part hi">12.027</div>
+          <div class="part">11.990</div><div class="part">11.988</div>
+          <div class="part">12.010</div><div class="part">12.007</div>
         </div>
+        <dl class="stats">
+          <div class="stat"><dt>Mean x̄</dt><dd class="ok">11.9981</dd></div>
+          <div class="stat"><dt>Spread (max−min)</dt><dd>0.047</dd></div>
+          <div class="stat"><dt>σ (÷n)</dt><dd>0.0127</dd></div>
+          <div class="stat"><dt>s (÷n−1)</dt><dd>0.0133</dd></div>
+        </dl>
       </div>
-    </section>
-    <section id="s2">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">3.2</span>
-          <h2>The mean is a balance point</h2>
-          <p>Twelve numbers are not an answer; you need one number for the centre. <span class="note"><span class="k">the test</span>A candidate centre is right when the deviations either side of it cancel exactly.</span>So guess one and check it. Draw every part's distance to the guess, then add the distances on each side and see whether they cancel.</p>
-          <p>They do not, and the beam tips. <span class="note speak"><span class="k">spoken · 0:58</span><em>“Not a formula you were handed — the one place where the deviations cancel.”</em></span>So walk the guess along until they do. One position makes the two sides equal and opposite and the beam comes level. That position is the mean — not a formula you were handed, but the one place where the deviations cancel.</p>
-        </div>
+
+      <h2>The mean is a balance point</h2>
+      <div class="col">
+        <p>Not "the middle", and not "the typical value". The mean is the one
+        place where the deviations cancel: add up how far every part sits above
+        it, add up how far every part sits below it, and the two totals are equal
+        and opposite. That is the definition, and it is why the mean is the
+        natural place to stand when you want to describe a process.</p>
       </div>
-    </section>
-    <section id="s3">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">3.3</span>
-          <h2>Spread has to be squared first</h2>
-          <p>Now the spread. <span class="note data"><span class="k">the spread</span><span class="row num"><span class="rk">sigma, twelve parts</span><span class="rv">12.7 µm</span></span></span>Averaging those deviations is useless: we have just proved they cancel, by construction. Square each one instead. Negatives turn positive, the cancelling stops, and every square is an area you can put on a shelf.</p>
+
+      <h2>Spread needs squaring</h2>
+      <div class="col">
+        <p>The obvious way to measure spread is to average the deviations. It
+        fails, and it fails for a structural reason: they sum to zero by
+        construction. Every time, for every dataset. The average deviation is
+        not a small number, it is exactly nothing.</p>
+
+        <p>So throw the signs away by squaring, average the squares, then take
+        the root to get back into millimetres. That is the standard deviation —
+        not a convention someone chose, but the shortest route around a problem
+        the mean creates.</p>
+      </div>
+
       <div class="eq">
         <div class="eq-body" data-tex="\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>σ</mi><mo>=</mo><msqrt><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mo>∑</mo><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mover accent="true"><mi>x</mi><mo>ˉ</mo></mover><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow><mi>n</mi></mfrac></mstyle></msqrt></mrow><annotation encoding="application/x-tex">\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.7036em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7364em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.6964em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
 c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
@@ -451,17 +343,33 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
         <div class="eq-num">(3.1)</div>
         <p class="eq-cap">Square to kill the signs, average, then root back into the original units.</p>
       </div>
-          <p>Twelve squares averaged, then rooted, which puts the answer back into millimetres. That is <span class="tex" data-tex="\sigma"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span></span></span></span>, and it is the side of the average square. For these twelve parts, 12.7 microns.</p>
-        </div>
+
+      <h2>The shape is a consequence</h2>
+      <div class="col">
+        <p>Measure twelve parts and you have a scatter. Measure twenty thousand
+        and a shape appears — and it is always the same shape, whenever the
+        variation comes from many small independent causes added together. Nobody
+        imposes the bell. It falls out of the arithmetic, which is exactly why it
+        can be relied on later.</p>
       </div>
-    </section>
-    <section id="s4">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">3.4</span>
-          <h2>A shape nobody chose</h2>
-          <p>Twelve parts say nothing about shape. <span class="note data"><span class="k">keep going</span><span class="row num"><span class="rk">parts measured</span><span class="rv">20 000</span></span><span class="row num"><span class="rk">bins</span><span class="rv">unchanged</span></span></span>Keep measuring, and keep the same bins: a hundred parts, a thousand, twenty thousand off the same machine with the same gauge. A shape appears that nobody chose or asked for.</p>
-          <p>Many small independent effects, added together, land on this curve. The bell is a consequence of the process, not an assumption about it.</p>
+
+      <aside class="sys">
+        <span class="micro">SYS_MSG</span>
+        <p>You never measure the population. Every number you have is an estimate
+        made from a handful.</p>
+      </aside>
+
+      <h2>A sample is not the population</h2>
+      <div class="col">
+        <p>These twelve shafts give a mean of 11.9981 and a spread of 0.0133.
+        The process they came from has a true mean of 12.000 and a true sigma of
+        0.020 — two numbers you will never observe directly. Another twelve parts
+        would hand you slightly different estimates.</p>
+
+        <p>That gap between the estimate and the truth is not sloppiness. It is
+        measurable, and quantifying it is precisely what the next level does.</p>
+      </div>
+
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level03.jpg">
@@ -475,28 +383,12 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
           parts, and a handful is never the whole. Narrated, with captions.</span>
         </figcaption>
       </figure>
-        </div>
-      </div>
-    </section>
-    <section id="s5">
-      <div class="leaf">
-        <div>
-          <span class="sec-no">3.5</span>
-          <h2>You never measure everything</h2>
-          <p>The true centre and spread belong to the process itself. <span class="note"><span class="k">sample, not process</span>Twelve parts estimate the centre and spread. They are not the centre and spread.</span>Your twelve parts only estimate them, and the estimate is not the thing: four more handfuls of twelve, off the same untouched machine, land somewhere else every time.</p>
-          <p>It is also why a sample's spread divides by n − 1. <span class="note data"><span class="k">why not n</span><span class="row num"><span class="rk">divisor</span><span class="rv">n − 1</span></span></span>Twelve parts spread around their own mean sit a little tighter than they do around the truth, so the smaller divisor corrects for it. Every estimate carries uncertainty, and Level 4 puts a number on exactly how much.</p>
-      <aside class="sys">
-        <span class="micro">SYS_MSG</span>
-        <p>You never measure the population. Every number you have is an estimate
-        made from a handful.</p>
-      </aside>
-        </div>
-      </div>
-    </section>
-    <a class="next" href="level-04.html">
+
+      <a class="next" href="level-04.html">
         <span class="m">Level 4</span>
         <span>Variation is predictable →</span>
       </a>
+    </section>
   </main>
 </div>
 
