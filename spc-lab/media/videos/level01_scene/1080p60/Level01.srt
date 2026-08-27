@@ -1,0 +1,160 @@
+1
+00:00:00,800 --> 00:00:04,552
+Take twelve parts off one machine. Same tool,
+
+2
+00:00:04,652 --> 00:00:08,404
+same operator, same gauge, one after another.
+
+3
+00:00:09,000 --> 00:00:13,635
+Every reading is different, and nothing is broken. Watch the
+
+4
+00:00:13,735 --> 00:00:17,108
+span open up as the parts arrive — twelve of
+
+5
+00:00:17,208 --> 00:00:21,369
+them cover 47 microns, and the closest pair differs by
+
+6
+00:00:21,469 --> 00:00:25,316
+1 micron, which is exactly where this gauge stops.
+
+7
+00:00:25,400 --> 00:00:28,348
+Below that it has nothing to say.
+
+8
+00:00:28,433 --> 00:00:31,998
+Spread is not a defect. It is what every real
+
+9
+00:00:32,098 --> 00:00:35,581
+process does, and the job is to describe it.
+
+10
+00:00:37,766 --> 00:00:40,883
+Two hundred and forty measurements off
+
+11
+00:00:40,983 --> 00:00:43,930
+one stable process, piled into bins.
+
+12
+00:00:44,516 --> 00:00:48,208
+The shape looks like a fact about the process. It is
+
+13
+00:00:48,308 --> 00:00:52,219
+not. Bin width is a setting on the instrument, and here
+
+14
+00:00:52,319 --> 00:00:55,792
+is the same data again with the knob turned down.
+
+15
+00:00:55,883 --> 00:01:00,871
+Four bins says the process is a lump. Turn it the other way.
+
+16
+00:01:00,966 --> 00:01:04,718
+Fifty two says it is a comb of spikes. Neither is
+
+17
+00:01:04,818 --> 00:01:09,434
+the process. Somewhere in between is a picture you can read.
+
+18
+00:01:11,733 --> 00:01:15,043
+Here are the measurements in the order they were
+
+19
+00:01:15,143 --> 00:01:18,737
+made, and underneath, the same measurements in bins.
+
+20
+00:01:18,833 --> 00:01:22,253
+Three readouts: the mean, the spread, and the
+
+21
+00:01:22,353 --> 00:01:25,069
+longest run on one side of the mean.
+
+22
+00:01:25,166 --> 00:01:28,833
+Now keep every single number and change nothing but
+
+23
+00:01:28,933 --> 00:01:31,861
+the order they arrived in. This is what a
+
+24
+00:01:31,961 --> 00:01:35,554
+slow drift looks like written down as it happened.
+
+25
+00:01:35,650 --> 00:01:39,604
+The mean has not moved. The spread has not moved. The
+
+26
+00:01:39,704 --> 00:01:44,424
+histogram cannot move, because it is the same numbers. Only the
+
+27
+00:01:44,524 --> 00:01:49,014
+run readout changes, from seven to a hundred and twenty one.
+
+28
+00:01:49,100 --> 00:01:55,089
+Same histogram, and one of those two processes needs an engineer today. That
+
+29
+00:01:55,189 --> 00:01:59,656
+is why every chart after this one is drawn in time order.
+
+30
+00:02:02,050 --> 00:02:06,027
+Two runs of the same process, from the same random
+
+31
+00:02:06,127 --> 00:02:10,350
+draws. The only difference is what the operator does.
+
+32
+00:02:10,950 --> 00:02:15,871
+The operator on the bottom chart corrects after every part, by exactly
+
+33
+00:02:15,971 --> 00:02:19,888
+what the last part was out by. It is the most reasonable
+
+34
+00:02:19,988 --> 00:02:23,834
+thing in the world, and watch the two spreads separate.
+
+35
+00:02:23,933 --> 00:02:28,513
+Every correction adds the last part's noise to this one's. The
+
+36
+00:02:28,613 --> 00:02:33,042
+variance is exactly doubled, so the spread is root two times
+
+37
+00:02:33,142 --> 00:02:37,345
+wider — and the operator has been working hard all shift.
+
+38
+00:02:37,433 --> 00:02:40,806
+Noise is not a signal, and answering it is how
+
+39
+00:02:40,906 --> 00:02:45,033
+you add variation rather than remove it. Telling the two
+
+40
+00:02:45,133 --> 00:02:48,733
+apart is what the rest of this curriculum is for.
+

@@ -45,6 +45,7 @@ from spclab.act_style import (
     at_panel, gauge, micro, prose,
 )
 from spclab.narration import NarratedCameraScene
+from spclab.variation import TWELVE_SHAFTS_MM
 
 # ---------------------------------------------------------------------------
 # The data. Seeded once at import, so every number on screen is a real
@@ -57,6 +58,10 @@ GAUGE      = 0.001
 
 _rng   = np.random.default_rng(7)
 PARTS  = np.round(_rng.normal(NOMINAL, TRUE_SIGMA, 12), 3)
+# Level 1 introduces these same twelve parts and quotes their span. The draw stays
+# here so this act's random stream (and its four extra handfuls) is unchanged; the
+# assert is what stops the two levels describing different twelve parts.
+assert np.allclose(PARTS, TWELVE_SHAFTS_MM), "level 1 and level 3 disagree on the twelve parts"
 # four more handfuls of twelve off the same process, for the last beat
 HANDFULS = [np.round(_rng.normal(NOMINAL, TRUE_SIGMA, 12), 3) for _ in range(4)]
 

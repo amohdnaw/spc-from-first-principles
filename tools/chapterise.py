@@ -246,6 +246,17 @@ def datanote(*rows, k=None):
     return '<span class="note data">' + "".join(out) + "</span>"
 
 
+
+# Level 1's prose quotes computed constants. Importing them here means the page,
+# the act, the figure sheets and the test suite all read one source; a literal
+# typed into the prose would be exactly the "asserted number" this repo rejects.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "spc-lab" / "src"))
+from spclab.variation import (  # noqa: E402
+    PAIR_N, PAIR_RUN_DRIFTING, PAIR_RUN_STABLE,
+    TAMPER_SIGMA_RATIO_EXACT, TAMPER_VAR_RATIO_EXACT,
+    TWELVE_CLOSEST_UM, TWELVE_SPAN_UM,
+)
+
 # ---------------------------------------------------------------- chapters
 # Each chapter is data: the opener facts, the contents, and a builder that lays
 # out its sections. Prose is adapted from that act's own narration — the page is
@@ -363,6 +374,98 @@ def chapter_06(K):
                     "      " + K["fig"]("01_d2.png"),
                     "      " + K["fig"]("02_A2_D3_D4.png"),
                     "      </div>",
+        ]),
+    ]
+
+
+def chapter_01(K):
+    run_ratio = PAIR_RUN_DRIFTING / PAIR_RUN_STABLE
+    return [
+        ("s1", "1.1", "Nothing repeats", [
+            para("Take twelve parts off one machine — same tool, same operator, same gauge,"
+                 " one after another. Every reading is different, and nothing is broken.",
+                 datanote(("span of twelve", f"{TWELVE_SPAN_UM:.0f} µm"),
+                          ("closest pair", f"{TWELVE_CLOSEST_UM:.0f} µm"),
+                          ("gauge resolution", f"{TWELVE_CLOSEST_UM:.0f} µm"),
+                          k="one machine, one shift"),
+                 lead=True),
+            para("The closest two parts differ by a single micron, which is exactly where"
+                 " this gauge stops: below that it has nothing to say. Spread is not a"
+                 " defect, it is what every real process does, and the job of the next"
+                 " eleven chapters is to describe it well enough to act on.",
+                 note("spoken · 0:31", text="“Spread is not a defect. It is what every real"
+                      " process does, and the job is to describe it.”", speak=True, serif=True)),
+            "      " + K["fig"]("Level01.mp4"),
+        ]),
+        ("s2", "1.2", "A histogram is an instrument", [
+            para("Pile 240 measurements into bins and a shape appears. The shape looks like"
+                 " a fact about the process, and it is not: bin width is a setting on the"
+                 " instrument, and the setting changes the answer.",
+                 datanote(("at 4 bins", "one lump"), ("at 52 bins", "a comb"),
+                          k="same data, two settings")),
+            para("Four bins says the process is a single lump. Fifty-two says it is a row of"
+                 " spikes. Neither is the process. Somewhere in between is a picture you can"
+                 " read, and knowing that the knob exists is the difference between reading a"
+                 " histogram and believing one."),
+        ]),
+        ("s3", "1.3", "The histogram throws away the order", [
+            para(f"Here is the claim this chapter is built on. Take {PAIR_N} measurements and"
+                 " write them down twice: once in the order they were made, and once sorted,"
+                 " which is what a slow drift looks like written down as it happened.",
+                 datanote(("mean", "identical"), ("spread", "identical"),
+                          ("histogram", "identical, bin for bin"), k="what does not change"),
+                 lead=True),
+            para("These are not two similar samples. They are the same numbers, so the mean"
+                 " is identical, the spread is identical, and the histogram is identical bin"
+                 " for bin — not approximately, exactly. The only thing that differs is the"
+                 " order, and one of those two processes needs an engineer today.",
+                 datanote(("longest run, stable", f"{PAIR_RUN_STABLE}"),
+                          ("longest run, drifting", f"{PAIR_RUN_DRIFTING}"),
+                          ("ratio", f"{run_ratio:.0f}×"), k="what does change")),
+            para("A run statistic sees what the histogram cannot. That is the whole reason"
+                 " every chart in this curriculum is drawn in time order rather than as a"
+                 " pile of measurements — and why Level 7 prices the run rules that formalise"
+                 " it.",
+                 note("spoken · 1:58", text="“Same histogram, and one of those two processes"
+                      " needs an engineer today.”", speak=True, serif=True)),
+            "      " + K["fig"]("l01_1_time_order.png"),
+        ]),
+        ("s4", "1.4", "Two kinds of variation", [
+            para("Shewhart's distinction, and the one the rest of the subject rests on. Some"
+                 " variation is the process being itself — many small causes, none of them"
+                 " findable, none of them worth chasing. Some variation is something"
+                 " identifiable that happened: a tool changed, a batch differed, an operator"
+                 " was new.",
+                 datanote(("common cause", "the process being itself"),
+                          ("special cause", "something identifiable happened"),
+                          k="the distinction")),
+            para("The first kind is called common cause and the second special cause. They"
+                 " demand opposite responses, which is why telling them apart is worth"
+                 " eleven chapters: you improve a common-cause process by changing the"
+                 " process, and a special-cause process by finding the thing that happened."),
+            "      " + K["sys"],
+        ]),
+        ("s5", "1.5", "Reacting to noise makes it worse", [
+            para("Suppose you cannot tell them apart, and you treat every wobble as a signal:"
+                 " after each part, you correct the machine by exactly what that part was out"
+                 " by. It is the most reasonable-looking policy on a shop floor, and it is"
+                 " Deming's funnel.",
+                 datanote(("variance", f"×{TAMPER_VAR_RATIO_EXACT:.0f} exactly"),
+                          ("spread", f"×{TAMPER_SIGMA_RATIO_EXACT:.3f}"),
+                          k="the cost of answering noise"), lead=True),
+            para("Each correction subtracts the previous part's noise from this part's, so"
+                 " every outcome after the first is a difference of two independent draws."
+                 " The variance is exactly doubled and stays doubled — the spread the"
+                 " customer receives is √2 times wider, bought with a full shift of"
+                 " conscientious work."),
+            "      " + K["eq"],
+            para("Noise is not a signal, and answering it is how you add variation rather"
+                 " than remove it. Everything from here — the limits, the capability"
+                 " arithmetic, the detection theory — is machinery for knowing which kind you"
+                 " are looking at before you touch anything.",
+                 note("spoken · 2:41", text="“Answering it is how you add variation rather"
+                      " than remove it.”", speak=True, serif=True)),
+            "      " + K["fig"]("l01_2_tampering.png"),
         ]),
     ]
 
@@ -617,6 +720,23 @@ def chapter_09(K):
 
 
 CHAPTERS = {
+    "level-01.html": {
+        "number": 1, "word": "one",
+        "before": "nothing — this is where the curriculum starts",
+        "after": "Level 2 — chance, not yet written",
+        "estimate": "5 sections · 1 act · ~7 min read",
+        "toc": [("1.1", "s1", "Nothing repeats",
+                 "twelve parts off one machine, and no two the same"),
+                ("1.2", "s2", "A histogram is an instrument",
+                 "bin width is a setting, and it changes the answer"),
+                ("1.3", "s3", "The histogram throws away the order",
+                 "the same numbers twice: identical histogram, different process"),
+                ("1.4", "s4", "Two kinds of variation",
+                 "common cause and special cause, and why they demand opposites"),
+                ("1.5", "s5", "Reacting to noise makes it worse",
+                 "Deming's funnel: correcting every part doubles the variance")],
+        "sections": chapter_01,
+    },
     "level-06.html": {
         "number": 6, "word": "six",
         "before": "Level 4 — the average is predictable",

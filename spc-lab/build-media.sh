@@ -21,6 +21,7 @@ CAPTIONS=../captions
 
 # scene file : class : poster name
 SCENES=(
+  "level01_scene:Level01:level01"
   "level03_scene:Level03:level03"
   "level04_scene:Level04:level04"
   "level06_scene:Level06:level06"
@@ -36,7 +37,13 @@ mkdir -p "$POSTERS" "$CAPTIONS"
 echo "voice=${SPCLAB_VOICE:-0} service=${SPCLAB_VOICE_SERVICE:-kokoro} quality=$QUALITY"
 echo
 
+# ONLY=Level01 ./build-media.sh rebuilds one act (plus its poster and captions)
+# instead of all ten. Re-rendering nine unchanged acts to fix one is 20 wasted
+# minutes and a chance to break something that was working.
 for entry in "${SCENES[@]}"; do
+  if [ -n "${ONLY:-}" ] && [ "${entry#*:}" != "${ONLY}:"* ]; then
+    case "$entry" in *":${ONLY}:"*) ;; *) continue ;; esac
+  fi
   IFS=: read -r file klass poster <<<"$entry"
   printf '=== %-14s %s\n' "$klass" "(src/spclab/$file.py)"
 

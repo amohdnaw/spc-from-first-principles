@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level 8 — Capability is comparing two distributions · SPC from First Principles</title>
-<meta name="description" content="Specs are the customer's voice, spread is the process's. Cp compares widths, Cpk prices the mismatch in defects — every threshold an exact tail integral.">
+<title>Level 1 — Variation · SPC from First Principles</title>
+<meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -34,8 +34,8 @@
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
     --body:21px;
-    --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
-    --figure:44rem;              /* figures step wider than text, still not full bleed */
+    --measure:27em;
+    --figure:44rem;
     --gutter:clamp(24px,5vw,72px);
     --rhythm:32px;
   }
@@ -60,8 +60,6 @@
 
   .wrap{max-width:76rem;margin:0 auto;padding:0 var(--gutter)}
   .col{max-width:var(--measure)}
-
-  /* mono voice: labels, units, status, data */
   .m{font-family:var(--mono);font-variant-numeric:tabular-nums}
   .micro{font-family:var(--mono);font-size:11px;font-weight:600;
     letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
@@ -106,6 +104,8 @@
   main{padding-bottom:64px}
   section{padding-top:48px}
   p{margin:0 0 var(--rhythm)}
+  h2{font-family:var(--serif);font-weight:600;font-size:33px;line-height:1.15;
+    color:var(--ink-bright);margin:64px 0 20px;max-width:20em}
 
   /* ---------- equation ---------- */
   .eq{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
@@ -126,32 +126,31 @@
     display:block;margin-bottom:6px}
   figcaption .figtext{font-size:17px;line-height:1.5;color:var(--ink-dim)}
 
-  /* ---------- interactive ---------- */
-  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
-  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  /* ---------- the twelve parts ---------- */
+  .data{margin:48px 0 0;border:1px solid var(--rule);background:var(--panel);
+    max-width:var(--figure)}
+  .data-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
     padding:11px 20px;border-bottom:1px solid var(--rule)}
-  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  .data-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--signal-ok)}
-  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
-  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
-  canvas{display:block;width:100%;height:300px}
-  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
-  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
-    display:block;margin-bottom:12px}
-  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
-  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
-
-  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
-  .tile{background:var(--panel-high);padding:12px 14px}
-  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+  /* 12 readings: only use column counts that divide 12, otherwise auto-fit
+     leaves a phantom empty cell that reads as missing data */
+  .parts{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+    background:var(--rule)}
+  @media(max-width:820px){.parts{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:480px){.parts{grid-template-columns:repeat(3,1fr)}}
+  .part{background:var(--panel-high);padding:10px 12px;font-family:var(--mono);
+    font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink);text-align:center}
+  .part.lo{color:var(--signal-alarm)}
+  .part.hi{color:var(--signal-alarm)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    background:var(--rule);border-top:1px solid var(--rule)}
+  .stat{background:var(--panel-high);padding:14px}
+  .stat dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
     text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
-  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
-    font-variant-numeric:tabular-nums;line-height:1.1}
-  .tile dd.ok{color:var(--signal-ok)}
-  .tile dd.alarm{color:var(--signal-alarm)}
-  .tile dd.neutral{color:var(--ink-bright)}
-  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  .stat dd{margin:0;font-family:var(--mono);font-size:21px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--ink-bright);line-height:1.1}
+  .stat dd.ok{color:var(--signal-ok)}
 
   /* ---------- SYS note ---------- */
   /* component 7 is a pull-quote with an amber left border and NO fill — an amber
@@ -177,10 +176,6 @@
   .foot-in a:hover{color:var(--accent)}
   .foot-in .sp{margin-left:auto}
 
-  @media(max-width:900px){
-    .lab-grid{grid-template-columns:1fr}
-    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
-  }
   @media(max-width:560px){
     body{font-size:19px}
     .dek,.sys p,.next{font-size:21px}
@@ -189,10 +184,9 @@
     .eq{grid-template-columns:1fr;gap:10px}
     .eq-num{justify-self:end}
     .eq-body{font-size:26px;overflow-wrap:anywhere;line-height:1.35}
+    h2{font-size:26px}
     .rail{gap:12px;width:100%;margin-left:0}
     .nav-in{flex-wrap:wrap;gap:12px}
-    /* the wrapped two-row rail would eat a quarter of a phone viewport;
-       fixed chrome must not squeeze the reading column (DESIGN.md ban list) */
     nav{position:static}
     header.opener{padding-top:48px}
   }
@@ -224,6 +218,21 @@
   .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
     gap:var(--gutter);align-items:start;max-width:var(--figure)}
   .figpair figure{margin:64px 0 0;max-width:none}
+
+  /* ---------- captions ----------
+     The tracks stay (WCAG 1.2.2 asks that captions be PROVIDED, not forced on) but
+     they are no longer `default`. Three reasons they were wrong on by default here:
+     the audio IS narration so the cues duplicate it, the page prose now carries the
+     same argument in text, and every Manim frame already has on-screen text - axis
+     labels and the readout column sit exactly where a cue lands. Turned on from the
+     player, they now render small and on a translucent ground instead of a slab. */
+  ::cue{
+    font-family:var(--mono, ui-monospace, monospace);
+    font-size:58%;
+    line-height:1.35;
+    color:#e8eef4;
+    background:rgba(13,17,20,.74);
+  }
 
   /* ---------- chapter grammar (DESIGN.md §3) ----------
      Layout follows the book convention rather than an invented one. Tufte CSS:
@@ -355,21 +364,6 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
-
-  /* ---------- captions ----------
-     The tracks stay (WCAG 1.2.2 asks that captions be PROVIDED, not forced on) but
-     they are no longer `default`. Three reasons they were wrong on by default here:
-     the audio IS narration so the cues duplicate it, the page prose now carries the
-     same argument in text, and every Manim frame already has on-screen text - axis
-     labels and the readout column sit exactly where a cue lands. Turned on from the
-     player, they now render small and on a translucent ground instead of a slab. */
-  ::cue{
-    font-family:var(--mono, ui-monospace, monospace);
-    font-size:58%;
-    line-height:1.35;
-    color:#e8eef4;
-    background:rgba(13,17,20,.74);
-  }
 </style>
 </head>
 <body>
@@ -378,14 +372,14 @@
   <div class="nav-in">
     <a class="wordmark" href="index.html">Ammar Nawawi <span>/ SPC</span></a>
     <div class="rail">
-      <a href="level-01.html" title="Level 1 — Variation">01</a>
+      <a href="level-01.html" title="Level 1 — Variation" aria-current="page">01</a>
       <span class="soon" title="Level 2 — Chance — not written yet">02</span>
       <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
       <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
       <span class="soon" title="Level 5 — Estimation and uncertainty — not written yet">05</span>
       <a href="level-06.html" title="Level 6 — Limits are a hypothesis test">06</a>
       <span class="soon" title="Level 7 — Evidence and decisions — not written yet">07</span>
-      <a href="level-08.html" title="Level 8 — Capability" aria-current="page">08</a>
+      <a href="level-08.html" title="Level 8 — Capability">08</a>
       <a href="level-09.html" title="Level 9 — Detection">09</a>
       <span class="soon" title="Level 10 — Counting, not measuring — not written yet">10</span>
       <span class="soon" title="Level 11 — Relationships — not written yet">11</span>
@@ -399,36 +393,39 @@
     <header class="ch">
       <div class="leaf">
         <div>
-          <p class="ch-no">Level 8 · chapter eight</p>
-          <h1>Capability is comparing two distributions</h1>
-          <p class="dek">Specs are the customer's voice. Spread is the process's. Cpk prices their mismatch in defects.</p>
+          <p class="ch-no">Level 1 · chapter one</p>
+          <h1>Variation</h1>
+          <p class="dek">Nothing repeats. The order it arrived in is the part a histogram throws away.</p>
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">4 sections · 1 interactive · 2 acts · ~8 min read</span></div>
-        <p class="toc-chain"><span class="micro">after</span> Level 7 — evidence and decisions, not yet written<span class="sep">·</span><span class="micro">leads to</span> Level 9 — detection</p>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · ~7 min read</span></div>
+        <p class="toc-chain"><span class="micro">after</span> nothing — this is where the curriculum starts<span class="sep">·</span><span class="micro">leads to</span> Level 2 — chance, not yet written</p>
         <ol>
-          <li><span class="n">8.1</span><a href="#s1">Two distributions on one axis<span class="sub">the customer speaks in limits, the process in spread</span></a></li>
-          <li><span class="n">8.2</span><a href="#s2">Cp is pure geometry<span class="sub">tolerance over six sigma, and no probability in it</span></a></li>
-          <li><span class="n">8.3</span><a href="#s3">The near side is the one you fail<span class="sub">the mean drifts, the spread does not, the number collapses</span></a></li>
-          <li><span class="n">8.4</span><a href="#s4">Every Cpk is a promise about defect rate<span class="sub">1.33 against 1.67 is two orders of magnitude of scrap</span></a></li>
+          <li><span class="n">1.1</span><a href="#s1">Nothing repeats<span class="sub">twelve parts off one machine, and no two the same</span></a></li>
+          <li><span class="n">1.2</span><a href="#s2">A histogram is an instrument<span class="sub">bin width is a setting, and it changes the answer</span></a></li>
+          <li><span class="n">1.3</span><a href="#s3">The histogram throws away the order<span class="sub">the same numbers twice: identical histogram, different process</span></a></li>
+          <li><span class="n">1.4</span><a href="#s4">Two kinds of variation<span class="sub">common cause and special cause, and why they demand opposites</span></a></li>
+          <li><span class="n">1.5</span><a href="#s5">Reacting to noise makes it worse<span class="sub">Deming's funnel: correcting every part doubles the variance</span></a></li>
         </ol>
       </div>
     </header>
     <section id="s1">
       <div class="leaf">
         <div>
-          <span class="sec-no">8.1</span>
-          <h2>Two distributions on one axis</h2>
-          <p class="lead">Capability compares two distributions. <span class="note"><span class="k">the customer's voice</span>Two lines on a drawing. They know nothing about your machine.</span>One belongs to the customer and one belongs to the process, and the whole trick is that they are drawn on the same axis, in millimetres. The customer speaks in limits: anything between these two lines is accepted, and nothing outside them is.</p>
-          <p>The process answers with a spread. It never read the drawing, and at this width it does not fit.</p>
+          <span class="sec-no">1.1</span>
+          <h2>Nothing repeats</h2>
+          <p class="lead">Take twelve parts off one machine — same tool, same operator, same gauge, one after another. <span class="note data"><span class="k">one machine, one shift</span><span class="row num"><span class="rk">span of twelve</span><span class="rv">47 µm</span></span><span class="row num"><span class="rk">closest pair</span><span class="rv">1 µm</span></span><span class="row num"><span class="rk">gauge resolution</span><span class="rv">1 µm</span></span></span>Every reading is different, and nothing is broken.</p>
+          <p>The closest two parts differ by a single micron, which is exactly where this gauge stops: below that it has nothing to say. <span class="note speak"><span class="k">spoken · 0:31</span><em>“Spread is not a defect. It is what every real process does, and the job is to describe it.”</em></span>Spread is not a defect, it is what every real process does, and the job of the next eleven chapters is to describe it well enough to act on.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l08_1_two_voices.png" width="1667" height="1247" decoding="async" alt="Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.">
-        <figcaption>
-          <span class="fignum">Figure 8.2</span>
-          <span class="figtext">Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.</span>
-        </figcaption>
+        <video controls playsinline preload="metadata" poster="posters/level01.jpg">
+          <source src="spc-lab/media/videos/level01_scene/1080p60/Level01.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level01.vtt" srclang="en" label="English">
+        </video>
+        <figcaption><span class="fignum">Figure 1.1</span><span class="figtext">Rendered in
+        Manim — the span opens as parts arrive, the bin width turns into a knob, and the same
+        240 measurements are re-ordered while the histogram cannot move.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -436,109 +433,80 @@
     <section id="s2">
       <div class="leaf">
         <div>
-          <span class="sec-no">8.2</span>
-          <h2>Cp is pure geometry</h2>
-          <p>Improve the process and watch the only number that matters here: the tolerance divided by six sigma. <span class="note data"><span class="k">geometry only</span><span class="row num"><span class="rk">Cp</span><span class="rv">TOL / 6σ</span></span><span class="row txt"><span class="rk">at Cp 1.33</span><span class="rv">spread = 75 % of TOL</span></span></span>That ratio is Cp, and it is pure geometry — no probability in it at all.</p>
-      <div class="eq">
-        <div class="eq-body" data-tex="C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>p</mi><mi>k</mi></mrow></msub><mo>=</mo><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mi>min</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo>−</mo><mi>μ</mi><mo separator="true">,</mo><mtext> </mtext><mi>μ</mi><mo>−</mo><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo fence="true">)</mo></mrow></mrow><mrow><mn>3</mn><mi>σ</mi></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0715em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.0315em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.113em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">min</span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathrm">USL</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">μ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathrm">LSL</span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
-        <div class="eq-num">(8.1)</div>
-        <p class="eq-cap">The nearer gap decides. Cp is pure geometry; Cpk is honest about where the mean actually sits.</p>
-      </div>
-          <p>At 1.33 the natural spread is three quarters of the tolerance, and there is room on both sides. Drag the slider and the ratio moves with the spread.</p>
-  <div class="lab">
-        <div class="lab-head">
-          <span class="micro">Interactive — what does your Cpk promise?</span>
-          <span class="status" id="lab-status">SYSTEM-OK</span>
-        </div>
-        <div class="lab-grid">
-          <div class="lab-canvas">
-            <canvas id="cpk-canvas" height="300"
-              aria-label="Normal distribution with specification limits drawn according to the chosen Cpk"></canvas>
-          </div>
-          <div class="lab-ctl">
-            <div>
-              <label for="cpk-slider">Cpk = <b id="c-val">1.33</b></label>
-              <input type="range" id="cpk-slider" min="40" max="200" value="133" step="1">
-            </div>
-            <dl class="tiles">
-              <div class="tile"><dt>Predicted defects</dt><dd class="alarm" id="rc-ppm">—</dd></div>
-              <div class="tile"><dt>Odds of a bad part</dt><dd class="neutral" id="rc-odds">—</dd></div>
-              <div class="tile"><dt>Industry verdict</dt><dd class="ok" id="rc-verdict">—</dd></div>
-            </dl>
-            <p class="lab-note">Computed from the exact normal tail — the same integral tested in spc-lab's suite. No lookup tables.</p>
-          </div>
-        </div>
-      </div>
-      <figure>
-        <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/level08.jpg">
-          <source src="spc-lab/media/videos/level08_scene/1080p60/Level08.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level08.vtt" srclang="en" label="English">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 8.1</span>
-          <span class="figtext">Rendered in Manim — the tolerance bracket meets the natural
-          spread as dimension lines, the bell drifts and its red tail grows, then the promise
-          table converts each Cpk into an expected defect rate. Use the calculator above for
-          the exact figure: it computes the near-tail integral live rather than reading a table.</span>
-        </figcaption>
-      </figure>
+          <span class="sec-no">1.2</span>
+          <h2>A histogram is an instrument</h2>
+          <p>Pile 240 measurements into bins and a shape appears. <span class="note data"><span class="k">same data, two settings</span><span class="row num"><span class="rk">at 4 bins</span><span class="rv">one lump</span></span><span class="row num"><span class="rk">at 52 bins</span><span class="rv">a comb</span></span></span>The shape looks like a fact about the process, and it is not: bin width is a setting on the instrument, and the setting changes the answer.</p>
+          <p>Four bins says the process is a single lump. Fifty-two says it is a row of spikes. Neither is the process. Somewhere in between is a picture you can read, and knowing that the knob exists is the difference between reading a histogram and believing one.</p>
         </div>
       </div>
     </section>
     <section id="s3">
       <div class="leaf">
         <div>
-          <span class="sec-no">8.3</span>
-          <h2>The near side is the one you fail</h2>
-          <p>Now let the mean drift and change nothing else. <span class="note data"><span class="k">what the drift costs</span><span class="row num"><span class="rk">Cpk</span><span class="rv">0.80</span></span><span class="row num"><span class="rk">leak</span><span class="rv">8 198 ppm</span></span><span class="row num"><span class="rk">in plain counting</span><span class="rv">1 in 122</span></span></span>The spread stays exactly where it was, but the number collapses, because Cpk keeps the smaller of the two one-sided ratios: the near limit is the one you fail first.</p>
-          <p>That leak is 8,198 parts per million, and at this scale you cannot see it. <span class="note speak"><span class="k">spoken · 1:36</span><em>“8,198 parts per million is the same sentence as 1 in 122 parts.”</em></span>So stretch the vertical axis until it is visible: the peak leaves the frame, and the tail is what we came for. The index itself is only the near gap, measured in three sigmas.</p>
+          <span class="sec-no">1.3</span>
+          <h2>The histogram throws away the order</h2>
+          <p class="lead">Here is the claim this chapter is built on. <span class="note data"><span class="k">what does not change</span><span class="row num"><span class="rk">mean</span><span class="rv">identical</span></span><span class="row num"><span class="rk">spread</span><span class="rv">identical</span></span><span class="row txt"><span class="rk">histogram</span><span class="rv">identical, bin for bin</span></span></span>Take 240 measurements and write them down twice: once in the order they were made, and once sorted, which is what a slow drift looks like written down as it happened.</p>
+          <p>These are not two similar samples. <span class="note data"><span class="k">what does change</span><span class="row num"><span class="rk">longest run, stable</span><span class="rv">7</span></span><span class="row num"><span class="rk">longest run, drifting</span><span class="rv">121</span></span><span class="row num"><span class="rk">ratio</span><span class="rv">17×</span></span></span>They are the same numbers, so the mean is identical, the spread is identical, and the histogram is identical bin for bin — not approximately, exactly. The only thing that differs is the order, and one of those two processes needs an engineer today.</p>
+          <p>A run statistic sees what the histogram cannot. <span class="note speak"><span class="k">spoken · 1:58</span><em>“Same histogram, and one of those two processes needs an engineer today.”</em></span>That is the whole reason every chart in this curriculum is drawn in time order rather than as a pile of measurements — and why Level 7 prices the run rules that formalise it.</p>
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l01_1_time_order.png" width="1702" height="929" loading="lazy"
+             alt="The same 240 measurements in two arrival orders with identical histograms">
+        <figcaption><span class="fignum">Figure 1.2</span><span class="figtext">One set of
+        measurements, written down twice. Identical histogram bin for bin, identical mean and
+        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+      </figure>
         </div>
       </div>
     </section>
     <section id="s4">
       <div class="leaf">
         <div>
-          <span class="sec-no">8.4</span>
-          <h2>Every Cpk is a promise about defect rate</h2>
-          <p>Parts per million up the side, on a logarithmic scale, because it spans five decades. <span class="note data"><span class="k">the promise</span><span class="row num"><span class="rk">Cpk 1.00</span><span class="rv">1 350 ppm</span></span><span class="row num"><span class="rk">Cpk 1.33</span><span class="rv">33.04 ppm</span></span><span class="row num"><span class="rk">Cpk 1.67</span><span class="rv">0.27 ppm</span></span></span>Walk Cpk upward from 0.6 and read the promise off the curve. Every figure here is computed at render time by the same function the test suite checks — nothing is read off a table.</p>
-          <p>Which is why the difference between 1.33 and 1.67 is not a rounding argument. It is two orders of magnitude of scrap. A capability index is a defect rate wearing a friendlier number.</p>
-      <details class="act">
-        <summary>
-          <span class="thumb-wrap"><img class="thumb" src="posters/gallery.jpg" alt="" loading="lazy"></span>
-          <span class="meta"><span class="k">figure 8.4</span><span class="cap">The overview act: a chart and its limits drawing themselves from the data, and where capability geometry sits among them.</span></span>
-          <span class="cue">play</span>
-        </summary>
-        <video controls playsinline preload="none" poster="posters/gallery.jpg">
-          <source src="spc-lab/media/videos/scenes/1080p60/SPCGallery.mp4" type="video/mp4">
-          <track kind="captions" src="captions/gallery.vtt" srclang="en" label="English">
-        </video>
-      </details>
+          <span class="sec-no">1.4</span>
+          <h2>Two kinds of variation</h2>
+          <p>Shewhart's distinction, and the one the rest of the subject rests on. <span class="note data"><span class="k">the distinction</span><span class="row txt"><span class="rk">common cause</span><span class="rv">the process being itself</span></span><span class="row txt"><span class="rk">special cause</span><span class="rv">something identifiable happened</span></span></span>Some variation is the process being itself — many small causes, none of them findable, none of them worth chasing. Some variation is something identifiable that happened: a tool changed, a batch differed, an operator was new.</p>
+          <p>The first kind is called common cause and the second special cause. They demand opposite responses, which is why telling them apart is worth eleven chapters: you improve a common-cause process by changing the process, and a special-cause process by finding the thing that happened.</p>
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>Control limits are what the process says. Spec limits are what the customer says. Cpk is the distance between them.</p>
+        <p>A histogram cannot tell a stable process from a drifting one. Only the order can.</p>
       </aside>
+        </div>
+      </div>
+    </section>
+    <section id="s5">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">1.5</span>
+          <h2>Reacting to noise makes it worse</h2>
+          <p class="lead">Suppose you cannot tell them apart, and you treat every wobble as a signal: after each part, you correct the machine by exactly what that part was out by. <span class="note data"><span class="k">the cost of answering noise</span><span class="row num"><span class="rk">variance</span><span class="rv">×2 exactly</span></span><span class="row num"><span class="rk">spread</span><span class="rv">×1.414</span></span></span>It is the most reasonable-looking policy on a shop floor, and it is Deming's funnel.</p>
+          <p>Each correction subtracts the previous part's noise from this part's, so every outcome after the first is a difference of two independent draws. The variance is exactly doubled and stays doubled — the spread the customer receives is √2 times wider, bought with a full shift of conscientious work.</p>
+      <div class="eq">
+        <div class="eq-body" data-tex="\\operatorname{Var}(e_i - e_{i-1}) = 2\\sigma^2"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mspace linebreak="newline"></mspace><mi>o</mi><mi>p</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>n</mi><mi>a</mi><mi>m</mi><mi>e</mi><mrow><mi>V</mi><mi>a</mi><mi>r</mi></mrow><mo stretchy="false">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo>−</mo><msub><mi>e</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false">)</mo><mo>=</mo><mn>2</mn><mspace linebreak="newline"></mspace><mi>s</mi><mi>i</mi><mi>g</mi><mi>m</mi><msup><mi>a</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\\operatorname{Var}(e_i - e_{i-1}) = 2\\sigma^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="mspace katex-newline"></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">o</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.0278em;">er</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.0278em;">or</span><span class="mord mathnormal">nam</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.0278em;">r</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">2</span></span><span class="mspace katex-newline"></span><span class="katex-base"><span class="katex-strut" style="height:1.0585em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mord mathnormal">m</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span></div>
+        <div class="eq-num">(1.1)</div>
+        <p class="eq-cap">Every correction subtracts the last part's noise from this one's.</p>
+      </div>
+          <p>Noise is not a signal, and answering it is how you add variation rather than remove it. <span class="note speak"><span class="k">spoken · 2:41</span><em>“Answering it is how you add variation rather than remove it.”</em></span>Everything from here — the limits, the capability arithmetic, the detection theory — is machinery for knowing which kind you are looking at before you touch anything.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l08_2_cpk_to_ppm.png" width="1345" height="794" decoding="async" alt="The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.">
-        <figcaption>
-          <span class="fignum">Figure 8.3</span>
-          <span class="figtext">The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.</span>
-        </figcaption>
+        <img src="spc-lab/docs/l01_2_tampering.png" width="1702" height="929" loading="lazy"
+             alt="Deming's funnel: leaving a stable process alone against adjusting every part">
+        <figcaption><span class="fignum">Figure 1.3</span><span class="figtext">Deming's funnel
+        on the same random draws. Correcting after every part doubles the variance exactly, so
+        the spread the customer receives is √2 times wider.</span></figcaption>
       </figure>
         </div>
       </div>
     </section>
-    <a class="next" href="level-09.html">
-        <span class="m">Level 9</span>
-        <span>Detection theory: memory beats points →</span>
+    <a class="next" href="level-03.html">
+        <span class="m">Level 3</span>
+        <span>Centre and spread — describing it in three numbers →</span>
       </a>
   </main>
 </div>
 
 <footer>
   <div class="foot-in">
-    <span><a href="index.html">← SPC from First Principles — Ammar, SPC Engineer</a></span>
+    <span><a href="index.html">← SPC from First Principles</a></span>
     <span class="sp">All figures computed</span>
     <span><a href="https://portfolio.amohdnaw.xyz" target="_blank" rel="noopener">Portfolio ↗</a></span>
     <span><a href="https://amohdnaw.github.io/case-studies" target="_blank" rel="noopener">Case studies ↗</a></span>
@@ -546,124 +514,5 @@
   </div>
 </footer>
 
-<script>
-(function(){
-'use strict';
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const COL = {
-  ok: css('--signal-ok'), alarm: css('--signal-alarm'),
-  accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
-};
-
-/* Abramowitz & Stegun 7.1.26 */
-function erf(x){
-  const s = x < 0 ? -1 : 1; x = Math.abs(x);
-  const t = 1/(1 + .3275911*x);
-  const y = 1 - (((((1.061405429*t - 1.453152027)*t + 1.421413741)*t
-              - .284496736)*t + .254829592)*t*Math.exp(-x*x));
-  return s*y;
-}
-const phi = z => 0.5*(1 + erf(z/Math.SQRT2));
-
-const cv   = document.getElementById('cpk-canvas');
-const ctx  = cv.getContext('2d');
-const sl   = document.getElementById('cpk-slider');
-const cVal = document.getElementById('c-val');
-const rcPpm = document.getElementById('rc-ppm');
-const rcOdds = document.getElementById('rc-odds');
-const rcVerdict = document.getElementById('rc-verdict');
-const stat = document.getElementById('lab-status');
-
-function draw(){
-  const dpr = Math.min(devicePixelRatio || 1, 2);
-  const W = cv.clientWidth, H = 300;
-  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,W,H);
-
-  const c = +sl.value / 100;
-  const z = 3 * c;
-
-  const pad = {l:16,r:16,t:22,b:30};
-  const npdf = v => Math.exp(-v*v/2)/Math.sqrt(2*Math.PI);
-  const pdfMax = npdf(0);
-  const innerW = W - pad.l - pad.r;
-  const X_MIN = -7;
-  const X_MAX = 7;
-  const xSpan = X_MAX - X_MIN;
-
-  const x = v => pad.l + ((v - X_MIN)/xSpan) * innerW;
-  const y = p => H - pad.b - p/pdfMax*(H - pad.t - pad.b)*0.94;
-
-  /* filled region: inside = in spec, outside = out of spec */
-  for (let i=0; i<innerW; i++){
-    const v = X_MIN + (i/innerW)*xSpan;
-    const p = npdf(v);
-    ctx.fillStyle = Math.abs(v) <= z ? 'rgba(101,204,175,.30)' : 'rgba(222,106,93,.55)';
-    ctx.fillRect(pad.l+i, y(p), 1, H - pad.b - y(p));
-  }
-
-  /* curve */
-  ctx.beginPath();
-  for (let i=0; i<=innerW; i++){
-    const v = X_MIN + (i/innerW)*xSpan;
-    i ? ctx.lineTo(pad.l+i, y(npdf(v))) : ctx.moveTo(pad.l+i, y(npdf(v)));
-  }
-  ctx.strokeStyle = COL.ok; ctx.lineWidth = 2; ctx.stroke();
-
-  /* baseline */
-  ctx.strokeStyle = 'rgba(125,139,152,.4)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(pad.l, H-pad.b); ctx.lineTo(W-pad.r, H-pad.b); ctx.stroke();
-
-  /* limit lines */
-  ctx.font = '600 11px "IBM Plex Mono", monospace';
-  ctx.textAlign = 'center';
-  [-z, z].forEach((v, idx) => {
-    ctx.strokeStyle = COL.accent; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
-    ctx.beginPath(); ctx.moveTo(x(v), pad.t); ctx.lineTo(x(v), H-pad.b); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = COL.accent;
-    ctx.fillText(idx === 0 ? 'LSL' : 'USL', x(v), H-pad.b+18);
-  });
-
-  const ppm = (1 - phi(z)) * 1e6;
-  
-  let ppmText;
-  if (ppm >= 100) ppmText = Math.round(ppm).toLocaleString();
-  else if (ppm >= 1) ppmText = ppm.toFixed(1);
-  else ppmText = ppm.toFixed(2);
-  
-  rcPpm.textContent = ppmText;
-  
-  const odds = Math.round(1e6 / Math.max(ppm, 1e-6));
-  rcOdds.textContent = '1 in ' + odds.toLocaleString();
-  
-  cVal.textContent = c.toFixed(2);
-
-  if (c >= 1.67) { 
-    rcVerdict.textContent = 'excellent'; 
-    stat.textContent = 'SYSTEM-OK'; 
-    stat.style.color = COL.ok; 
-  } else if (c >= 1.33) { 
-    rcVerdict.textContent = 'capable'; 
-    stat.textContent = 'SYSTEM-OK'; 
-    stat.style.color = COL.ok; 
-  } else if (c >= 1.0) { 
-    rcVerdict.textContent = 'marginal'; 
-    stat.textContent = 'MARGINAL'; 
-    stat.style.color = COL.accent; 
-  } else { 
-    rcVerdict.textContent = 'scrap machine'; 
-    stat.textContent = 'OUT-OF-SPEC'; 
-    stat.style.color = COL.alarm; 
-  }
-}
-
-sl.addEventListener('input', draw);
-addEventListener('resize', draw);
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-draw();
-})();
-</script>
 </body>
 </html>
