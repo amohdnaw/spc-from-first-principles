@@ -403,6 +403,131 @@ def chapter_06(K):
     ]
 
 
+def chapter_07(K):
+    # imported here rather than at module scope: the trade table is simulated at
+    # import, and regenerating the other seven chapters should not pay for it
+    from spclab.evidence import (
+        ALPHA_1, ARL0_ALL, ARL0_ONE_RULE, ARL1_ALL, ARL1_ONE_RULE, ARL_BIG_ALL,
+        ARL_BIG_ONE, BIG_SHIFT, CHAMP_WOODALL_ARL0, FALSE_ALARM_COST, LIMIT,
+        POWER_AT, RULE_TEXT, RULES, SHIFT, TRADE, cumulative_sets, p_value,
+    )
+    gain_small = ARL1_ONE_RULE / ARL1_ALL
+    gain_big = ARL_BIG_ONE / ARL_BIG_ALL
+    return [
+        ("s1", "7.1", "The other way to be wrong", [
+            para("Level 6 priced one decision: a point outside three sigma. It costs"
+                 f" {ALPHA_1*100:.2f} % of subgroups a false alarm, and Level 2 turned that"
+                 " rate into one alarm in 370. What neither level mentioned is the other"
+                 " way a chart can be wrong — staying silent when the process really"
+                 " has moved.",
+                 note(nc("α"), text="Crying wolf. Priced in Level 6, and the only error a "
+                      "three-sigma limit is chosen against."), lead=True),
+            para("Draw the shifted process against the same limits and the problem is"
+                 " visible before it is named. A mean that has moved by a full sigma"
+                 " sits almost entirely inside them.",
+                 datanote((f"{nc(chr(945))}, crying wolf", f"{ALPHA_1*100:.2f} %"),
+                          (f"{nc(chr(946))} at {SHIFT:.0f}{nc(chr(963))}", f"{1-POWER_AT[SHIFT]:.3f}"),
+                          ("so it is caught", f"{POWER_AT[SHIFT]*100:.1f} %"),
+                          k="two ways to be wrong")),
+            para(f"So the chance of catching that shift on the next point is"
+                 f" {POWER_AT[SHIFT]*100:.1f} %. The chart is not broken. A one-sigma"
+                 " shift simply looks like ordinary noise to a test that only ever sees"
+                 " one point at a time — and this is the bigger of the two errors,"
+                 " because nobody is counting it.",
+                 note("spoken · 0:48", text="“That is the error Level 6 never "
+                      "mentioned, and it is the bigger one.”", speak=True, serif=True)),
+            "      " + K["fig"]("l07_1_two_errors.png"),
+        ]),
+        ("s2", "7.2", "Power", [
+            para("Put a number on it at every shift size and you have the power curve:"
+                 " the chance that one point sees a shift of a given size. It is worth"
+                 " reading slowly, because it is unflattering.",
+                 datanote(*[(f"{s:.1f}{nc('σ')}", f"{POWER_AT[s]*100:.1f} %")
+                            for s in (0.5, 1.0, 2.0, 3.0)],
+                          k="chance the next point signals"), lead=True),
+            "      " + K["eq"],
+            para(f"At two sigma it is {POWER_AT[2.0]*100:.1f} %. It takes a shift of"
+                 f" three full sigma — the mean landing exactly on the limit — before"
+                 " the next point is even a coin toss, and that is not a coincidence:"
+                 " when the mean sits on the limit, half the distribution is on each"
+                 " side of it.",
+                 note("why exactly a half", text="At " + tex(r"\delta = k")
+                      + " one tail contributes almost nothing and the other contributes "
+                      + tex(r"\Phi(0)") + ".")),
+            para("One point, one chance. Everything the extra rules do is an attempt to"
+                 " get around that single sentence.",
+                 note("spoken · 1:36", text="“One point, one chance. That is the whole "
+                      "limitation.”", speak=True, serif=True)),
+            "      " + K["fig"]("Level07.mp4"),
+        ]),
+        ("s3", "7.3", "The chart throws evidence away", [
+            para("Consider a point at two and a half sigma. It is inside the limits, so"
+                 " the chart calls it in control and moves on. Ask instead how"
+                 " surprising it is, and the answer is a p-value of"
+                 f" {p_value(2.5):.4f} — about one in eighty.",
+                 datanote(("point at 2.5" + nc("σ"), f"{p_value(2.5):.4f}"),
+                          ("point at 3.0" + nc("σ"), f"{p_value(LIMIT):.4f}"),
+                          ("the chart's verdict", "in control"),
+                          k="p-value, two-sided"), lead=True),
+            para("Anywhere else in statistics that is a finding. Here it is filed as a"
+                 " pass and forgotten, because the in-or-out rule keeps the verdict and"
+                 " discards the evidence.",
+                 note("the same number twice", text="A point exactly on the limit has "
+                      "a p-value equal to α. The chart <em>is</em> a test with its "
+                      "threshold already chosen.")),
+            para("A verdict is not the same as the evidence. The extra rules exist to"
+                 " spend what a single point cannot hold — a pattern across several"
+                 " points, none of which is damning on its own."),
+        ]),
+        ("s4", "7.4", "Four rules, one at a time", [
+            para("The Western Electric rules are usually taught as a list to memorise."
+                 " They are not a list. They are four purchases, and each one has a"
+                 " price that can be computed.",
+                 datanote(*[(f"rule {r}", RULE_TEXT[r]) for r in RULES],
+                          k="what each rule reads"), lead=True),
+            para("Switch them on one at a time and watch two run lengths move in the"
+                 " same direction — the subgroups between false alarms, which you want"
+                 f" long, and the subgroups to catch a real {SHIFT:.0f}σ shift, which"
+                 " you want short. Every rule shortens both.",
+                 datanote(*[("rule " + "+".join(str(r) for r in rs),
+                             f"{TRADE[rs]['arl0']:.0f} / {TRADE[rs]['arl1']:.1f}")
+                            for rs in cumulative_sets()],
+                          k="false alarm every / catches in")),
+            para(f"All four together give a false alarm every {ARL0_ALL:.0f} subgroups"
+                 f" instead of {ARL0_ONE_RULE:.0f}. That figure was published in 1987 as"
+                 f" {CHAMP_WOODALL_ARL0}, and the simulation here was not told about it"
+                 " — it reproduces it from the rules themselves.",
+                 note("corroboration", text="Champ &amp; Woodall, 1987. Agreement with "
+                      "a number derived elsewhere is worth more than internal "
+                      "consistency.")),
+            "      " + K["fig"]("07_western_electric.png"),
+        ]),
+        ("s5", "7.5", "So is it worth it", [
+            para("Line up what the rules cost against what they buy, and the answer"
+                 " stops being a matter of taste.",
+                 datanote(("cost, always", f"×{FALSE_ALARM_COST:.1f} false alarms"),
+                          (f"bought at {SHIFT:.0f}{nc('σ')}", f"×{gain_small:.1f} sooner"),
+                          (f"bought at {BIG_SHIFT:.0f}{nc('σ')}", f"×{gain_big:.1f} sooner"),
+                          k="all four rules"), lead=True),
+            para(f"Against a slow one-sigma drift the rules catch it ×{gain_small:.1f}"
+                 f" sooner — more than the ×{FALSE_ALARM_COST:.1f} in false alarms they"
+                 " cost, so the trade is good. Against a three-sigma jump they catch it"
+                 f" only ×{gain_big:.1f} sooner, because rule one already sees it on the"
+                 " next point. Same cost, almost nothing bought.",
+                 note("read it twice", text="The cost is one number. The benefit is a "
+                      "function of the shift, and the shift is a fact about your "
+                      "process.")),
+            para("So the rules are not good or bad, and the argument about whether to"
+                 " use them is not really about statistics. The cost is fixed; the"
+                 " benefit is whatever shift you are actually afraid of. Level 9 asks"
+                 " the same question of a chart with memory, and gets a better answer.",
+                 note("spoken · 3:44", text="“The cost is fixed. The benefit is the "
+                      "shift you fear.”", speak=True, serif=True)),
+            "      " + K["fig"]("l07_2_the_trade.png"),
+        ]),
+    ]
+
+
 def chapter_05(K):
     n = SUBGROUP_N
     return [
@@ -953,18 +1078,6 @@ def chapter_09(K):
             "      " + K["sys"],
             "      " + K["fig"]("l09_1_arl.png"),
         ]),
-        ("s6", "9.6", "Rules that read the run", [
-            para("A limit is not the only evidence on a chart. Four more rules read the run rather"
-                 " than the point — two of three beyond 2σ, four of five beyond 1σ, eight in a row"
-                 " on one side of centre — and each of them catches a pattern that no single point"
-                 " would fail.",
-                 datanote(("rules", "4"), ("what they read", "the run"), k="beyond one point")),
-            para("Every rule you add buys sensitivity and pays in false alarms, and the arithmetic"
-                 " of that trade is Level 7's subject rather than this one's."),
-            K["watch"]("WERules.mp4", "werules", "figure 9.5",
-                       "The four rules firing on a series built to trip all of them."),
-            "      " + K["fig"]("07_western_electric.png"),
-        ]),
     ]
 
 
@@ -1070,6 +1183,23 @@ CHAPTERS = {
                 ("4.4", "s4", "What averaging buys",
                  "why subgroups of four and five, and never fifty")],
         "sections": chapter_04,
+    },
+    "level-07.html": {
+        "number": 7, "word": "seven",
+        "before": "Level 6 — limits are a hypothesis test",
+        "after": "Level 8 — capability",
+        "estimate": "5 sections · 1 act · ~8 min read",
+        "toc": [("7.1", "s1", "The other way to be wrong",
+                 "α is crying wolf; β is staying silent, and nobody counts it"),
+                ("7.2", "s2", "Power",
+                 "one point, one chance — and how small a chance"),
+                ("7.3", "s3", "The chart throws evidence away",
+                 "a verdict is not the same as a p-value"),
+                ("7.4", "s4", "Four rules, one at a time",
+                 "each rule priced, against a figure published in 1987"),
+                ("7.5", "s5", "So is it worth it",
+                 "the cost is fixed; the benefit is the shift you fear")],
+        "sections": chapter_07,
     },
     "level-08.html": {
         "number": 8, "word": "eight",

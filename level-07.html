@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level 9 — Detection theory: memory beats points · SPC from First Principles</title>
-<meta name="description" content="A chart with a memory catches drift while every raw point still looks innocent. EWMA versus Shewhart, calibrated to the same false-alarm rate and simulated honestly.">
+<title>Level 7 — Evidence and decisions · SPC from First Principles</title>
+<meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -34,8 +34,8 @@
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
     --body:21px;
-    --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */
-    --figure:44rem;              /* figures step wider than text, still not full bleed */
+    --measure:27em;
+    --figure:44rem;
     --gutter:clamp(24px,5vw,72px);
     --rhythm:32px;
   }
@@ -60,8 +60,6 @@
 
   .wrap{max-width:76rem;margin:0 auto;padding:0 var(--gutter)}
   .col{max-width:var(--measure)}
-
-  /* mono voice: labels, units, status, data */
   .m{font-family:var(--mono);font-variant-numeric:tabular-nums}
   .micro{font-family:var(--mono);font-size:11px;font-weight:600;
     letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
@@ -106,6 +104,8 @@
   main{padding-bottom:64px}
   section{padding-top:48px}
   p{margin:0 0 var(--rhythm)}
+  h2{font-family:var(--serif);font-weight:600;font-size:33px;line-height:1.15;
+    color:var(--ink-bright);margin:64px 0 20px;max-width:20em}
 
   /* ---------- equation ---------- */
   .eq{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
@@ -126,32 +126,31 @@
     display:block;margin-bottom:6px}
   figcaption .figtext{font-size:17px;line-height:1.5;color:var(--ink-dim)}
 
-  /* ---------- interactive ---------- */
-  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
-  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  /* ---------- the twelve parts ---------- */
+  .data{margin:48px 0 0;border:1px solid var(--rule);background:var(--panel);
+    max-width:var(--figure)}
+  .data-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
     padding:11px 20px;border-bottom:1px solid var(--rule)}
-  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  .data-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--signal-ok)}
-  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
-  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
-  canvas{display:block;width:100%;height:300px}
-  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
-  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
-    display:block;margin-bottom:12px}
-  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
-  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
-
-  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
-  .tile{background:var(--panel-high);padding:12px 14px}
-  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+  /* 12 readings: only use column counts that divide 12, otherwise auto-fit
+     leaves a phantom empty cell that reads as missing data */
+  .parts{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+    background:var(--rule)}
+  @media(max-width:820px){.parts{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:480px){.parts{grid-template-columns:repeat(3,1fr)}}
+  .part{background:var(--panel-high);padding:10px 12px;font-family:var(--mono);
+    font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink);text-align:center}
+  .part.lo{color:var(--signal-alarm)}
+  .part.hi{color:var(--signal-alarm)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    background:var(--rule);border-top:1px solid var(--rule)}
+  .stat{background:var(--panel-high);padding:14px}
+  .stat dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
     text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
-  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
-    font-variant-numeric:tabular-nums;line-height:1.1}
-  .tile dd.ok{color:var(--signal-ok)}
-  .tile dd.alarm{color:var(--signal-alarm)}
-  .tile dd.neutral{color:var(--ink-bright)}
-  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  .stat dd{margin:0;font-family:var(--mono);font-size:21px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--ink-bright);line-height:1.1}
+  .stat dd.ok{color:var(--signal-ok)}
 
   /* ---------- SYS note ---------- */
   /* component 7 is a pull-quote with an amber left border and NO fill — an amber
@@ -177,10 +176,6 @@
   .foot-in a:hover{color:var(--accent)}
   .foot-in .sp{margin-left:auto}
 
-  @media(max-width:900px){
-    .lab-grid{grid-template-columns:1fr}
-    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
-  }
   @media(max-width:560px){
     body{font-size:19px}
     .dek,.sys p,.next{font-size:21px}
@@ -189,10 +184,9 @@
     .eq{grid-template-columns:1fr;gap:10px}
     .eq-num{justify-self:end}
     .eq-body{font-size:26px;overflow-wrap:anywhere;line-height:1.35}
+    h2{font-size:26px}
     .rail{gap:12px;width:100%;margin-left:0}
     .nav-in{flex-wrap:wrap;gap:12px}
-    /* the wrapped two-row rail would eat a quarter of a phone viewport;
-       fixed chrome must not squeeze the reading column (DESIGN.md ban list) */
     nav{position:static}
     header.opener{padding-top:48px}
   }
@@ -384,9 +378,9 @@
       <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
       <a href="level-05.html" title="Level 5 — Estimation and uncertainty">05</a>
       <a href="level-06.html" title="Level 6 — Limits are a hypothesis test">06</a>
-      <a href="level-07.html" title="Level 7 — Evidence and decisions">07</a>
+      <a href="level-07.html" title="Level 7 — Evidence and decisions" aria-current="page">07</a>
       <a href="level-08.html" title="Level 8 — Capability">08</a>
-      <a href="level-09.html" title="Level 9 — Detection" aria-current="page">09</a>
+      <a href="level-09.html" title="Level 9 — Detection">09</a>
       <span class="soon" title="Level 10 — Counting, not measuring — not written yet">10</span>
       <span class="soon" title="Level 11 — Relationships — not written yet">11</span>
       <span class="soon" title="Level 12 — Experiments — not written yet">12</span>
@@ -399,40 +393,38 @@
     <header class="ch">
       <div class="leaf">
         <div>
-          <p class="ch-no">Level 9 · chapter nine</p>
-          <h1>Detection theory: memory beats points</h1>
-          <p class="dek">A chart with a memory catches drift while every raw point still looks innocent.</p>
+          <p class="ch-no">Level 7 · chapter seven</p>
+          <h1>Evidence and decisions</h1>
+          <p class="dek">Level 6 priced crying wolf. This is the other way to be wrong — and why adding rules is arithmetic rather than opinion.</p>
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 3 acts · ~9 min read</span></div>
-        <p class="toc-chain"><span class="micro">after</span> Level 8 — capability<span class="sep">·</span><span class="micro">leads to</span> Level 10 — counting, not measuring, not yet written</p>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · ~8 min read</span></div>
+        <p class="toc-chain"><span class="micro">after</span> Level 6 — limits are a hypothesis test<span class="sep">·</span><span class="micro">leads to</span> Level 8 — capability</p>
         <ol>
-          <li><span class="n">9.1</span><a href="#s1">The most expensive failure mode<span class="sub">every single measurement of a drift looks acceptable</span></a></li>
-          <li><span class="n">9.2</span><a href="#s2">A chart with no memory<span class="sub">43 subgroups late, and 2.6 sigma of movement</span></a></li>
-          <li><span class="n">9.3</span><a href="#s3">A statistic that remembers<span class="sub">one part new, four parts memory, same alarm budget</span></a></li>
-          <li><span class="n">9.4</span><a href="#s4">The same eighty subgroups again<span class="sub">caught at 34, with the mean only 0.8 sigma off</span></a></li>
-          <li><span class="n">9.5</span><a href="#s5">One drift is an anecdote<span class="sub">44 subgroups against 10, and what the trade means</span></a></li>
-          <li><span class="n">9.6</span><a href="#s6">Rules that read the run<span class="sub">four rules that judge the series, not the point</span></a></li>
+          <li><span class="n">7.1</span><a href="#s1">The other way to be wrong<span class="sub">α is crying wolf; β is staying silent, and nobody counts it</span></a></li>
+          <li><span class="n">7.2</span><a href="#s2">Power<span class="sub">one point, one chance — and how small a chance</span></a></li>
+          <li><span class="n">7.3</span><a href="#s3">The chart throws evidence away<span class="sub">a verdict is not the same as a p-value</span></a></li>
+          <li><span class="n">7.4</span><a href="#s4">Four rules, one at a time<span class="sub">each rule priced, against a figure published in 1987</span></a></li>
+          <li><span class="n">7.5</span><a href="#s5">So is it worth it<span class="sub">the cost is fixed; the benefit is the shift you fear</span></a></li>
         </ol>
       </div>
     </header>
     <section id="s1">
       <div class="leaf">
         <div>
-          <span class="sec-no">9.1</span>
-          <h2>The most expensive failure mode</h2>
-          <p class="lead">Slow drift is the most expensive failure mode in manufacturing, because every single measurement of it looks acceptable. <span class="note data"><span class="k">the setup</span><span class="row num"><span class="rk">false alarm budget</span><span class="rv">1 in 370</span></span><span class="row txt"><span class="rk">drift rate</span><span class="rv">0.06 σ / subgroup</span></span></span>Here is a Shewhart chart with limits at ±3σ, which buys one false alarm in 370 subgroups.</p>
-          <p>The first twenty subgroups are noise around the target. Then the mean starts walking at 0.06 sigma per subgroup — slow enough that no single measurement looks wrong, and the chart carries on saying nothing.</p>
+          <span class="sec-no">7.1</span>
+          <h2>The other way to be wrong</h2>
+          <p class="lead">Level 6 priced one decision: a point outside three sigma. <span class="note"><span class="k"><span class="nc">α</span></span>Crying wolf. Priced in Level 6, and the only error a three-sigma limit is chosen against.</span>It costs 0.27 % of subgroups a false alarm, and Level 2 turned that rate into one alarm in 370. What neither level mentioned is the other way a chart can be wrong — staying silent when the process really has moved.</p>
+          <p>Draw the shifted process against the same limits and the problem is visible before it is named. <span class="note data"><span class="k">two ways to be wrong</span><span class="row num"><span class="rk"><span class="nc">α</span>, crying wolf</span><span class="rv">0.27 %</span></span><span class="row num"><span class="rk"><span class="nc">β</span> at 1<span class="nc">σ</span></span><span class="rv">0.977</span></span><span class="row num"><span class="rk">so it is caught</span><span class="rv">2.3 %</span></span></span>A mean that has moved by a full sigma sits almost entirely inside them.</p>
+          <p>So the chance of catching that shift on the next point is 2.3 %. <span class="note speak"><span class="k">spoken · 0:48</span><em>“That is the error Level 6 never mentioned, and it is the bigger one.”</em></span>The chart is not broken. A one-sigma shift simply looks like ordinary noise to a test that only ever sees one point at a time — and this is the bigger of the two errors, because nobody is counting it.</p>
       <figure>
         <div class="rule"></div>
-        <video src="spc-lab/media/videos/level09_scene/1080p60/Level09.mp4" poster="posters/level09.jpg" width="1920" height="1080" controls playsinline preload="metadata">
-          <track kind="captions" src="captions/level09.vtt" srclang="en" label="English">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 9.1</span>
-          <span class="figtext">Rendered in Manim — drift hiding between ±3σ until the evidence line crosses. This is “Line C” from Line of Sight.</span>
-        </figcaption>
+        <img src="spc-lab/docs/l07_1_two_errors.png" width="1942" height="956" loading="lazy"
+             alt="The in-control curve and a one-sigma shift against the same limits, with the power curve beside them">
+        <figcaption><span class="fignum">Figure 7.2</span><span class="figtext">One set of
+        measurements, written down twice. Identical histogram bin for bin, identical mean and
+        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -440,82 +432,55 @@
     <section id="s2">
       <div class="leaf">
         <div>
-          <span class="sec-no">9.2</span>
-          <h2>A chart with no memory</h2>
-          <p>The first violation lands at subgroup 64. <span class="note data"><span class="k">what it cost</span><span class="row num"><span class="rk">drift starts</span><span class="rv">subgroup 20</span></span><span class="row num"><span class="rk">first alarm</span><span class="rv">subgroup 64</span></span><span class="row num"><span class="rk">mean moved by then</span><span class="rv">2.6 σ</span></span></span>That is 43 subgroups after the drift began, by which time the mean has moved 2.6 sigma and every part in between was made by a process nobody knew had changed.</p>
-          <p>Each point was judged on its own and then forgotten. <span class="note speak"><span class="k">spoken · 1:12</span><em>“Each point was judged on its own and then forgotten. That is the whole weakness.”</em></span>That is the whole weakness, and it is not a tuning problem: the chart has no memory.</p>
+          <span class="sec-no">7.2</span>
+          <h2>Power</h2>
+          <p class="lead">Put a number on it at every shift size and you have the power curve: the chance that one point sees a shift of a given size. <span class="note data"><span class="k">chance the next point signals</span><span class="row num"><span class="rk">0.5<span class="nc">σ</span></span><span class="rv">0.6 %</span></span><span class="row num"><span class="rk">1.0<span class="nc">σ</span></span><span class="rv">2.3 %</span></span><span class="row num"><span class="rk">2.0<span class="nc">σ</span></span><span class="rv">15.9 %</span></span><span class="row num"><span class="rk">3.0<span class="nc">σ</span></span><span class="rv">50.0 %</span></span></span>It is worth reading slowly, because it is unflattering.</p>
+      <div class="eq">
+        <div class="eq-body" data-tex="\text{power}(\delta) = \Phi(-k-\delta) + \Phi(-k+\delta)"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>power</mtext><mo stretchy="false">(</mo><mi>δ</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo>−</mo><mi>δ</mi><mo stretchy="false">)</mo><mo>+</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo>+</mo><mi>δ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{power}(\delta) = \Phi(-k-\delta) + \Phi(-k+\delta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">power</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mclose">)</span></span></span></span></span></div>
+        <div class="eq-num">(7.1)</div>
+        <p class="eq-cap">The chance the next point falls outside ±k sigma when the mean has moved by delta. Both tails, because a chart does not know which way the process went. At delta = 0 this is the false-alarm rate; at delta = k it is exactly one half.</p>
+      </div>
+          <p>At two sigma it is 15.9 %. <span class="note"><span class="k">why exactly a half</span>At <span class="tex" data-tex="\delta = k"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>=</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">\delta = k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span></span> one tail contributes almost nothing and the other contributes <span class="tex" data-tex="\Phi(0)"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\Phi(0)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">0</span><span class="mclose">)</span></span></span></span></span>.</span>It takes a shift of three full sigma — the mean landing exactly on the limit — before the next point is even a coin toss, and that is not a coincidence: when the mean sits on the limit, half the distribution is on each side of it.</p>
+          <p>One point, one chance. <span class="note speak"><span class="k">spoken · 1:36</span><em>“One point, one chance. That is the whole limitation.”</em></span>Everything the extra rules do is an attempt to get around that single sentence.</p>
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/level07.jpg">
+          <source src="spc-lab/media/videos/level07_scene/1080p60/Level07.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level07.vtt" srclang="en" label="English">
+        </video>
+        <figcaption><span class="fignum">Figure 7.1</span><span class="figtext">Rendered in
+        Manim — the span opens as parts arrive, the bin width turns into a knob, and the same
+        240 measurements are re-ordered while the histogram cannot move.</span></figcaption>
+      </figure>
         </div>
       </div>
     </section>
     <section id="s3">
       <div class="leaf">
         <div>
-          <span class="sec-no">9.3</span>
-          <h2>A statistic that remembers</h2>
-          <p>Same process, same data, same false-alarm budget — and a statistic that remembers. <span class="note data"><span class="k">how much it keeps</span><span class="row num"><span class="rk">lambda</span><span class="rv">0.20</span></span><span class="row txt"><span class="rk">weighting</span><span class="rv">1 new : 4 memory</span></span></span>Each new subgroup gets a fifth of the weight and the running statistic keeps the rest: with lambda at 0.2 that is one part new and four parts memory.</p>
-          <p>Its limits are not ±3. They are calibrated by simulation until this chart cries wolf exactly as rarely as the last one — one alarm in 370 quiet subgroups against 370, so the comparison that follows is fair.</p>
-      <div class="eq">
-        <div class="eq-body" data-tex="\pm L\sigma\sqrt{\dfrac{\lambda}{2-\lambda}\left(1-(1-\lambda)^{2i}\right)}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo>±</mo><mi>L</mi><mi>σ</mi><msqrt><mrow><mstyle scriptlevel="0" displaystyle="true"><mfrac><mi>λ</mi><mrow><mn>2</mn><mo>−</mo><mi>λ</mi></mrow></mfrac></mstyle><mrow><mo fence="true">(</mo><mn>1</mn><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>λ</mi><msup><mo stretchy="false">)</mo><mrow><mn>2</mn><mi>i</mi></mrow></msup><mo fence="true">)</mo></mrow></mrow></msqrt></mrow><annotation encoding="application/x-tex">\pm L\sigma\sqrt{\dfrac{\lambda}{2-\lambda}\left(1-(1-\lambda)^{2i}\right)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.8051em;"></span><span class="mord">±</span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6349em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">λ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7507em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathnormal mtight">i</span></span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span><span style="top:-3.5949em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
-c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
-c0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20
-s-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121
-s209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081
-l0 -0c4,-6.7,10,-10,18,-10 H400000
-v40H1014.6
-s-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185
-c-2,6,-10,9,-24,9
-c-8,0,-12,-0.7,-12,-2z M1001 80
-h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8051em;"><span></span></span></span></span></span></span></span></span></span></div>
-        <div class="eq-num">(9.1)</div>
-        <div class="eq-cap">EWMA limits start wide and tighten to <span class="tex" data-tex="\pm 3\sigma\sqrt{\lambda/(2-\lambda)}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>±</mo><mn>3</mn><mi>σ</mi><msqrt><mrow><mi>λ</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mn>2</mn><mo>−</mo><mi>λ</mi><mo stretchy="false">)</mo></mrow></msqrt></mrow><annotation encoding="application/x-tex">\pm 3\sigma\sqrt{\lambda/(2-\lambda)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord">±</span><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord mathnormal">λ</span><span class="mord">/</span><span class="mopen">(</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mclose">)</span></span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
-c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
-c340,-704.7,510.7,-1060.3,512,-1067
-l0 -0
-c4.7,-7.3,11,-11,19,-11
-H40000v40H1012.3
-s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
-c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
-s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
-c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
-M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305em;"><span></span></span></span></span></span></span></span></span></span> as memory accumulates.</div>
-      </div>
-      <figure>
-        <div class="rule"></div>
-        <video src="spc-lab/media/videos/scenes2/1080p60/EWMAMemory.mp4" poster="posters/ewma.jpg" width="1920" height="1080" controls playsinline preload="metadata">
-          <track kind="captions" src="captions/ewma.vtt" srclang="en" label="English">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 9.4</span>
-          <span class="figtext">How the memory forms. Limits start wide and tighten toward <span class="tex" data-tex="\pm 3\sigma\sqrt{\lambda/(2-\lambda)}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>±</mo><mn>3</mn><mi>σ</mi><msqrt><mrow><mi>λ</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mn>2</mn><mo>−</mo><mi>λ</mi><mo stretchy="false">)</mo></mrow></msqrt></mrow><annotation encoding="application/x-tex">\pm 3\sigma\sqrt{\lambda/(2-\lambda)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord">±</span><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord mathnormal">λ</span><span class="mord">/</span><span class="mopen">(</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mclose">)</span></span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
-c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
-c340,-704.7,510.7,-1060.3,512,-1067
-l0 -0
-c4.7,-7.3,11,-11,19,-11
-H40000v40H1012.3
-s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
-c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
-s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
-c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
-M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305em;"><span></span></span></span></span></span></span></span></span></span> as weighted evidence accumulates.</span>
-        </figcaption>
-      </figure>
+          <span class="sec-no">7.3</span>
+          <h2>The chart throws evidence away</h2>
+          <p class="lead">Consider a point at two and a half sigma. <span class="note data"><span class="k">p-value, two-sided</span><span class="row num"><span class="rk">point at 2.5<span class="nc">σ</span></span><span class="rv">0.0124</span></span><span class="row num"><span class="rk">point at 3.0<span class="nc">σ</span></span><span class="rv">0.0027</span></span><span class="row num"><span class="rk">the chart's verdict</span><span class="rv">in control</span></span></span>It is inside the limits, so the chart calls it in control and moves on. Ask instead how surprising it is, and the answer is a p-value of 0.0124 — about one in eighty.</p>
+          <p>Anywhere else in statistics that is a finding. <span class="note"><span class="k">the same number twice</span>A point exactly on the limit has a p-value equal to α. The chart <em>is</em> a test with its threshold already chosen.</span>Here it is filed as a pass and forgotten, because the in-or-out rule keeps the verdict and discards the evidence.</p>
+          <p>A verdict is not the same as the evidence. The extra rules exist to spend what a single point cannot hold — a pattern across several points, none of which is damning on its own.</p>
         </div>
       </div>
     </section>
     <section id="s4">
       <div class="leaf">
         <div>
-          <span class="sec-no">9.4</span>
-          <h2>The same eighty subgroups again</h2>
-          <p>While the process is quiet the statistic wanders near zero, because new noise keeps cancelling old noise. <span class="note data"><span class="k">caught early</span><span class="row num"><span class="rk">crosses at</span><span class="rv">subgroup 34</span></span><span class="row num"><span class="rk">mean off by</span><span class="rv">0.8 σ</span></span><span class="row num"><span class="rk">raw point there</span><span class="rv">+2.48 σ</span></span></span>Once the drift starts the noise still cancels but the drift does not: it is the same direction every time, so it adds up.</p>
-          <p>It crosses the limit at subgroup 34, with the mean only 0.8 sigma off and the raw measurement sitting at +2.48 sigma — a number no Shewhart chart would look at twice. The other chart waited until subgroup 64, thirty subgroups later.</p>
+          <span class="sec-no">7.4</span>
+          <h2>Four rules, one at a time</h2>
+          <p class="lead">The Western Electric rules are usually taught as a list to memorise. <span class="note data"><span class="k">what each rule reads</span><span class="row txt"><span class="rk">rule 1</span><span class="rv">one point beyond 3σ</span></span><span class="row txt"><span class="rk">rule 2</span><span class="rv">2 of 3 beyond 2σ, same side</span></span><span class="row txt"><span class="rk">rule 3</span><span class="rv">4 of 5 beyond 1σ, same side</span></span><span class="row txt"><span class="rk">rule 4</span><span class="rv">8 in a row on one side</span></span></span>They are not a list. They are four purchases, and each one has a price that can be computed.</p>
+          <p>Switch them on one at a time and watch two run lengths move in the same direction — the subgroups between false alarms, which you want long, and the subgroups to catch a real 1σ shift, which you want short. <span class="note data"><span class="k">false alarm every / catches in</span><span class="row num"><span class="rk">rule 1</span><span class="rv">377 / 43.1</span></span><span class="row num"><span class="rk">rule 1+2</span><span class="rv">232 / 20.3</span></span><span class="row num"><span class="rk">rule 1+2+3</span><span class="rv">133 / 11.2</span></span><span class="row num"><span class="rk">rule 1+2+3+4</span><span class="rv">91 / 9.3</span></span></span>Every rule shortens both.</p>
+          <p>All four together give a false alarm every 91 subgroups instead of 377. <span class="note"><span class="k">corroboration</span>Champ &amp; Woodall, 1987. Agreement with a number derived elsewhere is worth more than internal consistency.</span>That figure was published in 1987 as 91.75, and the simulation here was not told about it — it reproduces it from the rules themselves.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l09_2_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 9.3</span>
-          <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
-        </figcaption>
+        <img src="spc-lab/docs/07_western_electric.png" width="1370" height="812"
+             loading="lazy" alt="The four rules drawn against the zone bands they test">
+        <figcaption><span class="fignum">Figure 7.4</span><span class="figtext">The four
+        rules, drawn against the zone bands they test. Rule 1 reads one point; the other
+        three read a pattern that no single point can hold.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -523,35 +488,32 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     <section id="s5">
       <div class="leaf">
         <div>
-          <span class="sec-no">9.5</span>
-          <h2>One drift is an anecdote</h2>
-          <p>That is one drift. <span class="note data"><span class="k">thousands of drifts</span><span class="row num"><span class="rk">Shewhart ARL</span><span class="rv">44</span></span><span class="row num"><span class="rk">EWMA ARL</span><span class="rv">10</span></span><span class="row num"><span class="rk">speed-up</span><span class="rv">4.4×</span></span></span>Run thousands of them and the average wait to detect a one sigma shift comes out at 44 subgroups for the Shewhart rule and 10 for this one. Divide them: 4.4 times sooner, bought with no extra false alarms at all.</p>
-          <p>That trade — sensitivity bought without paying in false alarms — is the whole of detection theory.<span class="note speak"><span class="k">spoken · 3:41</span><em>“4.4 times sooner, bought with no extra false alarms at all.”</em></span></p>
-      <aside class="sys">
-        <span class="micro">SYS_MSG</span>
-        <p>At a 1σ drift, EWMA detects in ~10 subgroups against Shewhart's ~44 — 4.4 times sooner, at identical false-alarm cost.</p>
-      </aside>
+          <span class="sec-no">7.5</span>
+          <h2>So is it worth it</h2>
+          <p class="lead">Line up what the rules cost against what they buy, and the answer stops being a matter of taste.<span class="note data"><span class="k">all four rules</span><span class="row txt"><span class="rk">cost, always</span><span class="rv">×4.1 false alarms</span></span><span class="row num"><span class="rk">bought at 1<span class="nc">σ</span></span><span class="rv">×4.6 sooner</span></span><span class="row num"><span class="rk">bought at 3<span class="nc">σ</span></span><span class="rv">×1.1 sooner</span></span></span></p>
+          <p>Against a slow one-sigma drift the rules catch it ×4.6 sooner — more than the ×4.1 in false alarms they cost, so the trade is good. <span class="note"><span class="k">read it twice</span>The cost is one number. The benefit is a function of the shift, and the shift is a fact about your process.</span>Against a three-sigma jump they catch it only ×1.1 sooner, because rule one already sees it on the next point. Same cost, almost nothing bought.</p>
+          <p>So the rules are not good or bad, and the argument about whether to use them is not really about statistics. <span class="note speak"><span class="k">spoken · 3:44</span><em>“The cost is fixed. The benefit is the shift you fear.”</em></span>The cost is fixed; the benefit is whatever shift you are actually afraid of. Level 9 asks the same question of a chart with memory, and gets a better answer.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l09_1_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async">
-        <figcaption>
-          <span class="fignum">Figure 9.2</span>
-          <span class="figtext">Average Run Length against shift size. At a 1σ drift: detection in ~10 subgroups versus ~44, 4.4 times sooner at identical false-alarm cost. Simulated, 8 000 runs per point.</span>
-        </figcaption>
+        <img src="spc-lab/docs/l07_2_the_trade.png" width="1806" height="926" loading="lazy"
+             alt="What each Western Electric rule costs in false alarms and buys in sensitivity">
+        <figcaption><span class="fignum">Figure 7.3</span><span class="figtext">Deming's funnel
+        on the same random draws. Correcting after every part doubles the variance exactly, so
+        the spread the customer receives is √2 times wider.</span></figcaption>
       </figure>
         </div>
       </div>
     </section>
-    <a class="next" href="index.html">
-        <span class="m">Ammar / SPC</span>
-        <span>Back to the portfolio →</span>
+    <a class="next" href="level-08.html">
+        <span class="m">Level 8</span>
+        <span>Capability — the process against the customer →</span>
       </a>
   </main>
 </div>
 
 <footer>
   <div class="foot-in">
-    <span><a href="index.html">← SPC from First Principles — Ammar, SPC Engineer</a></span>
+    <span><a href="index.html">← SPC from First Principles</a></span>
     <span class="sp">All figures computed</span>
     <span><a href="https://portfolio.amohdnaw.xyz" target="_blank" rel="noopener">Portfolio ↗</a></span>
     <span><a href="https://amohdnaw.github.io/case-studies" target="_blank" rel="noopener">Case studies ↗</a></span>

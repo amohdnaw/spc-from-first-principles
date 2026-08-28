@@ -1,0 +1,210 @@
+WEBVTT
+
+1
+00:00:00.800 --> 00:00:04.634
+Level 6 priced one decision: a point outside three
+
+2
+00:00:04.734 --> 00:00:08.490
+sigma. Nought point two seven percent of the time
+
+3
+00:00:08.590 --> 00:00:12.268
+the process is fine and the chart shouts anyway.
+
+4
+00:00:13.466 --> 00:00:17.945
+Now move the process. A real shift of one sigma — and watch
+
+5
+00:00:18.045 --> 00:00:22.990
+where it goes. Almost the whole curve is still inside the limits.
+
+6
+00:00:23.083 --> 00:00:27.010
+Which means the chance of catching it on the next point
+
+7
+00:00:27.110 --> 00:00:31.184
+is about two percent. Beta — the chance of staying silent
+
+8
+00:00:31.284 --> 00:00:35.065
+— is nought point nine seven seven. That is the error
+
+9
+00:00:35.165 --> 00:00:38.727
+Level 6 never mentioned, and it is the bigger one.
+
+10
+00:00:41.116 --> 00:00:44.613
+Put that on an axis. How big does a shift have
+
+11
+00:00:44.713 --> 00:00:47.976
+to be before one point is likely to see it?
+
+12
+00:00:48.566 --> 00:00:53.259
+At one sigma, two percent. At two sigma, sixteen. The chart
+
+13
+00:00:53.359 --> 00:00:57.809
+is not broken — a small shift simply looks like ordinary
+
+14
+00:00:57.909 --> 00:01:01.546
+noise to a test that sees one point at a time.
+
+15
+00:01:01.633 --> 00:01:06.359
+It takes a shift of three full sigma — the mean landing exactly
+
+16
+00:01:06.459 --> 00:01:10.725
+on the limit — before the next point is even a coin toss.
+
+17
+00:01:10.816 --> 00:01:14.449
+And that is not a coincidence: when the mean sits on
+
+18
+00:01:14.549 --> 00:01:18.396
+the limit, half the distribution is on each side of it.
+
+19
+00:01:18.483 --> 00:01:22.115
+One point, one chance. Everything the rules do
+
+20
+00:01:22.215 --> 00:01:25.199
+next is an attempt to get around that.
+
+21
+00:01:27.583 --> 00:01:30.882
+Here is a chart doing its job. Every point
+
+22
+00:01:30.982 --> 00:01:34.443
+inside the limits, so every point is a pass.
+
+23
+00:01:36.133 --> 00:01:39.794
+Except this one. Two point five sigma — inside
+
+24
+00:01:39.894 --> 00:01:43.473
+the limits, so the chart calls it in control.
+
+25
+00:01:43.566 --> 00:01:47.047
+But ask how surprising it is and the answer is
+
+26
+00:01:47.147 --> 00:01:51.094
+one in eighty. Anywhere else in statistics that is a
+
+27
+00:01:51.194 --> 00:01:54.986
+finding. Here it is filed as a pass and forgotten.
+
+28
+00:01:55.083 --> 00:01:59.072
+A verdict is not the same as the evidence. The extra
+
+29
+00:01:59.172 --> 00:02:03.239
+rules exist to spend what a single point cannot hold.
+
+30
+00:02:05.633 --> 00:02:10.328
+So here are the four Western Electric rules. Usually taught as
+
+31
+00:02:10.428 --> 00:02:13.885
+a list to memorise. They are not a list — they
+
+32
+00:02:13.985 --> 00:02:17.365
+are four purchases, and each one has a price.
+
+33
+00:02:17.450 --> 00:02:22.940
+Rule one alone: a false alarm every 377 subgroups,
+
+34
+00:02:23.040 --> 00:02:26.854
+and a one sigma shift caught in 43.
+
+35
+00:02:26.950 --> 00:02:30.186
+Add rule two — two of three points beyond
+
+36
+00:02:30.286 --> 00:02:33.930
+two sigma on the same side. Both numbers fall.
+
+37
+00:02:34.016 --> 00:02:39.172
+Rule three, four of five beyond one sigma. They fall again.
+
+38
+00:02:39.266 --> 00:02:42.027
+And rule four: eight in a row on one
+
+39
+00:02:42.127 --> 00:02:45.046
+side of the line, no matter how close.
+
+40
+00:02:45.133 --> 00:02:50.212
+All four together: a false alarm every 91 subgroups. That
+
+41
+00:02:50.312 --> 00:02:55.664
+number was published in 1987 as ninety-one point seven five,
+
+42
+00:02:55.764 --> 00:02:59.481
+and this simulation was not told about it.
+
+43
+00:03:01.966 --> 00:03:06.277
+Line up what it cost against what it bought. The cost is
+
+44
+00:03:06.377 --> 00:03:11.082
+one number and it never changes: four times the false alarms.
+
+45
+00:03:11.666 --> 00:03:16.381
+Against a one sigma drift the rules catch it four and a half times
+
+46
+00:03:16.481 --> 00:03:20.758
+sooner. That is above the cost line, and it is a good trade.
+
+47
+00:03:20.850 --> 00:03:24.799
+Against a three sigma jump, they catch it barely sooner
+
+48
+00:03:24.899 --> 00:03:28.038
+at all — because rule one already sees it on
+
+49
+00:03:28.138 --> 00:03:31.646
+the next point. Same cost, almost nothing bought.
+
+50
+00:03:31.733 --> 00:03:35.908
+So the rules are not good or bad. The cost is fixed and the
+
+51
+00:03:36.008 --> 00:03:41.271
+benefit is whatever shift you are actually afraid of — which is a question
+
+52
+00:03:41.371 --> 00:03:46.633
+about your process, and the arithmetic is only here to make it answerable.
+

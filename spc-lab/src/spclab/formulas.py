@@ -173,8 +173,14 @@ def western_electric_violations(points: np.ndarray, cl: float,
         if i >= 2:
             w = z[i - 2:i + 1]
             s = side(w[2])
-            if s and sum(side(v) == s and abs(v) > 2 for v in w) >= 2 \
-               and all(abs(v) > 2 and side(v) == s for v in w[-2:]) :
+            # "2 of 3", which includes beyond-inside-beyond. An earlier version
+            # also required the last two points to be consecutive, which made
+            # the rule "2 of 2" and silently missed the interleaved pattern the
+            # rule exists to catch. The newest point must itself be one of the
+            # two, so a single pattern is reported once, at the point that
+            # completes it.
+            if s and abs(w[2]) > 2 \
+               and sum(side(v) == s and abs(v) > 2 for v in w) >= 2:
                 out.append((i, "Rule 2: 2 of 3 beyond 2σ, same side"))
         if i >= 4:
             w = z[i - 4:i + 1]

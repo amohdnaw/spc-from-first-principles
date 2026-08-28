@@ -70,6 +70,36 @@ def test_we_rules_detect_shift():
     assert len(v) > len(western_electric_violations(np.array(stable), 0, 1))
 
 
+@pytest.mark.parametrize("z,rule,want", [
+    # Rule 2 is "2 of 3", which includes beyond-inside-beyond. An earlier
+    # version also demanded the last two be consecutive, making it "2 of 2",
+    # and Level 7's whole argument is arithmetic on these rules.
+    ([2.5, 0.5, 2.5], "Rule 2", True),
+    ([0.5, 2.5, 2.5], "Rule 2", True),
+    ([2.5, 0.5, -2.5], "Rule 2", False),   # opposite sides
+    ([0.5, 0.5, 2.5], "Rule 2", False),    # only one beyond 2σ
+    ([2.5, 2.5, 0.5], "Rule 2", False),    # newest point is not part of it
+    ([3.5], "Rule 1", True),
+    ([2.9], "Rule 1", False),
+    ([1.5, 0.2, 1.5, 1.5, 1.5], "Rule 3", True),    # 4 of 5 beyond 1σ
+    ([1.5, 0.2, -1.5, 1.5, 1.5], "Rule 3", False),  # not the same side
+    ([0.3] * 8, "Rule 4", True),                    # 8 in a row above the line
+    ([0.3] * 7 + [-0.3], "Rule 4", False),
+])
+def test_we_rule_patterns(z, rule, want):
+    """Each rule, on the smallest series that can decide it."""
+    hits = [d for _, d in western_electric_violations(np.array(z, dtype=float), 0.0, 1.0)
+            if d.startswith(rule)]
+    assert bool(hits) is want, f"{rule} on {z}: got {hits}"
+
+
+def test_a_stricter_rule_two_would_miss_the_interleaved_pattern():
+    """The regression this replaced, stated as a claim rather than a comment."""
+    interleaved = np.array([2.5, 0.5, 2.5])
+    hits = [d for _, d in western_electric_violations(interleaved, 0.0, 1.0)]
+    assert any(d.startswith("Rule 2") for d in hits)
+
+
 def test_ppm_from_cpk_matches_normal_tail():
     """Cpk -> ppm is an integral, not a lookup. One tail by default."""
     # Cpk 1.00 -> z=3.00 -> 1350 ppm near tail; 1.33 -> z=3.99 -> 33 ppm

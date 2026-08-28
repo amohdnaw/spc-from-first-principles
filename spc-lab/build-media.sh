@@ -27,12 +27,12 @@ SCENES=(
   "level04_scene:Level04:level04"
   "level05_scene:Level05:level05"
   "level06_scene:Level06:level06"
+  "level07_scene:Level07:level07"
   "level08_scene:Level08:level08"
   "level09_scene:Level09:level09"
   "scenes:SPCGallery:gallery"
   "scenes2:ConstantsAct:constants"
   "scenes2:EWMAMemory:ewma"
-  "scenes2:WERules:werules"
 )
 
 mkdir -p "$POSTERS" "$CAPTIONS"
