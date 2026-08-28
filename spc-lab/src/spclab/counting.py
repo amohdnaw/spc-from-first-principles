@@ -76,6 +76,11 @@ def p_limits(n: int, p_bar: float = P_BAR, k: float = K) -> dict:
     Both are returned on purpose: `lcl_raw` is what the arithmetic says and
     `lcl` is what a chart can draw. Hiding the difference is how "the lower
     limit is zero" turns into "the process cannot run low", which is false.
+
+    `clamped` is true at `lcl_raw == 0` as well as below it: a proportion is
+    never negative, so a lower limit sitting exactly on zero can never be
+    violated. That chart is still one-sided, and at n exactly k²(1−p̄)/p̄ the
+    limit lands exactly there.
     """
     s = binomial_sigma(n, p_bar)
     raw = p_bar - k * s
@@ -84,7 +89,7 @@ def p_limits(n: int, p_bar: float = P_BAR, k: float = K) -> dict:
     if abs(raw) < 1e-12:
         raw = 0.0
     return {"cl": p_bar, "ucl": p_bar + k * s, "lcl_raw": raw,
-            "lcl": max(0.0, raw), "sigma": s, "clamped": raw < 0.0}
+            "lcl": max(0.0, raw), "sigma": s, "clamped": raw <= 0.0}
 
 
 def np_limits(n: int, p_bar: float = P_BAR, k: float = K) -> dict:
@@ -100,7 +105,7 @@ def c_limits(c_bar: float = C_BAR, k: float = K) -> dict:
     s = poisson_sigma(c_bar)
     raw = c_bar - k * s
     return {"cl": c_bar, "ucl": c_bar + k * s, "lcl_raw": raw,
-            "lcl": max(0.0, raw), "sigma": s, "clamped": raw < 0.0}
+            "lcl": max(0.0, raw), "sigma": s, "clamped": raw <= 0.0}
 
 
 def u_limits(u_bar: float, n: float, k: float = K) -> dict:
@@ -108,7 +113,7 @@ def u_limits(u_bar: float, n: float, k: float = K) -> dict:
     s = math.sqrt(u_bar / n)
     raw = u_bar - k * s
     return {"cl": u_bar, "ucl": u_bar + k * s, "lcl_raw": raw,
-            "lcl": max(0.0, raw), "sigma": s, "clamped": raw < 0.0}
+            "lcl": max(0.0, raw), "sigma": s, "clamped": raw <= 0.0}
 
 
 # ---------------------------------------------------------------------------

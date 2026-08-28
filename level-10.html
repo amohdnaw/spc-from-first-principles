@@ -618,7 +618,7 @@ function pLimits(n, p){
   let raw = p - K * s;
   if (Math.abs(raw) < 1e-12) raw = 0;          /* algebraically zero at the threshold */
   return { cl: p, ucl: p + K * s, lclRaw: raw, lcl: Math.max(0, raw),
-           sigma: s, clamped: raw < 0 };
+           sigma: s, clamped: raw <= 0 };   /* a limit at zero cannot be crossed either */
 }
 /* n > k^2 (1-p) / p, which is where the shop-floor "n p >= 5" comes from */
 const nForPositiveLcl = p => Math.floor(K * K * (1 - p) / p) + 1;

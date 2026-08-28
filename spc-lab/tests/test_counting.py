@@ -166,3 +166,18 @@ def test_the_approximation_improves_as_the_count_grows():
 
 def tail_ratio(n: int, p: float, at_least: int) -> float:
     return binomial_tail(n, p, at_least) / normal_tail_approx(n, p, at_least)
+
+
+def test_the_boundary_itself_is_one_sided():
+    """At n exactly k²(1−p̄)/p̄ the limit is zero, and zero cannot be crossed.
+
+    A proportion is never negative, so a lower limit sitting at zero can never
+    be violated: that chart is still one-sided. The lab's status readout is the
+    teaching device for this section, and it read TWO-SIDED at the boundary
+    until the predicate was widened from `< 0` to `<= 0`.
+    """
+    edge = N_FOR_LCL - 1
+    assert p_limits(edge, P_BAR)["lcl_raw"] == 0.0
+    assert p_limits(edge, P_BAR)["clamped"] is True
+    assert p_limits(N_FOR_LCL, P_BAR)["lcl_raw"] > 0.0
+    assert p_limits(N_FOR_LCL, P_BAR)["clamped"] is False
