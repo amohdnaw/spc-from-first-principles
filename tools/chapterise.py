@@ -544,7 +544,7 @@ def chapter_12(K):
 def chapter_11(K):
     from spclab.relationships import (
         ADJ_WITH_NOISE, CURVED_FIT, CURVED_RUN, FIT, GAUGE, HALF_CI, HALF_PI,
-        MSA_SITE, OPERATORS, PARTS, R2_PLAIN, R2_WITH_NOISE, REPEATS,
+        MSA_CURRICULUM, OPERATORS, PARTS, R2_PLAIN, R2_WITH_NOISE, REPEATS,
         STRAIGHT_RUN, X0, COVERAGE,
     )
     ks = sorted(R2_WITH_NOISE)
@@ -654,10 +654,11 @@ def chapter_11(K):
             para("What those percentages mean — whether this gauge may be used, on what"
                  " tolerance, and what to do when reproducibility dominates — is a"
                  " different subject with its own arc, and this curriculum stops at the"
-                 " boundary rather than summarising it badly. It continues at the"
-                 f' <a href="{MSA_SITE}" target="_blank" rel="noopener">MSA platform</a>,'
-                 " which runs these studies; the sibling curriculum that explains them"
-                 " the way this one explains control charts is not written yet.",
+                 " boundary rather than summarising it badly. It continues at"
+                 f' <a href="{MSA_CURRICULUM}" target="_blank" rel="noopener">MSA from'
+                 " first principles</a>, a sibling site that repeats this method on the"
+                 " measurement system itself: a gauge is a process, so it has a"
+                 " distribution, so the same arithmetic applies to it.",
                  note("the seam", text="This site never teaches gauge acceptance, and "
                       "the MSA side never teaches control limits. One link each way.")),
         ]),

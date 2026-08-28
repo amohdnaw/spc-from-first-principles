@@ -317,6 +317,12 @@ COVERAGE = count_coverage()
 GAUGE = two_way_components(gauge_study())
 
 MSA_SITE = "https://msa.amohdnaw.xyz"
+#: The sibling *curriculum*, contracted 2026-08-28 and now being written. The seam
+#: §2 allows one link each way, and with three artifacts in play the coherent
+#: reading is curriculum to curriculum: Level 11 ends on variance components, which
+#: is exactly what a gauge study decomposes. The platform is a tool, and it is
+#: referenced from the MSA curriculum, which is its own subject.
+MSA_CURRICULUM = "https://amohdnaw.github.io/msa-from-first-principles/"
 
 
 if __name__ == "__main__":

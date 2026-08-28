@@ -94,6 +94,13 @@ Body is the anchor: **21px / 1.55**. Everything else is a step from it.
   The Greek half is cheap to test and worth a permanent gate; the Latin half is not —
   a check for bare single letters cannot tell the article "a" from a variable, so it
   belongs in review, not in CI.
+- **And the micro sign, found 2026-08-28 on the MSA sibling.** `µ` is U+00B5, not
+  Greek mu, so a Greek-range check passes it — and `text-transform: uppercase` maps it
+  to U+039C GREEK CAPITAL MU, so `µm` renders `ΜM`. Any label carrying a unit prefix
+  needs `nc`. Corollary that applies here too: units belong in the label, not in the
+  readout value. A checker for this must strip the article "a" and the possessive "'s"
+  first — both look like bare single-letter variables and they were 4 of 10 hits on a
+  naive sweep.
 - **Maths inside serif prose goes through KaTeX, not Unicode.** EB Garamond has no
   combining hat and no subscript digits, so `σ̂` renders as sigma plus a stray caret and
   `d₂` falls back mid-word to another face. Use `<span class="tex" data-tex="…">`, which
