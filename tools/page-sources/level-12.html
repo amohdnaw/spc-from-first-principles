@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level 3 — What the numbers mean · SPC from First Principles</title>
-<meta name="description" content="Before control charts: what a mean actually is, why spread needs squaring, where the bell comes from, and why a sample is never the population. Twelve real measured shafts.">
+<title>Level 12 — Experiments · SPC from First Principles</title>
+<meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
 
 <link rel="icon" href="favicon.svg">
 <link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
@@ -240,6 +240,41 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+
+  /* the lab stacks on a phone; this stays a media query, because the
+     rules inside it are mobile-only and applying them everywhere puts the
+     canvas border on the wrong edge at desktop. */
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
 </style>
 </head>
 <body>
@@ -250,7 +285,7 @@
     <div class="rail">
       <a href="level-01.html" title="Level 1 — Variation">01</a>
       <a href="level-02.html" title="Level 2 — Chance">02</a>
-      <a href="level-03.html" title="Level 3 — Centre and spread" aria-current="page">03</a>
+      <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
       <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
       <a href="level-05.html" title="Level 5 — Estimation and uncertainty">05</a>
       <a href="level-06.html" title="Level 6 — Limits are a hypothesis test">06</a>
@@ -259,16 +294,16 @@
       <a href="level-09.html" title="Level 9 — Detection">09</a>
       <a href="level-10.html" title="Level 10 — Counting, not measuring">10</a>
       <a href="level-11.html" title="Level 11 — Relationships">11</a>
-      <a href="level-12.html" title="Level 12 — Experiments">12</a>
+      <a href="level-12.html" title="Level 12 — Experiments" aria-current="page">12</a>
     </div>
   </div>
 </nav>
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level 3</p>
-    <h1>What the numbers mean</h1>
-    <p class="dek">A mean, a spread, and a shape. Everything after this is built on three ideas.</p>
+    <p class="eyebrow">Level 12</p>
+    <h1>Experiments</h1>
+    <p class="dek">The last level. Change the settings on purpose — and discover that studying one factor at a time can lead you confidently to the wrong answer.</p>
   </header>
 
   <main>
@@ -329,19 +364,9 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body" data-tex="\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>σ</mi><mo>=</mo><msqrt><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mo>∑</mo><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mover accent="true"><mi>x</mi><mo>ˉ</mo></mover><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow><mi>n</mi></mfrac></mstyle></msqrt></mrow><annotation encoding="application/x-tex">\sigma = \sqrt{\dfrac{\sum (x - \bar{x})^{2}}{n}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.7036em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7364em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.6964em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
-c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
-c0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20
-s-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121
-s209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081
-l0 -0c4,-6.7,10,-10,18,-10 H400000
-v40H1014.6
-s-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185
-c-2,6,-10,9,-24,9
-c-8,0,-12,-0.7,-12,-2z M1001 80
-h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7036em;"><span></span></span></span></span></span></span></span></span></span></div>
-        <div class="eq-num">(3.1)</div>
-        <p class="eq-cap">Square to kill the signs, average, then root back into the original units.</p>
+        <div class="eq-body" data-tex="y = \beta_0 + \beta_A x_A + \beta_B x_B + \beta_{AB}\,x_A x_B + \varepsilon"></div>
+        <div class="eq-num">(12.1)</div>
+        <p class="eq-cap">The fourth term is the whole subject. Set it to zero and one factor at a time works perfectly well, if slowly. Let it be larger than a main effect and the procedure stops at the wrong corner — with no noise required.</p>
       </div>
 
       <h2>The shape is a consequence</h2>
@@ -353,10 +378,39 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
         can be relied on later.</p>
       </div>
 
+      <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — turn the interaction up and watch OFAT lose</span>
+          <span class="status" id="lab-status">OFAT FINDS IT</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="doe-canvas" height="300"
+              aria-label="The four corners of a two-factor experiment with the one-at-a-time path drawn across them"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="i-slider">Interaction <span class="nc">&beta;<sub>AB</sub></span> — <b id="i-val">+3.0</b></label>
+              <input type="range" id="i-slider" min="-40" max="40" value="30" step="1">
+            </div>
+            <div>
+              <label for="b-slider">Main effect <span class="nc">&beta;<sub>B</sub></span> — <b id="b-val">−1.0</b></label>
+              <input type="range" id="b-slider" min="-40" max="40" value="-10" step="1">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>One at a time stops at</dt><dd class="alarm" id="r-ofat">—</dd></div>
+              <div class="tile"><dt>The optimum</dt><dd class="ok" id="r-opt">—</dd></div>
+              <div class="tile"><dt>Shortfall</dt><dd class="neutral" id="r-gap">—</dd></div>
+            </dl>
+            <p class="lab-note">No noise at all: every value here is the true response.
+            Set the interaction to zero and one factor at a time never fails. The
+            arithmetic is the same as <code>spclab.experiments</code>.</p>
+          </div>
+        </div>
+      </div>
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>You never measure the population. Every number you have is an estimate
-        made from a handful.</p>
+        <p>An interaction is not a complication. It is the reason the obvious procedure gives the wrong answer.</p>
       </aside>
 
       <h2>A sample is not the population</h2>
@@ -370,23 +424,28 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
         measurable, and quantifying it is precisely what the next level does.</p>
       </div>
 
+
       <figure>
         <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/level03.jpg">
-          <source src="spc-lab/media/videos/level03_scene/1080p60/Level03.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level03.vtt" srclang="en" label="English">
-        </video>
-        <figcaption>
-          <span class="fignum">Figure 3.1</span>
-          <span class="figtext">The five ideas in order — parts vary, the mean
-          balances, spread needs squaring, the shape emerges from twenty thousand
-          parts, and a handful is never the whole. Narrated, with captions.</span>
-        </figcaption>
+        <img src="spc-lab/docs/l12_1_why_ofat_fails.png" width="2556" height="929" loading="lazy"
+             alt="The response surface with the one-at-a-time path stopping short of the optimum, and the interaction plot beside it">
+        <figcaption><span class="fignum">Figure 12.1</span><span class="figtext">One set of
+        measurements, written down twice. Identical histogram bin for bin, identical mean and
+        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
       </figure>
 
-      <a class="next" href="level-04.html">
-        <span class="m">Level 4</span>
-        <span>Variation is predictable →</span>
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l12_2_screening_and_curvature.png" width="3179" height="929" loading="lazy"
+             alt="The alias structure of a seven-factor screening design, and the centre-point test on a curved and a flat surface">
+        <figcaption><span class="fignum">Figure 12.2</span><span class="figtext">Deming's funnel
+        on the same random draws. Correcting after every part doubles the variance exactly, so
+        the spread the customer receives is √2 times wider.</span></figcaption>
+      </figure>
+
+      <a class="next" href="index.html">
+        <span class="m">Ammar / SPC</span>
+        <span>Back to the curriculum &rarr;</span>
       </a>
     </section>
   </main>
@@ -402,5 +461,117 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
   </div>
 </footer>
 
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = {
+  ok: css('--signal-ok'), alarm: css('--signal-alarm'),
+  accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
+};
+
+/* ---- the same arithmetic spclab.experiments is tested against ----------
+   Coded ±1 factors, so the response is four numbers and one-at-a-time is a
+   two-phase argmin over them. Run with no noise: if the procedure still stops
+   at the wrong corner, the failure is structural. */
+const B0 = 10, BA = -2;
+const CORNERS = [[-1,-1],[-1,1],[1,-1],[1,1]];
+const BASELINE = [-1,-1];
+
+function makeResponse(bb, bab){
+  return (a, b) => B0 + BA*a + bb*b + bab*a*b;
+}
+function ofat(resp){
+  const a0 = BASELINE[0];
+  const bBest = resp(a0,-1) <= resp(a0,1) ? -1 : 1;
+  const aBest = resp(-1,bBest) <= resp(1,bBest) ? -1 : 1;
+  const visited = [[a0,-1],[a0,1],[-1,bBest],[1,bBest]];
+  let opt = CORNERS[0];
+  for (const c of CORNERS) if (resp(c[0],c[1]) < resp(opt[0],opt[1])) opt = c;
+  const chosen = [aBest,bBest];
+  return { chosen, chosenY: resp(chosen[0],chosen[1]), visited,
+           optimum: opt, optimumY: resp(opt[0],opt[1]),
+           shortfall: resp(chosen[0],chosen[1]) - resp(opt[0],opt[1]),
+           /* a best-VALUED corner, not one particular corner: two can tie */
+           foundOptimum: Math.abs(resp(chosen[0],chosen[1]) - resp(opt[0],opt[1])) < 1e-12 };
+}
+window.__spclabOfat = ofat;
+window.__spclabResponse = makeResponse;
+
+const cv = document.getElementById('doe-canvas');
+const ctx = cv.getContext('2d');
+const iSl = document.getElementById('i-slider'), bSl = document.getElementById('b-slider');
+const iVal = document.getElementById('i-val'), bVal = document.getElementById('b-val');
+const rO = document.getElementById('r-ofat'), rOpt = document.getElementById('r-opt');
+const rGap = document.getElementById('r-gap'), stat = document.getElementById('lab-status');
+const fmt = v => (v < 0 ? '\u2212' : '+') + Math.abs(v).toFixed(1);
+
+function draw(){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = 300;
+  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const bab = +iSl.value / 10, bb = +bSl.value / 10;
+  const resp = makeResponse(bb, bab);
+  const o = ofat(resp);
+
+  const pad = { l: 64, r: 96, t: 34, b: 46 };
+  const x = a => pad.l + (a + 1)/2 * (W - pad.l - pad.r);
+  const y = b => H - pad.b - (b + 1)/2 * (H - pad.t - pad.b);
+
+  /* axis labels */
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  ctx.fillStyle = COL.dim; ctx.textAlign = 'center';
+  ctx.fillText('PRESSURE LOW', x(-1), H - pad.b + 20);
+  ctx.fillText('PRESSURE HIGH', x(1), H - pad.b + 20);
+  ctx.save(); ctx.translate(pad.l - 44, y(0)); ctx.rotate(-Math.PI/2);
+  ctx.fillText('TEMPERATURE', 0, 0); ctx.restore();
+
+  /* the one-at-a-time path */
+  ctx.strokeStyle = COL.alarm; ctx.lineWidth = 2.2;
+  for (let i = 0; i < o.visited.length - 1; i++){
+    const [ax, ay] = o.visited[i], [bx, by] = o.visited[i+1];
+    if (ax === bx && ay === by) continue;
+    ctx.beginPath(); ctx.moveTo(x(ax), y(ay)); ctx.lineTo(x(bx), y(by)); ctx.stroke();
+  }
+
+  /* the corners, with their true responses */
+  for (const c of CORNERS){
+    const v = resp(c[0], c[1]);
+    const isOpt = c[0] === o.optimum[0] && c[1] === o.optimum[1];
+    const isSel = c[0] === o.chosen[0] && c[1] === o.chosen[1];
+    ctx.beginPath(); ctx.arc(x(c[0]), y(c[1]), 20, 0, 2*Math.PI);
+    ctx.fillStyle = isOpt ? 'rgba(101,204,175,.28)' : 'rgba(125,139,152,.14)';
+    ctx.fill();
+    if (isSel){ ctx.strokeStyle = COL.alarm; ctx.lineWidth = 2.4; ctx.stroke(); }
+    else if (isOpt){ ctx.strokeStyle = COL.ok; ctx.lineWidth = 2.4; ctx.stroke(); }
+    ctx.fillStyle = COL.ink; ctx.font = '600 14px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(v.toFixed(1), x(c[0]), y(c[1]));
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  ctx.font = '11px "IBM Plex Mono", monospace'; ctx.textAlign = 'left';
+  ctx.fillStyle = COL.ok;  ctx.fillText('OPTIMUM', W - pad.r + 12, y(1) - 6);
+  ctx.fillStyle = COL.alarm; ctx.fillText('OFAT STOPS', W - pad.r + 12, y(1) + 12);
+
+  iVal.textContent = fmt(bab);
+  bVal.textContent = fmt(bb);
+  rO.textContent = o.chosenY.toFixed(1);
+  rOpt.textContent = o.optimumY.toFixed(1);
+  rGap.textContent = o.shortfall === 0 ? '0 — same corner' : '+' + o.shortfall.toFixed(1);
+  if (o.foundOptimum){ stat.textContent = 'OFAT FINDS IT'; stat.style.color = COL.ok; }
+  else               { stat.textContent = 'OFAT MISSES';  stat.style.color = COL.alarm; }
+}
+
+iSl.addEventListener('input', draw);
+bSl.addEventListener('input', draw);
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+</script>
 </body>
 </html>

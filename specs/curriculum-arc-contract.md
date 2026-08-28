@@ -141,6 +141,20 @@ Checkable in a browser, in order of delivery.
    numbers in the browser from the same formulas the Python library tests.
 8. Every level ends with a working link to the next, and the last links to the MSA
    site at the seam described in §2.
+
+   **Clarified 2026-08-28, while writing Level 12.** These two clauses pulled apart
+   once Level 12 existed: §2 fixes the seam at "Level 11 out" and allows exactly one
+   link each way, so the last level cannot also carry one without breaking the count.
+   Resolved in favour of §2, on content grounds as well as arithmetic — Level 11 ends
+   on variance components, which is what a gauge study decomposes, whereas Level 12
+   ends on factorial designs and has nothing to hand over. So: **Level 11 owns the
+   single outbound MSA link; Level 12, as the last level, closes the arc and links back
+   to the curriculum.** The chain reads 01 → … → 12 → index.
+
+   A second finding, recorded because it cost a fix: three `next` links pointed past
+   levels written later the same day (01→03, 04→06, 06→08). None of them 404'd, so this
+   check passed while readers were walked over a level. **"Working" is not sufficient —
+   the chain has to be walked, not just resolved.**
 9. `pytest` covers any new library function, and no new page asserts a number that
    is not computed.
 
@@ -176,6 +190,13 @@ Checkable in a browser, in order of delivery.
 
 One level at a time, verified before the next starts. If the shape is wrong, only one
 level is wasted.
+
+**Completed 2026-08-28.** All twelve levels are written and live. Order actually
+executed: renumber, then 1, 2, 5, 7, 10, 11, 12 — the four pre-existing levels (3, 4,
+6, 8, 9) rebuilt as chapters along the way. Part I and II carry narrated acts (nine acts,
+28 minutes); Part III carries three interactive labs and no video, as §4 intended. The
+MSA sibling remains uncontracted and unbuilt; its own contract comes before anything is
+made.
 
 ## 6. Verification
 

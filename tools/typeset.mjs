@@ -22,7 +22,7 @@ import katex from "katex";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PAGES = ["index.html", "level-01.html", "level-02.html", "level-03.html", "level-04.html", "level-05.html", "level-06.html", "level-07.html",
-               "level-08.html", "level-09.html", "level-10.html", "level-11.html", "line-of-sight.html"];
+               "level-08.html", "level-09.html", "level-10.html", "level-11.html", "level-12.html", "line-of-sight.html"];
 
 // `<div class="eq-body" data-tex="…">` renders in display mode,
 // `<span class="tex" data-tex="…">` renders inline.

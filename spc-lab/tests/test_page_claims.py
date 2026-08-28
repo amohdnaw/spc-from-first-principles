@@ -67,12 +67,26 @@ def _act_seconds(mp4: pathlib.Path) -> float:
 
 
 def test_written_levels_matches_the_pages_that_exist():
-    """"six written" must equal the level pages actually written."""
+    """The claimed written count must equal the level pages actually written.
+
+    Once every slot is filled the honest copy reads "all written" rather than
+    "twelve written", so `all` is accepted — and it then means *every slot*,
+    which keeps the check load-bearing: adding a thirteenth inert slot while the
+    index still says "all" fails here.
+    """
     pages = sorted(REPO.glob("level-[0-9][0-9].html"))
     # a redirect stub is not a written level; a chapter has numbered sections
     written = [p for p in pages if 'class="sec-no"' in p.read_text()]
-    assert _spelled(_claim(), "written") == len(written), (
-        f"index claims {_spelled(_claim(), 'written')} written, "
+    claim = _claim()
+    if re.search(r"\ball written\b", claim):
+        total = _spelled(claim, "levels")
+        assert len(written) == total, (
+            f'index says "all written" but {len(written)} of {total} exist')
+        inert = len(re.findall(r'<div class="lv soon"', INDEX.read_text()))
+        assert inert == 0, f'index says "all written" with {inert} inert cards'
+        return
+    assert _spelled(claim, "written") == len(written), (
+        f"index claims {_spelled(claim, 'written')} written, "
         f"found {len(written)}: {[p.name for p in written]}"
     )
 

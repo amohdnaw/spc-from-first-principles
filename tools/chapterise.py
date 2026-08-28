@@ -403,6 +403,144 @@ def chapter_06(K):
     ]
 
 
+def chapter_12(K):
+    from spclab.experiments import (
+        ALIASES, BASELINE, CORNERS, CURVED, EFFECTS, FLAT, FULL_RUNS, OFAT,
+        OPTIMUM, OPTIMUM_Y, PRECISION, SCREEN_FACTORS, SCREEN_RUNS, TRUTH,
+    )
+    worse = 100.0 * OFAT["shortfall"] / OPTIMUM_Y
+    return [
+        ("s1", "12.1", "Changing things on purpose", [
+            para("Every level so far watched a process, or described data that arrived"
+                 " on its own. This one changes the settings deliberately, and the whole"
+                 " subject turns on a single fact that is easy to state and easy to"
+                 " ignore.",
+                 note("the last level", text="Eleven levels of listening. This one "
+                      "asks."), lead=True),
+            "      " + K["eq"],
+            para("If two factors interact — if what the second one does depends on where"
+                 " the first one is set — then studying them one at a time can lead you"
+                 " confidently to the wrong setting. Not slowly. Wrongly.",
+                 note("the condition", text="An interaction larger than a main effect. "
+                      "Below that, one-at-a-time is merely slow.")),
+        ]),
+        ("s2", "12.2", "One factor at a time, with perfect measurements", [
+            para("Hold pressure and melt temperature, two levels each, shrinkage as the"
+                 " response and lower is better. The classic procedure: start with"
+                 " everything low, tune the second factor, fix it, tune the first.",
+                 datanote(*[(f"pressure {c[0]:+d}, temp {c[1]:+d}", f"{TRUTH[c]:.0f}")
+                            for c in CORNERS],
+                          k="true shrinkage at the four corners"), lead=True),
+            para(f"Run it with no measurement noise whatsoever — every reading exactly"
+                 f" the true value — and it stops at {OFAT['chosen_y']:.0f} when"
+                 f" {OPTIMUM_Y:.0f} was available. That is {worse:.0f} % worse, and it"
+                 " cannot be blamed on sampling error because there is none.",
+                 datanote(("stops at", f"{OFAT['chosen_y']:.0f}"),
+                          ("optimum", f"{OPTIMUM_Y:.0f}"),
+                          ("shortfall", f"{OFAT['shortfall']:.0f}"),
+                          ("corners visited", f"{len(set(OFAT['visited']))} of 4"),
+                          k="one at a time, noise-free")),
+            para("The reason is visible once it is drawn: the procedure never visits the"
+                 " corner where both factors are set high together, so the setting that"
+                 " wins is one it never tries.",
+                 note("spoken plainly", text="It is not a search that stopped early. It "
+                      "is a search that cannot reach the answer.")),
+            "      " + K["fig"]("l12_1_why_ofat_fails.png"),
+        ]),
+        ("s3", "12.3", "The interaction it cannot estimate", [
+            para("An interaction is a difference of differences: what the temperature"
+                 " does at high pressure, minus what it does at low pressure. That needs"
+                 " all four corners, and one at a time visits three.",
+                 datanote(("effect A", f"{EFFECTS['A']:+.0f}"),
+                          ("effect B", f"{EFFECTS['B']:+.0f}"),
+                          ("interaction AB", f"{EFFECTS['AB']:+.0f}"),
+                          k="from the full factorial"), lead=True),
+            para(f"So the interaction here — {EFFECTS['AB']:+.0f}, larger than either"
+                 " main effect — is not estimated badly by the one-at-a-time runs. It is"
+                 " not estimable from them at all. The factorial gets it from the same"
+                 " number of runs, because a factorial spends its runs on corners rather"
+                 " than on paths.",
+                 note("not a precision problem", text="Unidentifiable, which is a "
+                      "stronger statement than imprecise.")),
+            para("And the same design is more precise about the main effects too. Every"
+                 " run contributes to every effect — the hidden replication — so on"
+                 f" {PRECISION['runs']} runs the factorial's estimate of the pressure"
+                 f" effect has a standard deviation of {PRECISION['factorial_sd']:.3f}"
+                 f" against {PRECISION['ofat_sd']:.3f} for the comparison it replaces.",
+                 datanote(("factorial", f"{PRECISION['factorial_sd']:.3f}"),
+                          ("one at a time", f"{PRECISION['ofat_sd']:.3f}"),
+                          ("ratio", f"×{PRECISION['ratio']:.2f}"),
+                          k=f"s.d. of the effect, {PRECISION['runs']} runs")),
+            "  " + K["lab"],
+            para("Drag the interaction to zero and the procedure never fails — which is"
+                 " the honest version of the claim. One at a time is not wrong in"
+                 " general; it is wrong exactly when factors interact, and you cannot"
+                 " know whether they do without a design that could have told you.",
+                 note("why that matters", text="The condition for the method to work is "
+                      "the thing the method cannot check.")),
+        ]),
+        ("s4", "12.4", "Screening: width, bought with aliasing", [
+            para(f"With seven factors a full factorial is {FULL_RUNS} runs. A"
+                 f" sixteenth-fraction does it in {SCREEN_RUNS}, and the price is not"
+                 " vague — it is a table you can write down before the first run.",
+                 datanote(*[(f"main effect {L}", ", ".join(ALIASES[L]))
+                            for L in SCREEN_FACTORS[:4]],
+                          k="confounded with"), lead=True),
+            para("Each main effect is confounded with a set of two-factor interactions:"
+                 " the columns are literally identical across the eight runs, so no"
+                 " arithmetic can separate them. That is what resolution means, and it"
+                 " is computed from the design's generators rather than looked up.",
+                 note("the deal", text="Screening finds which factors matter. It cannot "
+                      "also tell you how they interact — that is the next experiment.")),
+            para("Which is the right trade at the start of an investigation and the wrong"
+                 " one at the end. Screen wide and cheap, then spend the second"
+                 " experiment on the two or three factors that survived."),
+        ]),
+        ("s5", "12.5", "Curvature, and why the corners cannot see it", [
+            para("A two-level design fits a plane with a twist in it. If the true surface"
+                 " bends, the corners cannot report it — and the reason is sharper than"
+                 " it first looks.",
+                 datanote(("corners", f"{CURVED['factorial_mean']:.2f}"),
+                          ("centre", f"{CURVED['centre_mean']:.2f}"),
+                          ("gap", f"{CURVED['gap']:+.2f}"),
+                          ("p", f"{CURVED['p']:.4f}"),
+                          k="a surface that really bends"), lead=True),
+            para("With coded ±1 factors the quadratic term contributes the <em>same</em>"
+                 " amount at every corner and nothing at the centre. So it is not absent"
+                 " from the corner readings — it is constant across them, which makes it"
+                 " inseparable from the intercept. Every effect estimate comes out"
+                 " unchanged.",
+                 note("the test", text="A few runs at the middle, and the gap between "
+                      "the corner mean and the centre mean is a pure quadratic signal.")),
+            para(f"Add centre points and it becomes a test. On the bent surface the gap"
+                 f" is {CURVED['gap']:+.2f} with p = {CURVED['p']:.4f}; on a genuinely"
+                 f" flat one it is {FLAT['gap']:+.2f} with p = {FLAT['p']:.2f}. The"
+                 " design does not merely estimate better — it can now be wrong out"
+                 " loud, which is the property Level 7 spent its whole length arguing"
+                 " for.",
+                 datanote(("flat surface gap", f"{FLAT['gap']:+.2f}"),
+                          ("its p", f"{FLAT['p']:.2f}"),
+                          k="and it does not cry curvature")),
+            "      " + K["fig"]("l12_2_screening_and_curvature.png"),
+        ]),
+        ("s6", "12.6", "Twelve levels", [
+            para("That closes the arc. Twelve levels, and the thread through all of them"
+                 " is that every number on a chart is the result of an argument that can"
+                 " be reconstructed — so none of them has to be taken on faith.",
+                 note("the rule", text="No number on this site is asserted. Every "
+                      "constant is computed at render time and the tests check the same "
+                      "functions."), lead=True),
+            para("Variation, chance, centre and spread, the predictable average,"
+                 " estimation. Then limits as a bet, evidence as a trade, capability,"
+                 " detection. Then counting rather than measuring, relationships, and"
+                 " experiments. Each level ends by raising the question the next one"
+                 " answers, which is the only structure the whole thing has.",
+                 note("where it goes next", text="Level 11 hands measurement systems to "
+                      "their own site. Nothing here needed a citation to be believed.")),
+        ]),
+    ]
+
+
 def chapter_11(K):
     from spclab.relationships import (
         ADJ_WITH_NOISE, CURVED_FIT, CURVED_RUN, FIT, GAUGE, HALF_CI, HALF_PI,
@@ -1473,7 +1611,7 @@ CHAPTERS = {
     "level-11.html": {
         "number": 11, "word": "eleven",
         "before": "Level 10 — counting, not measuring",
-        "after": "Level 12 — experiments, not yet written",
+        "after": "Level 12 — experiments, and the arc closes",
         "estimate": "5 sections · 1 interactive · ~9 min read",
         "toc": [("11.1", "s1", "One identity, three names",
                  "regression, ANOVA and a gauge study are one subtraction"),
@@ -1486,6 +1624,25 @@ CHAPTERS = {
                 ("11.5", "s5", "The same total, split four ways",
                  "part, operator, interaction — and the seam to MSA")],
         "sections": chapter_11,
+    },
+    "level-12.html": {
+        "number": 12, "word": "twelve",
+        "before": "Level 11 — relationships, and the seam to MSA",
+        "after": "nothing — this is where the arc closes",
+        "estimate": "6 sections · 1 interactive · ~9 min read",
+        "toc": [("12.1", "s1", "Changing things on purpose",
+                 "one term in the model is the whole subject"),
+                ("12.2", "s2", "One factor at a time, with perfect measurements",
+                 "it stops at the wrong corner, and noise is not the reason"),
+                ("12.3", "s3", "The interaction it cannot estimate",
+                 "unidentifiable, which is stronger than imprecise"),
+                ("12.4", "s4", "Screening: width, bought with aliasing",
+                 "seven factors in eight runs, and the price as a table"),
+                ("12.5", "s5", "Curvature, and why the corners cannot see it",
+                 "the bend is constant across corners, not absent"),
+                ("12.6", "s6", "Twelve levels",
+                 "what the arc was for")],
+        "sections": chapter_12,
     },
     "level-08.html": {
         "number": 8, "word": "eight",
