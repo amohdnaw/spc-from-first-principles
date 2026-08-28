@@ -83,6 +83,31 @@ def at_panel(mob: Text, row: int, value: bool = True) -> Text:
     return mob
 
 
+FRAME_LEFT = -7.11
+
+
+def within_frame(mob, what: str = "label"):
+    """Raise if `mob` runs off either edge of the render.
+
+    `at_panel` has guarded the right edge since a readout lost its last three
+    characters in every take. The left edge had no guard, and Level 5 shipped a
+    y-axis label reading "NTERVALS THAT CAUGHT IT" — the same failure, mirrored.
+    Axis labels are centred on an axis rather than on the frame, so a long one
+    slides out of view without anything failing.
+    """
+    left = float(mob.get_left()[0])
+    right = float(mob.get_right()[0])
+    if left < FRAME_LEFT + EDGE_MARGIN:
+        raise ValueError(
+            f"{what} overflows the left of the frame: {left:.2f} < "
+            f"{FRAME_LEFT + EDGE_MARGIN:.2f} for {getattr(mob, 'text', mob)!r}")
+    if right > FRAME_RIGHT - EDGE_MARGIN:
+        raise ValueError(
+            f"{what} overflows the right of the frame: {right:.2f} > "
+            f"{FRAME_RIGHT - EDGE_MARGIN:.2f} for {getattr(mob, 'text', mob)!r}")
+    return mob
+
+
 def phi(x: float) -> float:
     """Standard normal density at x."""
     return math.exp(-x * x / 2.0) / math.sqrt(2.0 * math.pi)

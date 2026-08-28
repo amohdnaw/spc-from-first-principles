@@ -1,0 +1,196 @@
+1
+00:00:00,800 --> 00:00:04,904
+Somewhere behind this process there is a real mean.
+
+2
+00:00:05,004 --> 00:00:08,284
+Nobody on a shop floor has ever seen one.
+
+3
+00:00:08,883 --> 00:00:12,661
+So take five parts and average them. That average is
+
+4
+00:00:12,761 --> 00:00:16,017
+an estimate, and it is wrong — a little. Take
+
+5
+00:00:16,117 --> 00:00:19,895
+another five, and it is wrong by a different amount.
+
+6
+00:00:19,983 --> 00:00:23,391
+Keep going, and the estimates make a shape of their
+
+7
+00:00:23,491 --> 00:00:26,554
+own. It is narrower than the parts, and it has
+
+8
+00:00:26,654 --> 00:00:30,131
+a width you can predict before you measure anything.
+
+9
+00:00:30,216 --> 00:00:34,940
+Sigma over root n. Level 4 derived it; here it is the size of
+
+10
+00:00:35,040 --> 00:00:39,764
+being wrong, and it is the thing an interval is built out of.
+
+11
+00:00:42,050 --> 00:00:47,249
+An interval is the estimate plus and minus a margin. Build one from
+
+12
+00:00:47,349 --> 00:00:52,390
+every sample and the interval is what moves — the truth does not.
+
+13
+00:00:52,983 --> 00:00:57,026
+Green caught the real mean. Red missed it entirely — and on
+
+14
+00:00:57,126 --> 00:01:01,451
+the shop floor you would never know which one you were holding.
+
+15
+00:01:01,550 --> 00:01:05,961
+That is all a confidence level is: run the procedure many times
+
+16
+00:01:06,061 --> 00:01:10,329
+and this fraction of the intervals contain the truth. It is a
+
+17
+00:01:10,429 --> 00:01:14,626
+property of the procedure, not of the interval in your hand.
+
+18
+00:01:17,016 --> 00:01:21,907
+Here is where the textbooks quietly cheat. Sigma is never known
+
+19
+00:01:22,007 --> 00:01:25,868
+either — it is estimated from the same five parts.
+
+20
+00:01:25,966 --> 00:01:29,759
+Use one point nine six anyway, and count. At
+
+21
+00:01:29,859 --> 00:01:34,890
+five parts the interval that says ninety-five delivers 88.
+
+22
+00:01:34,983 --> 00:01:40,234
+The margin is too narrow because s is itself uncertain. Replace the
+
+23
+00:01:40,334 --> 00:01:45,107
+quantile with one that knows how few parts it was built from.
+
+24
+00:01:45,200 --> 00:01:50,510
+At five parts that quantile is 2.78, not 1.96 — and the
+
+25
+00:01:50,610 --> 00:01:57,004
+count lands on ninety-five where it belongs, at every sample size.
+
+26
+00:01:57,100 --> 00:02:00,790
+t is not a correction bolted onto a normal. It is
+
+27
+00:02:00,890 --> 00:02:05,664
+what the arithmetic gives you when the spread is estimated too.
+
+28
+00:02:08,050 --> 00:02:12,410
+So how many parts does it take to be sure? Hold sigma known
+
+29
+00:02:12,510 --> 00:02:17,097
+for a moment, so the quantile stops moving and only the root n
+
+30
+00:02:17,197 --> 00:02:21,558
+is left. The width answers it, and the answer is expensive.
+
+31
+00:02:22,150 --> 00:02:25,534
+Watch the width fall as the parts arrive. It
+
+32
+00:02:25,634 --> 00:02:29,178
+falls fast at first, and then it stops paying.
+
+33
+00:02:29,266 --> 00:02:34,422
+Halve the width and the bill is four times the parts: five becomes
+
+34
+00:02:34,522 --> 00:02:39,678
+twenty. Not ten — four times, because the error falls as the root.
+
+35
+00:02:39,766 --> 00:02:44,066
+Certainty is bought by the square. That is the sentence to take
+
+36
+00:02:44,166 --> 00:02:48,186
+to anyone who asks for a tighter number without more parts.
+
+37
+00:02:50,483 --> 00:02:55,251
+One last place to point this. Every control chart in the rest
+
+38
+00:02:55,351 --> 00:03:00,439
+of this curriculum multiplies a range by a constant called d two.
+
+39
+00:03:00,533 --> 00:03:03,757
+This site does not look it up. It simulates
+
+40
+00:03:03,857 --> 00:03:07,081
+it — and anything simulated is an estimate.
+
+41
+00:03:07,166 --> 00:03:12,018
+Run that simulation sixty times over and the answers scatter.
+
+42
+00:03:12,118 --> 00:03:16,402
+The scatter is the standard error of our own constant.
+
+43
+00:03:16,500 --> 00:03:20,786
+Which sets a limit on honesty. Earning the third decimal
+
+44
+00:03:20,886 --> 00:03:25,486
+of that constant from simulation alone would take 11 million
+
+45
+00:03:25,586 --> 00:03:30,030
+subgroups. The fourth figure in the table is not simulated
+
+46
+00:03:30,130 --> 00:03:33,320
+at all — it comes from the exact integral.
+
+47
+00:03:33,416 --> 00:03:37,071
+So when Level 6 builds limits and Level 8 divides
+
+48
+00:03:37,171 --> 00:03:41,286
+by a spread, remember what they are made of. Estimates,
+
+49
+00:03:41,386 --> 00:03:44,428
+with a size you now know how to work out.
+

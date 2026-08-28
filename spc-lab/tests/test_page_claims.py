@@ -33,10 +33,27 @@ def _claim() -> str:
     return hero.group(0)
 
 
+TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50}
+
+
 def _spelled(claim: str, unit: str) -> int:
-    m = re.search(rf"(\w+) {unit}", claim)
+    """Parse the spelled number before `unit`, including "twenty-four".
+
+    The first version matched `(\w+)`, which stops at the hyphen and read
+    "twenty-four minutes" as four. The runtime claim crossed twenty the moment
+    Level 5 rendered, so the gate failed for its own vocabulary rather than for
+    the page — a check that cannot read the site's own house style is a check
+    that will be silenced.
+    """
+    m = re.search(rf"([a-zA-Z]+(?:-[a-zA-Z]+)?) {unit}", claim)
     assert m, f"no spelled number before {unit!r} in: {claim}"
     word = m.group(1).lower()
+    if "-" in word:
+        tens, ones = word.split("-", 1)
+        assert tens in TENS and ones in WORDS, f"cannot read {word!r}"
+        return TENS[tens] + WORDS[ones]
+    if word in TENS:
+        return TENS[word]
     assert word in WORDS, f"unspelled or unknown number {word!r} before {unit!r}"
     return WORDS[word]
 

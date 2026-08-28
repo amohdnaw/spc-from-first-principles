@@ -276,6 +276,11 @@ from spclab.chance import (  # noqa: E402
     ARL0, DIE_E, GAP_AT, MEDIAN_WAIT, MEMORY, MEMORY_WORST, MILESTONES,
     P_IN_ARL0, P_IN_SHIFT, RATE_ERR_AT, SHIFT_SUBGROUPS,
 )
+from spclab.estimation import (  # noqa: E402
+    CONF, COVER_T, COVER_Z, D2_MEAN, D2_PUBLISHED, D2_SE, D2_SUBGROUPS_FOR_3DP,
+    HALVE_FROM, HALVE_N_T, HALVE_N_Z, SE_EXACT, SE_OBSERVED, SIZES, SUBGROUP_N,
+    TRUE_SIGMA, T_AT, WIDTH_AT_Z,
+)
 
 # ---------------------------------------------------------------- chapters
 # Each chapter is data: the opener facts, the contents, and a builder that lays
@@ -394,6 +399,113 @@ def chapter_06(K):
                     "      " + K["fig"]("01_d2.png"),
                     "      " + K["fig"]("02_A2_D3_D4.png"),
                     "      </div>",
+        ]),
+    ]
+
+
+def chapter_05(K):
+    n = SUBGROUP_N
+    return [
+        ("s1", "5.1", "Every number here is an estimate", [
+            para("Somewhere behind a process there is a real mean and a real spread."
+                 " Nobody on a shop floor has ever seen either of them. Every number on"
+                 " every chart in this curriculum is a guess made from a handful of"
+                 " parts.",
+                 note("what Level 4 gave", text="The sampling distribution, and the "
+                      "width " + tex(r"\sigma/\sqrt{n}") + ". This level puts an error "
+                      "bar on it."), lead=True),
+            para("Take five parts and average them: that average is an estimate, and it"
+                 " is wrong by a little. Take another five and it is wrong by a"
+                 " different amount. Do it enough times and the estimates make a shape"
+                 " of their own — narrower than the parts, and with a width you can"
+                 " predict before measuring anything.",
+                 datanote((f"{nc('σ')} of the parts", f"{TRUE_SIGMA:.2f} mm"),
+                          (f"{nc('σ')}/√{n} predicted", f"{SE_EXACT[n]:.4f} mm"),
+                          ("spread observed", f"{SE_OBSERVED[n]:.4f} mm"),
+                          k=f"samples of {n}")),
+            para("That width is the standard error, and it is the size of being wrong."
+                 " Everything in this chapter is built out of it.",
+                 note("spoken · 0:52", text="“Sigma over root n. Here it is the size of "
+                      "being wrong.”", speak=True, serif=True)),
+        ]),
+        ("s2", "5.2", "What “ninety-five percent” has to earn", [
+            para("An interval is the estimate plus and minus a margin. Build one from"
+                 " every sample and it is the <em>interval</em> that moves; the truth"
+                 " stays where it is. So the way to check a confidence level is not to"
+                 " argue about it — it is to count.",
+                 note("not the parameter", text="The interval varies from sample to "
+                      "sample. The mean it is chasing does not."), lead=True),
+            para("Draw an interval per sample and mark the ones that missed. On a shop"
+                 " floor you would never know which kind you were holding, and that is"
+                 " precisely the point: the confidence level is a property of the"
+                 " procedure, not of the interval in your hand.",
+                 datanote(("intervals drawn", "40"),
+                          ("nominal", f"{CONF*100:.0f} %"),
+                          ("counted", f"{COVER_T[n]*100:.1f} %"),
+                          k=f"samples of {n}, {nc(chr(116))} quantile")),
+            "      " + K["fig"]("l05_1_coverage.png"),
+            "      " + K["fig"]("Level05.mp4"),
+        ]),
+        ("s3", "5.3", "Why t exists", [
+            para("Here is where a textbook quietly cheats. The margin needs σ, and σ is"
+                 " no better known than the mean — it is estimated from the same five"
+                 " parts. Use 1.96 anyway and count what you actually get.",
+                 datanote(*[(f"{nc(chr(110))} = {k}", f"{COVER_Z[k]*100:.1f} %") for k in SIZES],
+                          k="a “95 %” interval built with 1.96"), lead=True),
+            para(f"At {n} parts the interval that advertises ninety-five delivers"
+                 f" {COVER_Z[n]*100:.1f}. The margin is too narrow because <em>s</em> is"
+                 " itself uncertain, and a quantile taken from a normal curve does not"
+                 " know that. Replace it with one that knows how few parts it was built"
+                 " from.",
+                 note("the substitution", text="Not a correction bolted on. It is what "
+                      "the arithmetic gives when the spread is estimated too.")),
+            "      " + K["eq"],
+            para(f"At {n} parts that quantile is {T_AT[n]:.3f} rather than 1.960, and"
+                 f" the count lands where it belongs — at every sample size, not just"
+                 f" the comfortable ones.",
+                 datanote(*[(f"{nc(chr(110))} = {k}", f"{COVER_T[k]*100:.1f} %") for k in SIZES],
+                          k=f"the same interval built with {nc(chr(116))}"),
+                 note("spoken · 2:10", text="“t is not a correction. It is the honest "
+                      "quantile.”", speak=True, serif=True)),
+        ]),
+        ("s4", "5.4", "Precision has a price", [
+            para("So how many parts does it take to be sure? Hold σ known for a moment,"
+                 " so the quantile stops moving and only the " + tex(r"\sqrt{n}") +
+                 " is left. The width falls fast at first, and then it stops paying.",
+                 datanote(*[(f"{nc(chr(110))} = {k}", f"{WIDTH_AT_Z[k]:.3f} mm") for k in SIZES],
+                          k="width of the interval"), lead=True),
+            para(f"Halve the width and the bill is four times the parts:"
+                 f" {HALVE_FROM} becomes {HALVE_N_Z}. Not double — the error falls as"
+                 f" the root, so precision is bought by the square. That is the sentence"
+                 f" for anyone who asks for a tighter number without more parts.",
+                 note(f"with {nc(chr(116))} it is cheaper", text=f"{HALVE_N_T} parts, not "
+                      f"{HALVE_N_Z} — because the quantile is shrinking with the sample "
+                      "too. The square law is the σ-known case.")),
+            "  " + K["lab"],
+        ]),
+        ("s5", "5.5", "Including ours", [
+            para("One last place to point this instrument. Every control chart ahead"
+                 " multiplies a range by a constant called " + tex("d_2") + ", and this"
+                 " site does not look it up — it simulates it. Anything simulated is an"
+                 " estimate.",
+                 datanote(("published", f"{D2_PUBLISHED:.4f}"),
+                          ("60 replicates", f"{D2_MEAN:.4f}"),
+                          ("its standard error", f"{D2_SE:.4f}"),
+                          k=tex("d_2") + f" at {nc(chr(110))} = 5"), lead=True),
+            para("Run that simulation sixty times over and the answers scatter. The"
+                 " scatter is the standard error of our own constant, and it sets a"
+                 " limit on honesty: earning the third decimal from simulation alone"
+                 f" would take {D2_SUBGROUPS_FOR_3DP/1e6:.1f} million subgroups. The"
+                 " fourth figure in the published table is not simulated at all — it"
+                 " comes from the exact integral.",
+                 note("why it still says 2.326", text="Theory earns that digit. "
+                      "Simulation earns three, and only just.")),
+            "      " + K["fig"]("l05_2_price.png"),
+            para("So when Level 6 builds limits out of a range and Level 8 divides by a"
+                 " spread, remember what they are made of. Estimates — with a size you"
+                 " now know how to work out.",
+                 note("spoken · 3:38", text="“Every constant ahead is an estimate. Now "
+                      "you can price one.”", speak=True, serif=True)),
         ]),
     ]
 
@@ -890,6 +1002,23 @@ CHAPTERS = {
                 ("2.5", "s5", "What a percentage claims",
                  tex(r"1-(1-\alpha)^{1/\alpha}") + " — and why 370 is not a deadline")],
         "sections": chapter_02,
+    },
+    "level-05.html": {
+        "number": 5, "word": "five",
+        "before": "Level 4 — the average is predictable",
+        "after": "Level 6 — limits are a hypothesis test",
+        "estimate": "5 sections · 1 act · 1 interactive · ~8 min read",
+        "toc": [("5.1", "s1", "Every number here is an estimate",
+                 "the standard error is the size of being wrong"),
+                ("5.2", "s2", "What “ninety-five percent” has to earn",
+                 "coverage is counted, not claimed"),
+                ("5.3", "s3", "Why t exists",
+                 "1.96 delivers " + f"{COVER_Z[SUBGROUP_N]*100:.0f}" + " % at five parts, not 95"),
+                ("5.4", "s4", "Precision has a price",
+                 "halving an interval costs four times the parts"),
+                ("5.5", "s5", "Including ours",
+                 tex("d_2") + " is simulated, so it has a standard error too")],
+        "sections": chapter_05,
     },
     "level-06.html": {
         "number": 6, "word": "six",
