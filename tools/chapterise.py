@@ -403,6 +403,129 @@ def chapter_06(K):
     ]
 
 
+def chapter_11(K):
+    from spclab.relationships import (
+        ADJ_WITH_NOISE, CURVED_FIT, CURVED_RUN, FIT, GAUGE, HALF_CI, HALF_PI,
+        MSA_SITE, OPERATORS, PARTS, R2_PLAIN, R2_WITH_NOISE, REPEATS,
+        STRAIGHT_RUN, X0, COVERAGE,
+    )
+    ks = sorted(R2_WITH_NOISE)
+    return [
+        ("s1", "11.1", "One identity, three names", [
+            para("Every level so far watched one number over time. This one asks what a"
+                 " number has to do with another number — and the machinery turns out to"
+                 " be something already familiar, relabelled twice.",
+                 note("why it is the bridge", text="Regression, ANOVA and a gauge study "
+                      "are one identity. Seeing that is what makes the last of them "
+                      "ordinary."), lead=True),
+            "      " + K["eq"],
+            para("Split the total variation in two and you have regression, where the"
+                 " explained part over the total is R². Relabel those two terms"
+                 " between-groups and within-groups and you have ANOVA. Split the total"
+                 " four ways instead of two and you have a Gage R&amp;R. Nothing new is"
+                 " introduced at any step.",
+                 note("what changes", text="Only the labels on the terms. The subtraction "
+                      "is the same subtraction.")),
+        ]),
+        ("s2", "11.2", "Least squares is a claim", [
+            para("The line is not drawn by eye and it is not fitted by iteration: it is"
+                 " the slope that minimises the sum of squared residuals, and the closed"
+                 " form lands exactly at that minimum rather than near it.",
+                 datanote(("slope", f"{FIT['slope']:.5f}"),
+                          ("intercept", f"{FIT['intercept']:.4f}"),
+                          ("residual SS", f"{FIT['sse']:.4f}"),
+                          ("R²", f"{FIT['r2']:.4f}"),
+                          k=f"{FIT['n']} speeds, one line"), lead=True),
+            para("Sweeping the slope traces a parabola in the residual sum of squares."
+                 " That parabola is why the phrase means something: any other slope is"
+                 " worse, and it is worse by a computable amount.",
+                 note("orthogonal residuals", text="Least squares leaves the residuals "
+                      "summing to zero and uncorrelated with the predictor — exactly, "
+                      "not approximately.")),
+            "      " + K["fig"]("l11_1_least_squares.png"),
+        ]),
+        ("s3", "11.3", "R² is a ratio, not a grade", [
+            para("R² is the fraction of the total variation the line accounts for. It is a"
+                 " summary, and it has two properties worth knowing before quoting it.",
+                 datanote((f"the line alone", f"{R2_PLAIN:.4f}"),
+                          *[(f"plus {k} noise columns", f"{R2_WITH_NOISE[k]:.4f}")
+                            for k in ks[1:]],
+                          k="R² after adding nothing"), lead=True),
+            para("The first is that it cannot fall when a predictor is added, so adding"
+                 " columns of pure noise raises it. Ten such columns take it from"
+                 f" {R2_PLAIN:.4f} to {R2_WITH_NOISE[ks[-1]]:.4f} while explaining nothing"
+                 " whatsoever. Adjusted R² exists precisely because of this, and it turns"
+                 f" down — {ADJ_WITH_NOISE[ks[0]]:.4f} to {ADJ_WITH_NOISE[ks[-1]]:.4f}.",
+                 note("adjusted R²", text="The same ratio, penalised for the number of "
+                      "columns spent buying it.")),
+            para("The second is worse: a high R² can sit beside residuals that are"
+                 " visibly wrong. Fitting a straight line to a curved relationship here"
+                 f" scores {CURVED_FIT['r2']:.3f} — respectable by any rule of thumb —"
+                 f" while the residuals stay on the same side of zero for {CURVED_RUN}"
+                 f" points in a row against {STRAIGHT_RUN} for the honest fit.",
+                 datanote(("straight, R²", f"{FIT['r2']:.3f}"),
+                          ("its longest run", f"{STRAIGHT_RUN}"),
+                          ("curved, R²", f"{CURVED_FIT['r2']:.3f}"),
+                          ("its longest run", f"{CURVED_RUN}"),
+                          k="the number R² cannot see")),
+            "  " + K["lab"],
+            para("Drag the curvature up and watch R² barely move while the run climbs and"
+                 " the status flips. The residuals are the diagnostic; R² is only the"
+                 " summary.",
+                 note("Level 1 again", text="The longest same-sign run is the same "
+                      "statistic that showed a histogram throws away time order.")),
+        ]),
+        ("s4", "11.4", "Two intervals that are not the same interval", [
+            para("Asked to predict at a speed, there are two honest answers and they are"
+                 " different sizes. One is an interval for the <em>mean</em> response"
+                 " there; the other is an interval for a <em>single new reading</em>.",
+                 datanote((f"at {X0:.0f} m/min", ""),
+                          ("the mean response", f"±{HALF_CI:.3f}"),
+                          ("one new reading", f"±{HALF_PI:.3f}"),
+                          ("ratio", f"×{HALF_PI/HALF_CI:.2f}"),
+                          k="95 % half-widths"), lead=True),
+            para("The difference is a single 1 inside a square root, and that 1 is the"
+                 " variance of the new reading itself. It is why more data shrinks the"
+                 " first interval toward nothing and never shrinks the second below the"
+                 " noise of the process.",
+                 note("counted, not claimed", text=f"Coverage over 4 000 refits: "
+                      f"{COVERAGE['ci']*100:.1f} % for the mean, "
+                      f"{COVERAGE['pi']*100:.1f} % for a reading.")),
+            para("Quoting the narrow one when someone asked about the next part is the"
+                 " most common way a regression gets misused on a shop floor, and it is"
+                 " an arithmetic error rather than a judgement call."),
+        ]),
+        ("s5", "11.5", "The same total, split four ways", [
+            para("Now take the identity two-way. Ten parts, three operators, each part"
+                 " measured twice by each: the total variation splits into part,"
+                 " operator, their interaction, and repeat-to-repeat error — using the"
+                 " subtraction from §11.1 and nothing else.",
+                 datanote(("part", f"{GAUGE['pct']['part']:.2f} %"),
+                          ("repeat", f"{GAUGE['pct']['repeat']:.2f} %"),
+                          ("operator", f"{GAUGE['pct']['operator']:.2f} %"),
+                          ("interaction", f"{GAUGE['pct']['interaction']:.2f} %"),
+                          k="share of total variance"), lead=True),
+            para("That is a Gage R&amp;R. Repeatability is the repeat term, reproducibility"
+                 " is the operator term, and the gauge is everything that is not the"
+                 f" parts — {GAUGE['pct_gauge']:.1f} % here. No new technique was"
+                 " introduced to get there.",
+                 note("a caution", text="Ten parts is far too few to pin these "
+                      "percentages. The estimator can even return a negative component, "
+                      "which is reported as zero.")),
+            "      " + K["fig"]("l11_2_intervals_and_bridge.png"),
+            para("What those percentages mean — whether this gauge may be used, on what"
+                 " tolerance, and what to do when reproducibility dominates — is a"
+                 " different subject with its own arc, and this curriculum stops at the"
+                 " boundary rather than summarising it badly. It continues at the"
+                 f' <a href="{MSA_SITE}" target="_blank" rel="noopener">MSA platform</a>,'
+                 " which runs these studies; the sibling curriculum that explains them"
+                 " the way this one explains control charts is not written yet.",
+                 note("the seam", text="This site never teaches gauge acceptance, and "
+                      "the MSA side never teaches control limits. One link each way.")),
+        ]),
+    ]
+
+
 def chapter_10(K):
     from spclab.counting import (
         C_AT, C_BAR, DISPERSION_BATCHED, DISPERSION_CLEAN, MISCLASS, NP_THRESHOLD,
@@ -1331,7 +1454,7 @@ CHAPTERS = {
     "level-10.html": {
         "number": 10, "word": "ten",
         "before": "Level 9 — detection, and memory beating sensitivity",
-        "after": "Level 11 — relationships, not yet written",
+        "after": "Level 11 — relationships, and the seam to MSA",
         "estimate": "6 sections · 1 interactive · ~9 min read",
         "toc": [("10.1", "s1", "The spread is not a free parameter",
                  "for a count, the mean fixes the standard deviation"),
@@ -1346,6 +1469,23 @@ CHAPTERS = {
                 ("10.6", "s6", "Annex — capability when the shape is wrong",
                  "the normal tail understates a count tail")],
         "sections": chapter_10,
+    },
+    "level-11.html": {
+        "number": 11, "word": "eleven",
+        "before": "Level 10 — counting, not measuring",
+        "after": "Level 12 — experiments, not yet written",
+        "estimate": "5 sections · 1 interactive · ~9 min read",
+        "toc": [("11.1", "s1", "One identity, three names",
+                 "regression, ANOVA and a gauge study are one subtraction"),
+                ("11.2", "s2", "Least squares is a claim",
+                 "the closed form sits at the minimum, not near it"),
+                ("11.3", "s3", "R² is a ratio, not a grade",
+                 "it rises for nothing, and it cannot see a curve"),
+                ("11.4", "s4", "Two intervals that are not the same interval",
+                 "one 1 inside a square root, and what it costs to ignore"),
+                ("11.5", "s5", "The same total, split four ways",
+                 "part, operator, interaction — and the seam to MSA")],
+        "sections": chapter_11,
     },
     "level-08.html": {
         "number": 8, "word": "eight",

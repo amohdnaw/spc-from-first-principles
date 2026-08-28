@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level 5 — Estimation and uncertainty · SPC from First Principles</title>
+<title>Level 11 — Relationships · SPC from First Principles</title>
 <meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
 
 <link rel="icon" href="favicon.svg">
@@ -287,13 +287,13 @@
       <a href="level-02.html" title="Level 2 — Chance">02</a>
       <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
       <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
-      <a href="level-05.html" title="Level 5 — Estimation and uncertainty" aria-current="page">05</a>
+      <a href="level-05.html" title="Level 5 — Estimation and uncertainty">05</a>
       <a href="level-06.html" title="Level 6 — Limits are a hypothesis test">06</a>
       <a href="level-07.html" title="Level 7 — Evidence and decisions">07</a>
       <a href="level-08.html" title="Level 8 — Capability">08</a>
       <a href="level-09.html" title="Level 9 — Detection">09</a>
       <a href="level-10.html" title="Level 10 — Counting, not measuring">10</a>
-      <a href="level-11.html" title="Level 11 — Relationships">11</a>
+      <a href="level-11.html" title="Level 11 — Relationships" aria-current="page">11</a>
       <span class="soon" title="Level 12 — Experiments — not written yet">12</span>
     </div>
   </div>
@@ -301,9 +301,9 @@
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level 5</p>
-    <h1>Estimation and uncertainty</h1>
-    <p class="dek">Every number on a control chart is an estimate, including the constants. This is where an estimate gets an error bar.</p>
+    <p class="eyebrow">Level 11</p>
+    <h1>Relationships</h1>
+    <p class="dek">One sum-of-squares identity, wearing three hats: regression, ANOVA, and the gauge study this curriculum hands over to the MSA site.</p>
   </header>
 
   <main>
@@ -364,9 +364,9 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body" data-tex="\bar{x} \pm t_{n-1}\,\dfrac{s}{\sqrt{n}}"></div>
-        <div class="eq-num">(5.1)</div>
-        <p class="eq-cap">The estimate, plus and minus a margin built from the spread the sample itself reported. The quantile has to know how few parts it was built from, which is the whole of what t is for.</p>
+        <div class="eq-body" data-tex="\underbrace{\sum (y_i-\bar{y})^2}_{\text{total}} = \underbrace{\sum (\hat{y}_i-\bar{y})^2}_{\text{explained}} + \underbrace{\sum (y_i-\hat{y}_i)^2}_{\text{residual}}"></div>
+        <div class="eq-num">(11.1)</div>
+        <p class="eq-cap">The identity the whole level runs on. Relabel the two terms on the right as between-groups and within-groups and it is ANOVA; split the total four ways instead of two and it is a gauge study. Same arithmetic, three names.</p>
       </div>
 
       <h2>The shape is a consequence</h2>
@@ -380,33 +380,37 @@
 
       <div class="lab">
         <div class="lab-head">
-          <span class="micro">Interactive — how many parts before the interval is worth quoting</span>
-          <span class="status" id="lab-status">SYSTEM-OK</span>
+          <span class="micro">Interactive — what R&sup2; will not tell you</span>
+          <span class="status" id="lab-status">RESIDUALS CLEAN</span>
         </div>
         <div class="lab-grid">
           <div class="lab-canvas">
-            <canvas id="ci-canvas" height="300"
-              aria-label="Twenty-four confidence intervals against the true mean, narrowing as the sample size grows"></canvas>
+            <canvas id="fit-canvas" height="300"
+              aria-label="A straight line fitted to data whose curvature and noise you control, with the residuals drawn beneath it"></canvas>
           </div>
           <div class="lab-ctl">
             <div>
-              <label for="n-slider">Parts per sample — <b id="n-val">5</b></label>
-              <input type="range" id="n-slider" min="2" max="60" value="5" step="1">
+              <label for="c-slider">Curvature in the truth — <b id="c-val">0</b></label>
+              <input type="range" id="c-slider" min="0" max="100" value="0" step="1">
+            </div>
+            <div>
+              <label for="s-slider">Measurement noise — <b id="s-val">0.11</b></label>
+              <input type="range" id="s-slider" min="1" max="40" value="11" step="1">
             </div>
             <dl class="tiles">
-              <div class="tile"><dt>Interval width</dt><dd class="ok" id="r-w">—</dd></div>
-              <div class="tile"><dt>Quantile <span class="nc">t</span></dt><dd class="neutral" id="r-t">—</dd></div>
-              <div class="tile"><dt>Caught the truth</dt><dd class="ok" id="r-c">—</dd></div>
-              <div class="tile"><dt>Parts to halve it</dt><dd class="alarm" id="r-h">—</dd></div>
+              <div class="tile"><dt>R&sup2;</dt><dd class="ok" id="r-r2">—</dd></div>
+              <div class="tile"><dt>Longest same-sign run</dt><dd class="alarm" id="r-run">—</dd></div>
+              <div class="tile"><dt>Slope</dt><dd class="neutral" id="r-slope">—</dd></div>
             </dl>
-            <p class="lab-note">The same twenty-four samples every time, so only the
-            sample size is changing. Watch where the width stops paying for itself.</p>
+            <p class="lab-note">Add curvature and watch R&sup2; barely move while the run
+            climbs. The fit is computed here from the normal equations
+            <code>spclab.relationships</code> is tested against.</p>
           </div>
         </div>
       </div>
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>Certainty is bought by the square. Halving an interval costs four times the parts.</p>
+        <p>R² is the summary. The residuals are the diagnostic, and only one of them can tell you the model is wrong.</p>
       </aside>
 
       <h2>A sample is not the population</h2>
@@ -420,38 +424,28 @@
         measurable, and quantifying it is precisely what the next level does.</p>
       </div>
 
-      <figure>
-        <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/level05.jpg">
-          <source src="spc-lab/media/videos/level05_scene/1080p60/Level05.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level05.vtt" srclang="en" label="English">
-        </video>
-        <figcaption><span class="fignum">Figure 5.1</span><span class="figtext">Rendered in
-        Manim — the span opens as parts arrive, the bin width turns into a knob, and the same
-        240 measurements are re-ordered while the histogram cannot move.</span></figcaption>
-      </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l05_1_coverage.png" width="1752" height="956" loading="lazy"
-             alt="Forty intervals against the true mean, and the coverage a normal quantile actually delivers">
-        <figcaption><span class="fignum">Figure 5.2</span><span class="figtext">One set of
+        <img src="spc-lab/docs/l11_1_least_squares.png" width="2368" height="982" loading="lazy"
+             alt="The residual sum of squares swept across slopes, and the same straight fit on a straight and a curved relationship">
+        <figcaption><span class="fignum">Figure 11.1</span><span class="figtext">One set of
         measurements, written down twice. Identical histogram bin for bin, identical mean and
         spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l05_2_price.png" width="1849" height="929" loading="lazy"
-             alt="Interval width against sample size, and sixty independent estimates of the constant d two">
-        <figcaption><span class="fignum">Figure 5.3</span><span class="figtext">Deming's funnel
+        <img src="spc-lab/docs/l11_2_intervals_and_bridge.png" width="2522" height="956" loading="lazy"
+             alt="A confidence band against a prediction band, and the total variance split into part, operator, interaction and repeat">
+        <figcaption><span class="fignum">Figure 11.2</span><span class="figtext">Deming's funnel
         on the same random draws. Correcting after every part doubles the variance exactly, so
         the spread the customer receives is √2 times wider.</span></figcaption>
       </figure>
 
-      <a class="next" href="level-06.html">
-        <span class="m">Level 6</span>
-        <span>Limits are a hypothesis test — pricing the bet →</span>
+      <a class="next" href="index.html">
+        <span class="m">Ammar / SPC</span>
+        <span>Back to the curriculum &rarr;</span>
       </a>
     </section>
   </main>
@@ -476,71 +470,54 @@ const COL = {
   accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
 };
 
-/* ---- the t quantile, computed rather than tabulated -------------------
-   Level 6's lab implements erf instead of quoting 0.9973; the same rule
-   applies here, so this is the regularised incomplete beta by Lentz's
-   continued fraction, then a bisection for the two-sided 95 % point. It is
-   checked against spclab.estimation, which uses the same construction. */
-function lgamma(x){                       /* Lanczos */
-  const g = [676.5203681218851, -1259.1392167224028, 771.32342877765313,
-             -176.61502916214059, 12.507343278686905, -0.13857109526572012,
-             9.9843695780195716e-6, 1.5056327351493116e-7];
-  if (x < 0.5) return Math.log(Math.PI/Math.sin(Math.PI*x)) - lgamma(1-x);
-  x -= 1; let a = 0.99999999999980993, t = x + 7.5;
-  for (let i=0;i<8;i++) a += g[i]/(x+i+1);
-  return 0.5*Math.log(2*Math.PI) + (x+0.5)*Math.log(t) - t + Math.log(a);
-}
-function betainc(a, b, x){
-  if (x <= 0) return 0; if (x >= 1) return 1;
-  if (x > (a+1)/(a+b+2)) return 1 - betainc(b, a, 1-x);   /* swap first */
-  const lbeta = lgamma(a) + lgamma(b) - lgamma(a+b);
-  const front = Math.exp(Math.log(x)*a + Math.log(1-x)*b - lbeta)/a;
-  let f = 1, c = 1, d = 0;
-  for (let i=0;i<300;i++){
-    const m = i >> 1;
-    let num;
-    if (i === 0) num = 1;
-    else if (i % 2 === 0) num = (m*(b-m)*x)/((a+2*m-1)*(a+2*m));
-    else num = -((a+m)*(a+b+m)*x)/((a+2*m)*(a+2*m+1));
-    d = 1 + num*d; if (Math.abs(d) < 1e-30) d = 1e-30; d = 1/d;
-    c = 1 + num/c; if (Math.abs(c) < 1e-30) c = 1e-30;
-    f *= c*d;
-    if (Math.abs(1 - c*d) < 1e-15) break;
+/* ---- the same formulas spclab.relationships is tested against ----------
+   Slope and intercept from the normal equations, R² from the sums of squares,
+   and the longest same-sign residual run — the statistic that notices a curve
+   when R² does not. */
+function fit(xs, ys){
+  const n = xs.length;
+  const xb = xs.reduce((a,b)=>a+b,0)/n, yb = ys.reduce((a,b)=>a+b,0)/n;
+  let sxx = 0, sxy = 0;
+  for (let i=0;i<n;i++){ sxx += (xs[i]-xb)*(xs[i]-xb); sxy += (xs[i]-xb)*(ys[i]-yb); }
+  const slope = sxy/sxx, intercept = yb - slope*xb;
+  let sse = 0, sst = 0; const resid = [];
+  for (let i=0;i<n;i++){
+    const r = ys[i] - (intercept + slope*xs[i]);
+    resid.push(r); sse += r*r; sst += (ys[i]-yb)*(ys[i]-yb);
   }
-  return front*(f - 1);
+  return { n, slope, intercept, sse, sst, ssr: sst-sse, r2: 1 - sse/sst, resid,
+           s: Math.sqrt(sse/(n-2)), xbar: xb, sxx };
 }
-const tcdf = (t, df) => { const p = 0.5*betainc(df/2, 0.5, df/(df + t*t));
-                          return t > 0 ? 1 - p : p; };
-function tq(df){
-  let lo = 0, hi = 200;
-  for (let i=0;i<200;i++){ const mid = (lo+hi)/2; tcdf(mid, df) < 0.975 ? lo = mid : hi = mid; }
-  return (lo+hi)/2;
+function residualRuns(resid){
+  let best = 1, run = 1;
+  for (let i=1;i<resid.length;i++){
+    run = ((resid[i] > 0) === (resid[i-1] > 0)) ? run + 1 : 1;
+    if (run > best) best = run;
+  }
+  return best;
 }
-window.__spclabTq = tq;   /* so the verification sweep can compare it to Python */
+window.__spclabFit = fit;
+window.__spclabRuns = residualRuns;
 
-/* ---- a fixed pool of draws, so only n changes ------------------------- */
-const TRUE_MEAN = 50, TRUE_SIGMA = 0.60, ROWS = 24, MAXN = 60;
-let seed = 20260828;
+/* the level's own speed grid, and one fixed set of standard draws so only the
+   two controls move the picture */
+const XS = [];
+for (let v = 60; v <= 200; v += 5) XS.push(v);
+let seed = 20261111;
 const rnd = () => (seed = (seed*1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
-const POOL = [];
-for (let r=0;r<ROWS;r++){
-  const row = [];
-  for (let i=0;i<MAXN;i++){
-    let u = 0, v = 0;
-    while (u === 0) u = rnd();
-    while (v === 0) v = rnd();
-    row.push(TRUE_MEAN + TRUE_SIGMA*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v));
-  }
-  POOL.push(row);
-}
+const Z = XS.map(() => {
+  let u = 0, v = 0;
+  while (u === 0) u = rnd();
+  while (v === 0) v = rnd();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+});
 
-const cv = document.getElementById('ci-canvas');
+const cv = document.getElementById('fit-canvas');
 const ctx = cv.getContext('2d');
-const sl = document.getElementById('n-slider');
-const nVal = document.getElementById('n-val');
-const rW = document.getElementById('r-w'), rT = document.getElementById('r-t');
-const rC = document.getElementById('r-c'), rH = document.getElementById('r-h');
-const stat = document.getElementById('lab-status');
+const cSl = document.getElementById('c-slider'), sSl = document.getElementById('s-slider');
+const cVal = document.getElementById('c-val'), sVal = document.getElementById('s-val');
+const rR2 = document.getElementById('r-r2'), rRun = document.getElementById('r-run');
+const rSlope = document.getElementById('r-slope'), stat = document.getElementById('lab-status');
 
 function draw(){
   const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -549,50 +526,50 @@ function draw(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,W,H);
 
-  const n = +sl.value, q = tq(n-1);
-  const pad = {l:16, r:16, t:26, b:26};
-  const SPAN = 1.5;                                  /* mm either side of truth */
-  const x = v => pad.l + (v - (TRUE_MEAN-SPAN))/(2*SPAN)*(W-pad.l-pad.r);
-  const rowY = i => pad.t + i*((H-pad.t-pad.b)/(ROWS-1));
+  const curv = +cSl.value / 100 * 0.00012;      /* 0 .. 1.2e-4 */
+  const sd = +sSl.value / 100;                   /* 0.01 .. 0.40 */
+  const YS = XS.map((x, i) => 0.42 + 0.0135*x + curv*(x-60)*(x-60) + Z[i]*sd);
+  const f = fit(XS, YS);
+  const run = residualRuns(f.resid);
 
-  let caught = 0;
-  for (let i=0;i<ROWS;i++){
-    const s = POOL[i].slice(0, n);
-    const m = s.reduce((a,b)=>a+b,0)/n;
-    const sd = Math.sqrt(s.reduce((a,b)=>a+(b-m)*(b-m),0)/(n-1));
-    const half = q*sd/Math.sqrt(n);
-    const hit = (m-half <= TRUE_MEAN) && (TRUE_MEAN <= m+half);
-    if (hit) caught++;
-    ctx.strokeStyle = hit ? COL.ok : COL.alarm;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(Math.max(pad.l-4, x(m-half)), rowY(i));
-    ctx.lineTo(Math.min(W-pad.r+4, x(m+half)), rowY(i));
-    ctx.stroke();
-  }
+  const pad = { l: 44, r: 14, t: 16, b: 84 };
+  const yLo = Math.min(...YS), yHi = Math.max(...YS);
+  const x = v => pad.l + (v - 60)/140 * (W - pad.l - pad.r);
+  const y = v => pad.t + (yHi - v)/(yHi - yLo || 1) * (H - pad.t - pad.b);
 
-  /* the truth, drawn last so nothing hides it */
-  ctx.strokeStyle = COL.accent; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(x(TRUE_MEAN), pad.t-10); ctx.lineTo(x(TRUE_MEAN), H-pad.b+8); ctx.stroke();
-  ctx.font = '600 11px "IBM Plex Mono", monospace';
-  ctx.fillStyle = COL.accent; ctx.textAlign = 'left';
-  ctx.fillText('THE TRUE MEAN', x(TRUE_MEAN)+6, pad.t-14);
+  /* the fitted line */
+  ctx.strokeStyle = COL.accent; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x(60), y(f.intercept + f.slope*60));
+  ctx.lineTo(x(200), y(f.intercept + f.slope*200)); ctx.stroke();
 
-  const width = 2*q*TRUE_SIGMA/Math.sqrt(n);
-  /* with the quantile held still the width is proportional to 1/sqrt(n), so
-     halving it is exactly four times the parts */
-  nVal.textContent = n;
-  rW.textContent = width.toFixed(3) + ' mm';
-  rT.textContent = q.toFixed(3);
-  rC.textContent = caught + ' / ' + ROWS;
-  rH.textContent = (4*n) + ' parts';
+  /* the data */
+  ctx.fillStyle = COL.ok;
+  XS.forEach((xv, i) => { ctx.beginPath(); ctx.arc(x(xv), y(YS[i]), 3, 0, 2*Math.PI); ctx.fill(); });
 
-  if (n <= 4)       { stat.textContent = 'IMPRECISE';  stat.style.color = COL.alarm; }
-  else if (n <= 30) { stat.textContent = 'SYSTEM-OK';  stat.style.color = COL.ok; }
-  else              { stat.textContent = 'DIMINISHING'; stat.style.color = COL.accent; }
+  /* residuals as sticks off a baseline, where a pattern is visible */
+  const zero = H - pad.b + 42;
+  const scale = 34 / Math.max(...f.resid.map(Math.abs));
+  ctx.strokeStyle = 'rgba(125,139,152,.5)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, zero); ctx.lineTo(W - pad.r, zero); ctx.stroke();
+  ctx.strokeStyle = run > 8 ? COL.alarm : COL.ok; ctx.lineWidth = 2;
+  XS.forEach((xv, i) => {
+    ctx.beginPath(); ctx.moveTo(x(xv), zero); ctx.lineTo(x(xv), zero - f.resid[i]*scale); ctx.stroke();
+  });
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  ctx.fillStyle = COL.dim; ctx.textAlign = 'left';
+  ctx.fillText('RESIDUALS', pad.l, zero + 30);
+
+  cVal.textContent = (+cSl.value === 0) ? '0' : (curv*1e5).toFixed(1) + '\u00d710\u207b\u2075';
+  sVal.textContent = sd.toFixed(2);
+  rR2.textContent = f.r2.toFixed(4);
+  rRun.textContent = run;
+  rSlope.textContent = f.slope.toFixed(5);
+  if (run > 8){ stat.textContent = 'MODEL WRONG'; stat.style.color = COL.alarm; }
+  else        { stat.textContent = 'RESIDUALS CLEAN'; stat.style.color = COL.ok; }
 }
 
-sl.addEventListener('input', draw);
+cSl.addEventListener('input', draw);
+sSl.addEventListener('input', draw);
 addEventListener('resize', draw);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
 draw();
