@@ -98,11 +98,11 @@ def t_quantile(df: int, conf: float = CONF) -> float:
 def t_cdf(t: float, df: int) -> float:
     """P(T ≤ t) for Student's t with `df` degrees of freedom."""
     x = df / (df + t * t)
-    p = 0.5 * _betainc(df / 2.0, 0.5, x)
+    p = 0.5 * betainc(df / 2.0, 0.5, x)
     return 1.0 - p if t > 0 else p
 
 
-def _betainc(a: float, b: float, x: float) -> float:
+def betainc(a: float, b: float, x: float) -> float:
     """Regularised incomplete beta I_x(a, b), by continued fraction.
 
     The symmetry `I_x(a,b) = 1 - I_{1-x}(b,a)` is applied *before* the
@@ -116,7 +116,7 @@ def _betainc(a: float, b: float, x: float) -> float:
     if x >= 1.0:
         return 1.0
     if x > (a + 1.0) / (a + b + 2.0):
-        return 1.0 - _betainc(b, a, 1.0 - x)
+        return 1.0 - betainc(b, a, 1.0 - x)
     lbeta = math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
     front = math.exp(math.log(x) * a + math.log(1.0 - x) * b - lbeta) / a
     # Lentz's algorithm

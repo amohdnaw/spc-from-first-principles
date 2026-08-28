@@ -403,6 +403,133 @@ def chapter_06(K):
     ]
 
 
+def chapter_10(K):
+    from spclab.counting import (
+        C_AT, C_BAR, DISPERSION_BATCHED, DISPERSION_CLEAN, MISCLASS, NP_THRESHOLD,
+        N_CONST, N_FOR_LCL, P_AT_CONST, P_BAR, TAIL, UNIT_DEFECT, UNIT_ITEM,
+        CHART_TABLE,
+    )
+    folklore = int(round(5.0 / P_BAR))
+    return [
+        ("s1", "10.1", "The spread is not a free parameter", [
+            para("Levels 3 to 5 spent their time estimating a spread, because for a"
+                 " measurement the spread is a separate fact about the process — it has"
+                 " to be measured, and it carries its own error. Stop measuring and"
+                 " start counting, and that stops being true.",
+                 note("what changes", text="A measurement needs a range chart beside "
+                      "it. A count does not, and this is why."), lead=True),
+            para("Count defective items and the result is binomial, so its standard"
+                 " deviation is fixed by its mean. Count defects and the result is"
+                 " Poisson, where the variance <em>is</em> the mean. Either way nothing"
+                 " is estimated separately.",
+                 datanote((f"{nc('p̄')} assumed", f"{P_BAR:.2f}"),
+                          (f"{nc('n')}", f"{N_CONST}"),
+                          (f"{nc('σ')} of the proportion", f"{P_AT_CONST['sigma']:.5f}"),
+                          (f"{nc('c̄')} = {C_BAR}", f"{nc('σ')} = {C_AT['sigma']:.3f}"),
+                          k="the mean fixes the spread")),
+            "      " + K["eq"],
+            para("Which makes a disagreement informative. If the observed scatter is"
+                 " wider than the binomial says it must be, the binomial assumption is"
+                 " wrong — and the usual reason is that the rate moved between"
+                 " subgroups.",
+                 note("free diagnostic", text="Observed variance over theoretical. One "
+                      "for a genuine binomial; above one and the subgroups were not "
+                      "rational.")),
+        ]),
+        ("s2", "10.2", "Same mean, different scatter", [
+            para("Two processes, both averaging four per cent defective. One has a"
+                 " single rate behind every subgroup; in the other the rate drifts —"
+                 " a shift change, a supplier lot, an operator. The means are"
+                 " indistinguishable and the charts are not.",
+                 datanote(("one rate throughout", f"{DISPERSION_CLEAN:.2f}"),
+                          ("rate drifting", f"{DISPERSION_BATCHED:.2f}"),
+                          k="observed ÷ binomial variance"), lead=True),
+            para("The second process is not wider. It is a process whose rate moved, and"
+                 " every limit computed from the binomial is too tight for it — so it"
+                 " will trip its own chart for a reason that has nothing to do with the"
+                 " thing being counted. This is what rational subgrouping means for"
+                 " attribute data."),
+            "      " + K["fig"]("l10_1_spread_is_not_free.png"),
+        ]),
+        ("s3", "10.3", "Four charts, two questions", [
+            para("The four attribute charts are usually presented as four names to learn."
+                 " They are two binary questions, and once they are asked the name is"
+                 " determined.",
+                 note("question one", text="Defective <em>items</em>, or "
+                      "<em>defects</em>? One is binomial, the other Poisson."),
+                 lead=True),
+            para("Are you counting defective items — each thing inspected is either good"
+                 " or bad — or counting defects, where one thing can carry several? And"
+                 " is the subgroup size constant?",
+                 datanote(*[(f"{u}, {nc('n')} {'constant' if c else 'varies'}",
+                             f"{name}-chart")
+                            for (u, c), name in CHART_TABLE.items()],
+                          k="the whole selection rule"),
+                 note("question two", text="Constant subgroup size, or not? That is the "
+                      "only other thing the choice depends on.")),
+            para("That is the entire decision. There is no fifth chart hiding behind a"
+                 " third question."),
+        ]),
+        ("s4", "10.4", "When the limits have to breathe", [
+            para("If the subgroup size varies, the limits vary with it — a bigger"
+                 " subgroup gives a tighter proportion, so the band narrows. The"
+                 " tempting shortcut is one set of limits computed at the average size.",
+                 datanote(("subgroup sizes", f"{MISCLASS['spread'][0]}–{MISCLASS['spread'][1]}"),
+                          ("false signals", f"{MISCLASS['false_signal']*100:.2f} %"),
+                          ("signals missed", f"{MISCLASS['missed']*100:.2f} %"),
+                          ("disagreement", f"{MISCLASS['disagree']*100:.2f} %"),
+                          k="average-n limits against honest ones"), lead=True),
+            para(f"Over sizes from {MISCLASS['spread'][0]} to {MISCLASS['spread'][1]} that"
+                 f" shortcut disagrees with the honest limits on"
+                 f" {MISCLASS['disagree']*100:.2f} % of subgroups, and most of the"
+                 f" disagreement is false alarms rather than misses — it spends more than"
+                 " the whole false-alarm budget Level 6 designed for.",
+                 note("Level 7's language", text="A fixed cost for nothing bought. The "
+                      "shortcut is not a trade, it is a leak.")),
+            "      " + K["fig"]("l10_2_breathing_limits.png"),
+        ]),
+        ("s5", "10.5", "Where the lower limit goes", [
+            para("At low counts the lower limit goes negative, and a chart cannot draw a"
+                 " negative fraction. It gets clamped to zero, and a limit at zero is"
+                 " not a limit: the chart can only ever signal upward.",
+                 datanote(("lower limit, raw", f"{P_AT_CONST['lcl_raw']*100:.2f} %"),
+                          ("as drawn", "0"),
+                          (f"{nc('n')} needed", f"{N_FOR_LCL}"),
+                          k=f"at {nc('n')} = {N_CONST}"), lead=True),
+            para("There is a threshold and it is exact. The lower limit clears zero only"
+                 " while " + tex(r"n\bar{p} > k^{2}(1-\bar{p})") + f", which at three"
+                 f" sigma is {NP_THRESHOLD:.2f}. At four per cent defective that means"
+                 f" subgroups of {N_FOR_LCL} — not the {folklore} the familiar"
+                 " “np̄ ≥ 5” rule of thumb allows.",
+                 note("the rule of thumb", text="A weaker version of the same "
+                      "arithmetic. At " + tex(r"n\bar{p} = 5") + " the limit is still "
+                      "negative.")),
+            "  " + K["lab"],
+            para("Drag the two controls. The status reads ONE-SIDED whenever the lower"
+                 " limit has been clamped, and the third tile tells you the subgroup size"
+                 " that would fix it.",
+                 note("computed here", text="The lab runs the same formulas "
+                      "<code>spclab.counting</code> is tested against, in the browser.")),
+        ]),
+        ("s6", "10.6", "Annex — capability when the shape is wrong", [
+            para("Level 8 turned a spread into a ppm by walking out the tail of a normal"
+                 " curve. Counts are not normal, and the approximation fails in the"
+                 " direction that flatters the process.",
+                 datanote(("exact tail", f"{TAIL['exact']:.5f}"),
+                          ("normal approximation", f"{TAIL['approx']:.5f}"),
+                          ("ratio", f"×{TAIL['ratio']:.2f}"),
+                          k="P(16 or more defective)"), lead=True),
+            para(f"The true probability is {TAIL['ratio']:.1f} times what the normal"
+                 " approximation reports. Quoting a normal-based ppm on count data is"
+                 " therefore not a rounding error — it understates the risk by a factor"
+                 " you would notice. The approximation improves as the counts grow; it"
+                 " is wrong where attribute data usually lives.",
+                 note("so what to do", text="Use the exact tail. It is one incomplete "
+                      "beta, and this site already had one for Level 5.")),
+        ]),
+    ]
+
+
 def chapter_07(K):
     # imported here rather than at module scope: the trade table is simulated at
     # import, and regenerating the other seven chapters should not pay for it
@@ -1200,6 +1327,25 @@ CHAPTERS = {
                 ("7.5", "s5", "So is it worth it",
                  "the cost is fixed; the benefit is the shift you fear")],
         "sections": chapter_07,
+    },
+    "level-10.html": {
+        "number": 10, "word": "ten",
+        "before": "Level 9 — detection, and memory beating sensitivity",
+        "after": "Level 11 — relationships, not yet written",
+        "estimate": "6 sections · 1 interactive · ~9 min read",
+        "toc": [("10.1", "s1", "The spread is not a free parameter",
+                 "for a count, the mean fixes the standard deviation"),
+                ("10.2", "s2", "Same mean, different scatter",
+                 "a variance ratio you get for free"),
+                ("10.3", "s3", "Four charts, two questions",
+                 "np, p, c, u — and nothing else to remember"),
+                ("10.4", "s4", "When the limits have to breathe",
+                 "the average-n shortcut, priced"),
+                ("10.5", "s5", "Where the lower limit goes",
+                 tex(r"n\bar{p} > k^{2}(1-\bar{p})") + ", not the rule of thumb"),
+                ("10.6", "s6", "Annex — capability when the shape is wrong",
+                 "the normal tail understates a count tail")],
+        "sections": chapter_10,
     },
     "level-08.html": {
         "number": 8, "word": "eight",

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Level 1 — Variation · SPC from First Principles</title>
+<title>Level 10 — Counting, not measuring · SPC from First Principles</title>
 <meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
 
 <link rel="icon" href="favicon.svg">
@@ -240,6 +240,41 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+
+  /* the lab stacks on a phone; this stays a media query, because the
+     rules inside it are mobile-only and applying them everywhere puts the
+     canvas border on the wrong edge at desktop. */
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
 </style>
 </head>
 <body>
@@ -248,7 +283,7 @@
   <div class="nav-in">
     <a class="wordmark" href="index.html">Ammar Nawawi <span>/ SPC</span></a>
     <div class="rail">
-      <a href="level-01.html" title="Level 1 — Variation" aria-current="page">01</a>
+      <a href="level-01.html" title="Level 1 — Variation">01</a>
       <a href="level-02.html" title="Level 2 — Chance">02</a>
       <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
       <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
@@ -257,7 +292,7 @@
       <a href="level-07.html" title="Level 7 — Evidence and decisions">07</a>
       <a href="level-08.html" title="Level 8 — Capability">08</a>
       <a href="level-09.html" title="Level 9 — Detection">09</a>
-      <a href="level-10.html" title="Level 10 — Counting, not measuring">10</a>
+      <a href="level-10.html" title="Level 10 — Counting, not measuring" aria-current="page">10</a>
       <span class="soon" title="Level 11 — Relationships — not written yet">11</span>
       <span class="soon" title="Level 12 — Experiments — not written yet">12</span>
     </div>
@@ -266,9 +301,9 @@
 
 <div class="wrap">
   <header class="opener">
-    <p class="eyebrow">Level 1</p>
-    <h1>Variation</h1>
-    <p class="dek">Nothing repeats. The order it arrived in is the part a histogram throws away.</p>
+    <p class="eyebrow">Level 10</p>
+    <h1>Counting, not measuring</h1>
+    <p class="dek">Stop measuring and start counting, and the distribution hands you the spread. Part III is hands-on: this level has no video and one thing to drag.</p>
   </header>
 
   <main>
@@ -329,9 +364,9 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body" data-tex="\operatorname{Var}(e_i - e_{i-1}) = 2\sigma^2"></div>
-        <div class="eq-num">(1.1)</div>
-        <p class="eq-cap">Every correction subtracts the last part's noise from this one's.</p>
+        <div class="eq-body" data-tex="\sigma_{\hat{p}} = \sqrt{\dfrac{\bar{p}(1-\bar{p})}{n}} \qquad \sigma_c = \sqrt{\bar{c}}"></div>
+        <div class="eq-num">(10.1)</div>
+        <p class="eq-cap">Nothing on the right-hand side is estimated separately. For a count the mean fixes the spread, which is why an attribute chart has no range chart beside it — and why a disagreement between the two is information rather than noise.</p>
       </div>
 
       <h2>The shape is a consequence</h2>
@@ -343,9 +378,39 @@
         can be relied on later.</p>
       </div>
 
+      <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — where a p-chart's lower limit goes</span>
+          <span class="status" id="lab-status">SYSTEM-OK</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="p-canvas" height="300"
+              aria-label="A p-chart whose control limits move as the subgroup size and the defect rate change"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="n-slider">Subgroup size <span class="nc">n</span> — <b id="n-val">200</b></label>
+              <input type="range" id="n-slider" min="25" max="600" value="200" step="1">
+            </div>
+            <div>
+              <label for="p-slider">Fraction defective <span class="nc">p̄</span> — <b id="p-val">4.0 %</b></label>
+              <input type="range" id="p-slider" min="5" max="300" value="40" step="1">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>Upper limit</dt><dd class="ok" id="r-ucl">—</dd></div>
+              <div class="tile"><dt>Lower limit</dt><dd class="alarm" id="r-lcl">—</dd></div>
+              <div class="tile"><dt><span class="nc">n</span> for a lower limit</dt><dd class="neutral" id="r-need">—</dd></div>
+            </dl>
+            <p class="lab-note">Drag either one. The limits are computed here from the
+            same formulas <code>spclab.counting</code> is tested against — nothing is
+            looked up, and the lower limit is shown before it is clamped.</p>
+          </div>
+        </div>
+      </div>
       <aside class="sys">
         <span class="micro">SYS_MSG</span>
-        <p>A histogram cannot tell a stable process from a drifting one. Only the order can.</p>
+        <p>A lower limit of zero is not a lower limit. Below the threshold the chart can only signal upward.</p>
       </aside>
 
       <h2>A sample is not the population</h2>
@@ -359,38 +424,28 @@
         measurable, and quantifying it is precisely what the next level does.</p>
       </div>
 
-      <figure>
-        <div class="rule"></div>
-        <video controls playsinline preload="metadata" poster="posters/level01.jpg">
-          <source src="spc-lab/media/videos/level01_scene/1080p60/Level01.mp4" type="video/mp4">
-          <track kind="captions" src="captions/level01.vtt" srclang="en" label="English">
-        </video>
-        <figcaption><span class="fignum">Figure 1.1</span><span class="figtext">Rendered in
-        Manim — the span opens as parts arrive, the bin width turns into a knob, and the same
-        240 measurements are re-ordered while the histogram cannot move.</span></figcaption>
-      </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l01_1_time_order.png" width="1702" height="929" loading="lazy"
-             alt="The same 240 measurements in two arrival orders with identical histograms">
-        <figcaption><span class="fignum">Figure 1.2</span><span class="figtext">One set of
+        <img src="spc-lab/docs/l10_1_spread_is_not_free.png" width="2274" height="956" loading="lazy"
+             alt="The binomial sigma as a function of the rate, and two p-charts with the same mean and different scatter">
+        <figcaption><span class="fignum">Figure 10.1</span><span class="figtext">One set of
         measurements, written down twice. Identical histogram bin for bin, identical mean and
         spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l01_2_tampering.png" width="1702" height="929" loading="lazy"
-             alt="Deming's funnel: leaving a stable process alone against adjusting every part">
-        <figcaption><span class="fignum">Figure 1.3</span><span class="figtext">Deming's funnel
+        <img src="spc-lab/docs/l10_2_breathing_limits.png" width="2086" height="1044" loading="lazy"
+             alt="A p-chart whose limits breathe with each subgroup size, and where the lower limit clears zero">
+        <figcaption><span class="fignum">Figure 10.2</span><span class="figtext">Deming's funnel
         on the same random draws. Correcting after every part doubles the variance exactly, so
         the spread the customer receives is √2 times wider.</span></figcaption>
       </figure>
 
-      <a class="next" href="level-03.html">
-        <span class="m">Level 3</span>
-        <span>Centre and spread — describing it in three numbers →</span>
+      <a class="next" href="index.html">
+        <span class="m">Ammar / SPC</span>
+        <span>Back to the curriculum &rarr;</span>
       </a>
     </section>
   </main>
@@ -406,5 +461,123 @@
   </div>
 </footer>
 
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = {
+  ok: css('--signal-ok'), alarm: css('--signal-alarm'),
+  accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
+};
+const K = 3;
+
+/* ---- the same formulas spclab.counting is tested against ---------------
+   sigma of a proportion is a function of the mean, so there is nothing to
+   estimate: sqrt(p(1-p)/n). The lower limit is reported before clamping,
+   because "LCL = 0" and "the process cannot run low" are different claims. */
+const sigmaP = (n, p) => Math.sqrt(p * (1 - p) / n);
+function pLimits(n, p){
+  const s = sigmaP(n, p);
+  let raw = p - K * s;
+  if (Math.abs(raw) < 1e-12) raw = 0;          /* algebraically zero at the threshold */
+  return { cl: p, ucl: p + K * s, lclRaw: raw, lcl: Math.max(0, raw),
+           sigma: s, clamped: raw < 0 };
+}
+/* n > k^2 (1-p) / p, which is where the shop-floor "n p >= 5" comes from */
+const nForPositiveLcl = p => Math.floor(K * K * (1 - p) / p) + 1;
+window.__spclabPLimits = pLimits;
+window.__spclabNForLcl = nForPositiveLcl;
+
+const cv = document.getElementById('p-canvas');
+const ctx = cv.getContext('2d');
+const nSl = document.getElementById('n-slider');
+const pSl = document.getElementById('p-slider');
+const nVal = document.getElementById('n-val'), pVal = document.getElementById('p-val');
+const rU = document.getElementById('r-ucl'), rL = document.getElementById('r-lcl');
+const rN = document.getElementById('r-need'), stat = document.getElementById('lab-status');
+
+/* one fixed set of standardised draws, so only the controls move the picture */
+let seed = 20261010;
+const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+const Z = [];
+for (let i = 0; i < 40; i++){
+  let u = 0, v = 0;
+  while (u === 0) u = rnd();
+  while (v === 0) v = rnd();
+  Z.push(Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v));
+}
+
+function draw(){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = 300;
+  if (cv.width !== Math.round(W * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const n = +nSl.value, p = +pSl.value / 1000;
+  const L = pLimits(n, p);
+  const pad = { l: 46, r: 14, t: 18, b: 26 };
+  const top = Math.max(L.ucl * 1.25, p * 2.2, 0.01);
+  const bot = Math.min(L.lclRaw * 1.5, 0) - top * 0.04;
+  const y = v => pad.t + (top - v) / (top - bot) * (H - pad.t - pad.b);
+  const x = i => pad.l + i / (Z.length - 1) * (W - pad.l - pad.r);
+
+  /* the region below zero, which a chart cannot use */
+  if (L.clamped){
+    ctx.fillStyle = 'rgba(222,106,93,.16)';
+    ctx.fillRect(pad.l, y(0), W - pad.l - pad.r, y(bot) - y(0));
+  }
+
+  /* zero line, centre line, limits */
+  const line = (v, colour, dash, wide) => {
+    ctx.strokeStyle = colour; ctx.lineWidth = wide || 1.5; ctx.setLineDash(dash || []);
+    ctx.beginPath(); ctx.moveTo(pad.l, y(v)); ctx.lineTo(W - pad.r, y(v)); ctx.stroke();
+    ctx.setLineDash([]);
+  };
+  line(0, 'rgba(125,139,152,.55)', [3, 3]);
+  line(L.cl, COL.dim, [5, 4]);
+  line(L.ucl, COL.accent, [], 2);
+  if (!L.clamped) line(L.lclRaw, COL.accent, [], 2);
+  else            line(L.lclRaw, COL.alarm, [4, 4], 1.6);
+
+  /* the plotted proportions, from the fixed draws */
+  ctx.fillStyle = COL.ok;
+  for (let i = 0; i < Z.length; i++){
+    const v = Math.max(0, p + Z[i] * L.sigma);
+    ctx.beginPath(); ctx.arc(x(i), y(v), 3, 0, 2 * Math.PI); ctx.fill();
+  }
+
+  /* axis: the numbers a reader needs to trust the picture */
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  ctx.fillStyle = COL.dim; ctx.textAlign = 'right';
+  [0, L.cl, L.ucl].forEach(v => ctx.fillText((v * 100).toFixed(1) + '%', pad.l - 6, y(v) + 4));
+  ctx.textAlign = 'left';
+  ctx.fillStyle = COL.accent;
+  ctx.fillText('UCL', pad.l + 4, y(L.ucl) - 6);
+  if (L.clamped){
+    ctx.fillStyle = COL.alarm;
+    ctx.fillText('LCL would be ' + (L.lclRaw * 100).toFixed(2) + '% — clamped to zero',
+                 pad.l + 4, y(L.lclRaw) - 6);
+  } else {
+    ctx.fillStyle = COL.accent;
+    ctx.fillText('LCL', pad.l + 4, y(L.lclRaw) - 6);
+  }
+
+  nVal.textContent = n;
+  pVal.textContent = (p * 100).toFixed(1) + ' %';
+  rU.textContent = (L.ucl * 100).toFixed(2) + ' %';
+  rL.textContent = L.clamped ? '0 — clamped' : (L.lclRaw * 100).toFixed(2) + ' %';
+  rN.textContent = nForPositiveLcl(p);
+  if (L.clamped){ stat.textContent = 'ONE-SIDED'; stat.style.color = COL.alarm; }
+  else          { stat.textContent = 'TWO-SIDED'; stat.style.color = COL.ok; }
+}
+
+nSl.addEventListener('input', draw);
+pSl.addEventListener('input', draw);
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+</script>
 </body>
 </html>

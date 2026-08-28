@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 10 — Counting, not measuring · SPC from First Principles</title>
+<meta name="description" content="Why no two parts are identical, why a histogram is a setting rather than a fact, and why reacting to noise adds variation — derived, with the code that proves it.">
+
+<link rel="icon" href="favicon.svg">
+<link rel="preload" as="font" type="font/woff2" href="fonts/eb-garamond-roman.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
+<link rel="stylesheet" href="vendor/katex/katex.css">
+
+<style>
+  /* ---------- self-hosted, two families, two voices ---------- */
+  @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
+    font-weight:400 600;font-style:normal;font-display:swap}
+  @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-italic.woff2') format('woff2');
+    font-weight:400 500;font-style:italic;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-400.woff2') format('woff2');
+    font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-600.woff2') format('woff2');
+    font-weight:600;font-style:normal;font-display:swap}
+
+  /* ---------- tokens: DESIGN.md ---------- */
+  :root{
+    --ground:#0d1114; --panel:#14181c; --panel-high:#1b2026;
+    --rule:#2a3138; --rule-strong:#3d4650;
+    --ink-dim:#7d8b98; --ink:#d7dee4; --ink-bright:#eef3f7;
+    --accent:#ffae00; --accent-wash:rgba(255,174,0,.14);
+    --signal-ok:#65ccaf; --signal-alarm:#de6a5d; --fill-ok:#2a534b;
+
+    --serif:'EB Garamond',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+    --body:21px;
+    --measure:27em;
+    --figure:44rem;
+    --gutter:clamp(24px,5vw,72px);
+    --rhythm:32px;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  /* typography hygiene (better-typography 3, 16): a missing weight must fail
+     visibly rather than render a faked bold, and macOS renders serif text
+     heavier than intended without grayscale smoothing. */
+  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  html,body{font-synthesis:none}
+  /* text-transform:uppercase maps σ to Σ and λ to Λ — different symbols
+     entirely (summation, and the lambda of a different meaning). A label may
+     be uppercase and still carry a correct lowercase glyph: opt that span out. */
+  .nc{text-transform:none}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);font-size:var(--body);line-height:1.55;font-weight:500;
+    font-variant-numeric:oldstyle-nums;
+  }
+  ::selection{background:var(--accent);color:var(--ground)}
+
+  .wrap{max-width:76rem;margin:0 auto;padding:0 var(--gutter)}
+  .col{max-width:var(--measure)}
+  .m{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .micro{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:30;background:var(--ground);
+    border-bottom:1px solid var(--rule)}
+  .nav-in{max-width:76rem;margin:0 auto;padding:14px var(--gutter);
+    display:flex;align-items:center;gap:28px}
+  .wordmark{font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-bright);
+    text-decoration:none;white-space:nowrap}
+  .wordmark span{color:var(--accent)}
+  .rail{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+  .rail a{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);text-decoration:none;
+    display:flex;align-items:center;gap:7px;padding:3px 0;transition:color .18s}
+  .rail a::before{content:"";width:7px;height:7px;background:var(--rule-strong);flex:none}
+  .rail a:hover{color:var(--ink)}
+  /* The rail wraps to two rows below 1024px. A sticky nav that tall is the
+     'fixed chrome squeezing the reading column' the ban list forbids, so it
+     only sticks while it is a single 52px row. */
+  @media(max-width:1023px){nav{position:static}}
+  .rail a[aria-current="page"]{color:var(--accent)}
+  /* Twelve slots, five written. The seven that are not are present and inert:
+     an explicit gap the reader can see, never a silent one. */
+  .rail span.soon{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    color:var(--ink-dim);opacity:.45;display:inline-flex;align-items:center;gap:7px;cursor:default}
+  .rail span.soon::before{content:"";width:7px;height:7px;border:1px solid var(--rule-strong);flex:none}
+  .rail a[aria-current="page"]::before{background:var(--accent)}
+
+  /* ---------- level opener ---------- */
+  header.opener{padding:88px 0 0}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 20px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(33px,5.2vw,56px);
+    line-height:1.04;letter-spacing:-.01em;color:var(--ink-bright);margin:0 0 20px;
+    max-width:20em}
+  .dek{font-style:italic;font-size:26px;line-height:1.4;color:var(--ink-dim);
+    margin:0 0 var(--rhythm);max-width:24em}
+
+  main{padding-bottom:64px}
+  section{padding-top:48px}
+  p{margin:0 0 var(--rhythm)}
+  h2{font-family:var(--serif);font-weight:600;font-size:33px;line-height:1.15;
+    color:var(--ink-bright);margin:64px 0 20px;max-width:20em}
+
+  /* ---------- equation ---------- */
+  .eq{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+    max-width:var(--measure);
+    margin:48px 0;padding:40px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .eq-body{font-size:33px;text-align:center;color:var(--ink-bright);letter-spacing:.02em}
+  .eq-num{font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+  .eq-cap{font-family:var(--mono);font-size:13px;color:var(--ink-dim);
+    margin:14px 0 0;text-align:center;grid-column:1/-1}
+
+  /* ---------- figures ---------- */
+  figure{margin:64px 0 0;max-width:var(--figure)}
+  figure .rule{height:1px;background:var(--rule);margin-bottom:20px}
+  figure img,figure video{display:block;width:100%;height:auto;background:var(--ground)}
+  figcaption{margin-top:16px;max-width:var(--measure)}
+  figcaption .fignum{font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+    display:block;margin-bottom:6px}
+  figcaption .figtext{font-size:17px;line-height:1.5;color:var(--ink-dim)}
+
+  /* ---------- the twelve parts ---------- */
+  .data{margin:48px 0 0;border:1px solid var(--rule);background:var(--panel);
+    max-width:var(--figure)}
+  .data-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .data-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  /* 12 readings: only use column counts that divide 12, otherwise auto-fit
+     leaves a phantom empty cell that reads as missing data */
+  .parts{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+    background:var(--rule)}
+  @media(max-width:820px){.parts{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:480px){.parts{grid-template-columns:repeat(3,1fr)}}
+  .part{background:var(--panel-high);padding:10px 12px;font-family:var(--mono);
+    font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink);text-align:center}
+  .part.lo{color:var(--signal-alarm)}
+  .part.hi{color:var(--signal-alarm)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    background:var(--rule);border-top:1px solid var(--rule)}
+  .stat{background:var(--panel-high);padding:14px}
+  .stat dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .stat dd{margin:0;font-family:var(--mono);font-size:21px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--ink-bright);line-height:1.1}
+  .stat dd.ok{color:var(--signal-ok)}
+
+  /* ---------- SYS note ---------- */
+  /* component 7 is a pull-quote with an amber left border and NO fill — an amber
+     area carries no information, and DESIGN.md 6 bans decorative ornament. */
+  .sys{margin:64px 0 0;border-left:2px solid var(--accent);
+    padding-left:24px;max-width:34em}
+  .sys .micro{color:var(--accent);display:block;margin-bottom:8px}
+  .sys p{font-size:26px;line-height:1.35;color:var(--ink-bright);margin:0;font-style:italic}
+
+  /* ---------- next + footer ---------- */
+  .next{display:inline-flex;align-items:baseline;gap:12px;margin-top:96px;
+    padding-bottom:6px;border-bottom:1px solid var(--rule-strong);
+    color:var(--ink-bright);text-decoration:none;font-size:26px;transition:border-color .18s}
+  .next:hover{border-bottom-color:var(--accent)}
+  .next .m{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+
+  footer{border-top:1px solid var(--rule);margin-top:64px}
+  .foot-in{max-width:76rem;margin:0 auto;padding:24px var(--gutter);
+    display:flex;flex-wrap:wrap;gap:16px 32px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
+  .foot-in a{color:var(--ink-dim);text-decoration:none}
+  .foot-in a:hover{color:var(--accent)}
+  .foot-in .sp{margin-left:auto}
+
+  @media(max-width:560px){
+    body{font-size:19px}
+    .dek,.sys p,.next{font-size:21px}
+    /* long formulas (Level 9's EWMA limit) blow past a 320px viewport;
+       stack the reference number and let the expression wrap */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+    .eq-body{font-size:26px;overflow-wrap:anywhere;line-height:1.35}
+    h2{font-size:26px}
+    .rail{gap:12px;width:100%;margin-left:0}
+    .nav-in{flex-wrap:wrap;gap:12px}
+    nav{position:static}
+    header.opener{padding-top:48px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* maths — KaTeX, pre-rendered by tools/typeset.mjs. Computer Modern here for
+     the same reason the videos use it: a formula should read the same on the
+     page as it does in the act. */
+  .katex{color:var(--ink-bright);font-size:1em}
+  .eq-body .katex-display{margin:0}
+  .eq-body .katex{font-size:1.05em}
+  p .katex,figcaption .katex,li .katex{font-size:.98em}
+  /* Display maths cannot wrap. On a narrow screen it scrolls inside its own
+     block instead of dragging the page sideways — DESIGN.md bans the page
+     scrolling horizontally, not a figure doing it. min-width:0 is required or
+     the grid item refuses to shrink. */
+  .eq-body{min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;
+           -webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .eq-body .katex-display{margin:0;padding-bottom:2px}
+  @media (max-width:560px){ .eq-body .katex{font-size:.86em} }
+  @media (max-width:400px){ .eq-body .katex{font-size:.74em} }
+
+  /* ---------- wide viewports (DESIGN.md §3, added 2026-08-27) ----------
+     The measure never moves; figures spend the width the prose refuses.
+     Each figure is additionally capped at its own native resolution by an
+     inline max-width, so the band is a ceiling and never a stretch. */
+  /* A run of chart figures sits two-up once there is room for two of them
+     without either dropping below 560px. Videos never join a pair. */
+  .figpair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));
+    gap:var(--gutter);align-items:start;max-width:var(--figure)}
+  .figpair figure{margin:64px 0 0;max-width:none}
+
+  /* ---------- captions ----------
+     The tracks stay (WCAG 1.2.2 asks that captions be PROVIDED, not forced on) but
+     they are no longer `default`. Three reasons they were wrong on by default here:
+     the audio IS narration so the cues duplicate it, the page prose now carries the
+     same argument in text, and every Manim frame already has on-screen text - axis
+     labels and the readout column sit exactly where a cue lands. Turned on from the
+     player, they now render small and on a translucent ground instead of a slab. */
+  ::cue{
+    font-family:var(--mono, ui-monospace, monospace);
+    font-size:58%;
+    line-height:1.35;
+    color:#e8eef4;
+    background:rgba(13,17,20,.74);
+  }
+
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+
+  /* the lab stacks on a phone; this stays a media query, because the
+     rules inside it are mobile-only and applying them everywhere puts the
+     canvas border on the wrong edge at desktop. */
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
+
+  /* ---------- chapter grammar (DESIGN.md §3) ----------
+     Layout follows the book convention rather than an invented one. Tufte CSS:
+     figures are constrained to the main column by default, a *small* figure may
+     go in the margin, and anything larger takes the full text block. Margin notes
+     sit "as close as possible to the text that references them" - which is done
+     with a float at the note's position in the flow, never with grid rows. Grid
+     rows put the note in a row of its own and cut an L-shaped hole in the page. */
+  :root{ --marg:320px; --marg-gap:48px; }
+
+  /* The page IS the grid. Before this the container was 110rem while the text
+     block was 1090px and left-aligned inside it, so the margins came out 149px
+     left and 675px right - the dead right column. The page width is now computed
+     from the same tokens the grid uses, so it can never drift from it again. */
+  .wrap{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg) + 2 * var(--gutter))}
+  /* the text block: measure + gutter + margin. Everything aligns to its left edge. */
+  .leaf{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  .leaf > div > p,.leaf > div > .eq,.leaf > div > .sys{max-width:var(--measure)}
+
+  .ch-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+
+  .toc{border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);
+    padding:22px 0 24px;margin:8px 0 0;
+    max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  .toc-head{display:flex;gap:18px;align-items:baseline;margin:0 0 14px;flex-wrap:wrap}
+  .toc-head .est{margin-left:auto}
+  .toc ol{list-style:none;margin:0;padding:0;display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:2px 48px}
+  .toc li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:7px 0;
+    border-bottom:1px solid rgba(42,49,56,.55)}
+  .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
+  .toc a{color:var(--ink);text-decoration:none;font-size:19px}
+  .toc a:hover{color:var(--accent)}
+  .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
+    display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
+  .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
+  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
+
+  /* a heading must clear the sticky nav when jumped to from the contents */
+  main section{scroll-margin-top:96px}
+  .sec-no{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.14em;
+    color:var(--accent);display:block;margin-bottom:10px}
+  /* headings balance across lines; body prose gets pretty so no line is left
+     carrying a single word (better-typography principle 9) */
+  main h2{font-family:var(--serif);font-size:33px;font-weight:600;line-height:1.12;
+    color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
+  .leaf > div > p{text-wrap:pretty}
+  .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
+  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
+
+  /* margin notes: instrument voice, level with the paragraph they annotate.
+     Below the margin breakpoint they simply follow the prose at measure width. */
+  .note{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.6;
+    color:var(--ink-dim);border-left:1px solid var(--rule);padding-left:14px;
+    margin:0 0 26px;max-width:var(--measure);text-indent:0}
+  .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
+    font-size:11px;margin-bottom:5px}
+  .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
+  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
+    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
+  .note.speak{border-left-color:var(--accent)}
+  .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
+    align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
+  .note.data .row:last-child{border-bottom:0}
+  /* NB: these labels are uppercased, which maps σ to Σ - the summation sign.
+     Keep label text ASCII and put Greek in the value. */
+  .note.data .rk{color:var(--ink-dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+  .note.data .rv{color:var(--ink-bright);font-variant-numeric:tabular-nums;min-width:0;
+    overflow-wrap:anywhere}
+  .note.data .row.num .rv{font-size:16px;text-align:right;white-space:nowrap}
+  /* a sentence is not data: own line, left aligned, in the reading voice */
+  .note.data .row.txt{display:block}
+  .note.data .row.txt .rv{display:block;font-family:var(--serif);font-size:17px;
+    line-height:1.45;margin-top:3px;font-variant-numeric:oldstyle-nums}
+  .note.data .rn{flex:1 1 100%;min-width:0;color:var(--ink-dim);font-size:11.5px;
+    line-height:1.5;overflow-wrap:anywhere}
+
+  /* A referenced act, collapsed. Closed it is a poster strip; open it is a player
+     at the full text-block width. The previous version was a 340px margin card,
+     which measured 323x182 on screen - not a player, a thumbnail with controls. */
+  .act{border-top:1px solid var(--rule);margin:40px 0 0}
+  .act > summary{display:flex;gap:18px;align-items:center;cursor:pointer;
+    padding:16px 0;list-style:none}
+  .act > summary::-webkit-details-marker{display:none}
+  .act > summary::marker{content:""}
+  .act > summary:hover .k{color:var(--ink-bright)}
+  /* the closed strip has to look like a video, or it reads as a footnote. A poster
+     at 280px with a play glyph over it does that; 180px and a word did not. */
+  .act .thumb-wrap{position:relative;flex:none;display:block;line-height:0}
+  .act .thumb{width:280px;height:auto;display:block;border:1px solid var(--rule)}
+  .act .thumb-wrap::after{content:"";position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);width:0;height:0;
+    border-left:18px solid var(--ink-bright);border-top:11px solid transparent;
+    border-bottom:11px solid transparent;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
+  .act > summary:hover .thumb-wrap::after{border-left-color:var(--accent)}
+  .act[open] > summary .thumb-wrap{display:none}
+  .act .meta{min-width:0}
+  .act .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
+  .act .cap{font-size:17px;line-height:1.45;color:var(--ink-dim);display:block;
+    max-width:52ch;text-wrap:pretty}
+  .act .cue{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-dim);margin-left:auto;flex:none;white-space:nowrap}
+  .act[open] > summary .cue{color:var(--accent)}
+  .act video{display:block;width:100%;height:auto;background:var(--ground);
+    margin:0 0 8px;max-width:min(100%,calc(68vh * 16 / 9))}
+  @media(max-width:640px){ .act > summary{flex-wrap:wrap} .act .thumb{width:160px} }
+  /* a margin figure - Tufte's one case for a figure outside the main flow */
+  .note.watch video{display:block;width:100%;height:auto;margin:8px 0;border:1px solid var(--rule)}
+  .note.watch:hover .k{color:var(--ink-bright)}
+
+  /* figures take the whole text block and share its left edge */
+  figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
+  figure video{max-width:min(100%,calc(68vh * 16 / 9))}
+
+  @media (min-width:1500px){
+    :root{ --body:26px; --marg:340px; }
+    /* the note floats into the margin at its position in the flow. This is the
+       whole trick: no row of its own, so no hole beside it. */
+    /* tufte-css's mechanism: a negative right margin pulls the float out of the
+       text column so it consumes no horizontal space there. Without it the float
+       lives inside the 702px paragraph and shortens every line beside it, which
+       destroys the measure the whole design is built on. */
+    .note{float:right;clear:right;width:var(--marg);max-width:var(--marg);
+      margin:0 calc(-1 * (var(--marg) + var(--marg-gap))) 26px 0;
+      position:relative;z-index:1}
+    /* a note that must not float (it holds something wide) */
+    .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
+    .leaf > div::after{content:"";display:block;clear:both}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="wordmark" href="index.html">Ammar Nawawi <span>/ SPC</span></a>
+    <div class="rail">
+      <a href="level-01.html" title="Level 1 — Variation">01</a>
+      <a href="level-02.html" title="Level 2 — Chance">02</a>
+      <a href="level-03.html" title="Level 3 — Centre and spread">03</a>
+      <a href="level-04.html" title="Level 4 — The average is predictable">04</a>
+      <a href="level-05.html" title="Level 5 — Estimation and uncertainty">05</a>
+      <a href="level-06.html" title="Level 6 — Limits are a hypothesis test">06</a>
+      <a href="level-07.html" title="Level 7 — Evidence and decisions">07</a>
+      <a href="level-08.html" title="Level 8 — Capability">08</a>
+      <a href="level-09.html" title="Level 9 — Detection">09</a>
+      <a href="level-10.html" title="Level 10 — Counting, not measuring" aria-current="page">10</a>
+      <span class="soon" title="Level 11 — Relationships — not written yet">11</span>
+      <span class="soon" title="Level 12 — Experiments — not written yet">12</span>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+    <main>
+    <header class="ch">
+      <div class="leaf">
+        <div>
+          <p class="ch-no">Level 10 · chapter ten</p>
+          <h1>Counting, not measuring</h1>
+          <p class="dek">Stop measuring and start counting, and the distribution hands you the spread. Part III is hands-on: this level has no video and one thing to drag.</p>
+        </div>
+      </div>
+      <div class="toc">
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 interactive · ~9 min read</span></div>
+        <p class="toc-chain"><span class="micro">after</span> Level 9 — detection, and memory beating sensitivity<span class="sep">·</span><span class="micro">leads to</span> Level 11 — relationships, not yet written</p>
+        <ol>
+          <li><span class="n">10.1</span><a href="#s1">The spread is not a free parameter<span class="sub">for a count, the mean fixes the standard deviation</span></a></li>
+          <li><span class="n">10.2</span><a href="#s2">Same mean, different scatter<span class="sub">a variance ratio you get for free</span></a></li>
+          <li><span class="n">10.3</span><a href="#s3">Four charts, two questions<span class="sub">np, p, c, u — and nothing else to remember</span></a></li>
+          <li><span class="n">10.4</span><a href="#s4">When the limits have to breathe<span class="sub">the average-n shortcut, priced</span></a></li>
+          <li><span class="n">10.5</span><a href="#s5">Where the lower limit goes<span class="sub"><span class="tex" data-tex="n\bar{p} > k^{2}(1-\bar{p})"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo>&gt;</mo><msup><mi>k</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">n\bar{p} &gt; k^{2}(1-\bar{p})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7622em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">n</span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>, not the rule of thumb</span></a></li>
+          <li><span class="n">10.6</span><a href="#s6">Annex — capability when the shape is wrong<span class="sub">the normal tail understates a count tail</span></a></li>
+        </ol>
+      </div>
+    </header>
+    <section id="s1">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">10.1</span>
+          <h2>The spread is not a free parameter</h2>
+          <p class="lead">Levels 3 to 5 spent their time estimating a spread, because for a measurement the spread is a separate fact about the process — it has to be measured, and it carries its own error. <span class="note"><span class="k">what changes</span>A measurement needs a range chart beside it. A count does not, and this is why.</span>Stop measuring and start counting, and that stops being true.</p>
+          <p>Count defective items and the result is binomial, so its standard deviation is fixed by its mean. <span class="note data"><span class="k">the mean fixes the spread</span><span class="row num"><span class="rk"><span class="nc">p̄</span> assumed</span><span class="rv">0.04</span></span><span class="row num"><span class="rk"><span class="nc">n</span></span><span class="rv">200</span></span><span class="row num"><span class="rk"><span class="nc">σ</span> of the proportion</span><span class="rv">0.01386</span></span><span class="row txt"><span class="rk"><span class="nc">c̄</span> = 6.5</span><span class="rv"><span class="nc">σ</span> = 2.550</span></span></span>Count defects and the result is Poisson, where the variance <em>is</em> the mean. Either way nothing is estimated separately.</p>
+      <div class="eq">
+        <div class="eq-body" data-tex="\sigma_{\hat{p}} = \sqrt{\dfrac{\bar{p}(1-\bar{p})}{n}} \qquad \sigma_c = \sqrt{\bar{c}}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>σ</mi><mover accent="true"><mi>p</mi><mo>^</mo></mover></msub><mo>=</mo><msqrt><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo stretchy="false">)</mo></mrow><mi>n</mi></mfrac></mstyle></msqrt><mspace width="2em"/><msub><mi>σ</mi><mi>c</mi></msub><mo>=</mo><msqrt><mover accent="true"><mi>c</mi><mo>ˉ</mo></mover></msqrt></mrow><annotation encoding="application/x-tex">\sigma_{\hat{p}} = \sqrt{\dfrac{\bar{p}(1-\bar{p})}{n}} \qquad \sigma_c = \sqrt{\bar{c}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord katex-accent mtight"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-2.7em;"><span class="pstrut" style="height:2.7em;"></span><span class="mord mathnormal mtight">p</span></span><span style="top:-2.7em;"><span class="pstrut" style="height:2.7em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord mtight">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.44em;vertical-align:-0.7356em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7044em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.6644em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="2.48em" viewBox="0 0 400000 2592" preserveAspectRatio="xMinYMin slice"><path d="M424,2478
+c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514
+c0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20
+s-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121
+s209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081
+l0 -0c4,-6.7,10,-10,18,-10 H400000
+v40H1014.6
+s-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185
+c-2,6,-10,9,-24,9
+c-8,0,-12,-0.7,-12,-2z M1001 80
+h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7356em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:2em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.04em;vertical-align:-0.1222em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9178em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">c</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">ˉ</span></span></span></span></span></span></span></span></span><span style="top:-2.8778em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1222em;"><span></span></span></span></span></span></span></span></span></span></div>
+        <div class="eq-num">(10.1)</div>
+        <p class="eq-cap">Nothing on the right-hand side is estimated separately. For a count the mean fixes the spread, which is why an attribute chart has no range chart beside it — and why a disagreement between the two is information rather than noise.</p>
+      </div>
+          <p>Which makes a disagreement informative. <span class="note"><span class="k">free diagnostic</span>Observed variance over theoretical. One for a genuine binomial; above one and the subgroups were not rational.</span>If the observed scatter is wider than the binomial says it must be, the binomial assumption is wrong — and the usual reason is that the rate moved between subgroups.</p>
+        </div>
+      </div>
+    </section>
+    <section id="s2">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">10.2</span>
+          <h2>Same mean, different scatter</h2>
+          <p class="lead">Two processes, both averaging four per cent defective. <span class="note data"><span class="k">observed ÷ binomial variance</span><span class="row num"><span class="rk">one rate throughout</span><span class="rv">0.92</span></span><span class="row num"><span class="rk">rate drifting</span><span class="rv">1.64</span></span></span>One has a single rate behind every subgroup; in the other the rate drifts — a shift change, a supplier lot, an operator. The means are indistinguishable and the charts are not.</p>
+          <p>The second process is not wider. It is a process whose rate moved, and every limit computed from the binomial is too tight for it — so it will trip its own chart for a reason that has nothing to do with the thing being counted. This is what rational subgrouping means for attribute data.</p>
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l10_1_spread_is_not_free.png" width="2274" height="956" loading="lazy"
+             alt="The binomial sigma as a function of the rate, and two p-charts with the same mean and different scatter">
+        <figcaption><span class="fignum">Figure 10.1</span><span class="figtext">One set of
+        measurements, written down twice. Identical histogram bin for bin, identical mean and
+        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+      </figure>
+        </div>
+      </div>
+    </section>
+    <section id="s3">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">10.3</span>
+          <h2>Four charts, two questions</h2>
+          <p class="lead">The four attribute charts are usually presented as four names to learn. <span class="note"><span class="k">question one</span>Defective <em>items</em>, or <em>defects</em>? One is binomial, the other Poisson.</span>They are two binary questions, and once they are asked the name is determined.</p>
+          <p>Are you counting defective items — each thing inspected is either good or bad — or counting defects, where one thing can carry several? <span class="note data"><span class="k">the whole selection rule</span><span class="row num"><span class="rk">items, <span class="nc">n</span> constant</span><span class="rv">np-chart</span></span><span class="row num"><span class="rk">items, <span class="nc">n</span> varies</span><span class="rv">p-chart</span></span><span class="row num"><span class="rk">defects, <span class="nc">n</span> constant</span><span class="rv">c-chart</span></span><span class="row num"><span class="rk">defects, <span class="nc">n</span> varies</span><span class="rv">u-chart</span></span></span><span class="note"><span class="k">question two</span>Constant subgroup size, or not? That is the only other thing the choice depends on.</span>And is the subgroup size constant?</p>
+          <p>That is the entire decision. There is no fifth chart hiding behind a third question.</p>
+        </div>
+      </div>
+    </section>
+    <section id="s4">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">10.4</span>
+          <h2>When the limits have to breathe</h2>
+          <p class="lead">If the subgroup size varies, the limits vary with it — a bigger subgroup gives a tighter proportion, so the band narrows. <span class="note data"><span class="k">average-n limits against honest ones</span><span class="row num"><span class="rk">subgroup sizes</span><span class="rv">120–360</span></span><span class="row num"><span class="rk">false signals</span><span class="rv">0.77 %</span></span><span class="row num"><span class="rk">signals missed</span><span class="rv">0.10 %</span></span><span class="row num"><span class="rk">disagreement</span><span class="rv">0.87 %</span></span></span>The tempting shortcut is one set of limits computed at the average size.</p>
+          <p>Over sizes from 120 to 360 that shortcut disagrees with the honest limits on 0.87 % of subgroups, and most of the disagreement is false alarms rather than misses — it spends more than the whole false-alarm budget Level 6 designed for.<span class="note"><span class="k">Level 7's language</span>A fixed cost for nothing bought. The shortcut is not a trade, it is a leak.</span></p>
+      <figure>
+        <div class="rule"></div>
+        <img src="spc-lab/docs/l10_2_breathing_limits.png" width="2086" height="1044" loading="lazy"
+             alt="A p-chart whose limits breathe with each subgroup size, and where the lower limit clears zero">
+        <figcaption><span class="fignum">Figure 10.2</span><span class="figtext">Deming's funnel
+        on the same random draws. Correcting after every part doubles the variance exactly, so
+        the spread the customer receives is √2 times wider.</span></figcaption>
+      </figure>
+        </div>
+      </div>
+    </section>
+    <section id="s5">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">10.5</span>
+          <h2>Where the lower limit goes</h2>
+          <p class="lead">At low counts the lower limit goes negative, and a chart cannot draw a negative fraction. <span class="note data"><span class="k">at <span class="nc">n</span> = 200</span><span class="row num"><span class="rk">lower limit, raw</span><span class="rv">-0.16 %</span></span><span class="row num"><span class="rk">as drawn</span><span class="rv">0</span></span><span class="row num"><span class="rk"><span class="nc">n</span> needed</span><span class="rv">217</span></span></span>It gets clamped to zero, and a limit at zero is not a limit: the chart can only ever signal upward.</p>
+          <p>There is a threshold and it is exact. <span class="note"><span class="k">the rule of thumb</span>A weaker version of the same arithmetic. At <span class="tex" data-tex="n\bar{p} = 5"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">n\bar{p} = 5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7622em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">n</span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">5</span></span></span></span></span> the limit is still negative.</span>The lower limit clears zero only while <span class="tex" data-tex="n\bar{p} > k^{2}(1-\bar{p})"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo>&gt;</mo><msup><mi>k</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">n\bar{p} &gt; k^{2}(1-\bar{p})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7622em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">n</span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>, which at three sigma is 8.64. At four per cent defective that means subgroups of 217 — not the 125 the familiar “np̄ ≥ 5” rule of thumb allows.</p>
+  <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — where a p-chart's lower limit goes</span>
+          <span class="status" id="lab-status">SYSTEM-OK</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="p-canvas" height="300"
+              aria-label="A p-chart whose control limits move as the subgroup size and the defect rate change"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="n-slider">Subgroup size <span class="nc">n</span> — <b id="n-val">200</b></label>
+              <input type="range" id="n-slider" min="25" max="600" value="200" step="1">
+            </div>
+            <div>
+              <label for="p-slider">Fraction defective <span class="nc">p̄</span> — <b id="p-val">4.0 %</b></label>
+              <input type="range" id="p-slider" min="5" max="300" value="40" step="1">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>Upper limit</dt><dd class="ok" id="r-ucl">—</dd></div>
+              <div class="tile"><dt>Lower limit</dt><dd class="alarm" id="r-lcl">—</dd></div>
+              <div class="tile"><dt><span class="nc">n</span> for a lower limit</dt><dd class="neutral" id="r-need">—</dd></div>
+            </dl>
+            <p class="lab-note">Drag either one. The limits are computed here from the
+            same formulas <code>spclab.counting</code> is tested against — nothing is
+            looked up, and the lower limit is shown before it is clamped.</p>
+          </div>
+        </div>
+      </div>
+          <p>Drag the two controls. <span class="note"><span class="k">computed here</span>The lab runs the same formulas <code>spclab.counting</code> is tested against, in the browser.</span>The status reads ONE-SIDED whenever the lower limit has been clamped, and the third tile tells you the subgroup size that would fix it.</p>
+        </div>
+      </div>
+    </section>
+    <section id="s6">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">10.6</span>
+          <h2>Annex — capability when the shape is wrong</h2>
+          <p class="lead">Level 8 turned a spread into a ppm by walking out the tail of a normal curve. <span class="note data"><span class="k">P(16 or more defective)</span><span class="row num"><span class="rk">exact tail</span><span class="rv">0.00700</span></span><span class="row num"><span class="rk">normal approximation</span><span class="rv">0.00195</span></span><span class="row num"><span class="rk">ratio</span><span class="rv">×3.60</span></span></span>Counts are not normal, and the approximation fails in the direction that flatters the process.</p>
+          <p>The true probability is 3.6 times what the normal approximation reports. <span class="note"><span class="k">so what to do</span>Use the exact tail. It is one incomplete beta, and this site already had one for Level 5.</span>Quoting a normal-based ppm on count data is therefore not a rounding error — it understates the risk by a factor you would notice. The approximation improves as the counts grow; it is wrong where attribute data usually lives.</p>
+        </div>
+      </div>
+    </section>
+    <a class="next" href="index.html">
+        <span class="m">Ammar / SPC</span>
+        <span>Back to the curriculum &rarr;</span>
+      </a>
+  </main>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <span><a href="index.html">← SPC from First Principles</a></span>
+    <span class="sp">All figures computed</span>
+    <span><a href="https://portfolio.amohdnaw.xyz" target="_blank" rel="noopener">Portfolio ↗</a></span>
+    <span><a href="https://amohdnaw.github.io/case-studies" target="_blank" rel="noopener">Case studies ↗</a></span>
+    <span>© 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = {
+  ok: css('--signal-ok'), alarm: css('--signal-alarm'),
+  accent: css('--accent'), dim: css('--ink-dim'), ink: css('--ink')
+};
+const K = 3;
+
+/* ---- the same formulas spclab.counting is tested against ---------------
+   sigma of a proportion is a function of the mean, so there is nothing to
+   estimate: sqrt(p(1-p)/n). The lower limit is reported before clamping,
+   because "LCL = 0" and "the process cannot run low" are different claims. */
+const sigmaP = (n, p) => Math.sqrt(p * (1 - p) / n);
+function pLimits(n, p){
+  const s = sigmaP(n, p);
+  let raw = p - K * s;
+  if (Math.abs(raw) < 1e-12) raw = 0;          /* algebraically zero at the threshold */
+  return { cl: p, ucl: p + K * s, lclRaw: raw, lcl: Math.max(0, raw),
+           sigma: s, clamped: raw < 0 };
+}
+/* n > k^2 (1-p) / p, which is where the shop-floor "n p >= 5" comes from */
+const nForPositiveLcl = p => Math.floor(K * K * (1 - p) / p) + 1;
+window.__spclabPLimits = pLimits;
+window.__spclabNForLcl = nForPositiveLcl;
+
+const cv = document.getElementById('p-canvas');
+const ctx = cv.getContext('2d');
+const nSl = document.getElementById('n-slider');
+const pSl = document.getElementById('p-slider');
+const nVal = document.getElementById('n-val'), pVal = document.getElementById('p-val');
+const rU = document.getElementById('r-ucl'), rL = document.getElementById('r-lcl');
+const rN = document.getElementById('r-need'), stat = document.getElementById('lab-status');
+
+/* one fixed set of standardised draws, so only the controls move the picture */
+let seed = 20261010;
+const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+const Z = [];
+for (let i = 0; i < 40; i++){
+  let u = 0, v = 0;
+  while (u === 0) u = rnd();
+  while (v === 0) v = rnd();
+  Z.push(Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v));
+}
+
+function draw(){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = 300;
+  if (cv.width !== Math.round(W * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const n = +nSl.value, p = +pSl.value / 1000;
+  const L = pLimits(n, p);
+  const pad = { l: 46, r: 14, t: 18, b: 26 };
+  const top = Math.max(L.ucl * 1.25, p * 2.2, 0.01);
+  const bot = Math.min(L.lclRaw * 1.5, 0) - top * 0.04;
+  const y = v => pad.t + (top - v) / (top - bot) * (H - pad.t - pad.b);
+  const x = i => pad.l + i / (Z.length - 1) * (W - pad.l - pad.r);
+
+  /* the region below zero, which a chart cannot use */
+  if (L.clamped){
+    ctx.fillStyle = 'rgba(222,106,93,.16)';
+    ctx.fillRect(pad.l, y(0), W - pad.l - pad.r, y(bot) - y(0));
+  }
+
+  /* zero line, centre line, limits */
+  const line = (v, colour, dash, wide) => {
+    ctx.strokeStyle = colour; ctx.lineWidth = wide || 1.5; ctx.setLineDash(dash || []);
+    ctx.beginPath(); ctx.moveTo(pad.l, y(v)); ctx.lineTo(W - pad.r, y(v)); ctx.stroke();
+    ctx.setLineDash([]);
+  };
+  line(0, 'rgba(125,139,152,.55)', [3, 3]);
+  line(L.cl, COL.dim, [5, 4]);
+  line(L.ucl, COL.accent, [], 2);
+  if (!L.clamped) line(L.lclRaw, COL.accent, [], 2);
+  else            line(L.lclRaw, COL.alarm, [4, 4], 1.6);
+
+  /* the plotted proportions, from the fixed draws */
+  ctx.fillStyle = COL.ok;
+  for (let i = 0; i < Z.length; i++){
+    const v = Math.max(0, p + Z[i] * L.sigma);
+    ctx.beginPath(); ctx.arc(x(i), y(v), 3, 0, 2 * Math.PI); ctx.fill();
+  }
+
+  /* axis: the numbers a reader needs to trust the picture */
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  ctx.fillStyle = COL.dim; ctx.textAlign = 'right';
+  [0, L.cl, L.ucl].forEach(v => ctx.fillText((v * 100).toFixed(1) + '%', pad.l - 6, y(v) + 4));
+  ctx.textAlign = 'left';
+  ctx.fillStyle = COL.accent;
+  ctx.fillText('UCL', pad.l + 4, y(L.ucl) - 6);
+  if (L.clamped){
+    ctx.fillStyle = COL.alarm;
+    ctx.fillText('LCL would be ' + (L.lclRaw * 100).toFixed(2) + '% — clamped to zero',
+                 pad.l + 4, y(L.lclRaw) - 6);
+  } else {
+    ctx.fillStyle = COL.accent;
+    ctx.fillText('LCL', pad.l + 4, y(L.lclRaw) - 6);
+  }
+
+  nVal.textContent = n;
+  pVal.textContent = (p * 100).toFixed(1) + ' %';
+  rU.textContent = (L.ucl * 100).toFixed(2) + ' %';
+  rL.textContent = L.clamped ? '0 — clamped' : (L.lclRaw * 100).toFixed(2) + ' %';
+  rN.textContent = nForPositiveLcl(p);
+  if (L.clamped){ stat.textContent = 'ONE-SIDED'; stat.style.color = COL.alarm; }
+  else          { stat.textContent = 'TWO-SIDED'; stat.style.color = COL.ok; }
+}
+
+nSl.addEventListener('input', draw);
+pSl.addEventListener('input', draw);
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+</script>
+</body>
+</html>
