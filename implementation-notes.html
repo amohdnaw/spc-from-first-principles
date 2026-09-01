@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPC implementation notes</title>
+<style>
+body{margin:40px auto;max-width:1180px;padding:0 24px;background:#0d1114;color:#d7dee4;font:16px/1.5 system-ui,sans-serif}h1{font:600 30px Georgia,serif;color:#eef3f7}table{width:100%;border-collapse:collapse}th,td{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid #2a3138}th{color:#ffae00;font-size:12px;text-transform:uppercase;letter-spacing:.08em}code{color:#65ccaf}
+</style>
+</head>
+<body>
+<h1>SPC implementation notes</h1>
+<table>
+<thead><tr><th>When</th><th>Phase</th><th>Decision</th><th>Why</th><th>Evidence</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>2026-09-01</td><td>Visual-depth pilot</td><td>Pilot the new learning loop on SPC Level 7 and MSA Level 4 before changing the other seventeen levels.</td><td>Two representative hinge levels expose whether deeper Manim work improves intuition or only adds runtime.</td><td><code>specs/spc-visual-depth-pilot-contract.md</code></td><td>design approved; implementation not started</td></tr>
+<tr><td>2026-09-01</td><td>Visual-depth pilot</td><td>Use selective paired acts: Act A builds intuition and Act B applies one masked manufacturing case.</td><td>Two acts on every level would create padding. One act cannot both build a visual model and test a plant decision at the required depth.</td><td><code>diagrams/spc-msa-visual-depth-learning-loop.png</code></td><td>design approved</td></tr>
+<tr><td>2026-09-01</td><td>Visual-depth pilot</td><td>Keep reading open and make mastery optional, local, and based on one unseen-data decision.</td><td>The same artifact must serve learners, practitioners, reviewers, and platform users without locking the document behind course mechanics.</td><td><code>diagrams/spc-msa-visual-depth-four-layers.png</code></td><td>design approved</td></tr>
+<tr><td>2026-09-01</td><td>Contract review</td><td>Make the Level 7 transfer decision a choice among three Western Electric rule sets, scored by computed expected cost across four named case dimensions.</td><td>The first draft left the visible choice and feedback policy to the implementer.</td><td><code>specs/spc-visual-depth-pilot-contract.md:38</code></td><td>contract clarified</td></tr>
+<tr><td>2026-09-01</td><td>Contract review</td><td>Keep caption repair inside the pilot only for the two mismatched Level 7 figures.</td><td>The first draft pulled an unrelated Level 11 defect into the Level 7 pilot.</td><td><code>specs/spc-visual-depth-pilot-contract.md:69</code></td><td>scope corrected</td></tr>
+</tbody>
+</table>
+</body>
+</html>
