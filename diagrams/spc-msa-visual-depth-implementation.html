@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPC + MSA visual-depth pilot · implementation workflow</title>
+<style>
+:root{--ground:#0d1114;--panel:#14181c;--panel2:#1b2026;--rule:#2a3138;--strong:#3d4650;--ink:#d7dee4;--bright:#eef3f7;--dim:#8b98a4;--amber:#ffae00;--teal:#65ccaf;--red:#de6a5d;--blue:#58c4dd;--gutter:clamp(18px,3vw,42px)}
+*{box-sizing:border-box}html{background:var(--ground);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif}body{margin:0}header{padding:56px var(--gutter) 32px;border-bottom:1px solid var(--rule)}.eyebrow,.lane-label,.micro{font:600 11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}.eyebrow,.micro{color:var(--amber)}h1{max-width:1040px;margin:12px 0 14px;color:var(--bright);font:600 clamp(36px,5vw,68px)/.98 Georgia,serif;letter-spacing:-.03em}.dek{max-width:850px;margin:0;color:var(--dim);font-size:17px;line-height:1.55}.status{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.chip{border:1px solid var(--strong);padding:7px 10px;color:var(--ink);font:600 11px/1.2 ui-monospace,monospace;letter-spacing:.05em}.chip.ok{border-color:var(--teal);color:var(--teal)}main{padding:36px var(--gutter) 72px;max-width:1700px;margin:auto}.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:42px 0 16px}.section-head h2{margin:0;color:var(--bright);font:600 30px/1.1 Georgia,serif}.section-head p{max-width:700px;margin:0;color:var(--dim);line-height:1.5}.board{border:1px solid var(--rule);overflow-x:auto}.lane{display:grid;grid-template-columns:170px repeat(6,minmax(190px,1fr));min-width:1360px;border-bottom:1px solid var(--rule)}.lane:last-child{border-bottom:0}.lane-label{padding:20px 16px;background:var(--panel);color:var(--dim);border-right:1px solid var(--rule)}.cell{min-height:134px;padding:14px;border-right:1px solid var(--rule);position:relative}.cell:last-child{border-right:0}.cell.active{background:var(--panel2)}.cell.gate{background:linear-gradient(135deg,rgba(255,174,0,.09),transparent 58%)}.step{display:block;margin-bottom:9px;color:var(--amber);font:600 10px/1.2 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase}.cell h3{margin:0 0 8px;color:var(--bright);font-size:14px;line-height:1.25}.cell p{margin:0;color:var(--dim);font-size:12px;line-height:1.45}.cell strong{color:var(--ink)}.arrow:after{content:"→";position:absolute;right:-9px;top:52px;z-index:2;color:var(--amber);font-size:18px;background:var(--ground);padding:0 2px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{grid-column:span 4;border:1px solid var(--rule);background:var(--panel);padding:18px}.card h3{margin:0 0 10px;color:var(--bright);font-size:15px}.card p,.card li{color:var(--dim);font-size:13px;line-height:1.5}.card ul{padding-left:18px;margin:0}.card.risk{border-top:2px solid var(--red)}.card.rule{border-top:2px solid var(--teal)}.card.source{border-top:2px solid var(--blue)}table{width:100%;border-collapse:collapse;border:1px solid var(--rule);background:var(--panel)}th,td{padding:12px 14px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}th{color:var(--amber);font:600 10px/1.3 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase}td{font-size:13px;line-height:1.45;color:var(--dim)}td code{color:var(--teal);font-family:ui-monospace,monospace;font-size:12px}.gate-list{counter-reset:gates;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}.gate-item{background:var(--panel);padding:16px;min-height:132px}.gate-item:before{counter-increment:gates;content:"0" counter(gates);display:block;margin-bottom:16px;color:var(--amber);font:600 11px ui-monospace,monospace}.gate-item h3{margin:0 0 6px;color:var(--bright);font-size:14px}.gate-item p{margin:0;color:var(--dim);font-size:12px;line-height:1.45}.stop{margin-top:24px;border:1px solid var(--red);padding:18px 20px;display:flex;gap:16px;align-items:flex-start}.stop b{color:var(--red);font:700 11px ui-monospace,monospace;letter-spacing:.12em}.stop p{margin:0;color:var(--ink);line-height:1.5;font-size:13px}@media(max-width:980px){.card{grid-column:span 6}.gate-list{grid-template-columns:1fr 1fr}.section-head{align-items:start;flex-direction:column}}@media(max-width:640px){header{padding-top:34px}.card{grid-column:1/-1}.gate-list{grid-template-columns:1fr}.section-head h2{font-size:26px}}
+</style>
+<style>
+@media(max-width:640px){
+  .board{border:0;overflow:visible}
+  .lane{min-width:0;grid-template-columns:1fr;border:1px solid var(--rule);margin-bottom:12px}
+  .lane:last-child{border-bottom:1px solid var(--rule)}
+  .lane-label{border-right:0;border-bottom:1px solid var(--rule);padding:13px 14px;color:var(--amber)}
+  .cell{min-height:0;border-right:0;border-bottom:1px solid var(--rule);padding:14px 16px}
+  .cell:last-child{border-bottom:0}
+  .arrow:after{content:"↓";right:auto;left:16px;top:auto;bottom:-11px}
+  table{display:block;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Approved pilot · implementation map</div>
+  <h1>One learning loop, two repos, one joint lock.</h1>
+  <p class="dek">SPC Level 7 and MSA Level 4 stay independent builds. They share the same outcome contract: motion carries the causal claim, Python owns the numbers, the browser tests transfer, and human narration waits until both pilots pass.</p>
+  <div class="status"><span class="chip ok">Contracts approved</span><span class="chip">SPC plan · 12 tasks</span><span class="chip">MSA plan · 12 tasks</span><span class="chip">No wider rollout</span></div>
+</header>
+<main>
+  <div class="section-head"><div><span class="micro">Execution</span><h2>Swimlane workflow</h2></div><p>Columns are hard gates, not calendar phases. SPC and MSA can progress in parallel until the joint human-voice lock.</p></div>
+  <div class="board" role="table" aria-label="Pilot implementation swimlanes">
+    <div class="lane" role="row"><div class="lane-label">Lane / gate</div><div class="cell"><span class="step">01</span><h3>Story lock</h3><p>One visual claim and shot-level storyboard.</p></div><div class="cell"><span class="step">02</span><h3>Numeric spine</h3><p>Deterministic cases and answer keys.</p></div><div class="cell"><span class="step">03</span><h3>Acts + page</h3><p>Manim, challenge, reference, evidence.</p></div><div class="cell"><span class="step">04</span><h3>Browser proof</h3><p>Real flow and deliberate failures.</p></div><div class="cell"><span class="step">05</span><h3>Human proof</h3><p>Novice intuition and plant decision.</p></div><div class="cell"><span class="step">06</span><h3>Joint lock</h3><p>Recorder voice, full gates, stop.</p></div></div>
+    <div class="lane" role="row"><div class="lane-label">Shared decisions</div><div class="cell active arrow"><h3>Reject decorative motion</h3><p>Every shot must create, transform, test, or apply the model.</p></div><div class="cell active arrow"><h3>Python owns answers</h3><p>Embed JSON; JavaScript never reproduces statistics.</p></div><div class="cell active arrow"><h3>Reading stays open</h3><p>Video and mastery remain optional layers.</p></div><div class="cell active arrow"><h3>Break the gates</h3><p>Storage, media, cue, frame-rate, and faststart sabotage.</p></div><div class="cell active arrow"><h3>No coaching</h3><p>Observe where the model fails without script rescue.</p></div><div class="cell gate"><h3>Both or neither</h3><p>Human voice begins only after both levels lock.</p></div></div>
+    <div class="lane" role="row"><div class="lane-label">SPC Level 7</div><div class="cell arrow"><h3>Error purchase</h3><p>Persistent distributions, boundary, α/β areas, cost board.</p></div><div class="cell arrow"><h3>Expected cost</h3><p>Rule 1, rules 1+2, all four; shift, costs, cadence.</p></div><div class="cell arrow"><h3>Act A + Act B</h3><p>Then unseen rule-set choice and exact premise feedback.</p></div><div class="cell arrow"><h3>Saved mastery</h3><p>Retry changes seed; storage and MP4 failures degrade honestly.</p></div><div class="cell arrow"><h3>Explain + decide</h3><p>Novice states trade; practitioner chooses plant action.</p></div><div class="cell gate"><h3>Ammar records</h3><p>Two final takes; manifests switch from Kokoro to recorder.</p></div></div>
+    <div class="lane" role="row"><div class="lane-label">MSA Level 4</div><div class="cell arrow"><h3>Denominator world</h3><p>One gauge; moving study spread and drawing boundaries.</p></div><div class="cell arrow"><h3>Decision chain</h3><p>Job → denominator → ratio → neutral band → action.</p></div><div class="cell arrow"><h3>Act A + Act B</h3><p>Then unseen denominator/action choice with exact feedback.</p></div><div class="cell arrow"><h3>Single platform seam</h3><p>Move the index link into Level 4; sitewide count stays one.</p></div><div class="cell arrow"><h3>Explain + decide</h3><p>Novice explains denominator; practitioner chooses action.</p></div><div class="cell gate"><h3>Ammar records</h3><p>Two final takes; neutral conditional state remains unchanged.</p></div></div>
+  </div>
+
+  <div class="section-head"><div><span class="micro">Guardrails</span><h2>Gotchas that can ship a false pass</h2></div><p>Each item names the layer that owns the failure. Fixing another layer would mask the symptom.</p></div>
+  <div class="grid">
+    <article class="card risk"><h3>Generated page drift</h3><p><code>level-07.html</code> and <code>level-04.html</code> are outputs. Editing them alone produces a fix that disappears on the next chapter build.</p></article>
+    <article class="card risk"><h3>Duplicated statistics</h3><p>Inline JavaScript formulas can agree today and drift tomorrow. Python emits cases, answers, costs, ratios, and bands as JSON.</p></article>
+    <article class="card risk"><h3>Vacuous media gate</h3><p>A file existing proves nothing. Measure dimensions, frame rate, audio, cues, poster content, faststart order, and service manifest.</p></article>
+    <article class="card rule"><h3>Neutral is still neutral</h3><p>MSA's 10–30% band keeps its neutral tile. \"Improve\" names the next action, not a pass/fail verdict or a third traffic-light colour.</p></article>
+    <article class="card rule"><h3>One MSA platform link</h3><p>Move the existing index link. Adding a Level 4 link without removing it breaches the parent contract even if both links work.</p></article>
+    <article class="card rule"><h3>Voice is the last mutation</h3><p>Kokoro drives timing while shots change. RecorderService begins only after both browser and two-person gates pass.</p></article>
+    <article class="card source"><h3>SPC source path</h3><p><code>evidence.py</code> → <code>level07_mastery.py</code> → Manim/page JSON/tests. One result path.</p></article>
+    <article class="card source"><h3>MSA source path</h3><p><code>against_what.py</code> → <code>level04_mastery.py</code> → Manim/page JSON/tests. One result path.</p></article>
+    <article class="card source"><h3>Failure state ownership</h3><p>Storage errors affect persistence only. Media errors affect watched state only. Neither may block reading or invent a result.</p></article>
+  </div>
+
+  <div class="section-head"><div><span class="micro">Repository map</span><h2>Where things live</h2></div><p>The same responsibility has the same shape in both repositories, without a shared runtime package.</p></div>
+  <table>
+    <thead><tr><th>Concern</th><th>SPC repo</th><th>MSA repo</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Approved outcome</td><td><code>specs/spc-visual-depth-pilot-contract.md</code></td><td><code>specs/msa-visual-depth-pilot-contract.md</code></td><td>User-visible policy</td></tr>
+      <tr><td>Numerical truth</td><td><code>spc-lab/src/spclab/evidence.py</code></td><td><code>msa-lab/src/msalab/against_what.py</code></td><td>Python + pytest</td></tr>
+      <tr><td>Transfer cases</td><td><code>level07_mastery.py</code></td><td><code>level04_mastery.py</code></td><td>Python-generated JSON</td></tr>
+      <tr><td>Concept act</td><td><code>level07_scene.py</code></td><td><code>level04_scene.py</code></td><td>Manim Act A</td></tr>
+      <tr><td>Plant case</td><td><code>level07_case_scene.py</code></td><td><code>level04_case_scene.py</code></td><td>Manim Act B</td></tr>
+      <tr><td>Chapter source</td><td><code>tools/page-sources/level-07.html</code></td><td><code>tools/page-sources/level-04.html</code></td><td>Static shell + local JS</td></tr>
+      <tr><td>Chapter assembly</td><td><code>tools/chapterise.py</code></td><td><code>tools/chapterise.py</code></td><td>Generated DOM + embedded data</td></tr>
+      <tr><td>Media pipeline</td><td><code>spc-lab/build-media.sh</code></td><td><code>msa-lab/build-media.sh</code></td><td>Manim + ffmpeg</td></tr>
+      <tr><td>Implementation plan</td><td><code>docs/superpowers/plans/2026-09-01-spc-level-07-visual-depth-pilot.md</code></td><td><code>docs/superpowers/plans/2026-09-01-msa-level-04-visual-depth-pilot.md</code></td><td>Task-by-task execution</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-head"><div><span class="micro">Release gate</span><h2>Five proofs before voice lock</h2></div><p>The sixth step is recording, not another proof. A failure returns to the layer that owns it.</p></div>
+  <div class="gate-list">
+    <div class="gate-item"><h3>Visual</h3><p>Muted motion states the causal claim. Formulas arrive after geometry.</p></div>
+    <div class="gate-item"><h3>Numerical</h3><p>Page, acts, and tests read one Python result path at printed precision.</p></div>
+    <div class="gate-item"><h3>Browser</h3><p>Prediction, retry, saved state, storage failure, and media failure behave honestly.</p></div>
+    <div class="gate-item"><h3>Novice</h3><p>Explains the intuition without coaching or borrowed narration.</p></div>
+    <div class="gate-item"><h3>Practitioner</h3><p>Makes the plant decision from unseen data without coaching.</p></div>
+  </div>
+  <div class="stop"><b>STOP RULE</b><p>After both final checkpoints, stop. Do not rebuild another level, add accounts, issue certificates, change the frozen design, or generalise a shared package. Scaling needs a new approved contract.</p></div>
+</main>
+</body>
+</html>
