@@ -18,6 +18,7 @@ QUALITY="${QUALITY:--qh}"
 OUTDIR=media/videos
 POSTERS=../posters
 CAPTIONS=../captions
+LOGS=media/logs
 
 # scene file : class : poster name
 SCENES=(
@@ -50,9 +51,23 @@ for entry in "${SCENES[@]}"; do
   IFS=: read -r file klass poster <<<"$entry"
   printf '=== %-14s %s\n' "$klass" "(src/spclab/$file.py)"
 
+  mkdir -p "$LOGS"
+  log="$LOGS/$klass.log"
   PYTHONPATH=src $VENV/manim "$QUALITY" --disable_caching \
-    "src/spclab/$file.py" "$klass" >/dev/null 2>&1 \
-    || { echo "   RENDER FAILED"; exit 1; }
+    "src/spclab/$file.py" "$klass" >"$log" 2>&1 \
+    || { echo "   RENDER FAILED — tail of $log:"; tail -20 "$log"; exit 1; }
+
+  # narration.py is allowed to fall back from Kokoro to gTTS when the torch
+  # interpreter is missing, so a voice problem does not stop a build. Shipping
+  # that fallback is a different thing: the act would be in the wrong voice
+  # while the manifest below still said kokoro. This script used to send the
+  # render to /dev/null, which is exactly how the sibling MSA site shipped an
+  # act in gTTS for five days with every other artifact correct.
+  if grep -q 'kokoro unavailable' "$log"; then
+    echo "   KOKORO FELL BACK TO gTTS — refusing to ship:"
+    grep 'kokoro unavailable' "$log" | sed 's/^/     /'
+    exit 1
+  fi
 
   mp4=$(find "$OUTDIR/$file" -name "$klass.mp4" -not -path '*partial*' | head -1)
   [ -z "$mp4" ] && { echo "   no mp4 produced"; exit 1; }
@@ -81,14 +96,26 @@ for entry in "${SCENES[@]}"; do
     cues=0
   fi
 
-  # poster: best of 11 candidate frames by ink coverage
-  PYTHONPATH=src $VENV/python - "$mp4" "$POSTERS/$poster.jpg" <<'PY'
-import subprocess, sys, tempfile
+  # poster: best of 11 candidate frames by ink coverage. The same pass writes
+  # the build manifest, because it is the only place that knows what the poster
+  # scorer chose — and a poster time no gate can read is a poster time that can
+  # silently go back to landing on an empty transition frame.
+  PYTHONPATH=src $VENV/python - \
+    "$mp4" "$POSTERS/$poster.jpg" "${mp4%.mp4}.manifest.json" \
+    "$file" "$klass" "$poster" "${SPCLAB_VOICE_SERVICE:-kokoro}" \
+    "${SPCLAB_VOICE:-0}" "$cues" <<'PY'
+import json, subprocess, sys, tempfile
 from collections import Counter
+from pathlib import Path
 from PIL import Image
-mp4, out = sys.argv[1], sys.argv[2]
-dur = float(subprocess.run(['ffprobe','-v','error','-show_entries','format=duration',
-                            '-of','csv=p=0',mp4],capture_output=True,text=True).stdout)
+mp4, out, manifest, scene, klass, poster, service, voice, cues = sys.argv[1:10]
+info = json.loads(subprocess.run(
+    ['ffprobe','-v','error','-show_format','-show_streams','-of','json',mp4],
+    capture_output=True,text=True,check=True).stdout)
+vid = next(s for s in info['streams'] if s['codec_type'] == 'video')
+aud = next((s for s in info['streams'] if s['codec_type'] == 'audio'), None)
+dur = float(info['format']['duration'])
+num, den = vid['r_frame_rate'].split('/')
 def ink(p):
     im = Image.open(p).convert('RGB').resize((320,180))
     px = list(im.getdata()); bg = Counter(px).most_common(1)[0][0]
@@ -102,7 +129,24 @@ with tempfile.TemporaryDirectory() as td:
         s = ink(f)
         if s > best[0]: best = (s, t)
 subprocess.run(['ffmpeg','-v','error','-ss',str(best[1]),'-i',mp4,'-frames:v','1','-q:v','4',out,'-y'],check=True)
-print(f"   poster t={best[1]}s ink={best[0]*100:.1f}%")
+Path(manifest).write_text(json.dumps({
+    'scene': scene,
+    'klass': klass,
+    'mp4': Path(mp4).name,
+    'service': service,
+    'voice': voice not in ('', '0', 'false', 'no', 'off'),
+    'duration': round(dur, 3),
+    'width': vid['width'],
+    'height': vid['height'],
+    'fps': round(float(num)/float(den), 3),
+    'audio_codec': aud['codec_name'] if aud else None,
+    'poster': f'posters/{poster}.jpg',
+    'poster_time': best[1],
+    'poster_ink': round(best[0], 5),
+    'captions': f'captions/{poster}.vtt' if int(cues) else None,
+    'cues': int(cues),
+}, indent=2) + '\n')
+print(f"   poster t={best[1]}s ink={best[0]*100:.1f}%  manifest {Path(manifest).name}")
 PY
 
   printf '   %.1fs  audio=%s  captions=%s cues\n' "$dur" "${has_audio:-none}" "$cues"

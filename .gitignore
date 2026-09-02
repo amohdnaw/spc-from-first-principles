@@ -12,6 +12,7 @@ spc-lab/media/voiceovers/
 spc-lab/media/images/
 spc-lab/media/texts/
 spc-lab/media/Tex/
+spc-lab/media/logs/
 cv-*.pdf
 tools/node_modules/
 tools/package-lock.json
