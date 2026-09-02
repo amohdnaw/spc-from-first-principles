@@ -28,6 +28,7 @@ SCENES=(
   "level05_scene:Level05:level05"
   "level06_scene:Level06:level06"
   "level07_scene:Level07:level07"
+  "level07_case_scene:Level07Case:level07-case"
   "level08_scene:Level08:level08"
   "level09_scene:Level09:level09"
   "scenes:SPCGallery:gallery"
