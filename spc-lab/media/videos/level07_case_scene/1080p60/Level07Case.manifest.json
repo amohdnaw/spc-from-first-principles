@@ -1,0 +1,17 @@
+{
+  "scene": "level07_case_scene",
+  "klass": "Level07Case",
+  "mp4": "Level07Case.mp4",
+  "service": "kokoro",
+  "voice": true,
+  "duration": 284.383,
+  "width": 1920,
+  "height": 1080,
+  "fps": 60.0,
+  "audio_codec": "aac",
+  "poster": "posters/level07-case.jpg",
+  "poster_time": 177.74,
+  "poster_ink": 0.18066,
+  "captions": "captions/level07-case.vtt",
+  "cues": 73
+}

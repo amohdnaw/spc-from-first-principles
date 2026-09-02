@@ -1,0 +1,294 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.259
+One masked line. It plots one subgroup of film thickness
+
+2
+00:00:04.359 --> 00:00:09.164
+every sampling interval, and nothing else about it matters yet.
+
+3
+00:00:09.250 --> 00:00:12.546
+This is the same process Act A was looking
+
+4
+00:00:12.646 --> 00:00:15.942
+at, drawn above the line it is running on.
+
+5
+00:00:16.033 --> 00:00:20.162
+Somewhere along this run the mean really moves, and then
+
+6
+00:00:20.262 --> 00:00:24.165
+it stays moved. Watch how little the picture changes.
+
+7
+00:00:24.250 --> 00:00:28.085
+The line is sampled on a clock. One step along the
+
+8
+00:00:28.185 --> 00:00:32.886
+strip is one interval, and every interval is the same length.
+
+9
+00:00:32.983 --> 00:00:37.570
+Sometimes the chart alarms and nothing has changed. The line
+
+10
+00:00:37.670 --> 00:00:41.163
+stops for one check, and that is charged once.
+
+11
+00:00:41.250 --> 00:00:45.518
+Once. It does not keep costing anything after the check.
+
+12
+00:00:47.016 --> 00:00:51.516
+And while nobody has noticed, every subgroup after the move is
+
+13
+00:00:51.616 --> 00:00:56.190
+produced against a mean that is already wrong. That is reworked
+
+14
+00:00:56.290 --> 00:00:59.900
+at the next step, and it is charged by the minute.
+
+15
+00:01:00.000 --> 00:01:03.612
+Nobody has to be told which of those two is the
+
+16
+00:01:03.712 --> 00:01:08.588
+expensive one. One block stopped. The other one is still going.
+
+17
+00:01:08.683 --> 00:01:12.195
+Four facts about one line. Everything after
+
+18
+00:01:12.295 --> 00:01:14.967
+this is arithmetic on those four.
+
+19
+00:01:16.266 --> 00:01:20.297
+Three rule sets are on offer for this line. Not every
+
+20
+00:01:20.397 --> 00:01:24.974
+combination — these three, in the order the page lists them.
+
+21
+00:01:25.066 --> 00:01:30.143
+Each one buys its alarms at a rate that never changes. That rate is
+
+22
+00:01:30.243 --> 00:01:34.470
+the price. What it buys is what we are about to look at.
+
+23
+00:01:34.566 --> 00:01:39.314
+One point beyond three sigma, and nothing else. It waits.
+
+24
+00:01:39.400 --> 00:01:43.956
+Add the two-of-three rule and the same run is flagged sooner.
+
+25
+00:01:44.050 --> 00:01:47.694
+All four, and the same run is flagged sooner again —
+
+26
+00:01:47.794 --> 00:01:52.374
+and flagged back there, in the stretch where nothing had changed.
+
+27
+00:01:52.466 --> 00:01:56.310
+So the plate that alarms earliest is the same plate that
+
+28
+00:01:56.410 --> 00:02:00.816
+alarms when nothing happened. Both halves of the purchase are on
+
+29
+00:02:00.916 --> 00:02:04.126
+the strip, and neither of them has a price yet.
+
+30
+00:02:04.216 --> 00:02:08.628
+Pick one now. The prices are off screen on purpose.
+
+31
+00:02:09.216 --> 00:02:12.595
+Now the prices, and every one of them is carried
+
+32
+00:02:12.695 --> 00:02:16.364
+out of that strip rather than typed onto the screen.
+
+33
+00:02:16.450 --> 00:02:20.837
+One point beyond three sigma waits the longest, so its stack
+
+34
+00:02:20.937 --> 00:02:24.726
+of wasted minutes is the tallest thing on the board.
+
+35
+00:02:24.816 --> 00:02:27.736
+Two rules cut the waiting by more than
+
+36
+00:02:27.836 --> 00:02:30.596
+half, and buy fewer alarms doing it.
+
+37
+00:02:30.683 --> 00:02:33.975
+All four cut the waiting again, and this time
+
+38
+00:02:34.075 --> 00:02:36.991
+the alarm half goes up rather than down.
+
+39
+00:02:37.083 --> 00:02:41.100
+Three prices, one case. And the plate that bought the
+
+40
+00:02:41.200 --> 00:02:44.519
+fewest false alarms is not the one that won.
+
+41
+00:02:44.616 --> 00:02:48.234
+Same four facts, three prices. One is smaller,
+
+42
+00:02:48.334 --> 00:02:51.548
+and that is arithmetic rather than taste.
+
+43
+00:02:51.633 --> 00:02:55.082
+Two terms, in the colours of the two stacks they
+
+44
+00:02:55.182 --> 00:02:58.853
+were built from. Nothing else is in the arithmetic.
+
+45
+00:02:58.950 --> 00:03:04.082
+The cheapest one on this line, priced from this line's own four facts.
+
+46
+00:03:04.166 --> 00:03:08.770
+Three of those four facts are about to be held completely still.
+
+47
+00:03:08.866 --> 00:03:12.482
+One row is still lit. Before I touch it: decide
+
+48
+00:03:12.582 --> 00:03:16.830
+whether moving it can change which rule set is correct.
+
+49
+00:03:17.416 --> 00:03:21.533
+The line now expects a 3 sigma move rather than
+
+50
+00:03:21.633 --> 00:03:24.852
+a 1 sigma one. That is the only edit.
+
+51
+00:03:24.950 --> 00:03:28.920
+Every rule set now sees it in about two subgroups, so
+
+52
+00:03:29.020 --> 00:03:32.914
+the waiting collapses for all three of them at once.
+
+53
+00:03:33.000 --> 00:03:36.851
+The rates the plates buy their alarms at did not move
+
+54
+00:03:36.951 --> 00:03:40.580
+at all. The purchase price is exactly what it was.
+
+55
+00:03:40.666 --> 00:03:43.981
+At this scale all three are nearly nothing,
+
+56
+00:03:44.081 --> 00:03:46.998
+so the board rescales to what is left.
+
+57
+00:03:47.083 --> 00:03:49.958
+I changed one line of the case. The
+
+58
+00:03:50.058 --> 00:03:53.103
+rules did not change. The answer did.
+
+59
+00:03:53.200 --> 00:03:57.641
+The extra rules still cost what they always cost. Against a
+
+60
+00:03:57.741 --> 00:04:01.644
+move this size they simply have nothing left to buy.
+
+61
+00:04:01.733 --> 00:04:06.289
+Put the arithmetic away. It has already done its job.
+
+62
+00:04:06.383 --> 00:04:09.340
+What is left is the line, back at full
+
+63
+00:04:09.440 --> 00:04:13.603
+width, running the rule set this case actually chose.
+
+64
+00:04:13.700 --> 00:04:18.136
+Every subgroup it plotted, in the order it plotted them.
+
+65
+00:04:18.233 --> 00:04:20.197
+It alarms here.
+
+66
+00:04:20.283 --> 00:04:23.214
+Everything from that subgroup on is held
+
+67
+00:04:23.314 --> 00:04:25.943
+at the next step instead of shipped.
+
+68
+00:04:26.033 --> 00:04:29.079
+Everything between the move and the alarm
+
+69
+00:04:29.179 --> 00:04:31.765
+is pulled back and looked at again.
+
+70
+00:04:31.850 --> 00:04:34.903
+And the reason is written down against the
+
+71
+00:04:35.003 --> 00:04:37.606
+size of move it was bought to catch.
+
+72
+00:04:37.700 --> 00:04:41.017
+You are not choosing a rule set. You are choosing
+
+73
+00:04:41.117 --> 00:04:44.296
+what the next shift does when the chart alarms.
+

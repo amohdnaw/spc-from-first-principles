@@ -39,7 +39,7 @@ TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50}
 def _spelled(claim: str, unit: str) -> int:
     """Parse the spelled number before `unit`, including "twenty-four".
 
-    The first version matched `(\w+)`, which stops at the hyphen and read
+    The first version matched `(\\w+)`, which stops at the hyphen and read
     "twenty-four minutes" as four. The runtime claim crossed twenty the moment
     Level 5 rendered, so the gate failed for its own vocabulary rather than for
     the page — a check that cannot read the site's own house style is a check
@@ -106,6 +106,10 @@ def test_runtime_claim_matches_the_rendered_acts():
     """The spoken runtime is the sum of the level acts, floored to the minute."""
     acts = sorted((REPO / "spc-lab/media/videos").glob("level*_scene/1080p60/*.mp4"))
     assert acts, "no level acts rendered - cannot check the runtime claim"
+    level07_case = (REPO / "spc-lab/media/videos/level07_case_scene/"
+                    "1080p60/Level07Case.mp4")
+    assert level07_case in acts, (
+        "Level07Case is a level act and must count toward the index runtime")
     total = sum(_act_seconds(a) for a in acts)
     claimed = _spelled(_claim(), "minutes")
     assert claimed == int(total // 60), (
