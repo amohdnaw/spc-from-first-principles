@@ -792,6 +792,256 @@ def chapter_10(K):
     ]
 
 
+# --------------------------------------------------------- Level 7's mastery loop
+# Four optional stages down the chapter: predict, watch Act A, watch Act B,
+# decide on a case the learner has not seen. Built here rather than typed into
+# the page source for one reason: every label, every case fact and every total
+# is read out of `spclab.level07_mastery`, so the page cannot hold a second copy
+# of a word or a number that the module and the acts already agree on.
+#
+# The page script that drives these stages lives in the page source. It selects,
+# compares and prints. It computes nothing.
+MASTERY_FIELD_UNITS = {
+    "expected shift size": "{value:.1f} sigma",
+    "false-alarm cost": "{value:.{dp}f} per event",
+    "missed-shift cost": "{value:.{dp}f} per minute",
+    "sampling cadence": "{value:.0f} min per subgroup",
+}
+
+MASTERY_ACTS = (("act-a", "Act A"), ("act-b", "Act B"))
+
+# What the learner is asked to predict before Act A explains it. The values are
+# stored under `spc-fp:mastery:v1`, so they are identifiers rather than prose.
+MASTERY_PREDICTIONS = (
+    ("more-signals", "Both errors move: a real shift is caught sooner, and a false "
+                     "alarm arrives more often."),
+    ("fewer-false-alarms", "Fewer false alarms, because a pattern needs several points "
+                           "to agree before anything fires."),
+    ("sooner-only", "A real shift is caught sooner and the false-alarm rate stays "
+                    "where it was."),
+)
+
+
+def mastery_07():
+    """The four stage blocks, the case data, and the paths that follow the decision.
+
+    Returns `(predict, act_a, act_b, transfer)`. The two act builders wrap an
+    already-extracted figure, so the player the learner watches is the element the
+    page source declares, with its poster and its caption track intact.
+    """
+    import json
+    from spclab.evidence import (
+        ALPHA_1, ARL0_ALL, ARL0_ONE_RULE, ARL1_ALL, ARL1_ONE_RULE, ARL_BIG_ALL,
+        ARL_BIG_ONE, BIG_SHIFT, LIMIT, POWER_AT, SHIFT, p_value,
+    )
+    from spclab.level07_mastery import (
+        CASE_FIELDS, CASE_SEEDS, OPTION_LABELS, PRINTED_DECIMALS,
+        challenge_case, neutral_case,
+    )
+
+    def printed_fields(case):
+        return {name: MASTERY_FIELD_UNITS[name].format(
+                    value=case[name.replace(" ", "_").replace("-", "_")],
+                    dp=PRINTED_DECIMALS)
+                for name in CASE_FIELDS}
+
+    def served(seed):
+        case = challenge_case(seed)
+        return {
+            "seed": case["seed"],
+            "surface_story": case["surface_story"],
+            "deciding_field": case["deciding_field"],
+            "answer": case["answer"],
+            "printed_fields": printed_fields(case),
+            "options": [{"id": o["id"], "label": o["label"],
+                         "printed": f"{o['expected_cost']:.{PRINTED_DECIMALS}f}"}
+                        for o in case["options"]],
+        }
+
+    bank = {
+        "printed_decimals": PRINTED_DECIMALS,
+        "case_fields": list(CASE_FIELDS),
+        "option_labels": dict(OPTION_LABELS),
+        "acts": [{"id": i, "title": t} for i, t in MASTERY_ACTS],
+        "seeds": list(CASE_SEEDS),
+        "cases": {str(seed): served(seed) for seed in CASE_SEEDS},
+    }
+    # `</script>` inside a data block would close it, so the three characters
+    # that could start a tag are escaped rather than trusted.
+    data = (json.dumps(bank, indent=1).replace("<", "\\u003c")
+            .replace(">", "\\u003e").replace("&", "\\u0026"))
+
+    def radios(name, options):
+        return "\n".join(
+            f'{P}      <label><input type="radio" name="{name}" value="{value}">'
+            f"{label}</label>"
+            for value, label in options)
+
+    predict = "\n".join([
+        f'{P}<div class="mastery" id="m-predict">',
+        f'{P}  <p class="m-k">Stage 1 of 4 · predict</p>',
+        f'{P}  <form id="m-predict-form">',
+        f'{P}    <fieldset class="m-opts">',
+        f'{P}      <legend>Before Act A: switch all four rules on. What moves?</legend>',
+        radios("m-prediction", MASTERY_PREDICTIONS),
+        f"{P}    </fieldset>",
+        f'{P}    <div class="m-btns">'
+        f'<button class="m-btn" type="submit">Record my prediction</button></div>',
+        f"{P}  </form>",
+        f'{P}  <p class="m-status" id="m-predict-status" role="status" '
+        'aria-live="polite"></p>',
+        f"{P}</div>",
+    ])
+
+    def act(act_id, title, stage, cue, figure, shots):
+        lines = [f'{P}<div class="mastery" id="m-{act_id}" data-act="{act_id}">',
+                 f'{P}  <p class="m-k">Stage {stage} of 4 · watch {title}</p>',
+                 figure,
+                 f'{P}  <details class="m-text">',
+                 f"{P}    <summary>{title} transcript · {cue}</summary>"]
+        lines += [f"{P}    <p>{shot}</p>" for shot in shots]
+        lines += [f"{P}  </details>",
+                  f'{P}  <p class="m-status" role="status" aria-live="polite"></p>',
+                  f"{P}</div>"]
+        return "\n".join(lines)
+
+    first = challenge_case(CASE_SEEDS[0])
+    flipped = neutral_case(first)
+    labels = dict(OPTION_LABELS)
+    totals = {o["id"]: f"{o['expected_cost']:.{PRINTED_DECIMALS}f}"
+              for o in first["options"]}
+    field_rows = "\n".join(
+        f'{P}      <label><input type="radio" name="m-field" value="{name}">'
+        f"{name}</label>" for name in CASE_FIELDS)
+
+    transfer = "\n".join([
+        f'{P}<div class="mastery" id="m-transfer">',
+        f'{P}  <p class="m-k">Stage 4 of 4 · decide on unseen data</p>',
+        f'{P}  <div class="m-panel">',
+        f'{P}    <div class="m-head"><span>one masked line · four stated facts</span>'
+        f'<span id="m-case-seed">case</span></div>',
+        f'{P}    <div class="m-body">',
+        f'{P}      <p class="m-story" id="m-case-story"></p>',
+        f'{P}      <dl class="m-facts" id="m-case-facts"></dl>',
+        f"{P}    </div>",
+        f"{P}  </div>",
+        f'{P}  <form id="m-transfer-form">',
+        f'{P}    <fieldset class="m-opts">',
+        f"{P}      <legend>Which rule set earns its false alarms on this line?</legend>",
+        radios("m-ruleset", [(key, labels[key]) for key in labels]),
+        f"{P}    </fieldset>",
+        f'{P}    <fieldset class="m-opts">',
+        f"{P}      <legend>Which stated fact decides it?</legend>",
+        field_rows,
+        f"{P}    </fieldset>",
+        f'{P}    <div class="m-btns">'
+        f'<button class="m-btn" type="submit">Check my decision</button></div>',
+        f"{P}  </form>",
+        f'{P}  <p class="m-status" id="m-verdict" role="status" aria-live="polite"></p>',
+        f'{P}  <ul class="m-costs" id="m-costs"></ul>',
+        f'{P}  <div class="m-btns"><button class="m-btn" type="button" id="m-retry" '
+        "hidden>Retry with new data</button></div>",
+        f'{P}  <p class="m-status" id="m-save-status" role="status" aria-live="polite"></p>',
+        f"{P}</div>",
+
+        f'{P}<div class="mastery m-sec" id="m-secondary">',
+        f'{P}  <p class="m-k">After the decision</p>',
+        f"{P}  <details>",
+        f"{P}    <summary>Use this when…</summary>",
+        f"{P}    <p>Buy the extra rules when the shift you are afraid of is small, when"
+        " one stop for a check costs less than the minutes a drift runs unseen, and when"
+        " subgroups are far enough apart that every subgroup of delay is expensive."
+        " Stay on rule 1 when the fault you plan for is large, when a stop is the"
+        " expensive event on the line, or when you sample fast enough that the next"
+        " point arrives before the damage does.</p>",
+        f"{P}    <p>Nothing here is a house rule. The three totals under Evidence are"
+        " the answer for the line in front of you, and they move when the line"
+        " does.</p>",
+        f"{P}  </details>",
+        f"{P}  <details>",
+        f"{P}    <summary>Evidence</summary>",
+        f'{P}    <ul class="m-ev">',
+        f"{P}      <li>Priced by <b>spclab.level07_mastery</b>: <b>challenge_case(seed)</b>"
+        " states the case, <b>expected_cost()</b> prices each rule set, and"
+        " <b>neutral_case()</b> proves the named field is the one that decides it.</li>",
+        f'{P}      <li>Case seed <b id="m-ev-seed">—</b>, from a bank of'
+        f" {len(CASE_SEEDS)}.</li>",
+        f"{P}      <li>Checked by <b>test_level07_mastery.py</b>, which reprices every"
+        " case, and <b>test_level07_page.py</b>, which reads this page and compares"
+        " what it serves against the module.</li>",
+        f"{P}    </ul>",
+        f'{P}    <ul class="m-costs" id="m-ev-costs"></ul>',
+        f"{P}  </details>",
+        f'{P}  <a class="m-task" href="https://spc.amohdnaw.xyz/app#g-weco" '
+        'target="_blank" rel="noopener">Open the WECO task →</a>',
+        f"{P}</div>",
+
+        f'{P}<script type="application/json" id="level07-cases">{data}</script>',
+    ])
+
+    act_a_shots = (
+        "A1, the line that will not move. One process distribution and one"
+        " three-sigma boundary are drawn and then left alone for the whole act."
+        " Everything that follows is an area measured against that same line.",
+        "A2, two areas, then two letters. The distribution is copied and slid one"
+        f" sigma to the right. The tail outside the boundary on the unmoved curve is"
+        f" {ALPHA_1*100:.2f} % of subgroups; the part of the shifted curve still inside"
+        f" the boundary is {(1-POWER_AT[SHIFT])*100:.1f} %. Only after both areas are"
+        " on screen are they named α and β.",
+        "A3, sweeping the shift, watching the area. The shifted curve walks across"
+        f" the boundary and the caught area grows with it: {POWER_AT[1.0]*100:.1f} % at"
+        f" one sigma, {POWER_AT[2.0]*100:.1f} % at two, {POWER_AT[LIMIT]*100:.1f} % when"
+        " the mean lands on the limit. The limit is then dragged in to two sigma, and"
+        " the false-alarm area fattens by exactly as much as the missed area thins.",
+        "A4, one point, two answers. A single subgroup lands at two and a half sigma."
+        " The chart returns a verdict, in control, and the same point returns a"
+        f" p-value of {p_value(2.5):.4f}. Two objects, not two labels on one number.",
+        "A5, the cost board, three stops. The rules switch on one at a time and both"
+        f" run lengths shorten together: a false alarm every {ARL0_ONE_RULE:.0f}"
+        f" subgroups becomes every {ARL0_ALL:.0f}, while the wait to catch a"
+        f" {SHIFT:.0f}σ shift falls from {ARL1_ONE_RULE:.1f} subgroups to"
+        f" {ARL1_ALL:.1f}.",
+        "A6, same purchase, different shift. The false-alarm rate is held still and the"
+        f" shift is moved to {BIG_SHIFT:.0f}σ. The catch bar barely moves:"
+        f" {ARL_BIG_ONE:.1f} subgroups against {ARL_BIG_ALL:.1f}. The price was the"
+        " same and almost nothing was bought, which is the question Act B answers on a"
+        " real line.",
+    )
+
+    act_b_shots = (
+        "B1, four facts, built before they are named. One masked line runs as a strip"
+        " of subgroups. The four things the plant knows are drawn as objects first and"
+        " labelled second: how far the mean moves when it moves, what a stop costs,"
+        " what a minute of unseen drift costs, and how far apart the subgroups are.",
+        "B2, commit before the prices. Three plates appear, one per rule set, and the"
+        " act asks for a choice while all three are still empty. Nothing on screen"
+        " favours one yet.",
+        "B3, three prices out of one case. Each plate is filled from the same strip:"
+        " the alarms it would raise, priced per event, stacked on the minutes it would"
+        f" wait, priced per minute. On this case that is {totals['rule-1']} for"
+        f" {labels['rule-1']}, {totals['rules-1-2']} for {labels['rules-1-2']} and"
+        f" {totals['all-four']} for {labels['all-four']}. The plate with the smallest"
+        " alarm bill is not the winner.",
+        "B4, move one line of the case. Every fact is held except the expected shift"
+        f" size, which moves to {flipped['expected_shift_size']:.0f} sigma. The"
+        f" purchase price of each rule set does not move, and the winner walks from"
+        f" {labels[first['answer']]} to {labels[flipped['answer']]}. The answer was"
+        " never a property of the rules.",
+        "B5, what the next shift does. The act closes on the action a supervisor takes"
+        " on this line, not on a restatement of the arithmetic.",
+    )
+
+    def act_a(figure):
+        return act("act-a", "Act A", 2, "six shots", figure, act_a_shots)
+
+    def act_b(figure):
+        return act("act-b", "Act B", 3, "five shots", figure, act_b_shots)
+
+    # `totals` goes back to the prose as well: section 7.6 quotes the same three
+    # printed strings the act renders and the challenge scores against.
+    return predict, act_a, act_b, transfer, totals
+
+
 def chapter_07(K):
     # imported here rather than at module scope: the trade table is simulated at
     # import, and regenerating the other seven chapters should not pay for it
@@ -802,6 +1052,7 @@ def chapter_07(K):
     )
     gain_small = ARL1_ONE_RULE / ARL1_ALL
     gain_big = ARL_BIG_ONE / ARL_BIG_ALL
+    predict, act_a, act_b, transfer, case_totals = mastery_07()
     return [
         ("s1", "7.1", "The other way to be wrong", [
             para("Level 6 priced one decision: a point outside three sigma. It costs"
@@ -826,6 +1077,7 @@ def chapter_07(K):
                  note("spoken · 0:48", text="“That is the error Level 6 never "
                       "mentioned, and it is the bigger one.”", speak=True, serif=True)),
             "      " + K["fig"]("l07_1_two_errors.png"),
+            predict,
         ]),
         ("s2", "7.2", "Power", [
             para("Put a number on it at every shift size and you have the power curve:"
@@ -847,7 +1099,7 @@ def chapter_07(K):
                  " get around that single sentence.",
                  note("spoken · 1:36", text="“One point, one chance. That is the whole "
                       "limitation.”", speak=True, serif=True)),
-            "      " + K["fig"]("Level07.mp4"),
+            act_a("      " + K["fig"]("Level07.mp4")),
         ]),
         ("s3", "7.3", "The chart throws evidence away", [
             para("Consider a point at two and a half sigma. It is inside the limits, so"
@@ -913,6 +1165,30 @@ def chapter_07(K):
                  note("spoken · 3:44", text="“The cost is fixed. The benefit is the "
                       "shift you fear.”", speak=True, serif=True)),
             "      " + K["fig"]("l07_2_the_trade.png"),
+        ]),
+        ("s6", "7.6", "Which rule set earns its false alarms here", [
+            para("That answer is still one step short of a decision. The cost of a rule"
+                 " is fixed and its benefit is the shift you fear, but a plant does not"
+                 " buy shifts — it buys minutes of scrap and hours of stopped line. Four"
+                 " facts turn the trade into money: how far the mean moves when it moves,"
+                 " what one unnecessary stop costs, what a minute of unseen drift costs,"
+                 " and how long the wait between subgroups is.",
+                 datanote(("rule 1", case_totals["rule-1"]),
+                          ("rules 1 + 2", case_totals["rules-1-2"]),
+                          ("all four", case_totals["all-four"]),
+                          k="one masked line, priced"), lead=True),
+            para("Act B states those four facts for one masked line, prices all three"
+                 " rule sets from them, and then moves exactly one of the four. Nothing"
+                 " about the rules changes and the cheapest rule set changes anyway, which"
+                 " is the whole claim: the answer is a property of the line."),
+            para("What follows is optional. It serves one case the acts never show, and"
+                 " it asks for both halves of the decision — the rule set, and which of"
+                 " the four stated facts made it the cheapest. Repeating the totals above"
+                 " cannot pass, because the case underneath them is a different line.",
+                 note("nothing is gated", text="Skip it and the chapter is unchanged. "
+                      "Passing writes one entry in this browser and nowhere else.")),
+            act_b("      " + K["fig"]("Level07Case.mp4")),
+            transfer,
         ]),
     ]
 
@@ -1577,7 +1853,7 @@ CHAPTERS = {
         "number": 7, "word": "seven",
         "before": "Level 6 — limits are a hypothesis test",
         "after": "Level 8 — capability",
-        "estimate": "5 sections · 1 act · ~8 min read",
+        "estimate": "6 sections · 2 acts · ~10 min read",
         "toc": [("7.1", "s1", "The other way to be wrong",
                  "α is crying wolf; β is staying silent, and nobody counts it"),
                 ("7.2", "s2", "Power",
@@ -1587,7 +1863,9 @@ CHAPTERS = {
                 ("7.4", "s4", "Four rules, one at a time",
                  "each rule priced, against a figure published in 1987"),
                 ("7.5", "s5", "So is it worth it",
-                 "the cost is fixed; the benefit is the shift you fear")],
+                 "the cost is fixed; the benefit is the shift you fear"),
+                ("7.6", "s6", "Which rule set earns its false alarms here",
+                 "one masked line, three prices, one decision")],
         "sections": chapter_07,
     },
     "level-10.html": {

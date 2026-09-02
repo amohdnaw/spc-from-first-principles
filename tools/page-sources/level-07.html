@@ -240,6 +240,97 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+
+  /* ---------- the mastery loop ----------
+     Four stages down the chapter: predict, watch Act A, watch Act B, decide.
+     Every stage is optional, so none of it may take the reading column hostage:
+     a stage is a bordered block in the flow, the prose above it is untouched,
+     and nothing here is ever disabled. Square edges and the same six tokens as
+     the rest of the page (DESIGN.md ban list: no radius, no shadow). */
+  .mastery{margin:56px 0 0;border-top:1px solid var(--rule-strong);padding-top:20px}
+  .m-k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+  /* --measure is 27em against the 21px body. On a 12px mono block that same
+     token resolves to about 320px and wraps a short label onto three lines, so
+     the mono blocks below get a measure counted in characters instead. */
+  .mastery p,.mastery label{max-width:var(--measure)}
+  .m-panel{border:1px solid var(--rule);background:var(--panel);margin:0 0 16px;
+    max-width:calc(var(--measure) + var(--marg-gap, 48px) + var(--marg, 320px))}
+  .m-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;padding:11px 18px;border-bottom:1px solid var(--rule);
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
+  .m-body{padding:18px}
+  .m-story{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    margin:0 0 18px}
+  /* the four stated facts. Their labels are the contract strings, so they are
+     never uppercased here: text-transform on "false-alarm cost" would print a
+     string that no longer matches the one the module and the act share. */
+  .m-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:1px;background:var(--rule);margin:0;border:1px solid var(--rule)}
+  .m-facts > div{background:var(--panel-high);padding:12px 14px}
+  .m-facts dt{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);
+    margin:0 0 6px}
+  .m-facts dd{margin:0;font-family:var(--mono);font-size:20px;font-weight:600;
+    color:var(--ink-bright);font-variant-numeric:tabular-nums}
+  /* the fieldset carries the measure at body size, so its legend and its
+     options share one left and right edge whatever font each of them uses */
+  fieldset.m-opts{border:0;margin:0 0 20px;padding:0;min-width:0;
+    max-width:var(--measure)}
+  fieldset.m-opts legend{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    padding:0;margin:0 0 12px}
+  .m-opts label{display:flex;gap:12px;align-items:baseline;padding:9px 0;
+    border-bottom:1px solid var(--rule);font-family:var(--serif);font-size:19px;
+    line-height:1.45;color:var(--ink);cursor:pointer}
+  .m-opts label:last-of-type{border-bottom:0}
+  .m-opts label:hover{color:var(--ink-bright)}
+  .m-opts input{accent-color:var(--accent);flex:none;margin:0;transform:translateY(2px)}
+  .m-btn{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-bright);background:var(--panel-high);
+    border:1px solid var(--rule-strong);padding:11px 18px;cursor:pointer}
+  .m-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .m-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  /* `p.m-status`, not `.m-status`: `.mastery p` above is one class and one type,
+     so a bare class here loses to it and the status wraps at the prose measure. */
+  p.m-status{font-family:var(--mono);font-size:12.5px;line-height:1.6;
+    color:var(--ink-dim);margin:14px 0 0;max-width:72ch}
+  .m-status:empty{margin:0}
+  .m-status.ok{color:var(--signal-ok)}
+  .m-status.alarm{color:var(--signal-alarm)}
+  .m-status b{color:var(--ink-bright);font-weight:600}
+  /* the three totals, printed by Python and only read here */
+  .m-costs{list-style:none;margin:14px 0 0;padding:0;font-family:var(--mono);
+    font-size:13px;max-width:58ch}
+  .m-costs li{display:flex;justify-content:space-between;gap:16px;padding:6px 0;
+    border-bottom:1px solid var(--rule);color:var(--ink-dim)}
+  .m-costs li:last-child{border-bottom:0}
+  .m-costs .m-cost{color:var(--ink-bright);font-variant-numeric:tabular-nums}
+  .m-costs li.win .m-cost{color:var(--signal-ok)}
+  .m-costs li.pick{border-left:2px solid var(--accent);padding-left:10px}
+  /* transcript and secondary paths: closed by default, prose inside */
+  .m-text,.m-sec details{border-top:1px solid var(--rule);margin:16px 0 0}
+  .m-text > summary,.m-sec summary{font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    padding:13px 0;cursor:pointer;list-style:none}
+  .m-text > summary::-webkit-details-marker,
+  .m-sec summary::-webkit-details-marker{display:none}
+  .m-text > summary::marker,.m-sec summary::marker{content:""}
+  .m-text > summary:hover,.m-sec summary:hover{color:var(--ink-bright)}
+  .m-text p,.m-sec p{font-family:var(--serif);font-size:19px;line-height:1.55;
+    color:var(--ink);margin:0 0 14px;max-width:var(--measure)}
+  .m-sec .m-ev{font-family:var(--mono);font-size:13px;line-height:1.7;
+    color:var(--ink-dim);list-style:none;margin:0 0 14px;padding:0;
+    max-width:66ch}
+  .m-sec .m-ev li{padding:8px 0;border-bottom:1px solid var(--rule)}
+  .m-sec .m-ev li:last-child{border-bottom:0}
+  .m-sec .m-ev b{color:var(--ink-bright);font-weight:600}
+  .m-task{display:inline-flex;gap:10px;align-items:baseline;font-family:var(--mono);
+    font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);text-decoration:none;border:1px solid var(--rule-strong);
+    padding:12px 18px;margin:16px 0 0}
+  .m-task:hover{border-color:var(--accent);background:var(--accent-wash)}
+  [hidden]{display:none !important}
 </style>
 </head>
 <body>
@@ -374,18 +465,20 @@
         <div class="rule"></div>
         <img src="spc-lab/docs/l07_1_two_errors.png" width="1942" height="956" loading="lazy"
              alt="The in-control curve and a one-sigma shift against the same limits, with the power curve beside them">
-        <figcaption><span class="fignum">Figure 7.2</span><span class="figtext">One set of
-        measurements, written down twice. Identical histogram bin for bin, identical mean and
-        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+        <figcaption><span class="fignum">Figure 7.2</span><span class="figtext">The in-control
+        curve and a one-sigma shift drawn against the same limits. Crying wolf and staying
+        silent are the two areas, and the power curve beside them prices staying silent at
+        every shift size.</span></figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/l07_2_the_trade.png" width="1806" height="926" loading="lazy"
              alt="What each Western Electric rule costs in false alarms and buys in sensitivity">
-        <figcaption><span class="fignum">Figure 7.3</span><span class="figtext">Deming's funnel
-        on the same random draws. Correcting after every part doubles the variance exactly, so
-        the spread the customer receives is √2 times wider.</span></figcaption>
+        <figcaption><span class="fignum">Figure 7.3</span><span class="figtext">What each
+        Western Electric rule costs and what it buys. Switch them on one at a time and the
+        run between false alarms and the run to catch a real drift both shorten, so the
+        trade is arithmetic rather than taste.</span></figcaption>
       </figure>
       <figure>
         <div class="rule"></div>
@@ -394,6 +487,17 @@
         <figcaption><span class="fignum">Figure 7.4</span><span class="figtext">The four
         rules, drawn against the zone bands they test. Rule 1 reads one point; the other
         three read a pattern that no single point can hold.</span></figcaption>
+      </figure>
+
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="none" poster="posters/level07-case.jpg">
+          <source src="spc-lab/media/videos/level07_case_scene/1080p60/Level07Case.mp4" type="video/mp4">
+        </video>
+        <figcaption><span class="fignum">Figure 7.5</span><span class="figtext">Act B, rendered
+        in Manim — one masked line states four facts, three rule sets are priced from those
+        facts alone, and then the expected shift size moves until the cheapest plate
+        changes.</span></figcaption>
       </figure>
 
       <a class="next" href="level-08.html">
@@ -414,5 +518,264 @@
   </div>
 </footer>
 
+<script>
+(function(){
+'use strict';
+
+/* The optional four-stage mastery loop: predict, watch Act A, watch Act B, decide.
+
+   This file prices nothing. Every cost, every winner and every deciding field
+   was computed by spclab.level07_mastery, printed to the module's own decimal
+   count, and embedded as JSON by tools/chapterise.py. The code below selects a
+   case, moves those strings into the page, and compares two identifiers. A
+   second arithmetic path here is exactly how the page, the act and the tests
+   would come to disagree about the same line.
+
+   Everything is also optional. Nothing here disables a link, a control or a
+   paragraph, and a browser that refuses storage still gets a working case. */
+
+const block = document.getElementById('level07-cases');
+if (!block) return;
+
+let BANK = null;
+try { BANK = JSON.parse(block.textContent); } catch (err) { BANK = null; }
+if (!BANK || !BANK.seeds || !BANK.seeds.length) return;
+
+const el = id => document.getElementById(id);
+const nodes = {
+  predictForm: el('m-predict-form'),
+  predictStatus: el('m-predict-status'),
+  seedOut: el('m-case-seed'),
+  story: el('m-case-story'),
+  facts: el('m-case-facts'),
+  form: el('m-transfer-form'),
+  verdict: el('m-verdict'),
+  costs: el('m-costs'),
+  retry: el('m-retry'),
+  saveStatus: el('m-save-status'),
+  evSeed: el('m-ev-seed'),
+  evCosts: el('m-ev-costs')
+};
+for (const key in nodes) { if (!nodes[key]) return; }
+
+const STORE_KEY = 'spc-fp:mastery:v1';
+const LEVEL = 'level-07';
+const SAVE_FAILED = 'Progress was not saved.';
+
+/* ---------------------------------------------------------------- storage
+   A private window, a disabled cookie jar and a full quota all throw on the
+   first touch, so every read and every write is guarded and a failure is said
+   out loud rather than shown as a false saved state. */
+let storageBroken = false;
+
+function readAll(){
+  try {
+    const raw = window.localStorage.getItem(STORE_KEY);
+    const all = raw ? JSON.parse(raw) : {};
+    return (all && typeof all === 'object') ? all : {};
+  } catch (err) {
+    storageBroken = true;
+    return null;
+  }
+}
+
+const state = { prediction: null, watched: {}, passed: false, seed: null };
+for (const act of BANK.acts) { state.watched[act.id] = false; }
+
+function persist(){
+  const all = readAll();
+  if (all === null) { say(nodes.saveStatus, SAVE_FAILED, 'alarm'); return; }
+  all[LEVEL] = {
+    prediction: state.prediction,
+    watched: state.watched,
+    passed: state.passed,
+    seed: state.seed
+  };
+  try {
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(all));
+    say(nodes.saveStatus, 'Progress for this level is saved in this browser.', 'ok');
+  } catch (err) {
+    storageBroken = true;
+    say(nodes.saveStatus, SAVE_FAILED, 'alarm');
+  }
+}
+
+function restore(){
+  const all = readAll();
+  if (all === null) { say(nodes.saveStatus, SAVE_FAILED, 'alarm'); return; }
+  const saved = all[LEVEL];
+  if (!saved || typeof saved !== 'object') return;
+  if (typeof saved.prediction === 'string') { state.prediction = saved.prediction; }
+  if (saved.watched && typeof saved.watched === 'object') {
+    for (const act of BANK.acts) {
+      if (saved.watched[act.id] === true) { state.watched[act.id] = true; }
+    }
+  }
+  state.passed = saved.passed === true;
+  if (BANK.cases[String(saved.seed)]) { state.seed = saved.seed; }
+}
+
+/* ---------------------------------------------------------------- writing text
+   textContent throughout. Case prose, plant stories and printed money are
+   generated content, and generated content is never parsed as markup here. */
+function say(target, text, tone){
+  target.textContent = text;
+  target.classList.remove('ok', 'alarm');
+  if (tone) { target.classList.add(tone); }
+}
+
+function clear(target){
+  while (target.firstChild) { target.removeChild(target.firstChild); }
+}
+
+function costRow(option, activeCase, picked){
+  const li = document.createElement('li');
+  const name = document.createElement('span');
+  name.textContent = option.label;
+  const money = document.createElement('span');
+  money.className = 'm-cost';
+  money.textContent = option.printed;
+  li.appendChild(name);
+  li.appendChild(money);
+  if (activeCase && option.id === activeCase.answer) { li.classList.add('win'); }
+  if (picked && option.id === picked) { li.classList.add('pick'); }
+  return li;
+}
+
+function listCosts(target, activeCase, marked, picked){
+  clear(target);
+  for (const option of activeCase.options) {
+    target.appendChild(costRow(option, marked ? activeCase : null, picked));
+  }
+}
+
+/* ---------------------------------------------------------------- the case
+   A seed picks a case out of the bank. Nothing about the case is derived here:
+   the facts, the story and the three totals are all read as printed strings. */
+function activeCase(){
+  return BANK.cases[String(state.seed)];
+}
+
+function pickSeed(previous){
+  const seeds = BANK.seeds;
+  let at = seeds.indexOf(previous);
+  if (at < 0) { at = (Date.now() >>> 0) % seeds.length; return seeds[at]; }
+  return seeds[(at + 1) % seeds.length];
+}
+
+function renderCase(){
+  const shown = activeCase();
+  nodes.seedOut.textContent = 'case ' + shown.seed;
+  nodes.story.textContent = shown.surface_story;
+  clear(nodes.facts);
+  for (const field of BANK.case_fields) {
+    const cell = document.createElement('div');
+    const label = document.createElement('dt');
+    label.textContent = field;
+    const value = document.createElement('dd');
+    value.textContent = shown.printed_fields[field];
+    cell.appendChild(label);
+    cell.appendChild(value);
+    nodes.facts.appendChild(cell);
+  }
+  nodes.evSeed.textContent = String(shown.seed);
+  listCosts(nodes.evCosts, shown, false, null);
+}
+
+/* ---------------------------------------------------------------- stage 1
+   The prediction is recorded and never scored. Act A answers it. */
+nodes.predictForm.addEventListener('submit', function(event){
+  event.preventDefault();
+  const chosen = nodes.predictForm.querySelector('input[name="m-prediction"]:checked');
+  if (!chosen) {
+    say(nodes.predictStatus, 'Choose one, or read on: the prediction is optional.');
+    return;
+  }
+  state.prediction = chosen.value;
+  say(nodes.predictStatus, 'Prediction recorded. It is not scored — Act A answers it.', 'ok');
+  persist();
+});
+
+/* ---------------------------------------------------------------- stages 2 and 3
+   An act counts as watched when it ends, and on no other event. `play` means
+   the learner pressed play, `loadedmetadata` means the file exists, and
+   `timeupdate` fires on a scrub — none of them is evidence of watching. */
+for (const act of BANK.acts) {
+  const wrap = document.querySelector('[data-act="' + act.id + '"]');
+  if (!wrap) { continue; }
+  const player = wrap.querySelector('video');
+  const status = wrap.querySelector('.m-status');
+  if (!player || !status) { continue; }
+  if (state.watched[act.id]) { say(status, act.title + ' watched.', 'ok'); }
+  player.addEventListener('ended', function(){
+    state.watched[act.id] = true;
+    say(status, act.title + ' watched.', 'ok');
+    persist();
+  });
+}
+
+/* ---------------------------------------------------------------- stage 4
+   Two identifiers are compared: the chosen rule set against the case's
+   computed winner, and the chosen field against the case's deciding field.
+   Both sides of both comparisons came from Python. */
+nodes.form.addEventListener('submit', function(event){
+  event.preventDefault();
+  const shown = activeCase();
+  const rules = nodes.form.querySelector('input[name="m-ruleset"]:checked');
+  const field = nodes.form.querySelector('input[name="m-field"]:checked');
+  if (!rules || !field) {
+    say(nodes.verdict, 'Choose a rule set and the case field that decides it.');
+    clear(nodes.costs);
+    return;
+  }
+  const rightRules = rules.value === shown.answer;
+  const rightField = field.value === shown.deciding_field;
+  listCosts(nodes.costs, shown, true, rules.value);
+
+  if (rightRules && rightField) {
+    state.passed = true;
+    say(nodes.verdict, 'Right, and for the right reason: on ' + shown.seed
+      + ' the decision turns on ' + shown.deciding_field
+      + '. Each rule set is expected to cost what is listed below.', 'ok');
+    nodes.retry.hidden = false;
+    persist();
+    return;
+  }
+
+  /* A wrong answer names the field that decides this case, prints all three
+     totals, leaves the learner's two choices selected, and changes no data.
+     The case only moves when Retry with new data is pressed. */
+  let told = 'Not on this line. This case turns on ' + shown.deciding_field;
+  if (!rightField) { told += ', not on ' + field.value; }
+  told += '. The three expected costs below are what that field does to them,'
+    + ' so read them before choosing again.';
+  say(nodes.verdict, told, 'alarm');
+  nodes.retry.hidden = false;
+  persist();
+});
+
+nodes.retry.addEventListener('click', function(){
+  state.seed = pickSeed(state.seed);
+  state.passed = false;
+  nodes.form.reset();
+  clear(nodes.costs);
+  renderCase();
+  say(nodes.verdict, 'New line, new numbers. The four facts above changed.');
+  nodes.retry.hidden = true;
+  persist();
+});
+
+/* ---------------------------------------------------------------- first paint */
+restore();
+if (state.seed === null) { state.seed = pickSeed(null); }
+renderCase();
+if (state.prediction) {
+  const back = nodes.predictForm.querySelector(
+    'input[name="m-prediction"][value="' + state.prediction + '"]');
+  if (back) { back.checked = true; }
+}
+if (storageBroken) { say(nodes.saveStatus, SAVE_FAILED, 'alarm'); }
+})();
+</script>
 </body>
 </html>

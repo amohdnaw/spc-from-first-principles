@@ -234,6 +234,97 @@
     background:rgba(13,17,20,.74);
   }
 
+  /* ---------- the mastery loop ----------
+     Four stages down the chapter: predict, watch Act A, watch Act B, decide.
+     Every stage is optional, so none of it may take the reading column hostage:
+     a stage is a bordered block in the flow, the prose above it is untouched,
+     and nothing here is ever disabled. Square edges and the same six tokens as
+     the rest of the page (DESIGN.md ban list: no radius, no shadow). */
+  .mastery{margin:56px 0 0;border-top:1px solid var(--rule-strong);padding-top:20px}
+  .m-k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+  /* --measure is 27em against the 21px body. On a 12px mono block that same
+     token resolves to about 320px and wraps a short label onto three lines, so
+     the mono blocks below get a measure counted in characters instead. */
+  .mastery p,.mastery label{max-width:var(--measure)}
+  .m-panel{border:1px solid var(--rule);background:var(--panel);margin:0 0 16px;
+    max-width:calc(var(--measure) + var(--marg-gap, 48px) + var(--marg, 320px))}
+  .m-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;padding:11px 18px;border-bottom:1px solid var(--rule);
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
+  .m-body{padding:18px}
+  .m-story{font-family:var(--serif);font-size:19px;line-height:1.5;color:var(--ink);
+    margin:0 0 18px}
+  /* the four stated facts. Their labels are the contract strings, so they are
+     never uppercased here: text-transform on "false-alarm cost" would print a
+     string that no longer matches the one the module and the act share. */
+  .m-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:1px;background:var(--rule);margin:0;border:1px solid var(--rule)}
+  .m-facts > div{background:var(--panel-high);padding:12px 14px}
+  .m-facts dt{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);
+    margin:0 0 6px}
+  .m-facts dd{margin:0;font-family:var(--mono);font-size:20px;font-weight:600;
+    color:var(--ink-bright);font-variant-numeric:tabular-nums}
+  /* the fieldset carries the measure at body size, so its legend and its
+     options share one left and right edge whatever font each of them uses */
+  fieldset.m-opts{border:0;margin:0 0 20px;padding:0;min-width:0;
+    max-width:var(--measure)}
+  fieldset.m-opts legend{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    padding:0;margin:0 0 12px}
+  .m-opts label{display:flex;gap:12px;align-items:baseline;padding:9px 0;
+    border-bottom:1px solid var(--rule);font-family:var(--serif);font-size:19px;
+    line-height:1.45;color:var(--ink);cursor:pointer}
+  .m-opts label:last-of-type{border-bottom:0}
+  .m-opts label:hover{color:var(--ink-bright)}
+  .m-opts input{accent-color:var(--accent);flex:none;margin:0;transform:translateY(2px)}
+  .m-btn{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-bright);background:var(--panel-high);
+    border:1px solid var(--rule-strong);padding:11px 18px;cursor:pointer}
+  .m-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .m-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  /* `p.m-status`, not `.m-status`: `.mastery p` above is one class and one type,
+     so a bare class here loses to it and the status wraps at the prose measure. */
+  p.m-status{font-family:var(--mono);font-size:12.5px;line-height:1.6;
+    color:var(--ink-dim);margin:14px 0 0;max-width:72ch}
+  .m-status:empty{margin:0}
+  .m-status.ok{color:var(--signal-ok)}
+  .m-status.alarm{color:var(--signal-alarm)}
+  .m-status b{color:var(--ink-bright);font-weight:600}
+  /* the three totals, printed by Python and only read here */
+  .m-costs{list-style:none;margin:14px 0 0;padding:0;font-family:var(--mono);
+    font-size:13px;max-width:58ch}
+  .m-costs li{display:flex;justify-content:space-between;gap:16px;padding:6px 0;
+    border-bottom:1px solid var(--rule);color:var(--ink-dim)}
+  .m-costs li:last-child{border-bottom:0}
+  .m-costs .m-cost{color:var(--ink-bright);font-variant-numeric:tabular-nums}
+  .m-costs li.win .m-cost{color:var(--signal-ok)}
+  .m-costs li.pick{border-left:2px solid var(--accent);padding-left:10px}
+  /* transcript and secondary paths: closed by default, prose inside */
+  .m-text,.m-sec details{border-top:1px solid var(--rule);margin:16px 0 0}
+  .m-text > summary,.m-sec summary{font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    padding:13px 0;cursor:pointer;list-style:none}
+  .m-text > summary::-webkit-details-marker,
+  .m-sec summary::-webkit-details-marker{display:none}
+  .m-text > summary::marker,.m-sec summary::marker{content:""}
+  .m-text > summary:hover,.m-sec summary:hover{color:var(--ink-bright)}
+  .m-text p,.m-sec p{font-family:var(--serif);font-size:19px;line-height:1.55;
+    color:var(--ink);margin:0 0 14px;max-width:var(--measure)}
+  .m-sec .m-ev{font-family:var(--mono);font-size:13px;line-height:1.7;
+    color:var(--ink-dim);list-style:none;margin:0 0 14px;padding:0;
+    max-width:66ch}
+  .m-sec .m-ev li{padding:8px 0;border-bottom:1px solid var(--rule)}
+  .m-sec .m-ev li:last-child{border-bottom:0}
+  .m-sec .m-ev b{color:var(--ink-bright);font-weight:600}
+  .m-task{display:inline-flex;gap:10px;align-items:baseline;font-family:var(--mono);
+    font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);text-decoration:none;border:1px solid var(--rule-strong);
+    padding:12px 18px;margin:16px 0 0}
+  .m-task:hover{border-color:var(--accent);background:var(--accent-wash)}
+  [hidden]{display:none !important}
+
   /* ---------- chapter grammar (DESIGN.md §3) ----------
      Layout follows the book convention rather than an invented one. Tufte CSS:
      figures are constrained to the main column by default, a *small* figure may
@@ -399,7 +490,7 @@
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · ~8 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 2 acts · ~10 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 6 — limits are a hypothesis test<span class="sep">·</span><span class="micro">leads to</span> Level 8 — capability</p>
         <ol>
           <li><span class="n">7.1</span><a href="#s1">The other way to be wrong<span class="sub">α is crying wolf; β is staying silent, and nobody counts it</span></a></li>
@@ -407,6 +498,7 @@
           <li><span class="n">7.3</span><a href="#s3">The chart throws evidence away<span class="sub">a verdict is not the same as a p-value</span></a></li>
           <li><span class="n">7.4</span><a href="#s4">Four rules, one at a time<span class="sub">each rule priced, against a figure published in 1987</span></a></li>
           <li><span class="n">7.5</span><a href="#s5">So is it worth it<span class="sub">the cost is fixed; the benefit is the shift you fear</span></a></li>
+          <li><span class="n">7.6</span><a href="#s6">Which rule set earns its false alarms here<span class="sub">one masked line, three prices, one decision</span></a></li>
         </ol>
       </div>
     </header>
@@ -422,10 +514,24 @@
         <div class="rule"></div>
         <img src="spc-lab/docs/l07_1_two_errors.png" width="1942" height="956" loading="lazy"
              alt="The in-control curve and a one-sigma shift against the same limits, with the power curve beside them">
-        <figcaption><span class="fignum">Figure 7.2</span><span class="figtext">One set of
-        measurements, written down twice. Identical histogram bin for bin, identical mean and
-        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+        <figcaption><span class="fignum">Figure 7.2</span><span class="figtext">The in-control
+        curve and a one-sigma shift drawn against the same limits. Crying wolf and staying
+        silent are the two areas, and the power curve beside them prices staying silent at
+        every shift size.</span></figcaption>
       </figure>
+          <div class="mastery" id="m-predict">
+            <p class="m-k">Stage 1 of 4 · predict</p>
+            <form id="m-predict-form">
+              <fieldset class="m-opts">
+                <legend>Before Act A: switch all four rules on. What moves?</legend>
+                <label><input type="radio" name="m-prediction" value="more-signals">Both errors move: a real shift is caught sooner, and a false alarm arrives more often.</label>
+                <label><input type="radio" name="m-prediction" value="fewer-false-alarms">Fewer false alarms, because a pattern needs several points to agree before anything fires.</label>
+                <label><input type="radio" name="m-prediction" value="sooner-only">A real shift is caught sooner and the false-alarm rate stays where it was.</label>
+              </fieldset>
+              <div class="m-btns"><button class="m-btn" type="submit">Record my prediction</button></div>
+            </form>
+            <p class="m-status" id="m-predict-status" role="status" aria-live="polite"></p>
+          </div>
         </div>
       </div>
     </section>
@@ -442,6 +548,8 @@
       </div>
           <p>At two sigma it is 15.9 %. <span class="note"><span class="k">why exactly a half</span>At <span class="tex" data-tex="\delta = k"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>=</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">\delta = k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span></span> one tail contributes almost nothing and the other contributes <span class="tex" data-tex="\Phi(0)"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\Phi(0)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">0</span><span class="mclose">)</span></span></span></span></span>.</span>It takes a shift of three full sigma — the mean landing exactly on the limit — before the next point is even a coin toss, and that is not a coincidence: when the mean sits on the limit, half the distribution is on each side of it.</p>
           <p>One point, one chance. <span class="note speak"><span class="k">spoken · 1:36</span><em>“One point, one chance. That is the whole limitation.”</em></span>Everything the extra rules do is an attempt to get around that single sentence.</p>
+          <div class="mastery" id="m-act-a" data-act="act-a">
+            <p class="m-k">Stage 2 of 4 · watch Act A</p>
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level07.jpg">
@@ -452,6 +560,17 @@
         Manim — the span opens as parts arrive, the bin width turns into a knob, and the same
         240 measurements are re-ordered while the histogram cannot move.</span></figcaption>
       </figure>
+            <details class="m-text">
+              <summary>Act A transcript · six shots</summary>
+              <p>A1, the line that will not move. One process distribution and one three-sigma boundary are drawn and then left alone for the whole act. Everything that follows is an area measured against that same line.</p>
+              <p>A2, two areas, then two letters. The distribution is copied and slid one sigma to the right. The tail outside the boundary on the unmoved curve is 0.27 % of subgroups; the part of the shifted curve still inside the boundary is 97.7 %. Only after both areas are on screen are they named α and β.</p>
+              <p>A3, sweeping the shift, watching the area. The shifted curve walks across the boundary and the caught area grows with it: 2.3 % at one sigma, 15.9 % at two, 50.0 % when the mean lands on the limit. The limit is then dragged in to two sigma, and the false-alarm area fattens by exactly as much as the missed area thins.</p>
+              <p>A4, one point, two answers. A single subgroup lands at two and a half sigma. The chart returns a verdict, in control, and the same point returns a p-value of 0.0124. Two objects, not two labels on one number.</p>
+              <p>A5, the cost board, three stops. The rules switch on one at a time and both run lengths shorten together: a false alarm every 377 subgroups becomes every 91, while the wait to catch a 1σ shift falls from 43.1 subgroups to 9.3.</p>
+              <p>A6, same purchase, different shift. The false-alarm rate is held still and the shift is moved to 3σ. The catch bar barely moves: 2.0 subgroups against 1.8. The price was the same and almost nothing was bought, which is the question Act B answers on a real line.</p>
+            </details>
+            <p class="m-status" role="status" aria-live="polite"></p>
+          </div>
         </div>
       </div>
     </section>
@@ -497,10 +616,480 @@
         <div class="rule"></div>
         <img src="spc-lab/docs/l07_2_the_trade.png" width="1806" height="926" loading="lazy"
              alt="What each Western Electric rule costs in false alarms and buys in sensitivity">
-        <figcaption><span class="fignum">Figure 7.3</span><span class="figtext">Deming's funnel
-        on the same random draws. Correcting after every part doubles the variance exactly, so
-        the spread the customer receives is √2 times wider.</span></figcaption>
+        <figcaption><span class="fignum">Figure 7.3</span><span class="figtext">What each
+        Western Electric rule costs and what it buys. Switch them on one at a time and the
+        run between false alarms and the run to catch a real drift both shorten, so the
+        trade is arithmetic rather than taste.</span></figcaption>
       </figure>
+        </div>
+      </div>
+    </section>
+    <section id="s6">
+      <div class="leaf">
+        <div>
+          <span class="sec-no">7.6</span>
+          <h2>Which rule set earns its false alarms here</h2>
+          <p class="lead">That answer is still one step short of a decision. <span class="note data"><span class="k">one masked line, priced</span><span class="row num"><span class="rk">rule 1</span><span class="rv">1806.51</span></span><span class="row num"><span class="rk">rules 1 + 2</span><span class="rv">1002.48</span></span><span class="row num"><span class="rk">all four</span><span class="rv">740.24</span></span></span>The cost of a rule is fixed and its benefit is the shift you fear, but a plant does not buy shifts — it buys minutes of scrap and hours of stopped line. Four facts turn the trade into money: how far the mean moves when it moves, what one unnecessary stop costs, what a minute of unseen drift costs, and how long the wait between subgroups is.</p>
+          <p>Act B states those four facts for one masked line, prices all three rule sets from them, and then moves exactly one of the four. Nothing about the rules changes and the cheapest rule set changes anyway, which is the whole claim: the answer is a property of the line.</p>
+          <p>What follows is optional. <span class="note"><span class="k">nothing is gated</span>Skip it and the chapter is unchanged. Passing writes one entry in this browser and nowhere else.</span>It serves one case the acts never show, and it asks for both halves of the decision — the rule set, and which of the four stated facts made it the cheapest. Repeating the totals above cannot pass, because the case underneath them is a different line.</p>
+          <div class="mastery" id="m-act-b" data-act="act-b">
+            <p class="m-k">Stage 3 of 4 · watch Act B</p>
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="none" poster="posters/level07-case.jpg">
+          <source src="spc-lab/media/videos/level07_case_scene/1080p60/Level07Case.mp4" type="video/mp4">
+        </video>
+        <figcaption><span class="fignum">Figure 7.5</span><span class="figtext">Act B, rendered
+        in Manim — one masked line states four facts, three rule sets are priced from those
+        facts alone, and then the expected shift size moves until the cheapest plate
+        changes.</span></figcaption>
+      </figure>
+            <details class="m-text">
+              <summary>Act B transcript · five shots</summary>
+              <p>B1, four facts, built before they are named. One masked line runs as a strip of subgroups. The four things the plant knows are drawn as objects first and labelled second: how far the mean moves when it moves, what a stop costs, what a minute of unseen drift costs, and how far apart the subgroups are.</p>
+              <p>B2, commit before the prices. Three plates appear, one per rule set, and the act asks for a choice while all three are still empty. Nothing on screen favours one yet.</p>
+              <p>B3, three prices out of one case. Each plate is filled from the same strip: the alarms it would raise, priced per event, stacked on the minutes it would wait, priced per minute. On this case that is 1806.51 for Rule 1 only, 1002.48 for Rules 1 + 2 and 740.24 for All four Western Electric rules. The plate with the smallest alarm bill is not the winner.</p>
+              <p>B4, move one line of the case. Every fact is held except the expected shift size, which moves to 3 sigma. The purchase price of each rule set does not move, and the winner walks from All four Western Electric rules to Rule 1 only. The answer was never a property of the rules.</p>
+              <p>B5, what the next shift does. The act closes on the action a supervisor takes on this line, not on a restatement of the arithmetic.</p>
+            </details>
+            <p class="m-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="mastery" id="m-transfer">
+            <p class="m-k">Stage 4 of 4 · decide on unseen data</p>
+            <div class="m-panel">
+              <div class="m-head"><span>one masked line · four stated facts</span><span id="m-case-seed">case</span></div>
+              <div class="m-body">
+                <p class="m-story" id="m-case-story"></p>
+                <dl class="m-facts" id="m-case-facts"></dl>
+              </div>
+            </div>
+            <form id="m-transfer-form">
+              <fieldset class="m-opts">
+                <legend>Which rule set earns its false alarms on this line?</legend>
+                <label><input type="radio" name="m-ruleset" value="rule-1">Rule 1 only</label>
+                <label><input type="radio" name="m-ruleset" value="rules-1-2">Rules 1 + 2</label>
+                <label><input type="radio" name="m-ruleset" value="all-four">All four Western Electric rules</label>
+              </fieldset>
+              <fieldset class="m-opts">
+                <legend>Which stated fact decides it?</legend>
+                <label><input type="radio" name="m-field" value="expected shift size">expected shift size</label>
+                <label><input type="radio" name="m-field" value="false-alarm cost">false-alarm cost</label>
+                <label><input type="radio" name="m-field" value="missed-shift cost">missed-shift cost</label>
+                <label><input type="radio" name="m-field" value="sampling cadence">sampling cadence</label>
+              </fieldset>
+              <div class="m-btns"><button class="m-btn" type="submit">Check my decision</button></div>
+            </form>
+            <p class="m-status" id="m-verdict" role="status" aria-live="polite"></p>
+            <ul class="m-costs" id="m-costs"></ul>
+            <div class="m-btns"><button class="m-btn" type="button" id="m-retry" hidden>Retry with new data</button></div>
+            <p class="m-status" id="m-save-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="mastery m-sec" id="m-secondary">
+            <p class="m-k">After the decision</p>
+            <details>
+              <summary>Use this when…</summary>
+              <p>Buy the extra rules when the shift you are afraid of is small, when one stop for a check costs less than the minutes a drift runs unseen, and when subgroups are far enough apart that every subgroup of delay is expensive. Stay on rule 1 when the fault you plan for is large, when a stop is the expensive event on the line, or when you sample fast enough that the next point arrives before the damage does.</p>
+              <p>Nothing here is a house rule. The three totals under Evidence are the answer for the line in front of you, and they move when the line does.</p>
+            </details>
+            <details>
+              <summary>Evidence</summary>
+              <ul class="m-ev">
+                <li>Priced by <b>spclab.level07_mastery</b>: <b>challenge_case(seed)</b> states the case, <b>expected_cost()</b> prices each rule set, and <b>neutral_case()</b> proves the named field is the one that decides it.</li>
+                <li>Case seed <b id="m-ev-seed">—</b>, from a bank of 12.</li>
+                <li>Checked by <b>test_level07_mastery.py</b>, which reprices every case, and <b>test_level07_page.py</b>, which reads this page and compares what it serves against the module.</li>
+              </ul>
+              <ul class="m-costs" id="m-ev-costs"></ul>
+            </details>
+            <a class="m-task" href="https://spc.amohdnaw.xyz/app#g-weco" target="_blank" rel="noopener">Open the WECO task →</a>
+          </div>
+          <script type="application/json" id="level07-cases">{
+ "printed_decimals": 2,
+ "case_fields": [
+  "expected shift size",
+  "false-alarm cost",
+  "missed-shift cost",
+  "sampling cadence"
+ ],
+ "option_labels": {
+  "rule-1": "Rule 1 only",
+  "rules-1-2": "Rules 1 + 2",
+  "all-four": "All four Western Electric rules"
+ },
+ "acts": [
+  {
+   "id": "act-a",
+   "title": "Act A"
+  },
+  {
+   "id": "act-b",
+   "title": "Act B"
+  }
+ ],
+ "seeds": [
+  701,
+  702,
+  703,
+  704,
+  705,
+  706,
+  707,
+  708,
+  709,
+  710,
+  711,
+  712
+ ],
+ "cases": {
+  "701": {
+   "seed": 701,
+   "surface_story": "A masked deposition line plots one film-thickness subgroup every sampling interval. When the mean really drifts, everything produced between the drift and the alarm is reworked at the next step, so the damage is charged per minute the drift goes unseen. When the chart alarms and nothing has changed, the line stops for one check, so that damage is charged once per event.",
+   "deciding_field": "expected shift size",
+   "answer": "all-four",
+   "printed_fields": {
+    "expected shift size": "1.0 sigma",
+    "false-alarm cost": "4500.00 per event",
+    "missed-shift cost": "1.50 per minute",
+    "sampling cadence": "20 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "1806.51"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "1002.48"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "740.24"
+    }
+   ]
+  },
+  "702": {
+   "seed": 702,
+   "surface_story": "A masked wire-bond cell plots one pull-strength subgroup per interval. A drift keeps laying down weak joints that are screened and re-run downstream, charged for every minute it goes unseen. A false alarm pulls the operator off the cell for one verification run, charged once.",
+   "deciding_field": "missed-shift cost",
+   "answer": "all-four",
+   "printed_fields": {
+    "expected shift size": "1.0 sigma",
+    "false-alarm cost": "800.00 per event",
+    "missed-shift cost": "2.00 per minute",
+    "sampling cadence": "10 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "952.82"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "475.71"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "268.35"
+    }
+   ]
+  },
+  "703": {
+   "seed": 703,
+   "surface_story": "A masked plating line plots one coating-weight subgroup per interval. Unseen drift keeps plating parts that must be stripped and plated again, charged by the minute. A false alarm costs one bath check, charged once each time, and the line samples slowly.",
+   "deciding_field": "sampling cadence",
+   "answer": "all-four",
+   "printed_fields": {
+    "expected shift size": "1.0 sigma",
+    "false-alarm cost": "2400.00 per event",
+    "missed-shift cost": "1.00 per minute",
+    "sampling cadence": "60 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "2858.47"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "1427.13"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "805.06"
+    }
+   ]
+  },
+  "704": {
+   "seed": 704,
+   "surface_story": "A masked furnace anneal plots one sheet-resistance subgroup per interval. A false alarm cools the tube and buys a full requalification before the next load. Drift is caught again at the electrical test downstream, so the minutes it survives are cheap.",
+   "deciding_field": "false-alarm cost",
+   "answer": "rules-1-2",
+   "printed_fields": {
+    "expected shift size": "1.0 sigma",
+    "false-alarm cost": "9000.00 per event",
+    "missed-shift cost": "0.50 per minute",
+    "sampling cadence": "20 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "1459.63"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "990.79"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "1014.27"
+    }
+   ]
+  },
+  "705": {
+   "seed": 705,
+   "surface_story": "A masked press shop plots one stamped-height subgroup per interval. When the tool moves it moves hard, so the shift worth planning for is a large one. A false alarm empties the press for a die inspection, and the parts made during a drift are sorted cheaply by the minute.",
+   "deciding_field": "expected shift size",
+   "answer": "rule-1",
+   "printed_fields": {
+    "expected shift size": "3.0 sigma",
+    "false-alarm cost": "6000.00 per event",
+    "missed-shift cost": "0.80 per minute",
+    "sampling cadence": "15 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "56.21"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "69.16"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "141.55"
+    }
+   ]
+  },
+  "706": {
+   "seed": 706,
+   "surface_story": "A masked fill line plots one net-weight subgroup per interval. The failure it plans for is a large step when a valve sticks. Product given away during an unseen drift is charged by the minute, and a false alarm halts filling for one scale check.",
+   "deciding_field": "missed-shift cost",
+   "answer": "rules-1-2",
+   "printed_fields": {
+    "expected shift size": "3.0 sigma",
+    "false-alarm cost": "300.00 per event",
+    "missed-shift cost": "1.00 per minute",
+    "sampling cadence": "20 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "41.86"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "38.86"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "42.35"
+    }
+   ]
+  },
+  "707": {
+   "seed": 707,
+   "surface_story": "A masked etch chamber plots one critical-dimension subgroup per interval, and a chamber fault moves the mean a long way at once. Every minute of unseen drift feeds wafers that cannot be reworked at all, while a false alarm costs one short chamber check. Subgroups are twenty minutes apart.",
+   "deciding_field": "sampling cadence",
+   "answer": "all-four",
+   "printed_fields": {
+    "expected shift size": "3.0 sigma",
+    "false-alarm cost": "100.00 per event",
+    "missed-shift cost": "50.00 per minute",
+    "sampling cadence": "20 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "2013.28"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "1825.79"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "1820.25"
+    }
+   ]
+  },
+  "708": {
+   "seed": 708,
+   "surface_story": "A masked paint booth plots one film-build subgroup per interval, and the drift it fears is a large one from a blocked feed. A false alarm empties and purges the booth, which is the expensive event here. Panels made during a drift are corrected at the touch-up bay by the minute.",
+   "deciding_field": "false-alarm cost",
+   "answer": "rule-1",
+   "printed_fields": {
+    "expected shift size": "3.0 sigma",
+    "false-alarm cost": "12000.00 per event",
+    "missed-shift cost": "2.00 per minute",
+    "sampling cadence": "30 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "184.88"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "204.03"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "348.57"
+    }
+   ]
+  },
+  "709": {
+   "seed": 709,
+   "surface_story": "A masked grinding cell plots one bore-diameter subgroup per interval. Wheel wear moves the mean slowly, so the shift worth catching is small. Parts made during an unseen drift are re-ground later, charged by the minute, and a false alarm costs one wheel-dress check.",
+   "deciding_field": "expected shift size",
+   "answer": "all-four",
+   "printed_fields": {
+    "expected shift size": "1.0 sigma",
+    "false-alarm cost": "1500.00 per event",
+    "missed-shift cost": "1.00 per minute",
+    "sampling cadence": "25 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "1248.19"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "638.41"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "386.61"
+    }
+   ]
+  },
+  "710": {
+   "seed": 710,
+   "surface_story": "A masked reflow oven plots one peak-temperature subgroup per interval, and a heater fault moves it far in one step. Boards baked during a drift are reworked joint by joint, charged by the minute, while a false alarm holds the conveyor for one profile check. The oven is sampled rarely.",
+   "deciding_field": "sampling cadence",
+   "answer": "rules-1-2",
+   "printed_fields": {
+    "expected shift size": "3.0 sigma",
+    "false-alarm cost": "1000.00 per event",
+    "missed-shift cost": "1.00 per minute",
+    "sampling cadence": "40 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "85.85"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "80.88"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "92.69"
+    }
+   ]
+  },
+  "711": {
+   "seed": 711,
+   "surface_story": "A masked injection cell plots one shot-weight subgroup per interval, and the drift it plans for is a slow one as the screw wears. A false alarm purges the barrel, which is charged once and is not cheap. Unseen drift only adds trim work, charged by the minute.",
+   "deciding_field": "expected shift size",
+   "answer": "rules-1-2",
+   "printed_fields": {
+    "expected shift size": "1.0 sigma",
+    "false-alarm cost": "20000.00 per event",
+    "missed-shift cost": "1.00 per minute",
+    "sampling cadence": "20 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "3147.91"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "2156.69"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "2233.22"
+    }
+   ]
+  },
+  "712": {
+   "seed": 712,
+   "surface_story": "A masked polish step plots one removal-rate subgroup per interval, and a pad failure moves the mean a long way at once. Every minute of unseen drift polishes wafers past target with no recovery, while a false alarm costs one pad-conditioning check.",
+   "deciding_field": "missed-shift cost",
+   "answer": "all-four",
+   "printed_fields": {
+    "expected shift size": "3.0 sigma",
+    "false-alarm cost": "150.00 per event",
+    "missed-shift cost": "30.00 per minute",
+    "sampling cadence": "25 min per subgroup"
+   },
+   "options": [
+    {
+     "id": "rule-1",
+     "label": "Rule 1 only",
+     "printed": "1510.36"
+    },
+    {
+     "id": "rules-1-2",
+     "label": "Rules 1 + 2",
+     "printed": "1369.93"
+    },
+    {
+     "id": "all-four",
+     "label": "All four Western Electric rules",
+     "printed": "1366.68"
+    }
+   ]
+  }
+ }
+}</script>
         </div>
       </div>
     </section>
@@ -521,5 +1110,264 @@
   </div>
 </footer>
 
+<script>
+(function(){
+'use strict';
+
+/* The optional four-stage mastery loop: predict, watch Act A, watch Act B, decide.
+
+   This file prices nothing. Every cost, every winner and every deciding field
+   was computed by spclab.level07_mastery, printed to the module's own decimal
+   count, and embedded as JSON by tools/chapterise.py. The code below selects a
+   case, moves those strings into the page, and compares two identifiers. A
+   second arithmetic path here is exactly how the page, the act and the tests
+   would come to disagree about the same line.
+
+   Everything is also optional. Nothing here disables a link, a control or a
+   paragraph, and a browser that refuses storage still gets a working case. */
+
+const block = document.getElementById('level07-cases');
+if (!block) return;
+
+let BANK = null;
+try { BANK = JSON.parse(block.textContent); } catch (err) { BANK = null; }
+if (!BANK || !BANK.seeds || !BANK.seeds.length) return;
+
+const el = id => document.getElementById(id);
+const nodes = {
+  predictForm: el('m-predict-form'),
+  predictStatus: el('m-predict-status'),
+  seedOut: el('m-case-seed'),
+  story: el('m-case-story'),
+  facts: el('m-case-facts'),
+  form: el('m-transfer-form'),
+  verdict: el('m-verdict'),
+  costs: el('m-costs'),
+  retry: el('m-retry'),
+  saveStatus: el('m-save-status'),
+  evSeed: el('m-ev-seed'),
+  evCosts: el('m-ev-costs')
+};
+for (const key in nodes) { if (!nodes[key]) return; }
+
+const STORE_KEY = 'spc-fp:mastery:v1';
+const LEVEL = 'level-07';
+const SAVE_FAILED = 'Progress was not saved.';
+
+/* ---------------------------------------------------------------- storage
+   A private window, a disabled cookie jar and a full quota all throw on the
+   first touch, so every read and every write is guarded and a failure is said
+   out loud rather than shown as a false saved state. */
+let storageBroken = false;
+
+function readAll(){
+  try {
+    const raw = window.localStorage.getItem(STORE_KEY);
+    const all = raw ? JSON.parse(raw) : {};
+    return (all && typeof all === 'object') ? all : {};
+  } catch (err) {
+    storageBroken = true;
+    return null;
+  }
+}
+
+const state = { prediction: null, watched: {}, passed: false, seed: null };
+for (const act of BANK.acts) { state.watched[act.id] = false; }
+
+function persist(){
+  const all = readAll();
+  if (all === null) { say(nodes.saveStatus, SAVE_FAILED, 'alarm'); return; }
+  all[LEVEL] = {
+    prediction: state.prediction,
+    watched: state.watched,
+    passed: state.passed,
+    seed: state.seed
+  };
+  try {
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(all));
+    say(nodes.saveStatus, 'Progress for this level is saved in this browser.', 'ok');
+  } catch (err) {
+    storageBroken = true;
+    say(nodes.saveStatus, SAVE_FAILED, 'alarm');
+  }
+}
+
+function restore(){
+  const all = readAll();
+  if (all === null) { say(nodes.saveStatus, SAVE_FAILED, 'alarm'); return; }
+  const saved = all[LEVEL];
+  if (!saved || typeof saved !== 'object') return;
+  if (typeof saved.prediction === 'string') { state.prediction = saved.prediction; }
+  if (saved.watched && typeof saved.watched === 'object') {
+    for (const act of BANK.acts) {
+      if (saved.watched[act.id] === true) { state.watched[act.id] = true; }
+    }
+  }
+  state.passed = saved.passed === true;
+  if (BANK.cases[String(saved.seed)]) { state.seed = saved.seed; }
+}
+
+/* ---------------------------------------------------------------- writing text
+   textContent throughout. Case prose, plant stories and printed money are
+   generated content, and generated content is never parsed as markup here. */
+function say(target, text, tone){
+  target.textContent = text;
+  target.classList.remove('ok', 'alarm');
+  if (tone) { target.classList.add(tone); }
+}
+
+function clear(target){
+  while (target.firstChild) { target.removeChild(target.firstChild); }
+}
+
+function costRow(option, activeCase, picked){
+  const li = document.createElement('li');
+  const name = document.createElement('span');
+  name.textContent = option.label;
+  const money = document.createElement('span');
+  money.className = 'm-cost';
+  money.textContent = option.printed;
+  li.appendChild(name);
+  li.appendChild(money);
+  if (activeCase && option.id === activeCase.answer) { li.classList.add('win'); }
+  if (picked && option.id === picked) { li.classList.add('pick'); }
+  return li;
+}
+
+function listCosts(target, activeCase, marked, picked){
+  clear(target);
+  for (const option of activeCase.options) {
+    target.appendChild(costRow(option, marked ? activeCase : null, picked));
+  }
+}
+
+/* ---------------------------------------------------------------- the case
+   A seed picks a case out of the bank. Nothing about the case is derived here:
+   the facts, the story and the three totals are all read as printed strings. */
+function activeCase(){
+  return BANK.cases[String(state.seed)];
+}
+
+function pickSeed(previous){
+  const seeds = BANK.seeds;
+  let at = seeds.indexOf(previous);
+  if (at < 0) { at = (Date.now() >>> 0) % seeds.length; return seeds[at]; }
+  return seeds[(at + 1) % seeds.length];
+}
+
+function renderCase(){
+  const shown = activeCase();
+  nodes.seedOut.textContent = 'case ' + shown.seed;
+  nodes.story.textContent = shown.surface_story;
+  clear(nodes.facts);
+  for (const field of BANK.case_fields) {
+    const cell = document.createElement('div');
+    const label = document.createElement('dt');
+    label.textContent = field;
+    const value = document.createElement('dd');
+    value.textContent = shown.printed_fields[field];
+    cell.appendChild(label);
+    cell.appendChild(value);
+    nodes.facts.appendChild(cell);
+  }
+  nodes.evSeed.textContent = String(shown.seed);
+  listCosts(nodes.evCosts, shown, false, null);
+}
+
+/* ---------------------------------------------------------------- stage 1
+   The prediction is recorded and never scored. Act A answers it. */
+nodes.predictForm.addEventListener('submit', function(event){
+  event.preventDefault();
+  const chosen = nodes.predictForm.querySelector('input[name="m-prediction"]:checked');
+  if (!chosen) {
+    say(nodes.predictStatus, 'Choose one, or read on: the prediction is optional.');
+    return;
+  }
+  state.prediction = chosen.value;
+  say(nodes.predictStatus, 'Prediction recorded. It is not scored — Act A answers it.', 'ok');
+  persist();
+});
+
+/* ---------------------------------------------------------------- stages 2 and 3
+   An act counts as watched when it ends, and on no other event. `play` means
+   the learner pressed play, `loadedmetadata` means the file exists, and
+   `timeupdate` fires on a scrub — none of them is evidence of watching. */
+for (const act of BANK.acts) {
+  const wrap = document.querySelector('[data-act="' + act.id + '"]');
+  if (!wrap) { continue; }
+  const player = wrap.querySelector('video');
+  const status = wrap.querySelector('.m-status');
+  if (!player || !status) { continue; }
+  if (state.watched[act.id]) { say(status, act.title + ' watched.', 'ok'); }
+  player.addEventListener('ended', function(){
+    state.watched[act.id] = true;
+    say(status, act.title + ' watched.', 'ok');
+    persist();
+  });
+}
+
+/* ---------------------------------------------------------------- stage 4
+   Two identifiers are compared: the chosen rule set against the case's
+   computed winner, and the chosen field against the case's deciding field.
+   Both sides of both comparisons came from Python. */
+nodes.form.addEventListener('submit', function(event){
+  event.preventDefault();
+  const shown = activeCase();
+  const rules = nodes.form.querySelector('input[name="m-ruleset"]:checked');
+  const field = nodes.form.querySelector('input[name="m-field"]:checked');
+  if (!rules || !field) {
+    say(nodes.verdict, 'Choose a rule set and the case field that decides it.');
+    clear(nodes.costs);
+    return;
+  }
+  const rightRules = rules.value === shown.answer;
+  const rightField = field.value === shown.deciding_field;
+  listCosts(nodes.costs, shown, true, rules.value);
+
+  if (rightRules && rightField) {
+    state.passed = true;
+    say(nodes.verdict, 'Right, and for the right reason: on ' + shown.seed
+      + ' the decision turns on ' + shown.deciding_field
+      + '. Each rule set is expected to cost what is listed below.', 'ok');
+    nodes.retry.hidden = false;
+    persist();
+    return;
+  }
+
+  /* A wrong answer names the field that decides this case, prints all three
+     totals, leaves the learner's two choices selected, and changes no data.
+     The case only moves when Retry with new data is pressed. */
+  let told = 'Not on this line. This case turns on ' + shown.deciding_field;
+  if (!rightField) { told += ', not on ' + field.value; }
+  told += '. The three expected costs below are what that field does to them,'
+    + ' so read them before choosing again.';
+  say(nodes.verdict, told, 'alarm');
+  nodes.retry.hidden = false;
+  persist();
+});
+
+nodes.retry.addEventListener('click', function(){
+  state.seed = pickSeed(state.seed);
+  state.passed = false;
+  nodes.form.reset();
+  clear(nodes.costs);
+  renderCase();
+  say(nodes.verdict, 'New line, new numbers. The four facts above changed.');
+  nodes.retry.hidden = true;
+  persist();
+});
+
+/* ---------------------------------------------------------------- first paint */
+restore();
+if (state.seed === null) { state.seed = pickSeed(null); }
+renderCase();
+if (state.prediction) {
+  const back = nodes.predictForm.querySelector(
+    'input[name="m-prediction"][value="' + state.prediction + '"]');
+  if (back) { back.checked = true; }
+}
+if (storageBroken) { say(nodes.saveStatus, SAVE_FAILED, 'alarm'); }
+})();
+</script>
 </body>
 </html>
