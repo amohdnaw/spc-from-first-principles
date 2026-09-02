@@ -53,7 +53,7 @@ ul.gate li{padding:13px 20px;border-bottom:1px solid var(--rule);font-size:15px;
 ul.gate li:last-child{border-bottom:0}
 ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em}
 .stop{margin-top:34px;border:1px solid var(--amber);background:rgba(255,174,0,.05);padding:18px 20px}
-.stop b{display:block;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;color:var(--amber)}
+.stop b{display:block;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--amber)}
 .stop p{margin:0;font-size:15px;line-height:1.58}
 @media(max-width:760px){
   dl{grid-template-columns:1fr}
@@ -109,11 +109,11 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
     <div class="shot-head"><span class="num">Shot A1</span><h3>The line that will not move</h3><span class="tag beat">Beat 1</span><span class="tag">Creates the model</span></div>
     <dl>
       <dt class="key">Persistent object</dt>
-      <dd>The board: one axis of the plotted statistic, the in-control curve standing on it, and one decision boundary drawn as a pair of verticals. The boundary is built by stepping out three equal sigma widths so it reads as a distance before it reads as a rule. This board stays on screen for the whole act.</dd>
+      <dd>The board: one axis of the plotted statistic, the in-control curve standing on it, and one decision boundary drawn as a pair of verticals. The boundary is built by stepping out equal sigma widths until it reaches <code>LIMIT</code>, so it reads as a distance before it reads as a rule. This board stays on screen for the whole act.</dd>
       <dt>Learner prediction</dt>
       <dd>Motion stops with the boundary in place and one curve under it. The act asks the viewer to place the shifted mean where the chart would start noticing it, then holds a still frame long enough to commit. No answer is shown in this shot.</dd>
       <dt>Transformation</dt>
-      <dd>A second copy of the same curve, identical in shape, slides right by one sigma of the plotted statistic and stops. Copy and slide, not a new draw, so the eye reads a moved process rather than a different process.</dd>
+      <dd>A second copy of the same curve, identical in shape, slides right by <code>SHIFT</code>, measured in sigma of the plotted statistic, and stops. Copy and slide, not a new draw, so the eye reads a moved process rather than a different process.</dd>
       <dt class="hot">Surprise</dt>
       <dd>Almost all of the shifted curve is still inside the boundary. The picture of a process that has genuinely moved looks like a picture of a process that has not.</dd>
       <dt class="hot">Counterexample</dt>
@@ -161,25 +161,25 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
     <div class="shot-head"><span class="num">Shot A3</span><h3>Sweeping the shift, watching the area</h3><span class="tag beat">Beat 3</span><span class="tag">Transforms the model</span></div>
     <dl>
       <dt class="key">Persistent object</dt>
-      <dd>The board with both filled areas. A tracker handle is added on the shift axis at zero and becomes part of the stage for the rest of the act.</dd>
+      <dd>The board with both filled areas. A tracker handle is added on the shift axis at the zero end of <code>SHIFTS</code> and becomes part of the stage for the rest of the act.</dd>
       <dt>Learner prediction</dt>
-      <dd>With the handle at zero, the act asks the viewer to point at the shift size where the chart would catch half of what it is shown. The handle then starts moving from zero, so the viewer watches their own guess arrive or fail.</dd>
+      <dd>With the handle at rest, the act asks the viewer to point at the shift size where the chart would catch half of what it is shown. The handle then starts moving, so the viewer watches their own guess arrive or fail.</dd>
       <dt>Transformation</dt>
-      <dd>The handle walks continuously from zero to three sigma. The shifted curve follows it. The red missed-shift area shrinks frame by frame while the portion of the shifted curve beyond the boundary grows, and that growing portion is mirrored into a rising column beside the board so power is a length as well as an area. The amber area does not change at any frame of the sweep.</dd>
+      <dd>The handle walks continuously across the full range spanned by <code>SHIFTS</code>. The shifted curve follows it. The red missed-shift area shrinks frame by frame while the portion of the shifted curve beyond the boundary grows, and that growing portion is mirrored into a rising column beside the board so power is a length as well as an area. The amber area does not change at any frame of the sweep.</dd>
       <dt class="hot">Surprise</dt>
-      <dd>Power is flat for the whole first sigma and only wakes up near two. The half-way moment lands exactly when the shifted mean touches the boundary, which is the frame where the number explains itself without being said.</dd>
+      <dd>Power stays flat across the small shifts and only wakes up as the mean nears the boundary. The half-way moment lands exactly when the shifted mean touches the boundary, which is the frame where the number explains itself without being said.</dd>
       <dt class="hot">Counterexample</dt>
-      <dd>The sweep resets and repeats with the boundary pulled in to two sigma. Power rises much earlier, and the amber area fattens visibly while it does. This kills the obvious escape route before the rules are offered: sensitivity bought by moving the line is paid for in the same currency.</dd>
+      <dd>The sweep resets and repeats with the boundary pulled inside <code>LIMIT</code>, to the tighter value named in the readout row below. Power rises much earlier, and the amber area fattens visibly while it does. This kills the obvious escape route before the rules are offered: sensitivity bought by moving the line is paid for in the same currency.</dd>
       <dt>Formula reveal</dt>
-      <dd>Only after the handle returns to one sigma does the power expression write itself under the board, and each of its two terms lights the tail it names while it is written. The expression labels areas that have been on screen for the whole sweep.</dd>
+      <dd>Only after the handle returns to <code>SHIFT</code> does the power expression write itself under the board, and each of its two terms lights the tail it names while it is written. The expression labels areas that have been on screen for the whole sweep.</dd>
       <dt class="src">Readout source</dt>
-      <dd><code>power_one_point()</code> drives the continuous frames; <code>POWER_AT</code> supplies the tick values at the stops in <code>SHIFTS</code>; <code>ARL1_FROM_POWER</code> supplies the run-length echo at <code>SHIFT</code>. The two-sigma counterexample calls <code>power_one_point(s, limit=2.0)</code> and <code>alpha_one_point(2.0)</code>, so the aside is computed by the same functions rather than sketched.</dd>
+      <dd><code>power_one_point()</code> drives the continuous frames; <code>POWER_AT</code> supplies the tick values at the stops in <code>SHIFTS</code>; <code>ARL1_FROM_POWER</code> supplies the run-length echo at <code>SHIFT</code>. The tighter-limit counterexample calls <code>power_one_point(s, limit=2.0)</code> and <code>alpha_one_point(2.0)</code>, so the aside is computed by the same functions rather than sketched.</dd>
       <dt>Camera move</dt>
       <dd>Locked for the sweep, with one push at the half-way frame. The camera must not track the moving curve: if the boundary drifts in frame, the act loses the one thing that is holding still.</dd>
       <dt>Narration line</dt>
       <dd>"One point, one chance. That is the whole limitation."</dd>
       <dt>Exit state</dt>
-      <dd>Handle parked at one sigma, the power column short, the power expression on screen under the board, and the boundary back where it started.</dd>
+      <dd>Handle parked at <code>SHIFT</code>, the power column short, the power expression on screen under the board, and the boundary back where it started.</dd>
     </dl>
   </section>
 
@@ -189,13 +189,13 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt class="key">Persistent object</dt>
       <dd>The board and the boundary. The two curves drop to outlines so that a single plotted point can hold the frame without the stage being rebuilt.</dd>
       <dt>Learner prediction</dt>
-      <dd>A point drops at two and a half sigma and everything stops. The act asks for one word: in, or out. This is the prediction most viewers get right and still learn from.</dd>
+      <dd>A point drops inside the boundary, at the position <code>P_AT_2_5</code> prices, and everything stops. The act asks for one word: in, or out. This is the prediction most viewers get right and still learn from.</dd>
       <dt>Transformation</dt>
       <dd>The point is answered twice, in two objects that cannot be mistaken for one label. The chart verdict prints in the boundary's own colour and reads as a pass. Then the point's own tail area peels off the board as a separate moving object and shrinks into an evidence chip. Two objects sit side by side, disagreeing, and neither is dismissed.</dd>
       <dt class="hot">Surprise</dt>
-      <dd>The verdict says nothing happened. The peeled area says roughly one in eighty. The area that carried the evidence was drawn by the chart and then discarded by the chart's own rule.</dd>
+      <dd>The verdict says nothing happened, and the peeled area is plainly not nothing. Two objects built from the same point disagree, and the one carrying the evidence is the one the chart's rule discards. The chip renders whatever <code>P_AT_2_5</code> computes; no value is asserted here.</dd>
       <dt class="hot">Counterexample</dt>
-      <dd>The same routine runs again with the point at exactly three sigma, where the two objects agree and the evidence chip lands on the value already sitting on the amber area from A2. Agreement at that one point proves the disagreement everywhere else is a property of the rule and not of the drawing.</dd>
+      <dd>The same routine runs again with the point at exactly <code>LIMIT</code>, where the two objects agree and the evidence chip lands on the value already sitting on the amber area from A2. Agreement at that one point proves the disagreement everywhere else is a property of the rule and not of the drawing.</dd>
       <dt>Formula reveal</dt>
       <dd>The two-sided p-value expression writes itself along the peeled tail, after the chip exists. It names the area the viewer just watched leave the board.</dd>
       <dt class="src">Readout source</dt>
@@ -227,7 +227,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt class="src">Readout source</dt>
       <dd><code>TRADE[(1,)]</code>, <code>TRADE[(1, 2)]</code>, and <code>TRADE[ALL_RULES]</code>, each read at keys <code>arl0</code> and <code>arl1</code>; <code>cumulative_sets()</code> for the stop order; <code>RULE_TEXT</code> for each pattern caption; <code>FALSE_ALARM_COST</code> and <code>SENSITIVITY_GAIN</code> for the two comparison lengths; <code>CHAMP_WOODALL_ARL0</code> as an external tick set beside the all-four false-alarm bar.</dd>
       <dt>Camera move</dt>
-      <dd>Locked on the cost board, with the chart above dimmed except in the moment its rule pattern draws. The published 1987 tick lands during a hold, with no camera move, so corroboration reads as a fact and not as a reveal.</dd>
+      <dd>Locked on the cost board, with the chart above dimmed except in the moment its rule pattern draws. The <code>CHAMP_WOODALL_ARL0</code> tick lands during a hold, with no camera move, so corroboration reads as a fact and not as a reveal.</dd>
       <dt>Narration line</dt>
       <dd>"Every rule you switch on buys time and spends alarms. Both sides are simulated, not asserted."</dd>
       <dt>Exit state</dt>
@@ -241,11 +241,11 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt class="key">Persistent object</dt>
       <dd>The cost board from A5, untouched, with all three ghost stops still on both bars.</dd>
       <dt>Learner prediction</dt>
-      <dd class="na">None. The board answered the A5 prediction thirty seconds ago; asking again here would be padding rather than a test.</dd>
+      <dd class="na">None. The board answered the A5 prediction one shot ago; asking again here would be padding rather than a test.</dd>
       <dt>Transformation</dt>
-      <dd>Exactly one thing changes. The shifted curve on the chart above jumps from one sigma to three, and the catch bar redraws its three stops for that shift. The false-alarm bar is not animated at all, because nothing about it depends on the shift.</dd>
+      <dd>Exactly one thing changes. The shifted curve on the chart above jumps from <code>SHIFT</code> to <code>BIG_SHIFT</code>, and the catch bar redraws its three stops for that shift. The false-alarm bar is not animated at all, because nothing about it depends on the shift.</dd>
       <dt class="hot">Surprise</dt>
-      <dd>The catch bar barely shortens across its three stops. Rule 1 already sees a three-sigma jump on the next point, so the extra rules are bought at exactly the previous price and then never used.</dd>
+      <dd>The catch bar barely shortens across its three stops. Rule 1 already sees a jump of <code>BIG_SHIFT</code> on the next point, so the extra rules are bought at exactly the previous price and then never used.</dd>
       <dt class="hot">Counterexample</dt>
       <dd>This shot is the counterexample to the act's own claim as a viewer is likely to have over-generalised it. The rules did not get worse. The shift the plant is aiming at changed, and that alone decided whether the purchase was worth making.</dd>
       <dt>Formula reveal</dt>
@@ -303,7 +303,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
     </li>
     <li>
       <h3>A live simulation of the run-length series accumulating</h3>
-      <p>Cut. The four thousand series behind <code>TRADE</code> cannot be drawn honestly at sixty frames per second, and a sped-up illustration would be motion decorating a number that was computed elsewhere. The simulation reaches the act only as its result.</p>
+      <p>Cut. The <code>RUNS</code> series behind <code>TRADE</code> cannot be drawn honestly at the act's frame rate, and a sped-up illustration would be motion decorating a number that was computed elsewhere. The simulation reaches the act only as its result.</p>
     </li>
   </ol>
 

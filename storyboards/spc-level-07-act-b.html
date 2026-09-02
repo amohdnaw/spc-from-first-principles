@@ -57,7 +57,7 @@ ul.gate li{padding:13px 20px;border-bottom:1px solid var(--rule);font-size:15px;
 ul.gate li:last-child{border-bottom:0}
 ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em}
 .stop{margin-top:34px;border:1px solid var(--amber);background:rgba(255,174,0,.05);padding:18px 20px}
-.stop b{display:block;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;color:var(--amber)}
+.stop b{display:block;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--amber)}
 .stop p{margin:0;font-size:15px;line-height:1.58}
 @media(max-width:760px){
   dl{grid-template-columns:1fr}
@@ -101,6 +101,11 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
     <p>Rule 1 only · Rules 1 + 2 · All four Western Electric rules</p>
   </div>
 
+  <div class="stop">
+    <b>Forward reference · read before checking the readouts</b>
+    <p>The module <code>spclab.level07_mastery</code> does not exist yet. Task 3 of the plan creates it, and it must exist before Act B is rendered. Every readout below that names <code>challenge_case()</code>, <code>CASE_SEEDS</code>, <code>expected_cost()</code>, <code>false_alarm_run_length()</code>, <code>detection_delay()</code>, <code>deciding_field</code>, or <code>SHIFT_GRID</code> is a contract on that planned module rather than a reference to code in the repository today. Readouts marked <code>evidence.</code> already exist in <code>spclab.evidence</code>. <code>SHIFT_GRID</code> is the planned pair <code>(SHIFT, BIG_SHIFT)</code>, both read from <code>spclab.evidence</code>, so Task 3 cannot substitute different shift sizes without breaking this storyboard.</p>
+  </div>
+
   <div class="section-head">
     <span class="micro">Ordering check</span>
     <h2>Required beats, in the order they appear</h2>
@@ -139,7 +144,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt>Formula reveal</dt>
       <dd class="na">None. No expected-cost expression is permitted until the bars in B3 exist to attach its terms to.</dd>
       <dt class="src">Readout source</dt>
-      <dd><code>challenge_case(CASE_SEEDS[0])</code> supplies <code>surface_story</code>, <code>expected_shift_size</code>, <code>false_alarm_cost</code>, <code>missed_shift_cost</code>, and <code>sampling_cadence</code>. The curve offset is drawn at <code>expected_shift_size</code>, which the blueprint pins to <code>SHIFT</code> from <code>spclab.evidence</code>, so Act A's one-sigma world and this case are the same world.</dd>
+      <dd>Planned in Task 3: <code>level07_mastery.challenge_case(level07_mastery.CASE_SEEDS[0])</code> supplies <code>surface_story</code>, <code>expected_shift_size</code>, <code>false_alarm_cost</code>, <code>missed_shift_cost</code>, and <code>sampling_cadence</code>. Exists today: the curve offset is drawn at <code>expected_shift_size</code>, which the blueprint pins to <code>evidence.SHIFT</code>, so Act A's world and this case are the same world.</dd>
       <dt>Camera move</dt>
       <dd>One slow lateral track along the strip while the red slots fill, so the growing stack is felt as elapsed time rather than seen as a bar. The camera then settles wide with the strip and all four case rows in one frame.</dd>
       <dt>Narration line</dt>
@@ -165,7 +170,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt>Formula reveal</dt>
       <dd class="na">None. A formula here would hand over the answer the viewer was just asked to commit to.</dd>
       <dt class="src">Readout source</dt>
-      <dd><code>challenge_case(...)["options"]</code> supplies the three ids and their rule tuples, in the order <code>rule-1</code>, <code>rules-1-2</code>, <code>all-four</code>; <code>first_violation()</code> places the alarm slot on each replay; <code>TRADE[key]["arl0"]</code> sets how often the quiet-stretch alarm is drawn, so the false alarm shown is the rate that is later charged for.</dd>
+      <dd>Planned in Task 3: <code>level07_mastery.challenge_case(...)["options"]</code> supplies the three ids and their rule tuples, in the order <code>rule-1</code>, <code>rules-1-2</code>, <code>all-four</code>. Exists today: <code>evidence.first_violation()</code> places the alarm slot on each replay, and <code>evidence.TRADE[key]["arl0"]</code> sets how often the quiet-stretch alarm is drawn, so the false alarm shown is the rate that is later charged for.</dd>
       <dt>Camera move</dt>
       <dd>Locked wide on the three plates and the strip together. Cutting between plates would let the viewer forget that all three are reading one run.</dd>
       <dt>Narration line</dt>
@@ -191,7 +196,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt>Formula reveal</dt>
       <dd>Only under the finished bars does the expected-cost expression write itself: expected false alarms times false-alarm cost, plus delay minutes times missed-shift cost. Each term is drawn in the colour of the segment it built, so the expression reads as a caption on two stacks that already exist.</dd>
       <dt class="src">Readout source</dt>
-      <dd><code>expected_cost()</code> per option, and the printed totals from <code>challenge_case(...)["options"][i]["expected_cost"]</code>; <code>false_alarm_run_length()</code> sizes the amber segment and <code>detection_delay()</code> sizes the red one; <code>challenge_case(...)["answer"]</code> places the marker. No total is written into the scene as a literal.</dd>
+      <dd>Planned in Task 3, all of it: <code>level07_mastery.expected_cost()</code> per option, and the printed totals from <code>challenge_case(...)["options"][i]["expected_cost"]</code>; <code>level07_mastery.false_alarm_run_length()</code> sizes the amber segment and <code>level07_mastery.detection_delay()</code> sizes the red one; <code>challenge_case(...)["answer"]</code> places the marker. Both of those functions must read <code>evidence.TRADE</code> rather than hold their own copies. No total is written into the scene as a literal.</dd>
       <dt>Camera move</dt>
       <dd>Locked while all three bars build, then one push to the shortest bar once the marker lands. The push happens after the comparison, never during it.</dd>
       <dt>Narration line</dt>
@@ -217,7 +222,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt>Formula reveal</dt>
       <dd class="na">None new. The expression from B3 stays exactly where it was, and only the inputs of its second term are re-lit, so the viewer can see which half of the arithmetic the changed field reached.</dd>
       <dt class="src">Readout source</dt>
-      <dd>The changed row moves from <code>SHIFT</code> to <code>BIG_SHIFT</code>, both of which are the two entries of <code>SHIFT_GRID</code>; <code>expected_cost()</code> is re-evaluated per option; the marker follows the recomputed <code>challenge_case(...)["answer"]</code>; <code>deciding_field</code> drives which row stays bright. The storyboard's expectation is that the winner moves from <code>all-four</code> to <code>rule-1</code>, and Task 3's counterfactual test must confirm that before this shot is rendered. If the computation disagrees, this shot changes, not the number.</dd>
+      <dd>Exists today: the changed row moves from <code>evidence.SHIFT</code> to <code>evidence.BIG_SHIFT</code>. Planned in Task 3: those two are the only entries of <code>level07_mastery.SHIFT_GRID</code>, in that order, so the pair cannot be silently redefined; <code>expected_cost()</code> is re-evaluated per option; the marker follows the recomputed <code>challenge_case(...)["answer"]</code>; <code>deciding_field</code> drives which row stays bright. The storyboard's expectation is that the winner moves from <code>all-four</code> to <code>rule-1</code>, and Task 3's counterfactual test must confirm that before this shot is rendered. If the computation disagrees, this shot changes, not the number.</dd>
       <dt>Camera move</dt>
       <dd>Locked, with the case card and all three bars in one frame. If the unchanged rows or the unchanged amber segments leave frame for even a moment, the argument of the shot is gone.</dd>
       <dt>Narration line</dt>
@@ -243,7 +248,7 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
       <dt>Formula reveal</dt>
       <dd class="na">None, deliberately. Beat 5 forbids a formula recap, and the expression was already retired at the end of B4.</dd>
       <dt class="src">Readout source</dt>
-      <dd><code>challenge_case(CASE_SEEDS[0])["answer"]</code> decides which rule set is applied; <code>RULE_TEXT</code> supplies the pattern the operator is now reading; <code>first_violation()</code> places the alarm slot on the running strip.</dd>
+      <dd>Planned in Task 3: <code>level07_mastery.challenge_case(level07_mastery.CASE_SEEDS[0])["answer"]</code> decides which rule set is applied. Exists today: <code>evidence.RULE_TEXT</code> supplies the pattern the operator is now reading, and <code>evidence.first_violation()</code> places the alarm slot on the running strip.</dd>
       <dt>Camera move</dt>
       <dd>One slow pull back to the whole strip, holding the alarm marker in frame to the last frame of the act.</dd>
       <dt>Narration line</dt>
