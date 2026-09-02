@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPC Level 7 · Act B · shot storyboard</title>
+<style>
+:root{--ground:#0d1114;--panel:#14181c;--panel2:#1b2026;--rule:#2a3138;--strong:#3d4650;--ink:#d7dee4;--bright:#eef3f7;--dim:#8b98a4;--amber:#ffae00;--teal:#65ccaf;--alarm:#de6a5d;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--gutter:clamp(16px,3vw,44px)}
+*{box-sizing:border-box}
+html{background:var(--ground);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0}
+header{padding:52px var(--gutter) 30px;border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(255,174,0,.05),rgba(255,174,0,0) 72%)}
+.eyebrow,.micro,.tag,.num,dt,th,.chip{font-family:var(--mono);letter-spacing:.13em;text-transform:uppercase}
+.eyebrow{font-size:11px;font-weight:600;color:var(--amber)}
+h1{max-width:22ch;margin:14px 0 16px;color:var(--bright);font:600 clamp(30px,4.4vw,54px)/1.02 Georgia,'Times New Roman',serif;letter-spacing:-.02em}
+.dek{max-width:76ch;margin:0;color:var(--dim);font-size:16px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{border:1px solid var(--strong);padding:7px 10px;font-size:10.5px;font-weight:600;color:var(--ink)}
+.chip code{font-size:inherit;letter-spacing:inherit;text-transform:none}
+.chip.on{border-color:var(--teal);color:var(--teal)}
+main{padding:0 var(--gutter) 80px}
+.section-head{margin:56px 0 16px;padding-top:22px;border-top:1px solid var(--rule)}
+main>.section-head:first-child{margin-top:34px;padding-top:0;border-top:0}
+.micro{font-size:11px;font-weight:600;color:var(--amber)}
+h2{margin:10px 0 8px;color:var(--bright);font:600 clamp(23px,2.6vw,32px)/1.15 Georgia,'Times New Roman',serif}
+.section-head p{max-width:76ch;margin:0;color:var(--dim);font-size:15px;line-height:1.6}
+table{width:100%;border-collapse:collapse;border:1px solid var(--rule);background:var(--panel)}
+th,td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule);font-size:14.5px;line-height:1.55}
+th{font-size:10.5px;font-weight:600;color:var(--amber);background:var(--panel2)}
+tbody tr:last-child td{border-bottom:0}
+.case{border:1px solid var(--amber);background:rgba(255,174,0,.04);padding:20px}
+.case p{margin:0 0 14px;max-width:76ch;font-size:16px;line-height:1.6}
+.case p:last-child{margin-bottom:0}
+.case .lab{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--amber)}
+.shot{border:1px solid var(--rule);background:var(--panel);margin-top:16px}
+.shot-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px;padding:15px 20px;border-bottom:1px solid var(--rule);background:var(--panel2)}
+.num{font-size:11.5px;font-weight:600;color:var(--amber)}
+.shot-head h3{flex:1 1 220px;margin:0;color:var(--bright);font:600 21px/1.2 Georgia,'Times New Roman',serif}
+.tag{border:1px solid var(--strong);padding:4px 8px;font-size:10px;font-weight:600;color:var(--dim)}
+.tag.beat{border-color:var(--teal);color:var(--teal)}
+dl{display:grid;grid-template-columns:216px minmax(0,1fr);margin:0}
+dt{padding:13px 20px;border-bottom:1px solid var(--rule);font-size:10.5px;font-weight:600;line-height:1.5;color:var(--dim)}
+dd{margin:0;padding:13px 20px;border-bottom:1px solid var(--rule);border-left:1px solid var(--rule);font-size:15px;line-height:1.58}
+dt.key{color:var(--teal)}
+dt.hot{color:var(--alarm)}
+dt.src{color:var(--amber)}
+dl>dt:last-of-type,dl>dd:last-of-type{border-bottom:0}
+dd.na{color:var(--dim)}
+code{font-family:var(--mono);font-size:13px;color:var(--teal);word-break:break-word}
+ol.rej{margin:0;padding:0;list-style:none;counter-reset:r}
+ol.rej li{counter-increment:r;border:1px solid var(--rule);border-left:3px solid var(--alarm);background:var(--panel);padding:16px 20px;margin-top:12px}
+ol.rej h3{margin:0 0 6px;color:var(--bright);font:600 17px/1.3 Georgia,'Times New Roman',serif}
+ol.rej h3:before{content:"CUT " counter(r) " · ";font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;color:var(--alarm)}
+ol.rej p{margin:0;color:var(--ink);font-size:15px;line-height:1.58}
+ul.gate{margin:0;padding:0;list-style:none;border:1px solid var(--rule);background:var(--panel)}
+ul.gate li{padding:13px 20px;border-bottom:1px solid var(--rule);font-size:15px;line-height:1.58}
+ul.gate li:last-child{border-bottom:0}
+ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em}
+.stop{margin-top:34px;border:1px solid var(--amber);background:rgba(255,174,0,.05);padding:18px 20px}
+.stop b{display:block;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;color:var(--amber)}
+.stop p{margin:0;font-size:15px;line-height:1.58}
+@media(max-width:760px){
+  dl{grid-template-columns:1fr}
+  dt{padding:14px 16px 0;border-bottom:0}
+  dd{padding:7px 16px 14px;border-left:0}
+  dl>dt:last-of-type{border-bottom:0}
+  th,td{padding:11px 14px}
+  table{display:block}
+  thead{display:none}
+  tbody,tr,td{display:block}
+  tr{border-bottom:1px solid var(--rule)}
+  tbody tr:last-child{border-bottom:0}
+  td{border-bottom:0;padding:4px 14px}
+  tr td:first-child{padding-top:14px}
+  tr td:last-child{padding-bottom:14px}
+  td:before{content:attr(data-l);display:block;margin-bottom:3px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .case{padding:16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">SPC Level 7 · Act B · shot storyboard · locked before Manim</div>
+  <h1>Which rule set earns its false alarms is a property of the line, not of the rules.</h1>
+  <p class="dek">That sentence is the act's only visual claim. Five shots reveal one masked case, take a commitment before any total exists, price all three rule sets from that one case, move exactly one premise until the winner changes, and end on the action a shift supervisor takes. Every value on screen is read from a generated case; nothing is typed twice.</p>
+  <div class="chips"><span class="chip on">5 shots</span><span class="chip on">5 required beats in order</span><span class="chip">6 shots cut</span><span class="chip">One masked line, no identifiers</span><span class="chip">Numbers from <code>level07_mastery</code></span></div>
+</header>
+<main>
+
+  <div class="section-head">
+    <span class="micro">The case</span>
+    <h2>One masked line, four facts</h2>
+    <p>Approved copy for the act's surface story. It is stored once as a blueprint string in <code>level07_mastery</code> and reaches the act as <code>challenge_case(CASE_SEEDS[0])["surface_story"]</code>. It names no company, product, part, person, or equipment identifier, and it is written so that the two cost shapes are visible in the story before they are visible on screen.</p>
+  </div>
+  <div class="case">
+    <p><span class="lab">Surface story</span></p>
+    <p>A masked deposition line plots one film-thickness subgroup every sampling interval. When the mean really drifts, everything produced between the drift and the alarm is reworked at the next step, so the damage is charged per minute the drift goes unseen. When the chart alarms and nothing has changed, the line stops for one check, so that damage is charged once per event.</p>
+    <p><span class="lab">The four case fields, in the exact labels the challenge and its feedback also use</span></p>
+    <p>expected shift size · false-alarm cost · missed-shift cost · sampling cadence</p>
+    <p><span class="lab">The three options, in the exact labels the challenge also uses</span></p>
+    <p>Rule 1 only · Rules 1 + 2 · All four Western Electric rules</p>
+  </div>
+
+  <div class="section-head">
+    <span class="micro">Ordering check</span>
+    <h2>Required beats, in the order they appear</h2>
+    <p>The plan fixes five beats and their order. This index exists so a reviewer can check the order without reading every field.</p>
+  </div>
+  <table>
+    <thead><tr><th>Required beat</th><th>Shot</th><th>What proves it landed, with audio muted</th></tr></thead>
+    <tbody>
+      <tr><td data-l="Required beat">Reveal expected shift size, false-alarm cost, missed-shift cost, and sampling cadence</td><td data-l="Shot">B1</td><td data-l="Muted check">Four facts are each built as a physical thing on the line strip before any of them is named.</td></tr>
+      <tr><td data-l="Required beat">Ask for a rule-set choice before totals appear</td><td data-l="Shot">B2</td><td data-l="Muted check">Three option plates are on screen with three empty total rows under them, and the act holds.</td></tr>
+      <tr><td data-l="Required beat">Price all three options from the same case</td><td data-l="Shot">B3</td><td data-l="Muted check">Three bars grow out of the same blocks that came off the strip; the shortest gets a marker.</td></tr>
+      <tr><td data-l="Required beat">Change one premise and show the winner change</td><td data-l="Shot">B4</td><td data-l="Muted check">One case row changes, three stay lit and still, and the marker walks to a different bar.</td></tr>
+      <tr><td data-l="Required beat">End on a plant action, not a formula recap</td><td data-l="Shot">B5</td><td data-l="Muted check">The last frame holds a stopped line and a logged reason, with no expression on screen.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-head">
+    <span class="micro">Shot table</span>
+    <h2>Five shots on one line strip</h2>
+    <p>The strip built in B1 is the source of every block that later becomes a cost bar. Money is never introduced as a number; it is carried out of the strip that produced it.</p>
+  </div>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot B1</span><h3>Four facts, built before they are named</h3><span class="tag beat">Beat 1</span><span class="tag">Creates the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The line strip: a horizontal run of subgroup slots with the process curve standing above it. The strip stays on screen for the whole act, and a four-row case card builds beside it, one row per field.</dd>
+      <dt>Learner prediction</dt>
+      <dd class="na">None. A guess is worthless before the four facts exist, and B2 takes the commitment as soon as they do.</dd>
+      <dt>Transformation</dt>
+      <dd>Each field is built as a physical thing first and labelled second. The curve above the strip slides sideways and stays offset, which is the expected shift size. The slots space out to one measured interval and a hand sweeps exactly one slot, which is the sampling cadence. One slot turns amber and a single cost block rises out of it, which is the false-alarm cost. The slots after the offset fill red one at a time, each one adding another block to a growing stack, which is the missed-shift cost. Only when all four exist do the four labels settle onto the case card.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The two costs are different shapes. The false-alarm block is one block per event and stops growing. The missed-shift stack keeps growing while nothing is done, because it is charged per minute. Nobody has to be told that waiting is the expensive one.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None. This shot only supplies the facts the rest of the act spends.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None. No expected-cost expression is permitted until the bars in B3 exist to attach its terms to.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>challenge_case(CASE_SEEDS[0])</code> supplies <code>surface_story</code>, <code>expected_shift_size</code>, <code>false_alarm_cost</code>, <code>missed_shift_cost</code>, and <code>sampling_cadence</code>. The curve offset is drawn at <code>expected_shift_size</code>, which the blueprint pins to <code>SHIFT</code> from <code>spclab.evidence</code>, so Act A's one-sigma world and this case are the same world.</dd>
+      <dt>Camera move</dt>
+      <dd>One slow lateral track along the strip while the red slots fill, so the growing stack is felt as elapsed time rather than seen as a bar. The camera then settles wide with the strip and all four case rows in one frame.</dd>
+      <dt>Narration line</dt>
+      <dd>"Four facts about one line. Everything after this is arithmetic on those four."</dd>
+      <dt>Exit state</dt>
+      <dd>Strip, offset curve, one amber block, one red stack, and a four-row case card carrying the four exact field labels. No rule set has been mentioned.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot B2</span><h3>Commit before the prices</h3><span class="tag beat">Beat 2</span><span class="tag">Tests the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>Strip and case card, both unchanged. Three option plates are added below the strip and stay for the rest of the act.</dd>
+      <dt>Learner prediction</dt>
+      <dd>The three plates carry the labels Rule 1 only, Rules 1 + 2, and All four Western Electric rules, and nothing else. The act stops with three empty total rows on screen and holds long enough for a viewer to choose out loud.</dd>
+      <dt>Transformation</dt>
+      <dd>Each plate previews its behaviour and never its price. The same recorded run replays across the strip three times, once per plate, and each replay lights the slot where that rule set first alarms. The single-rule replay alarms late. The all-four replay alarms early, and it also lights an alarm during a stretch of the same run where nothing had changed.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The plate that alarms earliest is the same plate that alarms when nothing happened. Both consequences of the purchase are visible on the strip before either one has a price.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None. Withholding the totals is what makes this shot a test rather than a demonstration.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None. A formula here would hand over the answer the viewer was just asked to commit to.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>challenge_case(...)["options"]</code> supplies the three ids and their rule tuples, in the order <code>rule-1</code>, <code>rules-1-2</code>, <code>all-four</code>; <code>first_violation()</code> places the alarm slot on each replay; <code>TRADE[key]["arl0"]</code> sets how often the quiet-stretch alarm is drawn, so the false alarm shown is the rate that is later charged for.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked wide on the three plates and the strip together. Cutting between plates would let the viewer forget that all three are reading one run.</dd>
+      <dt>Narration line</dt>
+      <dd>"Pick one now. The prices are off screen on purpose."</dd>
+      <dt>Exit state</dt>
+      <dd>Three plates, three lit alarm slots, three empty total rows. Nothing is scored and no option is marked.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot B3</span><h3>Three prices out of one case</h3><span class="tag beat">Beat 3</span><span class="tag">Applies the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>Strip, case card, and the three plates. Each plate's empty total row becomes a bar and keeps it.</dd>
+      <dt>Learner prediction</dt>
+      <dd class="na">None. The commitment was taken in B2, and this shot pays it off.</dd>
+      <dt>Transformation</dt>
+      <dd>Every total is built rather than printed. The amber alarm blocks and the red waiting blocks slide out of the strip and stack into one bar per plate, so each bar has two visibly different segments and each segment can be traced back to the slot it came from. All three bars are built from the same source blocks, one after another, which is what makes it obvious that one case is paying for all three answers.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The tallest amber segment and the tallest red segment belong to different plates. The winning bar is not best at either half; it is the one that is worst at neither.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None in this shot. B4 is the counterexample and needs these three bars left standing.</dd>
+      <dt>Formula reveal</dt>
+      <dd>Only under the finished bars does the expected-cost expression write itself: expected false alarms times false-alarm cost, plus delay minutes times missed-shift cost. Each term is drawn in the colour of the segment it built, so the expression reads as a caption on two stacks that already exist.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>expected_cost()</code> per option, and the printed totals from <code>challenge_case(...)["options"][i]["expected_cost"]</code>; <code>false_alarm_run_length()</code> sizes the amber segment and <code>detection_delay()</code> sizes the red one; <code>challenge_case(...)["answer"]</code> places the marker. No total is written into the scene as a literal.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked while all three bars build, then one push to the shortest bar once the marker lands. The push happens after the comparison, never during it.</dd>
+      <dt>Narration line</dt>
+      <dd>"Same four facts, three prices. One is smaller, and that is arithmetic rather than taste."</dd>
+      <dt>Exit state</dt>
+      <dd>Three two-segment bars, the shortest marked, the expression under them, and the case card still lit beside the strip.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot B4</span><h3>Move one line of the case</h3><span class="tag beat">Beat 4</span><span class="tag">Counterexample</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>Everything from B3, unchanged and uncut, including all three bars and all four case rows.</dd>
+      <dt>Learner prediction</dt>
+      <dd>The act dims three case rows, holds one of them bright, and asks which field it is about to change, before any bar moves. This rehearses the second half of the page challenge, which asks the learner to name the deciding field using these same four labels.</dd>
+      <dt>Transformation</dt>
+      <dd>Exactly one row changes: expected shift size moves from the case value to the large-shift value, and the curve above the strip slides out to match. The bars rebuild from the same blocks. The amber segments do not animate at all, because the false-alarm rate of a rule set does not depend on the shift. Only the red segments collapse, and the winner marker walks to a different bar.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The amber halves are identical to the previous shot, frame for frame. The purchase price did not move at all. Only what the purchase bought moved, and that alone was enough to change the recommendation.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd>This shot is the counterexample, and it is the reason the act exists. Three fields are held visibly still, one field moves, and a different rule set becomes correct. The answer is therefore a property of this line, not a property of the Western Electric rules.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None new. The expression from B3 stays exactly where it was, and only the inputs of its second term are re-lit, so the viewer can see which half of the arithmetic the changed field reached.</dd>
+      <dt class="src">Readout source</dt>
+      <dd>The changed row moves from <code>SHIFT</code> to <code>BIG_SHIFT</code>, both of which are the two entries of <code>SHIFT_GRID</code>; <code>expected_cost()</code> is re-evaluated per option; the marker follows the recomputed <code>challenge_case(...)["answer"]</code>; <code>deciding_field</code> drives which row stays bright. The storyboard's expectation is that the winner moves from <code>all-four</code> to <code>rule-1</code>, and Task 3's counterfactual test must confirm that before this shot is rendered. If the computation disagrees, this shot changes, not the number.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked, with the case card and all three bars in one frame. If the unchanged rows or the unchanged amber segments leave frame for even a moment, the argument of the shot is gone.</dd>
+      <dt>Narration line</dt>
+      <dd>"I changed one line of the case. The rules did not change. The answer did."</dd>
+      <dt>Exit state</dt>
+      <dd>Two priced worlds standing side by side from the same rules, with the marker on a different plate and one case row still bright.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot B5</span><h3>What the next shift does</h3><span class="tag beat">Beat 5</span><span class="tag">Applies the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The strip alone. Bars, plates, and case card fall away, and the strip returns to full width as a working chart.</dd>
+      <dt>Learner prediction</dt>
+      <dd class="na">None. The act ends on an instruction. The unseen-data question belongs to the page challenge, which follows this act.</dd>
+      <dt>Transformation</dt>
+      <dd>The rule set that won the original case is applied to the strip and runs. Its alarm slot lights, and then three objects land on the strip in sequence: the affected run is held at the next step, the preceding subgroups are pulled back onto the chart, and the alarm is logged against the shift size it was bought to catch. Each action lands on the slot it applies to, so the sequence is a place on the line rather than a list.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The final object on screen is not a number. The act ends with a line stopped, material held, and a reason written down.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None. B4 already carried it, and repeating it here would end the act on arithmetic.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None, deliberately. Beat 5 forbids a formula recap, and the expression was already retired at the end of B4.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>challenge_case(CASE_SEEDS[0])["answer"]</code> decides which rule set is applied; <code>RULE_TEXT</code> supplies the pattern the operator is now reading; <code>first_violation()</code> places the alarm slot on the running strip.</dd>
+      <dt>Camera move</dt>
+      <dd>One slow pull back to the whole strip, holding the alarm marker in frame to the last frame of the act.</dd>
+      <dt>Narration line</dt>
+      <dd>"You are not choosing a rule set. You are choosing what the next shift does when the chart alarms."</dd>
+      <dt>Exit state</dt>
+      <dd>One strip, one alarm, one held run, one logged reason, and no expression on screen.</dd>
+    </dl>
+  </section>
+
+  <div class="section-head">
+    <span class="micro">Muted review gate</span>
+    <h2>What a reviewer must be able to say with the sound off</h2>
+    <p>If any line below needs the narration to be true, that shot fails and returns to this storyboard rather than to the render queue.</p>
+  </div>
+  <ul class="gate">
+    <li><b>B1</b> This line has four facts, and the cost of waiting grows while the cost of a false alarm does not.</li>
+    <li><b>B2</b> More rules means an earlier alarm and also an alarm when nothing happened.</li>
+    <li><b>B3</b> All three prices came out of the same case, and the cheapest is the balanced one.</li>
+    <li><b>B4</b> One fact changed, the alarm cost stayed put, and a different option won.</li>
+    <li><b>B5</b> The chart alarmed, the line stopped, and somebody wrote down why.</li>
+  </ul>
+
+  <div class="section-head">
+    <span class="micro">Rejection list</span>
+    <h2>Shots considered and cut</h2>
+    <p>A storyboard with nothing rejected has not made a decision. Each cut below was a plausible shot, and each has a reason it does not exist.</p>
+  </div>
+  <ol class="rej">
+    <li>
+      <h3>An opening slate naming the three rule sets before the case</h3>
+      <p>Cut. It would make the act about the rules, which is the belief B4 exists to break. The plates now arrive in B2, after the four case facts are standing on the strip as objects.</p>
+    </li>
+    <li>
+      <h3>A three-row, four-column cost table instead of the stacked bars</h3>
+      <p>Cut. A table lets a viewer compare totals without seeing which segment caused the difference, so the winner would have to be asserted. The B3 bars keep every number attached to the blocks that came off the strip.</p>
+    </li>
+    <li>
+      <h3>A sensitivity sweep across all four case fields</h3>
+      <p>Cut. Four moving premises prove nothing about which one decided the answer, and the challenge asks the learner to name exactly one field. B4 moves one field and holds the other three visibly still.</p>
+    </li>
+    <li>
+      <h3>A second masked case with a different winner</h3>
+      <p>Cut. It teaches the same beat a second time at full length, and B4 already proves the winner is case-dependent using one field. Variety belongs to the challenge's <code>CASE_SEEDS</code> bank, where it costs no runtime.</p>
+    </li>
+    <li>
+      <h3>A closing recap of the expected-cost expression</h3>
+      <p>Cut. Beat 5 requires a plant action, and a recap would return the act to arithmetic it had already finished. The expression retires at the end of B4 and never comes back.</p>
+    </li>
+    <li>
+      <h3>A named industry, site, or customer to make the case feel real</h3>
+      <p>Cut. The outcome contract forbids identifiers, and a named context invites the viewer to answer from memory of that context instead of from the four fields on the case card.</p>
+    </li>
+  </ol>
+
+  <div class="stop">
+    <b>Lock condition</b>
+    <p>This storyboard is the input to Task 5, and its case fields are the input to Task 3. The four field labels and the three option labels on this page are the same strings the challenge and its feedback use. Changing one of them changes all three layers or none.</p>
+  </div>
+
+</main>
+</body>
+</html>

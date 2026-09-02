@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPC Level 7 · Act A · shot storyboard</title>
+<style>
+:root{--ground:#0d1114;--panel:#14181c;--panel2:#1b2026;--rule:#2a3138;--strong:#3d4650;--ink:#d7dee4;--bright:#eef3f7;--dim:#8b98a4;--amber:#ffae00;--teal:#65ccaf;--alarm:#de6a5d;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--gutter:clamp(16px,3vw,44px)}
+*{box-sizing:border-box}
+html{background:var(--ground);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0}
+header{padding:52px var(--gutter) 30px;border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(255,174,0,.05),rgba(255,174,0,0) 72%)}
+.eyebrow,.micro,.tag,.num,dt,th,.chip{font-family:var(--mono);letter-spacing:.13em;text-transform:uppercase}
+.eyebrow{font-size:11px;font-weight:600;color:var(--amber)}
+h1{max-width:22ch;margin:14px 0 16px;color:var(--bright);font:600 clamp(30px,4.4vw,54px)/1.02 Georgia,'Times New Roman',serif;letter-spacing:-.02em}
+.dek{max-width:76ch;margin:0;color:var(--dim);font-size:16px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{border:1px solid var(--strong);padding:7px 10px;font-size:10.5px;font-weight:600;color:var(--ink)}
+.chip code{font-size:inherit;letter-spacing:inherit;text-transform:none}
+.chip.on{border-color:var(--teal);color:var(--teal)}
+main{padding:0 var(--gutter) 80px}
+.section-head{margin:56px 0 16px;padding-top:22px;border-top:1px solid var(--rule)}
+main>.section-head:first-child{margin-top:34px;padding-top:0;border-top:0}
+.micro{font-size:11px;font-weight:600;color:var(--amber)}
+h2{margin:10px 0 8px;color:var(--bright);font:600 clamp(23px,2.6vw,32px)/1.15 Georgia,'Times New Roman',serif}
+.section-head p{max-width:76ch;margin:0;color:var(--dim);font-size:15px;line-height:1.6}
+table{width:100%;border-collapse:collapse;border:1px solid var(--rule);background:var(--panel)}
+th,td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule);font-size:14.5px;line-height:1.55}
+th{font-size:10.5px;font-weight:600;color:var(--amber);background:var(--panel2)}
+tbody tr:last-child td{border-bottom:0}
+.shot{border:1px solid var(--rule);background:var(--panel);margin-top:16px}
+.shot-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px;padding:15px 20px;border-bottom:1px solid var(--rule);background:var(--panel2)}
+.num{font-size:11.5px;font-weight:600;color:var(--amber)}
+.shot-head h3{flex:1 1 220px;margin:0;color:var(--bright);font:600 21px/1.2 Georgia,'Times New Roman',serif}
+.tag{border:1px solid var(--strong);padding:4px 8px;font-size:10px;font-weight:600;color:var(--dim)}
+.tag.beat{border-color:var(--teal);color:var(--teal)}
+dl{display:grid;grid-template-columns:216px minmax(0,1fr);margin:0}
+dt{padding:13px 20px;border-bottom:1px solid var(--rule);font-size:10.5px;font-weight:600;line-height:1.5;color:var(--dim)}
+dd{margin:0;padding:13px 20px;border-bottom:1px solid var(--rule);border-left:1px solid var(--rule);font-size:15px;line-height:1.58}
+dt.key{color:var(--teal)}
+dt.hot{color:var(--alarm)}
+dt.src{color:var(--amber)}
+dl>dt:last-of-type,dl>dd:last-of-type{border-bottom:0}
+dd.na{color:var(--dim)}
+code{font-family:var(--mono);font-size:13px;color:var(--teal);word-break:break-word}
+ol.rej{margin:0;padding:0;list-style:none;counter-reset:r}
+ol.rej li{counter-increment:r;border:1px solid var(--rule);border-left:3px solid var(--alarm);background:var(--panel);padding:16px 20px;margin-top:12px}
+ol.rej h3{margin:0 0 6px;color:var(--bright);font:600 17px/1.3 Georgia,'Times New Roman',serif}
+ol.rej h3:before{content:"CUT " counter(r) " · ";font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;color:var(--alarm)}
+ol.rej p{margin:0;color:var(--ink);font-size:15px;line-height:1.58}
+ul.gate{margin:0;padding:0;list-style:none;border:1px solid var(--rule);background:var(--panel)}
+ul.gate li{padding:13px 20px;border-bottom:1px solid var(--rule);font-size:15px;line-height:1.58}
+ul.gate li:last-child{border-bottom:0}
+ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em}
+.stop{margin-top:34px;border:1px solid var(--amber);background:rgba(255,174,0,.05);padding:18px 20px}
+.stop b{display:block;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;color:var(--amber)}
+.stop p{margin:0;font-size:15px;line-height:1.58}
+@media(max-width:760px){
+  dl{grid-template-columns:1fr}
+  dt{padding:14px 16px 0;border-bottom:0}
+  dd{padding:7px 16px 14px;border-left:0}
+  dl>dt:last-of-type{border-bottom:0}
+  th,td{padding:11px 14px}
+  table{display:block}
+  thead{display:none}
+  tbody,tr,td{display:block}
+  tr{border-bottom:1px solid var(--rule)}
+  tbody tr:last-child{border-bottom:0}
+  td{border-bottom:0;padding:4px 14px}
+  tr td:first-child{padding-top:14px}
+  tr td:last-child{padding-bottom:14px}
+  td:before{content:attr(data-l);display:block;margin-bottom:3px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">SPC Level 7 · Act A · shot storyboard · locked before Manim</div>
+  <h1>Every added signal rule buys earlier detection by spending a fixed stream of false alarms.</h1>
+  <p class="dek">That sentence is the act's only visual claim. Six shots build it, test it, and hand one open question to Act B. A shot survives here only if it creates, transforms, tests, or applies the visual model. Runtime is not a gate. Every readout names the <code>spclab</code> symbol it reads; no number is typed into this document, because a number typed twice is a number that drifts.</p>
+  <div class="chips"><span class="chip on">6 shots</span><span class="chip on">5 required beats in order</span><span class="chip">6 shots cut</span><span class="chip">Numbers from <code>spclab.evidence</code></span></div>
+</header>
+<main>
+
+  <div class="section-head">
+    <span class="micro">Ordering check</span>
+    <h2>Required beats, in the order they appear</h2>
+    <p>The plan fixes five beats and their order. This index exists so a reviewer can check the order without reading every field.</p>
+  </div>
+  <table>
+    <thead><tr><th>Required beat</th><th>Shot</th><th>What proves it landed, with audio muted</th></tr></thead>
+    <tbody>
+      <tr><td data-l="Required beat">One in-control curve, one shifted curve, one decision boundary</td><td data-l="Shot">A1</td><td data-l="Muted check">Two curves and one line hold the frame; the line never moves again for the rest of the act.</td></tr>
+      <tr><td data-l="Required beat">False-alarm and missed-shift areas exist before the symbols</td><td data-l="Shot">A2</td><td data-l="Muted check">Both areas are filled and held before any Greek letter is on screen.</td></tr>
+      <tr><td data-l="Required beat">The shift tracker moves continuously; power is a changing area</td><td data-l="Shot">A3</td><td data-l="Muted check">One handle sweeps; an area grows with it. No grid of values appears at any frame.</td></tr>
+      <tr><td data-l="Required beat">A 2.5 sigma point separates "inside limits" from "weak evidence"</td><td data-l="Shot">A4</td><td data-l="Muted check">One point produces two objects that disagree and stay on screen together.</td></tr>
+      <tr><td data-l="Required beat">Rules 1, 1+2, and all four move ARL0 and detection delay on one cost board</td><td data-l="Shot">A5</td><td data-l="Muted check">Two bars slide three times on one board, in the same direction each time.</td></tr>
+      <tr><td data-l="Required beat">Extra: the purchase is tested against a shift rule 1 already sees</td><td data-l="Shot">A6</td><td data-l="Muted check">One bar collapses; the other does not twitch. The cost board is never redrawn.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-head">
+    <span class="micro">Shot table</span>
+    <h2>Six shots on one persistent object</h2>
+    <p>The board created in A1 is the only stage. Nothing in this act is redrawn from scratch; every later shot transforms what is already there.</p>
+  </div>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A1</span><h3>The line that will not move</h3><span class="tag beat">Beat 1</span><span class="tag">Creates the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The board: one axis of the plotted statistic, the in-control curve standing on it, and one decision boundary drawn as a pair of verticals. The boundary is built by stepping out three equal sigma widths so it reads as a distance before it reads as a rule. This board stays on screen for the whole act.</dd>
+      <dt>Learner prediction</dt>
+      <dd>Motion stops with the boundary in place and one curve under it. The act asks the viewer to place the shifted mean where the chart would start noticing it, then holds a still frame long enough to commit. No answer is shown in this shot.</dd>
+      <dt>Transformation</dt>
+      <dd>A second copy of the same curve, identical in shape, slides right by one sigma of the plotted statistic and stops. Copy and slide, not a new draw, so the eye reads a moved process rather than a different process.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>Almost all of the shifted curve is still inside the boundary. The picture of a process that has genuinely moved looks like a picture of a process that has not.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None. The first shot only builds the object the rest of the act argues with.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None. No symbol is allowed on screen yet; the boundary is labelled by its distance in sigma widths, which the viewer just watched being stepped out.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>LIMIT</code> sets the boundary distance. <code>SHIFT</code> sets the slide distance. Both are read from <code>spclab.evidence</code> so the geometry and the later run lengths cannot disagree.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked wide for the whole shot. The only motion in frame is the sliding curve, so the slide owns the viewer's attention.</dd>
+      <dt>Narration line</dt>
+      <dd>"Level 6 priced one way to be wrong. Here is the other one, in plain sight."</dd>
+      <dt>Exit state</dt>
+      <dd>Two curves and one boundary. No shading, no symbols, no readouts, and the viewer's prediction unanswered.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A2</span><h3>Two areas, then two letters</h3><span class="tag beat">Beat 2</span><span class="tag">Creates the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The same board. Both curves and the boundary keep their positions; the shot adds fill, not geometry.</dd>
+      <dt>Learner prediction</dt>
+      <dd class="na">None. The A1 prediction is still open, and asking a second question before answering the first would waste the commitment.</dd>
+      <dt>Transformation</dt>
+      <dd>Two fills sweep outward from the boundary itself. The in-control tail beyond the boundary fills amber. The body of the shifted curve inside the boundary fills alarm red. Because both sweeps start at the boundary, the boundary is visibly the thing that cuts one area from the other.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The red area is most of a curve; the amber area is a sliver the viewer has to look for. The error that Level 6 priced is the small one, and the error nobody counts is the large one.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None. The contrast that carries this shot is between the two areas already in frame.</dd>
+      <dt>Formula reveal</dt>
+      <dd>Only after both areas hold still do the plain-language labels "crying wolf" and "staying silent" settle onto them, and only then does each label morph into a single letter. The symbols arrive last, on top of quantities the viewer has already watched being filled.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>ALPHA_1</code> for the amber area's value; <code>BETA_AT[SHIFT]</code> for the red area's value. <code>ALPHA_1</code> comes from <code>alpha_one_point()</code>, which reads <code>formulas.inside</code>, so the sliver on screen and the rate quoted in section 7.1 are one computation.</dd>
+      <dt>Camera move</dt>
+      <dd>A slow push toward the boundary while the fills sweep, then a return to the wide framing before the labels morph. The push happens during the fill and never during the symbol reveal, so the symbols do not get a camera flourish they have not earned.</dd>
+      <dt>Narration line</dt>
+      <dd>"One of these is the error the limit was chosen against. The other is the one you are paying."</dd>
+      <dt>Exit state</dt>
+      <dd>Board, two curves, boundary, two filled areas, each carrying one symbol. The trade is on screen before any run length exists.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A3</span><h3>Sweeping the shift, watching the area</h3><span class="tag beat">Beat 3</span><span class="tag">Transforms the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The board with both filled areas. A tracker handle is added on the shift axis at zero and becomes part of the stage for the rest of the act.</dd>
+      <dt>Learner prediction</dt>
+      <dd>With the handle at zero, the act asks the viewer to point at the shift size where the chart would catch half of what it is shown. The handle then starts moving from zero, so the viewer watches their own guess arrive or fail.</dd>
+      <dt>Transformation</dt>
+      <dd>The handle walks continuously from zero to three sigma. The shifted curve follows it. The red missed-shift area shrinks frame by frame while the portion of the shifted curve beyond the boundary grows, and that growing portion is mirrored into a rising column beside the board so power is a length as well as an area. The amber area does not change at any frame of the sweep.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>Power is flat for the whole first sigma and only wakes up near two. The half-way moment lands exactly when the shifted mean touches the boundary, which is the frame where the number explains itself without being said.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd>The sweep resets and repeats with the boundary pulled in to two sigma. Power rises much earlier, and the amber area fattens visibly while it does. This kills the obvious escape route before the rules are offered: sensitivity bought by moving the line is paid for in the same currency.</dd>
+      <dt>Formula reveal</dt>
+      <dd>Only after the handle returns to one sigma does the power expression write itself under the board, and each of its two terms lights the tail it names while it is written. The expression labels areas that have been on screen for the whole sweep.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>power_one_point()</code> drives the continuous frames; <code>POWER_AT</code> supplies the tick values at the stops in <code>SHIFTS</code>; <code>ARL1_FROM_POWER</code> supplies the run-length echo at <code>SHIFT</code>. The two-sigma counterexample calls <code>power_one_point(s, limit=2.0)</code> and <code>alpha_one_point(2.0)</code>, so the aside is computed by the same functions rather than sketched.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked for the sweep, with one push at the half-way frame. The camera must not track the moving curve: if the boundary drifts in frame, the act loses the one thing that is holding still.</dd>
+      <dt>Narration line</dt>
+      <dd>"One point, one chance. That is the whole limitation."</dd>
+      <dt>Exit state</dt>
+      <dd>Handle parked at one sigma, the power column short, the power expression on screen under the board, and the boundary back where it started.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A4</span><h3>One point, two answers</h3><span class="tag beat">Beat 4</span><span class="tag">Tests the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The board and the boundary. The two curves drop to outlines so that a single plotted point can hold the frame without the stage being rebuilt.</dd>
+      <dt>Learner prediction</dt>
+      <dd>A point drops at two and a half sigma and everything stops. The act asks for one word: in, or out. This is the prediction most viewers get right and still learn from.</dd>
+      <dt>Transformation</dt>
+      <dd>The point is answered twice, in two objects that cannot be mistaken for one label. The chart verdict prints in the boundary's own colour and reads as a pass. Then the point's own tail area peels off the board as a separate moving object and shrinks into an evidence chip. Two objects sit side by side, disagreeing, and neither is dismissed.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The verdict says nothing happened. The peeled area says roughly one in eighty. The area that carried the evidence was drawn by the chart and then discarded by the chart's own rule.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd>The same routine runs again with the point at exactly three sigma, where the two objects agree and the evidence chip lands on the value already sitting on the amber area from A2. Agreement at that one point proves the disagreement everywhere else is a property of the rule and not of the drawing.</dd>
+      <dt>Formula reveal</dt>
+      <dd>The two-sided p-value expression writes itself along the peeled tail, after the chip exists. It names the area the viewer just watched leave the board.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>P_AT_2_5</code> on the chip; <code>P_AT_3</code> and <code>ALPHA_1</code> on the counterexample, which is where the two must be shown to be the same number; <code>p_value()</code> for any dragged intermediate position.</dd>
+      <dt>Camera move</dt>
+      <dd>Hold, tight on the point. The only motion in frame is the tail peeling off the board, so the peel carries the whole claim.</dd>
+      <dt>Narration line</dt>
+      <dd>"The verdict is not the evidence. The chart keeps one and throws the other away."</dd>
+      <dt>Exit state</dt>
+      <dd>A verdict object and an evidence chip on screen together, unresolved. That unresolved pair is the reason the next shot is allowed to spend money on rules.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A5</span><h3>The cost board, three stops</h3><span class="tag beat">Beat 5</span><span class="tag">Applies the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The board shrinks into the upper third and stays there. A cost board takes the lower two thirds and holds it to the last frame of the act. It carries two bars on one shared axis of subgroups: the run of subgroups between false alarms, which the plant wants long, and the run of subgroups needed to catch a one-sigma shift, which the plant wants short.</dd>
+      <dt>Learner prediction</dt>
+      <dd>Both bars are frozen at their single-rule lengths before anything is switched on, and the act asks which way each one will move. The trap is that most viewers move one and hold the other.</dd>
+      <dt>Transformation</dt>
+      <dd>Three stops, each one a continuous slide of both bars and never a cut. At each stop the newly added rule draws its own pattern once on the chart above, so the bar motion has a visible cause on the chart rather than a caption. The stops are rule 1, rules 1 and 2, then all four.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>Both bars shorten together at every stop. The bar the plant wants long and the bar the plant wants short move the same way, and there is no stop anywhere on the board where one improves alone.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None in this shot. A6 is the counterexample and needs this board left standing to work.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None, deliberately. The cost ratio and the sensitivity ratio are drawn as two comparison lengths laid along the bars' own travel, because both quantities are already lengths on screen and printing them as factors would replace a picture with a caption.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>TRADE[(1,)]</code>, <code>TRADE[(1, 2)]</code>, and <code>TRADE[ALL_RULES]</code>, each read at keys <code>arl0</code> and <code>arl1</code>; <code>cumulative_sets()</code> for the stop order; <code>RULE_TEXT</code> for each pattern caption; <code>FALSE_ALARM_COST</code> and <code>SENSITIVITY_GAIN</code> for the two comparison lengths; <code>CHAMP_WOODALL_ARL0</code> as an external tick set beside the all-four false-alarm bar.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked on the cost board, with the chart above dimmed except in the moment its rule pattern draws. The published 1987 tick lands during a hold, with no camera move, so corroboration reads as a fact and not as a reveal.</dd>
+      <dt>Narration line</dt>
+      <dd>"Every rule you switch on buys time and spends alarms. Both sides are simulated, not asserted."</dd>
+      <dt>Exit state</dt>
+      <dd>Two bars at their all-four lengths, with the three stops left behind as ghost ticks on both. The whole purchase history stays visible in one frame.</dd>
+    </dl>
+  </section>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A6</span><h3>Same purchase, different shift</h3><span class="tag">Counterexample</span><span class="tag">Tests the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>The cost board from A5, untouched, with all three ghost stops still on both bars.</dd>
+      <dt>Learner prediction</dt>
+      <dd class="na">None. The board answered the A5 prediction thirty seconds ago; asking again here would be padding rather than a test.</dd>
+      <dt>Transformation</dt>
+      <dd>Exactly one thing changes. The shifted curve on the chart above jumps from one sigma to three, and the catch bar redraws its three stops for that shift. The false-alarm bar is not animated at all, because nothing about it depends on the shift.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The catch bar barely shortens across its three stops. Rule 1 already sees a three-sigma jump on the next point, so the extra rules are bought at exactly the previous price and then never used.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd>This shot is the counterexample to the act's own claim as a viewer is likely to have over-generalised it. The rules did not get worse. The shift the plant is aiming at changed, and that alone decided whether the purchase was worth making.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None. Introducing an expected-cost expression here would start Act B inside Act A.</dd>
+      <dt class="src">Readout source</dt>
+      <dd><code>ARL_BIG_ONE</code> and <code>ARL_BIG_ALL</code> at <code>BIG_SHIFT</code> for the redrawn catch bar, against <code>ARL1_ONE_RULE</code> and <code>ARL1_ALL</code> left ghosted at <code>SHIFT</code>; <code>ARL0_ONE_RULE</code> and <code>ARL0_ALL</code> unchanged on the false-alarm bar to prove the cost held still.</dd>
+      <dt>Camera move</dt>
+      <dd>Locked, framing both bars. The unmoving false-alarm bar has to stay in shot for the entire change, because its stillness is the argument. A cut to the catch bar alone would destroy the shot.</dd>
+      <dt>Narration line</dt>
+      <dd>"Same purchase. The cost did not move. The benefit nearly vanished."</dd>
+      <dt>Exit state</dt>
+      <dd>Two bars, four ghosted stops, and one question left standing: which shift is this line actually afraid of? Act B opens on that question. There is no summary card.</dd>
+    </dl>
+  </section>
+
+  <div class="section-head">
+    <span class="micro">Muted review gate</span>
+    <h2>What a reviewer must be able to say with the sound off</h2>
+    <p>If any line below needs the narration to be true, that shot fails and returns to this storyboard rather than to the render queue.</p>
+  </div>
+  <ul class="gate">
+    <li><b>A1</b> The process moved and the chart did not react.</li>
+    <li><b>A2</b> There are two errors here, they are areas, and the uncounted one is much bigger.</li>
+    <li><b>A3</b> A bigger shift is easier to catch, the gain is not linear, and moving the line instead just fattens the other area.</li>
+    <li><b>A4</b> This point passed and still carried evidence, and those are two separate things.</li>
+    <li><b>A5</b> Switching rules on shortens both runs, and one of those is bad news.</li>
+    <li><b>A6</b> Against a large shift the same purchase costs the same and buys almost nothing.</li>
+  </ul>
+
+  <div class="section-head">
+    <span class="micro">Rejection list</span>
+    <h2>Shots considered and cut</h2>
+    <p>A storyboard with nothing rejected has not made a decision. Each cut below was a plausible shot, and each has a reason it does not exist.</p>
+  </div>
+  <ol class="rej">
+    <li>
+      <h3>A rules slate naming all four Western Electric rules up front</h3>
+      <p>Cut. It teaches the rules as a list to memorise, which is the exact failure this level was written against. The rule text now appears only at the stop in A5 where that rule's pattern causes a bar to move, so a name always arrives attached to a price.</p>
+    </li>
+    <li>
+      <h3>A power table with one row per shift in <code>SHIFTS</code></h3>
+      <p>Cut. It converts the continuous sweep back into the lookup the level is arguing against, and beat 3 forbids it. The same values survive as tick marks on the A3 tracker, where they are positions rather than rows.</p>
+    </li>
+    <li>
+      <h3>A title card introducing alpha and beta before the areas exist</h3>
+      <p>Cut. It puts a symbol before its quantity, which the outcome contract forbids outright. A2 now morphs plain-language labels into symbols only after both areas have been filled and held.</p>
+    </li>
+    <li>
+      <h3>A closing card restating the trade after A6</h3>
+      <p>Cut. The two bars and their four ghost stops already show it, so the card would teach nothing and would end the act on a recap. A6 now ends on the open question that Act B is built to answer.</p>
+    </li>
+    <li>
+      <h3>A histogram that grows into the normal curve at the top of the act</h3>
+      <p>Cut. Level 4 already owns that derivation, and redrawing a concept the viewer has been given is the redundancy this rebuild exists to remove. A1 starts with the curve already standing.</p>
+    </li>
+    <li>
+      <h3>A live simulation of the run-length series accumulating</h3>
+      <p>Cut. The four thousand series behind <code>TRADE</code> cannot be drawn honestly at sixty frames per second, and a sped-up illustration would be motion decorating a number that was computed elsewhere. The simulation reaches the act only as its result.</p>
+    </li>
+  </ol>
+
+  <div class="stop">
+    <b>Lock condition</b>
+    <p>This storyboard is the input to Task 4. Any shot added during the Manim build that is not on this page, or any readout that prints a value not traceable to a symbol named above, sends the change back here first.</p>
+  </div>
+
+</main>
+</body>
+</html>
