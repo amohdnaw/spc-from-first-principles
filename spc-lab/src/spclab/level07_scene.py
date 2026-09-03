@@ -44,7 +44,7 @@ import math
 
 import numpy as np
 from manim import (
-    Axes, Dot, Line, MathTex, Polygon, Rectangle, ValueTracker, VGroup,
+    Axes, Dot, Group, Line, MathTex, Polygon, Rectangle, ValueTracker, VGroup,
     Create, FadeIn, FadeOut, Indicate, ReplacementTransform, Restore, Transform,
     Write, always_redraw,
     DOWN, LEFT, RIGHT, UP,
@@ -235,6 +235,10 @@ class Level07(NarratedCameraScene):
 
         xlab = within_frame(micro("THE PLOTTED STATISTIC, IN ITS OWN SIGMA")
                             .next_to(axes.x_axis, DOWN, buff=0.34), "A1 x-label")
+        # A5 shrinks the board into the upper third and the cost board takes the
+        # rest of the frame. This label belongs to the full-size board, and left
+        # on screen it ends up lying across the middle of the cost board.
+        self.xlab = xlab
 
         stable = axes.plot(_pdf(0.0), x_range=[XMIN, XMAX, STEP],
                            stroke_color=TEAL, stroke_width=3)
@@ -752,7 +756,7 @@ class Level07(NarratedCameraScene):
             self.play(FadeOut(self.verdict), FadeOut(self.chip_box),
                       FadeOut(self.p_eq), FadeOut(self.alpha_sym),
                       FadeOut(self.alpha_leader), FadeOut(self.boundary_tag),
-                      FadeOut(self.sigma_marks[1]),
+                      FadeOut(self.sigma_marks[1]), FadeOut(self.xlab),
                       self.evid_op.animate.set_value(0.0),
                       self.sym_op.animate.set_value(0.0),
                       run_time=1.0, rate_func=rf.ease_in_out_sine)
@@ -796,6 +800,10 @@ class Level07(NarratedCameraScene):
         lab_a = micro("SUBGROUPS BETWEEN FALSE ALARMS — WANT THIS LONG", 15, RED)
         lab_a.move_to([COST_LEFT, Y_BAR_A + 0.44, 0], aligned_edge=LEFT)
         lab_b = micro(f"SUBGROUPS TO CATCH A {SHIFT:.0f}σ SHIFT — WANT THIS SHORT", 15, TEAL)
+        # A6 re-prices this same bar and needs to REPLACE this label rather than
+        # fade another one in on the identical anchor, which stacked two strings
+        # of caps on one line and rendered as garbled glyphs.
+        self.lab_b = lab_b
         lab_b.move_to([COST_LEFT, Y_BAR_B + 0.44, 0], aligned_edge=LEFT)
         within_frame(lab_a, "A5 bar A label")
         within_frame(lab_b, "A5 bar B label")
@@ -960,7 +968,8 @@ class Level07(NarratedCameraScene):
         with self.say("The false-alarm bar is not going to be touched, because nothing "
                       "about a false alarm depends on a shift that did not happen. "
                       "Watch it hold still."):
-            self.play(FadeIn(tag), run_time=0.6, rate_func=rf.ease_out_sine)
+            self.play(ReplacementTransform(self.lab_b, tag), run_time=0.6,
+                      rate_func=rf.ease_out_sine)
             self.play(self.arl1_t.animate.set_value(
                 detection_delay(STOPS[0], BIG_SHIFT)), run_time=1.8,
                 rate_func=rf.ease_in_out_sine)
@@ -991,9 +1000,26 @@ class Level07(NarratedCameraScene):
                       "aiming at changed, and that alone decided it."):
             self.beat(1.0)
 
-        question = prose("Which shift is this line actually afraid of?", 30, INK)
-        question.move_to([0.0, 0.55, 0])
+        # The act ends on one sentence, so everything it was built out of leaves
+        # first. Written over the live board this line landed across the limit
+        # line and both curves, and the closing frame read as clutter.
+        #
+        # Everything currently on stage goes, rather than a hand-written list of
+        # objects: the first attempt at this enumerated `cost_board` and friends
+        # and still left the two bars, the boundary and the sigma ticks standing,
+        # because those are separate `always_redraw` mobjects. Updaters are
+        # cleared first, or they keep regenerating what the fade just removed.
+        question = prose("Which shift is this line actually afraid of?", 32, INK)
+        question.move_to([0.0, 0.0, 0])
         within_frame(question, "A6 open question")
         with self.say("Which leaves exactly one question standing."):
-            self.play(Write(question), run_time=1.6, rate_func=rf.linear)
-        self.beat(1.6)
+            # Group, not VGroup: the stage holds at least one plain Mobject and
+            # VGroup accepts only VMobjects.
+            leaving = Group(*[m for m in self.mobjects
+                              if m is not self.camera.frame])
+            for m in leaving:
+                m.clear_updaters()
+            self.play(FadeOut(leaving), run_time=1.4, rate_func=rf.ease_in_sine)
+            self.clear()
+            self.play(Write(question), run_time=1.8, rate_func=rf.linear)
+        self.beat(1.8)

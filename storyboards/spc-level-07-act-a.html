@@ -101,9 +101,35 @@ ul.gate b{color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:6
 
   <div class="section-head">
     <span class="micro">Shot table</span>
-    <h2>Six shots on one persistent object</h2>
-    <p>The board created in A1 is the only stage. Nothing in this act is redrawn from scratch; every later shot transforms what is already there.</p>
+    <h2>Seven shots on one persistent object</h2>
+    <p>The board created in A1 is the only stage for the argument. Nothing in this act is redrawn from scratch; every later shot transforms what is already there. A0 sits in front of A1 and exists to give that board a physical referent: it builds the belt the board is an abstraction of, and then turns the belt into the board on screen rather than cutting to it.</p>
   </div>
+
+  <section class="shot">
+    <div class="shot-head"><span class="num">Shot A0</span><h3>The belt the board is made of</h3><span class="tag beat">Beat 0</span><span class="tag">Creates the model</span></div>
+    <dl>
+      <dt class="key">Persistent object</dt>
+      <dd>A run of parts on a belt, one part per sampling interval, each drawn at its own measured height. This is the same run the whole level is about; the board in A1 is this run with the time axis collapsed.</dd>
+      <dt>Learner prediction</dt>
+      <dd class="na">None. A0 exists to supply the physical thing the rest of the act abstracts, and A1 takes the first commitment as soon as the board exists.</dd>
+      <dt>Transformation</dt>
+      <dd>Three moves, in order. The parts arrive along the belt at their real heights. Partway along, the parts start arriving visibly taller and stay taller, which is the mean moving. Then the belt collapses: every part slides sideways out of its time slot and stacks by height into a pile, and the pile's silhouette is the in-control curve A1 opens on. The tall parts stack into the second curve. Nothing is drawn that was not first a part.</dd>
+      <dt class="hot">Surprise</dt>
+      <dd>The curve is not a new object. It is the same parts, re-sorted. A viewer who has just watched the pile form cannot read the curve as decoration.</dd>
+      <dt class="hot">Counterexample</dt>
+      <dd class="na">None. A0 makes the object; A3 and A6 are where it is argued with.</dd>
+      <dt>Formula reveal</dt>
+      <dd class="na">None, and no axis either. A0 has no numbers on screen at all: the parts carry their own heights and the sigma axis only appears in A1, on the pile the parts just built.</dd>
+      <dt class="src">Readout source</dt>
+      <dd>The part heights are the same draws A1 plots, so both shots read one array. The point at which parts start arriving taller is <code>SHIFT</code> from <code>spclab.evidence</code>, the identical constant A1 slides its copy by, so the belt and the board cannot disagree about how far the mean moved.</dd>
+      <dt>Camera move</dt>
+      <dd>One slow lateral track along the belt while the parts arrive, so the drift is felt as elapsed time. The camera then settles wide for the collapse, holding the belt and the forming pile in one frame — the handover has to be visible in a single shot or it is a cut.</dd>
+      <dt>Narration line</dt>
+      <dd>"Before any of this is a chart, it is parts coming off a line."</dd>
+      <dt>Exit state</dt>
+      <dd>The pile, standing exactly where A1's in-control curve stands, with the belt faded to the axis it becomes. A1 continues from this frame without redrawing anything.</dd>
+    </dl>
+  </section>
 
   <section class="shot">
     <div class="shot-head"><span class="num">Shot A1</span><h3>The line that will not move</h3><span class="tag beat">Beat 1</span><span class="tag">Creates the model</span></div>

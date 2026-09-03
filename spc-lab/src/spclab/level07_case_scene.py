@@ -159,6 +159,10 @@ TOTAL_Y = -3.42
 EXPR_Y = -3.80
 SCALE_X, SCALE_PANEL_Y = -6.90, -0.60
 
+# Below half a printed cent an option has no price yet, so it draws nothing
+# rather than a hairline bar and a 0.00 total.
+MIN_DRAWN = 0.5 * 10.0 ** -PRINTED_DECIMALS
+
 # The stack is the one object whose height is set by the strip's length rather
 # than by a layout choice, so it is the one that silently grows into the option
 # plates if the run gets longer. Fail at import instead.
@@ -603,7 +607,14 @@ class Level07Case(NarratedCameraScene):
             grp, y = VGroup(), RAIL_Y
             for tracker, color in ((self.alarm_t[opt], YELLOW),
                                    (self.wait_t[opt], RED)):
-                depth = max(tracker.get_value() / full * BAR_DEPTH, 1e-4)
+                value = tracker.get_value()
+                # An unpriced option draws nothing at all. Clamping the height to
+                # a floor instead left a lit hairline sitting under every plate
+                # whose bar had not been built yet, which read as an object that
+                # flickered in and out for the twenty seconds before its turn.
+                if value < MIN_DRAWN:
+                    continue
+                depth = value / full * BAR_DEPTH
                 seg = Rectangle(width=BAR_W, height=depth, fill_color=color,
                                 fill_opacity=0.92, stroke_color=color,
                                 stroke_width=1.0)
@@ -616,6 +627,11 @@ class Level07Case(NarratedCameraScene):
     def _total(self, i: int, opt: str):
         def build():
             value = self.alarm_t[opt].get_value() + self.wait_t[opt].get_value()
+            # Same reason: a total of 0.00 under an empty plate is not a price,
+            # it is a placeholder, and B2 has just promised the prices are off
+            # screen. Nothing is printed until the option actually has one.
+            if value < MIN_DRAWN:
+                return VGroup()
             txt = gauge(f"{value:.{PRINTED_DECIMALS}f}", 19, INK)
             return txt.move_to([PLATE_X[i], TOTAL_Y, 0])
         return build
