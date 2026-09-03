@@ -4,14 +4,14 @@
   "mp4": "Level07.mp4",
   "service": "kokoro",
   "voice": true,
-  "duration": 398.05,
+  "duration": 463.483,
   "width": 1920,
   "height": 1080,
   "fps": 60.0,
   "audio_codec": "aac",
   "poster": "posters/level07.jpg",
-  "poster_time": 323.42,
-  "poster_ink": 0.12842,
+  "poster_time": 347.61,
+  "poster_ink": 0.12908,
   "captions": "captions/level07.vtt",
-  "cues": 96
+  "cues": 114
 }

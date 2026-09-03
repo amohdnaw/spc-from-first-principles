@@ -1,386 +1,458 @@
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:02.799
-Level 6 priced one way to be wrong.
+00:00:00.000 --> 00:00:04.964
+Before any of this is a chart, it is parts coming off a line.
 
 2
-00:00:02.899 --> 00:00:05.948
-Here is the other one, in plain sight.
+00:00:05.050 --> 00:00:08.190
+One part per sampling interval, each one
 
 3
-00:00:06.033 --> 00:00:10.407
-The limit is not a verdict handed down. It is a distance,
+00:00:08.290 --> 00:00:10.782
+standing as tall as it measured.
 
 4
-00:00:10.507 --> 00:00:14.645
-stepped out from the centre one sigma width at a time.
+00:00:10.866 --> 00:00:15.398
+This stretch of the run is the process behaving itself.
 
 5
-00:00:14.733 --> 00:00:18.435
-Stop at the third one and draw the line. That line
+00:00:15.483 --> 00:00:18.143
+Watch the heights now. The parts start
 
 6
-00:00:18.535 --> 00:00:21.857
-does not move again for the rest of this act.
+00:00:18.243 --> 00:00:20.903
+arriving taller, and they stay taller.
 
 7
-00:00:21.950 --> 00:00:25.738
-Before I move anything: decide where you would have to
+00:00:21.000 --> 00:00:25.628
+That is the mean moving, and nothing on the belt announced it.
 
 8
-00:00:25.838 --> 00:00:30.130
-put the mean before this chart starts complaining. Hold that.
+00:00:25.716 --> 00:00:29.538
+Take the belt away, and every part slides out of the
 
 9
-00:00:30.716 --> 00:00:34.967
-Take a copy of that same curve and move the process by
+00:00:29.638 --> 00:00:33.008
+interval it was made in and stacks up by size.
 
 10
-00:00:35.067 --> 00:00:39.640
-1 sigma. Same shape, same spread. Only the mean has moved.
+00:00:33.100 --> 00:00:36.009
+That pile is the curve. Not a picture
 
 11
-00:00:39.733 --> 00:00:44.050
-The process has genuinely moved, and the picture of it looks
+00:00:36.109 --> 00:00:39.264
+of the parts. The parts, sorted by size.
 
 12
-00:00:44.150 --> 00:00:48.321
-almost exactly like the picture of a process that has not.
+00:00:39.350 --> 00:00:42.284
+The taller ones stack the same way, a
 
 13
-00:00:48.416 --> 00:00:53.180
-Both of these errors start at the same line, so let the line cut
+00:00:42.384 --> 00:00:46.138
+sigma further along, into the same shape again.
 
 14
-00:00:53.280 --> 00:00:58.804
-them out. This tail is the process behaving and the chart shouting anyway.
+00:00:46.233 --> 00:00:50.909
+What is left of the belt is the line the chart measures along.
 
 15
-00:00:58.900 --> 00:01:01.964
-And this one is the process having moved,
+00:00:51.000 --> 00:00:54.462
+Slide that second pile back and it lands on the
 
 16
-00:01:02.064 --> 00:01:05.592
-with every point still landing inside the line.
+00:00:54.562 --> 00:00:58.556
+first and disappears into it. Same shape, same spread.
 
 17
-00:01:05.683 --> 00:01:09.053
-One of these is the error the limit was chosen
+00:00:58.650 --> 00:01:03.022
+That pile is the plotted statistic now, measured in its
 
 18
-00:01:09.153 --> 00:01:12.447
-against. The other is the one you are paying.
+00:01:03.122 --> 00:01:06.763
+own sigma. Level 6 priced one way to be wrong.
 
 19
-00:01:12.533 --> 00:01:15.079
-Now they can be named. This one is
+00:01:06.863 --> 00:01:09.854
+Here is the other one, in plain sight.
 
 20
-00:01:15.179 --> 00:01:18.193
-crying wolf. That one is staying silent.
+00:01:09.950 --> 00:01:14.323
+The limit is not a verdict handed down. It is a distance,
 
 21
-00:01:18.283 --> 00:01:22.671
-And a name that has been earned can shrink to one letter.
+00:01:14.423 --> 00:01:18.562
+stepped out from the centre one sigma width at a time.
 
 22
-00:01:22.766 --> 00:01:26.539
-The sliver is the rate the limit was designed to
+00:01:18.650 --> 00:01:22.352
+Stop at the third one and draw the line. That line
 
 23
-00:01:26.639 --> 00:01:30.250
-hold down. The bulk is the rate nobody quotes.
+00:01:22.452 --> 00:01:25.774
+does not move again for the rest of this act.
 
 24
-00:01:30.350 --> 00:01:33.898
-So put a handle on the mean and let it walk.
+00:01:25.866 --> 00:01:29.654
+Before I move anything: decide where you would have to
 
 25
-00:01:33.983 --> 00:01:38.071
-Point at the shift where you think this chart catches half of
+00:01:29.754 --> 00:01:34.046
+put the mean before this chart starts complaining. Hold that.
 
 26
-00:01:38.171 --> 00:01:41.779
-what it is shown. The handle is about to walk past it.
+00:01:34.633 --> 00:01:38.477
+Those taller parts are still in there, sitting on top
 
 27
-00:01:42.816 --> 00:01:47.759
-Small shifts do almost nothing. The blue bulk barely moves and the
+00:01:38.577 --> 00:01:41.751
+of the rest of the pile. Pull them back out:
 
 28
-00:01:47.859 --> 00:01:52.190
-column barely lifts, because one point at a time is a weak
+00:01:41.851 --> 00:01:44.877
+same shape, same spread, moved by 1 sigma.
 
 29
-00:01:52.290 --> 00:01:56.468
-test and a small move looks exactly like ordinary noise.
+00:01:44.966 --> 00:01:49.284
+The process has genuinely moved, and the picture of it looks
 
 30
-00:01:56.566 --> 00:02:02.298
-Then it wakes up. Nothing about the chart changed. The mean simply got close enough
+00:01:49.384 --> 00:01:53.554
+almost exactly like the picture of a process that has not.
 
 31
-00:02:02.398 --> 00:02:06.162
-to the line for the tail to be on the wrong side of it.
+00:01:53.650 --> 00:01:58.414
+Both of these errors start at the same line, so let the line cut
 
 32
-00:02:06.250 --> 00:02:10.561
-The mean is sitting on the line. Half the curve is each side
+00:01:58.514 --> 00:02:04.038
+them out. This tail is the process behaving and the chart shouting anyway.
 
 33
-00:02:10.661 --> 00:02:14.238
-of it, so the column is at half, and it had to be.
+00:02:04.133 --> 00:02:07.197
+And this one is the process having moved,
 
 34
-00:02:15.433 --> 00:02:19.532
-There is an obvious escape route here: stop moving the
+00:02:07.297 --> 00:02:10.825
+with every point still landing inside the line.
 
 35
-00:02:19.632 --> 00:02:23.109
-process and move the line instead. Pull it in.
+00:02:10.916 --> 00:02:14.286
+One of these is the error the limit was chosen
 
 36
-00:02:23.200 --> 00:02:28.530
-The column does rise earlier. It also just fattened the red sliver, and
+00:02:14.386 --> 00:02:17.680
+against. The other is the one you are paying.
 
 37
-00:02:28.630 --> 00:02:33.426
-that sliver is the alarms you will chase on a process that never
+00:02:17.766 --> 00:02:20.313
+Now they can be named. This one is
 
 38
-00:02:33.526 --> 00:02:38.628
-moved. Sensitivity bought this way is paid for in the same currency.
+00:02:20.413 --> 00:02:23.426
+crying wolf. That one is staying silent.
 
 39
-00:02:38.716 --> 00:02:42.264
-So put the line back where Level 6 left it.
+00:02:23.516 --> 00:02:27.904
+And a name that has been earned can shrink to one letter.
 
 40
-00:02:42.350 --> 00:02:47.296
-Which is all the power expression says. One term for the tail on the
+00:02:28.000 --> 00:02:31.772
+The sliver is the rate the limit was designed to
 
 41
-00:02:47.396 --> 00:02:51.898
-far side, one for the tail on the near side, and nothing else.
+00:02:31.872 --> 00:02:35.484
+hold down. The bulk is the rate nobody quotes.
 
 42
-00:02:51.983 --> 00:02:56.052
-One point, one chance. That is the whole limitation,
+00:02:35.583 --> 00:02:39.131
+So put a handle on the mean and let it walk.
 
 43
-00:02:56.152 --> 00:02:59.179
-and this is its price in points waited.
+00:02:39.216 --> 00:02:43.304
+Point at the shift where you think this chart catches half of
 
 44
-00:02:59.266 --> 00:03:02.286
-Keep the board. Drop the instruments.
+00:02:43.404 --> 00:02:47.012
+what it is shown. The handle is about to walk past it.
 
 45
-00:03:02.383 --> 00:03:07.203
-One subgroup. It lands here, comfortably inside the line.
+00:02:48.050 --> 00:02:52.992
+Small shifts do almost nothing. The blue bulk barely moves and the
 
 46
-00:03:07.300 --> 00:03:09.792
-One word. In, or out.
+00:02:53.092 --> 00:02:57.423
+column barely lifts, because one point at a time is a weak
 
 47
-00:03:10.333 --> 00:03:15.093
-In. The rule the chart owns is a distance, the point is inside
+00:02:57.523 --> 00:03:01.702
+test and a small move looks exactly like ordinary noise.
 
 48
-00:03:15.193 --> 00:03:19.953
-the distance, and that is the whole answer it is able to give.
+00:03:01.800 --> 00:03:07.531
+Then it wakes up. Nothing about the chart changed. The mean simply got close enough
 
 49
-00:03:20.050 --> 00:03:23.756
-But the same point carries something the verdict threw
+00:03:07.631 --> 00:03:11.396
+to the line for the tail to be on the wrong side of it.
 
 50
-00:03:23.856 --> 00:03:27.210
-away: how much of the in-control curve is further
+00:03:11.483 --> 00:03:15.794
+The mean is sitting on the line. Half the curve is each side
 
 51
-00:03:27.310 --> 00:03:30.030
-out than it is. Peel that off the board.
+00:03:15.894 --> 00:03:19.471
+of it, so the column is at half, and it had to be.
 
 52
-00:03:30.116 --> 00:03:34.678
-Two objects now, built from one point, and they disagree. The
+00:03:20.666 --> 00:03:24.765
+There is an obvious escape route here: stop moving the
 
 53
-00:03:34.778 --> 00:03:38.728
-chart's answer is a pass. The evidence is not a pass.
+00:03:24.865 --> 00:03:28.342
+process and move the line instead. Pull it in.
 
 54
-00:03:38.816 --> 00:03:42.120
-Walk the point out to the line itself, and the
+00:03:28.433 --> 00:03:33.764
+The column does rise earlier. It also just fattened the red sliver, and
 
 55
-00:03:42.220 --> 00:03:46.116
-two answers agree. The peeled tail lands on the sliver
+00:03:33.864 --> 00:03:38.659
+that sliver is the alarms you will chase on a process that never
 
 56
-00:03:46.216 --> 00:03:49.372
-from earlier and the chip lands on its rate.
+00:03:38.759 --> 00:03:43.861
+moved. Sensitivity bought this way is paid for in the same currency.
 
 57
-00:03:49.466 --> 00:03:53.926
-So the agreement holds at exactly one place. Step back inside,
+00:03:43.950 --> 00:03:47.498
+So put the line back where Level 6 left it.
 
 58
-00:03:54.026 --> 00:03:58.191
-and the disagreement is a property of the rule rather than
+00:03:47.583 --> 00:03:52.529
+Which is all the power expression says. One term for the tail on the
 
 59
-00:03:58.291 --> 00:04:02.309
-of the drawing. The verdict is not the evidence, and the
+00:03:52.629 --> 00:03:57.131
+far side, one for the tail on the near side, and nothing else.
 
 60
-00:04:02.409 --> 00:04:05.398
-chart keeps one and throws the other away.
+00:03:57.216 --> 00:04:01.285
+One point, one chance. That is the whole limitation,
 
 61
-00:04:05.483 --> 00:04:08.671
-Hold on to all of that and make room.
+00:04:01.385 --> 00:04:04.412
+and this is its price in points waited.
 
 62
-00:04:08.766 --> 00:04:11.751
-The board goes up there and stays there.
+00:04:04.500 --> 00:04:07.520
+Keep the board. Drop the instruments.
 
 63
-00:04:11.851 --> 00:04:14.450
-Everything on it is the same board.
+00:04:07.616 --> 00:04:12.436
+One subgroup. It lands here, comfortably inside the line.
 
 64
-00:04:14.550 --> 00:04:17.258
-Because a rule is a pattern in a run
+00:04:12.533 --> 00:04:15.025
+One word. In, or out.
 
 65
-00:04:17.358 --> 00:04:21.002
-of subgroups, and a run needs somewhere to fall.
+00:04:15.566 --> 00:04:20.326
+In. The rule the chart owns is a distance, the point is inside
 
 66
-00:04:21.100 --> 00:04:25.584
-This is the whole purchase, on one axis of subgroups. How
+00:04:20.426 --> 00:04:25.186
+the distance, and that is the whole answer it is able to give.
 
 67
-00:04:25.684 --> 00:04:30.248
-long between false alarms, and how long until a real shift
+00:04:25.283 --> 00:04:28.989
+But the same point carries something the verdict threw
 
 68
-00:04:30.348 --> 00:04:34.752
-is caught. Both are simulated run lengths, not opinions.
+00:04:29.089 --> 00:04:32.443
+away: how much of the in-control curve is further
 
 69
-00:04:34.850 --> 00:04:39.483
-Both bars are frozen at their single-rule lengths. Before I
+00:04:32.543 --> 00:04:35.263
+out than it is. Peel that off the board.
 
 70
-00:04:39.583 --> 00:04:43.414
-switch anything on: which way does each one move?
+00:04:35.350 --> 00:04:39.911
+Two objects now, built from one point, and they disagree. The
 
 71
-00:04:43.950 --> 00:04:47.881
-Stop one is the rule Level 6 already bought: a single
+00:04:40.011 --> 00:04:43.962
+chart's answer is a pass. The evidence is not a pass.
 
 72
-00:04:47.981 --> 00:04:52.370
-point outside the line. Those are the lengths it gives you.
+00:04:44.050 --> 00:04:47.354
+Walk the point out to the line itself, and the
 
 73
-00:04:52.466 --> 00:04:57.085
-Stop two adds a pattern that no single point could hold — two
+00:04:47.454 --> 00:04:51.350
+two answers agree. The peeled tail lands on the sliver
 
 74
-00:04:57.185 --> 00:05:01.726
-of three out at two sigma on the same side. Watch both bars.
+00:04:51.450 --> 00:04:54.606
+from earlier and the chip lands on its rate.
 
 75
-00:05:01.816 --> 00:05:06.876
-Stop three switches the last two on, and the bars do it again.
+00:04:54.700 --> 00:04:59.159
+So the agreement holds at exactly one place. Step back inside,
 
 76
-00:05:08.816 --> 00:05:16.689
-That all-four false-alarm length was published in 1987 as 91.75. This simulation
+00:04:59.259 --> 00:05:03.424
+and the disagreement is a property of the rule rather than
 
 77
-00:05:16.789 --> 00:05:21.772
-was never told about it, and it landed on the tick.
+00:05:03.524 --> 00:05:07.543
+of the drawing. The verdict is not the evidence, and the
 
 78
-00:05:21.866 --> 00:05:25.880
-So measure the two moves. This is what the purchase spent,
+00:05:07.643 --> 00:05:10.632
+chart keeps one and throws the other away.
 
 79
-00:05:25.980 --> 00:05:29.710
-and this is what it bought. Lay one against the other.
+00:05:10.716 --> 00:05:13.904
+Hold on to all of that and make room.
 
 80
-00:05:29.800 --> 00:05:33.742
-Every rule you switch on buys time and spends alarms.
+00:05:14.000 --> 00:05:16.984
+The board goes up there and stays there.
 
 81
-00:05:33.842 --> 00:05:38.090
-Both sides are simulated, not asserted, and at this shift
+00:05:17.084 --> 00:05:19.684
+Everything on it is the same board.
 
 82
-00:05:38.190 --> 00:05:41.676
-the two lengths are near enough to argue about.
+00:05:19.783 --> 00:05:22.491
+Because a rule is a pattern in a run
 
 83
-00:05:41.766 --> 00:05:47.410
-Nothing about the board changes now. One thing changes: the shift this
+00:05:22.591 --> 00:05:26.235
+of subgroups, and a run needs somewhere to fall.
 
 84
-00:05:47.510 --> 00:05:51.266
-line is trying to catch goes from 1 sigma to 3.
+00:05:26.333 --> 00:05:30.817
+This is the whole purchase, on one axis of subgroups. How
 
 85
-00:05:51.366 --> 00:05:54.690
-The false-alarm bar is not going to be touched,
+00:05:30.917 --> 00:05:35.481
+long between false alarms, and how long until a real shift
 
 86
-00:05:54.790 --> 00:05:58.186
-because nothing about a false alarm depends on a
+00:05:35.581 --> 00:05:39.985
+is caught. Both are simulated run lengths, not opinions.
 
 87
-00:05:58.286 --> 00:06:01.610
-shift that did not happen. Watch it hold still.
+00:05:40.083 --> 00:05:44.716
+Both bars are frozen at their single-rule lengths. Before I
 
 88
-00:06:01.700 --> 00:06:04.617
-Now walk the same three stops again.
+00:05:44.816 --> 00:05:48.647
+switch anything on: which way does each one move?
 
 89
-00:06:04.717 --> 00:06:07.552
-Same rules, same order, same price.
+00:05:49.183 --> 00:05:53.115
+Stop one is the rule Level 6 already bought: a single
 
 90
-00:06:07.650 --> 00:06:11.987
-There is the same measurement. Rule one already sees a jump
+00:05:53.215 --> 00:05:57.603
+point outside the line. Those are the lengths it gives you.
 
 91
-00:06:12.087 --> 00:06:15.823
-that big on the very next point, so the extra rules
+00:05:57.700 --> 00:06:02.318
+Stop two adds a pattern that no single point could hold — two
 
 92
-00:06:15.923 --> 00:06:20.486
-were bought at exactly the previous price and then never used.
+00:06:02.418 --> 00:06:06.960
+of three out at two sigma on the same side. Watch both bars.
 
 93
-00:06:20.583 --> 00:06:24.804
-Same purchase. The cost did not move. The benefit nearly
+00:06:07.050 --> 00:06:12.110
+Stop three switches the last two on, and the bars do it again.
 
 94
-00:06:24.904 --> 00:06:28.585
-vanished. The rules did not get worse — the shift
+00:06:14.050 --> 00:06:21.923
+That all-four false-alarm length was published in 1987 as 91.75. This simulation
 
 95
-00:06:28.685 --> 00:06:32.675
-you are aiming at changed, and that alone decided it.
+00:06:22.023 --> 00:06:27.006
+was never told about it, and it landed on the tick.
 
 96
-00:06:32.766 --> 00:06:36.362
+00:06:27.100 --> 00:06:31.113
+So measure the two moves. This is what the purchase spent,
+
+97
+00:06:31.213 --> 00:06:34.944
+and this is what it bought. Lay one against the other.
+
+98
+00:06:35.033 --> 00:06:38.976
+Every rule you switch on buys time and spends alarms.
+
+99
+00:06:39.076 --> 00:06:43.324
+Both sides are simulated, not asserted, and at this shift
+
+100
+00:06:43.424 --> 00:06:46.909
+the two lengths are near enough to argue about.
+
+101
+00:06:47.000 --> 00:06:52.643
+Nothing about the board changes now. One thing changes: the shift this
+
+102
+00:06:52.743 --> 00:06:56.500
+line is trying to catch goes from 1 sigma to 3.
+
+103
+00:06:56.600 --> 00:06:59.923
+The false-alarm bar is not going to be touched,
+
+104
+00:07:00.023 --> 00:07:03.420
+because nothing about a false alarm depends on a
+
+105
+00:07:03.520 --> 00:07:06.844
+shift that did not happen. Watch it hold still.
+
+106
+00:07:06.933 --> 00:07:09.851
+Now walk the same three stops again.
+
+107
+00:07:09.951 --> 00:07:12.785
+Same rules, same order, same price.
+
+108
+00:07:12.883 --> 00:07:17.220
+There is the same measurement. Rule one already sees a jump
+
+109
+00:07:17.320 --> 00:07:21.056
+that big on the very next point, so the extra rules
+
+110
+00:07:21.156 --> 00:07:25.719
+were bought at exactly the previous price and then never used.
+
+111
+00:07:25.816 --> 00:07:30.037
+Same purchase. The cost did not move. The benefit nearly
+
+112
+00:07:30.137 --> 00:07:33.818
+vanished. The rules did not get worse — the shift
+
+113
+00:07:33.918 --> 00:07:37.908
+you are aiming at changed, and that alone decided it.
+
+114
+00:07:38.000 --> 00:07:41.596
 Which leaves exactly one question standing.
 
