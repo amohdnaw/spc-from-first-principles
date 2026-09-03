@@ -41,12 +41,14 @@ Pacing lives in the narration script — see narration.py.
 from __future__ import annotations
 
 import math
+from collections import Counter
 
 import numpy as np
 from manim import (
-    Axes, Dot, Group, Line, MathTex, Polygon, Rectangle, ValueTracker, VGroup,
-    Create, FadeIn, FadeOut, Indicate, ReplacementTransform, Restore, Transform,
-    Write, always_redraw,
+    AnimationGroup, Axes, Circle, Dot, Group, Line, MathTex, Polygon, Rectangle,
+    ValueTracker, VGroup,
+    Create, FadeIn, FadeOut, GrowFromEdge, Indicate, ReplacementTransform,
+    Restore, Transform, Write, always_redraw,
     DOWN, LEFT, RIGHT, UP,
 )
 from manim.utils import rate_functions as rf
@@ -60,7 +62,8 @@ from spclab.evidence import (
     ARL1_ONE_RULE, ARL_BIG_ALL, ARL_BIG_ONE, BETA_AT, BIG_SHIFT,
     CHAMP_WOODALL_ARL0, FALSE_ALARM_COST, LIMIT, POWER_AT, P_AT_2_5, P_AT_3,
     RULES, RULE_TEXT, SENSITIVITY_GAIN, SHIFT, SHIFTS, TRADE, alpha_one_point,
-    beta_one_point, cumulative_sets, first_violation, p_value, power_one_point,
+    beta_one_point, cumulative_sets, first_violation, p_value, phi,
+    power_one_point,
 )
 from spclab.level07_mastery import detection_delay
 from spclab.narration import NarratedCameraScene
@@ -96,6 +99,79 @@ SETS = cumulative_sets()
 # rule 1, rules 1+2, all four — the storyboard's three stops, taken from the
 # cumulative order rather than retyped.
 STOPS = (SETS[0], SETS[1], SETS[-1])
+
+# ---------------------------------------------------------------------------
+# A0's belt: the physical run the board is an abstraction of
+# ---------------------------------------------------------------------------
+BELT_N = 20             # parts in one run, one per sampling interval
+BELT_SLOT = 0.44        # frame units of belt per sampling interval
+BELT_X0 = -8.05         # frame x of the first part off the line
+BELT_PAD = 0.65         # belt overhang past the first and last part
+BELT_LEFT = BELT_X0 - BELT_PAD
+BELT_RIGHT = BELT_X0 + (2 * BELT_N - 1) * BELT_SLOT + BELT_PAD
+ROLLER_R = 0.20
+PART_W = 0.30
+PART_NOM = 1.15         # frame height of a part that measured dead centre
+PART_SIGMA = 0.46       # frame height one sigma of the process is worth
+STACK_BIN = 0.5         # sigma width of one column of the pile
+COL_W = 0.33            # frame width of a column, with a gap either side
+
+# The two runs have to build congruent piles, or the shifted curve would end up
+# standing on a differently shaped stack of the same parts. That holds only
+# while a column divides the shift.
+if abs(SHIFT / STACK_BIN - round(SHIFT / STACK_BIN)) > 1e-9:
+    raise ValueError(
+        f"a pile column of {STACK_BIN} sigma does not divide the {SHIFT} sigma "
+        "shift, so the shifted run would stack into a different shape from the "
+        "in-control one")
+
+
+def _probit(p: float) -> float:
+    """The sigma position with `p` of the distribution below it.
+
+    Bisected on `phi` rather than typed from a table, so the heights of the
+    parts on the belt and the curve they stack into come out of one definition
+    of the normal.
+    """
+    lo, hi = -2.0 * LIMIT, 2.0 * LIMIT
+    for _ in range(80):
+        mid = 0.5 * (lo + hi)
+        if phi(mid) < p:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+def _run_values(n: int = BELT_N) -> np.ndarray:
+    """`n` measurements of an in-control process, one per sampling interval.
+
+    Equally spaced in probability rather than pseudo-random: binning these by
+    size gives column counts proportional to the density A1 plots, so the pile
+    the parts build *is* that curve to the width of a column, instead of a
+    sample that happens to look a bit like it.
+    """
+    return np.array([_probit((i + 0.5) / n) for i in range(n)])
+
+
+def _arrival_order(n: int, seed: int) -> np.ndarray:
+    """The order the run comes off the belt.
+
+    A sample is exchangeable, so the order is a staging choice and is seeded.
+    The multiset is not a staging choice, and neither is the pile.
+    """
+    return np.random.default_rng(seed).permutation(n)
+
+
+def _pile_plan(values) -> list[tuple[int, int]]:
+    """(column, level) per part, in arrival order, so later parts land higher."""
+    filled: dict[int, int] = {}
+    out: list[tuple[int, int]] = []
+    for v in values:
+        k = math.floor(float(v) / STACK_BIN)
+        out.append((k, filled.get(k, 0)))
+        filled[k] = filled.get(k, 0) + 1
+    return out
 
 
 def _pdf(mu: float):
@@ -202,6 +278,7 @@ def _plate(head: str, body_text: str, edge: str, body_colour: str) -> VGroup:
 class Level07(NarratedCameraScene):
     def construct(self):
         self.camera.frame.save_state()
+        self.a0_the_belt_the_board_is_made_of()
         self.a1_the_line_that_will_not_move()
         self.a2_two_areas_then_two_letters()
         self.a3_sweeping_the_shift()
@@ -223,8 +300,17 @@ class Level07(NarratedCameraScene):
         base = self.axes.c2p(z, 0)
         return np.array([base[0], base[1] - LANE_FIRST - i * LANE_STEP, 0.0])
 
-    # ---------------- A1 · the line that will not move --------------------
-    def a1_the_line_that_will_not_move(self):
+    # ---------------- A0 · the belt the board is made of ------------------
+    def a0_the_belt_the_board_is_made_of(self):
+        """The physical run the rest of the act abstracts, and the handover.
+
+        A1 used to open on an `Axes`, which asked a viewer to accept a density
+        of "the plotted statistic, in its own sigma" before anything physical
+        had been shown. Nothing on screen here was not first a part: the curve
+        A1 argues with is these parts slid out of time and stacked by size, and
+        the axis they stand on is the belt they arrived on, contracted. No axis
+        and no number appears while the parts are on the belt.
+        """
         axes = Axes(x_range=[XMIN, XMAX, 1], y_range=[0, 0.44, 0.1],
                     x_length=8.6, y_length=3.2, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5,
@@ -233,18 +319,11 @@ class Level07(NarratedCameraScene):
         axes.shift(BOARD_ORIGIN - axes.c2p(0, 0))
         self.axes = axes
 
-        xlab = within_frame(micro("THE PLOTTED STATISTIC, IN ITS OWN SIGMA")
-                            .next_to(axes.x_axis, DOWN, buff=0.34), "A1 x-label")
-        # A5 shrinks the board into the upper third and the cost board takes the
-        # rest of the frame. This label belongs to the full-size board, and left
-        # on screen it ends up lying across the middle of the cost board.
-        self.xlab = xlab
-
-        stable = axes.plot(_pdf(0.0), x_range=[XMIN, XMAX, STEP],
-                           stroke_color=TEAL, stroke_width=3)
-
         # Trackers. Everything that moves for the rest of the act moves through
         # one of these, so no shot has to destroy a Mobject to change it.
+        # `curve_op` starts dark: the shifted curve exists from the moment the
+        # tall parts build it, and A0 hands it to A1 lying on the in-control
+        # curve with nothing of it showing.
         self.shift_t = ValueTracker(0.0)
         self.lim_t = ValueTracker(LIMIT)
         self.lane_t = ValueTracker(0.0)
@@ -253,18 +332,189 @@ class Level07(NarratedCameraScene):
         self.alpha_op = ValueTracker(0.0)
         self.beta_op = ValueTracker(0.0)
         self.power_op = ValueTracker(0.0)
-        self.curve_op = ValueTracker(1.0)
+        self.curve_op = ValueTracker(0.0)
         self.sym_op = ValueTracker(0.0)
         self.dim = ValueTracker(1.0)
 
+        stable = axes.plot(_pdf(0.0), x_range=[XMIN, XMAX, STEP],
+                           stroke_color=TEAL, stroke_width=3)
         self.stable = stable
         self.board_static = VGroup(axes, stable)
+        self.shifted = always_redraw(self._shifted_curve)
 
-        with self.say("Level 6 priced one way to be wrong. Here is the other one, "
-                      "in plain sight."):
-            self.play(Create(axes.x_axis), FadeIn(xlab), run_time=0.9,
-                      rate_func=rf.ease_in_out_sine)
-            self.play(Create(stable), run_time=1.3, rate_func=rf.ease_out_sine)
+        # The belt sits at the height the axis will occupy, so the handover is a
+        # contraction of one line rather than a fade between two.
+        belt_y = float(BOARD_ORIGIN[1])
+        self.belt_y = belt_y
+        belt = Line([BELT_LEFT, belt_y, 0.0], [BELT_RIGHT, belt_y, 0.0],
+                    stroke_color=GREY, stroke_width=4.5)
+        rollers = VGroup(*[
+            Circle(radius=ROLLER_R, stroke_color=GREY, stroke_width=2.0)
+            .move_to([x, belt_y - ROLLER_R, 0.0])
+            for x in (BELT_LEFT + ROLLER_R, BELT_RIGHT - ROLLER_R)])
+
+        run = _run_values()
+        values = np.concatenate([run[_arrival_order(BELT_N, 7)],
+                                 run[_arrival_order(BELT_N, 11)] + SHIFT])
+        parts = []
+        for j, v in enumerate(values):
+            h = PART_NOM + float(v) * PART_SIGMA
+            colour = TEAL if j < BELT_N else BLUE
+            part = Rectangle(width=PART_W, height=h, stroke_color=colour,
+                             stroke_width=2.0, fill_color=colour,
+                             fill_opacity=0.16)
+            part.move_to([BELT_X0 + j * BELT_SLOT, belt_y + 0.5 * h, 0.0])
+            parts.append(part)
+        brick_h = self._brick_height(values[:BELT_N])
+        # One plan per run, not one for the belt: the in-control pile has faded
+        # into its curve by the time the tall parts move, so a shared level
+        # count would stand them on bricks that are no longer there.
+        plan = (_pile_plan(values[:BELT_N])
+                + _pile_plan(values[BELT_N:]))
+
+        with self.say("Before any of this is a chart, it is parts coming off a "
+                      "line.") as t:
+            self.play(Create(belt), FadeIn(rollers), run_time=0.34 * t.duration,
+                      rate_func=rf.ease_out_sine)
+            self.play(self.camera.frame.animate.move_to([-1.90, 0.0, 0.0]),
+                      run_time=0.54 * t.duration, rate_func=rf.ease_in_out_sine)
+
+        # One lateral track, four narrated stretches of it, so the drift arrives
+        # as elapsed time rather than as a cut to a taller part.
+        waves = (
+            ("One part per sampling interval, each one standing as tall as it "
+             "measured.", -1.30),
+            ("This stretch of the run is the process behaving itself.", 0.30),
+            ("Watch the heights now. The parts start arriving taller, and they "
+             "stay taller.", 1.70),
+            ("That is the mean moving, and nothing on the belt announced it.",
+             2.75),
+        )
+        per = len(parts) // len(waves)
+        for w, (line, cx) in enumerate(waves):
+            wave = parts[w * per:(w + 1) * per]
+            with self.say(line) as t:
+                self.play(AnimationGroup(*[GrowFromEdge(p, DOWN) for p in wave],
+                                         lag_ratio=0.55),
+                          self.camera.frame.animate.move_to([cx, 0.0, 0.0]),
+                          run_time=0.92 * t.duration, rate_func=rf.linear)
+
+        with self.say("Take the belt away, and every part slides out of the "
+                      "interval it was made in and stacks up by size.") as t:
+            self.play(self.camera.frame.animate.scale(1.36)
+                      .move_to([0.40, -0.55, 0.0]),
+                      run_time=0.30 * t.duration, rate_func=rf.ease_in_out_sine)
+            self._stack(parts[:BELT_N], plan[:BELT_N], brick_h,
+                        0.62 * t.duration)
+
+        # The curve is drawn along the top of the pile while the belt is still
+        # on screen, so there is a frame holding the belt, the parts and the
+        # density at once. A fade from one to the other would be a cut.
+        with self.say("That pile is the curve. Not a picture of the parts. The "
+                      "parts, sorted by size.") as t:
+            self.play(Create(stable), run_time=0.50 * t.duration,
+                      rate_func=rf.ease_out_sine)
+            self.beat(0.6)
+            self.play(FadeOut(VGroup(*parts[:BELT_N])),
+                      run_time=0.32 * t.duration, rate_func=rf.ease_in_sine)
+
+        moved = axes.plot(_pdf(SHIFT), x_range=[XMIN, XMAX, STEP],
+                          stroke_color=BLUE, stroke_width=3)
+        with self.say("The taller ones stack the same way, a sigma further "
+                      "along, into the same shape again.") as t:
+            self._stack(parts[BELT_N:], plan[BELT_N:], brick_h,
+                        0.48 * t.duration)
+            self.play(Create(moved), run_time=0.28 * t.duration,
+                      rate_func=rf.ease_out_sine)
+            self.beat(0.45)
+            self.play(FadeOut(VGroup(*parts[BELT_N:])),
+                      run_time=0.13 * t.duration, rate_func=rf.ease_in_sine)
+
+        with self.say("What is left of the belt is the line the chart measures "
+                      "along.") as t:
+            self.play(belt.animate.put_start_and_end_on(
+                          np.array([float(axes.x_axis.get_left()[0]), belt_y, 0.0]),
+                          np.array([float(axes.x_axis.get_right()[0]), belt_y, 0.0]))
+                      .set_stroke(width=1.5),
+                      FadeOut(rollers), Restore(self.camera.frame),
+                      run_time=0.74 * t.duration, rate_func=rf.ease_in_out_sine)
+        # Same geometry, same stroke: the swap is invisible, and from here the
+        # axis on screen is the board's own, not a copy of the belt.
+        self.remove(belt)
+        self.add(axes.x_axis)
+        self.bring_to_front(stable, moved)
+
+        # Hand the second pile to the tracker A1 drives, at the shift it was
+        # built at, then let it slide home. The shot ends on exactly the frame
+        # A1 used to draw from scratch.
+        with self.say("Slide that second pile back and it lands on the first and "
+                      "disappears into it. Same shape, same spread.") as t:
+            self.shift_t.set_value(SHIFT)
+            self.curve_op.set_value(1.0)
+            self.remove(moved)
+            self.add(self.shifted)
+            self.play(self.shift_t.animate.set_value(0.0),
+                      run_time=0.62 * t.duration, rate_func=rf.ease_in_out_sine)
+            self.play(self.curve_op.animate.set_value(0.0),
+                      run_time=0.20 * t.duration, rate_func=rf.ease_in_sine)
+
+    def _brick_height(self, values) -> float:
+        """Height of one brick, so the tallest column reaches the curve.
+
+        Read off the peak column and not off the peak of the density: a column
+        is half a sigma wide, so the parts in it average a little below centre
+        and a brick sized to phi(0) would build a pile that overshoots the
+        curve it is supposed to be.
+        """
+        counts = Counter(math.floor(float(v) / STACK_BIN) for v in values)
+        peak = max(counts.values())
+        k = max(counts, key=lambda j: (counts[j], -abs(j)))
+        zc = (k + 0.5) * STACK_BIN
+        return (self.axes.c2p(zc, _pdf(0.0)(zc))[1]
+                - self.axes.c2p(zc, 0)[1]) / peak
+
+    def _stack(self, parts, plan, brick_h: float, run_time: float) -> None:
+        """Slide parts out of their time slots into the pile they build.
+
+        A part changes size on the way, which is the one liberty the collapse
+        takes: it happens inside a single animation, so the eye follows the part
+        into the column rather than reading a new object appearing there.
+        """
+        anims = [part.animate
+                 .stretch_to_fit_height(brick_h)
+                 .stretch_to_fit_width(COL_W)
+                 .move_to([self.axes.c2p((k + 0.5) * STACK_BIN, 0)[0],
+                           self.belt_y + (level + 0.5) * brick_h, 0.0])
+                 for part, (k, level) in zip(parts, plan)]
+        self.play(AnimationGroup(*anims, lag_ratio=0.05), run_time=run_time,
+                  rate_func=rf.ease_in_out_sine)
+
+    # ---------------- A1 · the line that will not move --------------------
+    def a1_the_line_that_will_not_move(self):
+        axes = self.axes
+        stable = self.stable
+
+        xlab = within_frame(micro("THE PLOTTED STATISTIC, IN ITS OWN SIGMA")
+                            .next_to(axes.x_axis, DOWN, buff=0.34), "A1 x-label")
+        # A5 shrinks the board into the upper third and the cost board takes the
+        # rest of the frame. This label belongs to the full-size board, and left
+        # on screen it ends up lying across the middle of the cost board.
+        self.xlab = xlab
+
+        # A0 built the axis out of the belt and the curve out of the parts. This
+        # shot names them; it does not draw them again.
+        #
+        # `Indicate` carries its own there-and-back rate function, and a
+        # `rate_func=` on the play overrides it: the first take left the
+        # in-control curve INK-white and a fiftieth larger for the rest of the
+        # act, which A2 then filled areas against. No rate_func here, and
+        # nothing that touches the curve's geometry.
+        with self.say("That pile is the plotted statistic now, measured in its "
+                      "own sigma. Level 6 priced one way to be wrong. Here is "
+                      "the other one, in plain sight."):
+            self.play(FadeIn(xlab), run_time=1.0, rate_func=rf.ease_in_out_sine)
+            self.play(Indicate(stable, scale_factor=1.0, color=INK),
+                      run_time=1.8)
 
         # The boundary is stepped out in equal sigma widths, so it reads as a
         # distance before it reads as a rule.
@@ -304,16 +554,16 @@ class Level07(NarratedCameraScene):
             self.beat(1.4)
         self.play(FadeOut(ask), run_time=0.5, rate_func=rf.ease_in_sine)
 
-        # Copy and slide. The shifted curve is added at zero shift, sitting
-        # exactly on the in-control curve, so what the eye reads is one process
-        # moving rather than a second process being drawn.
-        shifted = always_redraw(self._shifted_curve)
-        self.shifted = shifted
+        # The tall parts are still in the pile, lying on the in-control curve
+        # where A0 slid them. Pulling them back out moves the thing the viewer
+        # watched form; drawing a second curve here would throw that away.
+        shifted = self.shifted
         self.add(shifted)
         self.bring_to_front(boundary)
-        with self.say(f"Take a copy of that same curve and move the process by "
-                      f"{SHIFT:.0f} sigma. Same shape, same spread. Only the mean "
-                      f"has moved."):
+        with self.say(f"Those taller parts are still in there, sitting on top of "
+                      f"the rest of the pile. Pull them back out: same shape, "
+                      f"same spread, moved by {SHIFT:.0f} sigma."):
+            self.curve_op.set_value(1.0)
             self.play(self.shift_t.animate.set_value(SHIFT), run_time=2.4,
                       rate_func=rf.ease_in_out_sine)
 
