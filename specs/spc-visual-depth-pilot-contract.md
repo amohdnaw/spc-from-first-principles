@@ -90,6 +90,31 @@ These images are schematic approval artifacts. They define the teaching sequence
 information hierarchy, and production gates. They are not Manim storyboards or the
 animation quality target.
 
+**Amendment 1, 2026-09-02 — Act A gets a physical opening.** Ammar watched the synthetic
+candidate and returned: *"Still too technical where simple process are not properly
+visualised, we have visualised the actual graphs and maths, but not a proper physical
+things."* Act A's first object today is an `Axes`, so the level asks the viewer to accept a
+density curve before anything physical has been shown. The sibling MSA repository already
+carries an opening grammar for exactly this correction, in
+`specs/act-opening-contract.md`; this repository had none.
+
+Shot `A0`, specified in `storyboards/spc-level-07-act-a.html`, is added in front of `A1`.
+It shows parts arriving on a belt at their own measured heights, the later ones visibly
+taller, and then collapses the belt: the parts slide out of their time slots and stack by
+height into the curve `A1` opens on.
+
+Two checks come with it, and they are the reason the shot is worth its runtime:
+
+1. **The opening contains an act, not only objects.** Something arrives, drifts, or
+   stacks. A frame full of physical shapes in which nothing happens fails this check.
+2. **The handover morphs and never cuts.** There must exist a single frame in which the
+   belt and the forming curve are both on screen. A fade from a factory shot to an axis is
+   a cut dressed as a fade, and it would leave the axis as unexplained as it is today while
+   costing a minute of runtime.
+
+The part heights and the drift point are read from `spclab.evidence`, the same source `A1`
+plots, so the belt and the board cannot disagree about how far the mean moved.
+
 ## Production sequence
 
 1. Write one visual claim for the act.
