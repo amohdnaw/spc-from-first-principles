@@ -12,6 +12,9 @@
 <link rel="stylesheet" href="vendor/katex/katex.css">
 
 <style>
+  .lab-link{margin-top:var(--rhythm)}
+  .lab-link a{color:var(--ink-bright);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+  .lab-link a:hover{color:var(--accent)}
   /* ---------- self-hosted, two families, two voices ---------- */
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
     font-weight:400 600;font-style:normal;font-display:swap}
@@ -494,6 +497,7 @@
         on the same random draws. Correcting after every part doubles the variance exactly, so
         the spread the customer receives is √2 times wider.</span></figcaption>
       </figure>
+          <p class="lab-link">You can run it yourself: <a href="https://portfolio.amohdnaw.xyz/lab.html#ch3" target="_blank" rel="noopener">CH 3 of the control lab</a> drops the marbles in 3D, lets you try correcting by hand against the same draws, and runs Deming's other two rules, which are worse.</p>
         </div>
       </div>
     </section>
