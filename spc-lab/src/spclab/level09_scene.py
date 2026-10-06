@@ -89,7 +89,7 @@ class Level09(NarratedCameraScene):
         axes = Axes(x_range=[0, N_SUB, 10], y_range=[-3.8, 3.8, 1],
                     x_length=9.6, y_length=4.3, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5}
-                    ).shift(LEFT * 0.5 + DOWN * 0.35)
+                    ).shift(LEFT * 1.4 + DOWN * 0.35)
         xlab = micro("SUBGROUP").next_to(axes, DOWN, buff=0.26)
         cl = Line(axes.c2p(0, 0), axes.c2p(N_SUB, 0), stroke_color=GREY, stroke_width=2)
 
@@ -193,7 +193,7 @@ class Level09(NarratedCameraScene):
         axes = Axes(x_range=[0, N_SUB, 10], y_range=[-3.8, 3.8, 1],
                     x_length=9.6, y_length=4.3, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5}
-                    ).shift(LEFT * 0.5 + DOWN * 0.35)
+                    ).shift(LEFT * 1.4 + DOWN * 0.35)
         xlab = micro("SUBGROUP").next_to(axes, DOWN, buff=0.26)
         cl = Line(axes.c2p(0, 0), axes.c2p(N_SUB, 0), stroke_color=GREY, stroke_width=2)
         ghost = VGroup(*[

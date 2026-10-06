@@ -95,10 +95,12 @@ class Level08(NarratedCameraScene):
     def part1_two_voices(self):
         title = prose("Level 8 · two voices, one axis", 28, GREY)
         title.to_edge(UP, buff=0.38)
+        # the axis stops short of the panel column (x 4.15): at Cp 0.65 the 6σ
+        # bar overruns the axis and used to run into "Cp = TOL / 6σ"
         axes = Axes(x_range=[49.55, 50.45, 0.2], y_range=[0, 7.0, 2],
-                    x_length=9.4, y_length=4.3, tips=False,
+                    x_length=9.0, y_length=4.3, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5}
-                    ).shift(LEFT * 0.55 + DOWN * 0.55)
+                    ).shift(LEFT * 0.85 + DOWN * 0.55)
         xlab = micro("MILLIMETRES").next_to(axes, DOWN, buff=0.26)
 
         with self.say("Capability compares two distributions. One belongs to the "
@@ -225,7 +227,19 @@ class Level08(NarratedCameraScene):
         tail = Polygon(*[axes.c2p(a, b) for a, b in zip(xs_tail, pdf(xs_tail, mu_end, SG_END))],
                        axes.c2p(float(xs_tail[-1]), 0), axes.c2p(USL, 0),
                        fill_color=RED, fill_opacity=0.85, stroke_width=0)
-        base_curve = curve_at(mu_end, SG_END)
+
+        ys_end = pdf(xs, mu_end, SG_END)
+
+        def clipped_curve():
+            # the stretched peak is cut at the top of the axis: drawn whole it
+            # ran up through the title and the Cpk formula
+            y = ys_end * max(stretch.get_value(), 1e-4)
+            runs = np.split(np.arange(len(xs)),
+                            np.flatnonzero(np.diff(y <= 7.0)) + 1)
+            return VGroup(*[curve_seg for r in runs if len(r) > 1 and y[r[0]] <= 7.0
+                            for curve_seg in [axes.plot_line_graph(
+                                xs[r], y[r], add_vertex_dots=False,
+                                line_color=TEAL, stroke_width=3)["line_graph"]]])
 
         def stretched(base):
             return always_redraw(lambda: base.copy().stretch(
@@ -250,7 +264,7 @@ class Level08(NarratedCameraScene):
                       FadeOut(val_tol), FadeOut(drift_note),
                       run_time=0.6, rate_func=rf.ease_in_sine)
             self.remove(live_curve)
-            self.add(stretched(base_curve), stretched(tail))
+            self.add(always_redraw(clipped_curve), stretched(tail))
             self.play(FadeIn(lab_ppm), FadeIn(val_ppm),
                       run_time=0.7, rate_func=rf.ease_out_sine)
 
@@ -367,7 +381,7 @@ class Level08(NarratedCameraScene):
                           run_time=max(1.5, tr.duration * 0.5),
                           rate_func=rf.ease_in_out_sine)
                 dot = Dot(axes.c2p(target, log_ppm(target)), radius=0.06, color=colour)
-                tag = micro(f"{target:.2f}", 18, colour).next_to(dot, UP, buff=0.14)
+                tag = micro(f"{target:.2f}", 18, colour).next_to(dot, UP + RIGHT, buff=0.06)
                 marks.add(dot, tag)
                 self.play(FadeIn(dot, scale=0.5), FadeIn(tag),
                           run_time=0.5, rate_func=rf.ease_out_back)

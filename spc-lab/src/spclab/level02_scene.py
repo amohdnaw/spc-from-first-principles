@@ -277,7 +277,7 @@ class Level02(NarratedCameraScene):
                     x_length=8.2, y_length=3.5, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5})
         axes.shift(LEFT * 1.3 + DOWN * 0.5)
-        xlab = micro("LENGTH OF THE RUN JUST SEEN").next_to(axes, DOWN, buff=0.3)
+        xlab = micro("LENGTH OF THE RUN JUST SEEN").next_to(axes, DOWN, buff=0.5)
         ylab = micro("NEXT FLIP IS A HEAD").next_to(axes.y_axis, UP, buff=0.16)
         half = axes.plot(lambda _: 0.5, x_range=[0, len(ks) + 1],
                          stroke_color=YELLOW, stroke_width=2.0)
@@ -424,6 +424,8 @@ class Level02(NarratedCameraScene):
         strikes = VGroup(*[
             Line(c.get_left(), c.get_right(), stroke_color=RED, stroke_width=3.0)
             for c in claims[:2]])
+        for f in strikes.get_family():
+            f.crosses_text = True       # a strike-through: tools/text_collisions.py skips it
         with self.say("Not the part — a part is never a probability. Not the parts "
                       "out of tolerance — that is capability, and it is Level 8. It "
                       "is a rate at which a chart cries wolf."):

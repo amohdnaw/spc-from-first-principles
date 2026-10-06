@@ -362,6 +362,8 @@ class Level03(NarratedCameraScene):
         # anchored on the average square, and kept left of the readout column
         avg_tag = micro("THE AVERAGE SQUARE\nITS SIDE IS σ", 20, YELLOW)
         avg_tag.move_to([squares.get_right()[0] + 1.25, -0.35, 0])
+        # rides the square's top edge: at a fixed height the grown square ran into it
+        avg_tag.add_updater(lambda t: t.set_y(avg_sq.get_top()[1] + 0.16 + t.height / 2))
 
         lab_n = at_panel(micro("SQUARES SO FAR"), 0, value=False)
         val_n = always_redraw(lambda: at_panel(
@@ -538,7 +540,7 @@ class Level03(NarratedCameraScene):
                            19, col))
             marks.add(Dot(axes.c2p(float(s.mean()), 0.07), radius=0.07, color=col))
         rows.arrange(DOWN, buff=0.20, aligned_edge=LEFT)
-        rows.move_to([0.35, 1.85, 0], aligned_edge=LEFT)
+        rows.move_to([0.8, 1.85, 0], aligned_edge=LEFT)
 
         with self.say("Your twelve parts only estimate them, and the estimate "
                       "is not the thing."):
@@ -574,7 +576,7 @@ class Level03(NarratedCameraScene):
         handoff2 = MathTex(r"\text{Level 4 measures it: }",
                            r"\sigma_{\bar{x}} = \frac{\sigma}{\sqrt{n}}",
                            font_size=34, color=TEAL)
-        VGroup(handoff, handoff2).arrange(DOWN, buff=0.28).move_to([2.4, -2.35, 0])
+        VGroup(handoff, handoff2).arrange(DOWN, buff=0.28).move_to([2.9, -2.35, 0])
         with self.say("Every estimate carries uncertainty. Level 4 puts a "
                       "number on exactly how much."):
             self.play(FadeIn(handoff, shift=UP * 0.1), Write(handoff2),

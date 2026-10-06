@@ -70,7 +70,7 @@ class Level06(NarratedCameraScene):
                     ).shift(DOWN * 0.55)
         # no x̄ in a mono string: Plex Mono places the combining macron badly
         # and it reads as a typo. Garamond sets it correctly, so H₀ keeps it.
-        xlab = micro("SUBGROUP MEAN  (UNITS OF σ)").next_to(axes, DOWN, buff=0.28)
+        xlab = micro("SUBGROUP MEAN  (UNITS OF σ)").next_to(axes, DOWN, buff=0.2)
         ylab = micro("DENSITY").next_to(axes.y_axis.get_top(), RIGHT, buff=0.20)
         xs = np.linspace(-4.2, 4.2, 421)
         curve = axes.plot_line_graph(xs, norm_pdf(xs), add_vertex_dots=False,
@@ -163,7 +163,16 @@ class Level06(NarratedCameraScene):
                            fill_color=RED, fill_opacity=0.8, stroke_width=0)
 
         wing_l, wing_r = wing(-4.2, -3.0), wing(3.0, 4.2)
-        live_curve = stretched(curve)
+        def clipped_curve():
+            # cut at the top of the axis: drawn whole, the stretched peak ran up
+            # through "99.73 % inside" and out of the frame
+            y = norm_pdf(xs) * max(s.get_value(), 1e-4)
+            runs = np.split(np.arange(len(xs)), np.flatnonzero(np.diff(y <= 0.48)) + 1)
+            return VGroup(*[axes.plot_line_graph(xs[r], y[r], add_vertex_dots=False,
+                                                 line_color=TEAL, stroke_width=3)["line_graph"]
+                            for r in runs if len(r) > 1 and y[r[0]] <= 0.48])
+
+        live_curve = always_redraw(clipped_curve)
         live_wing_l, live_wing_r = stretched(wing_l), stretched(wing_r)
 
         filed = gauge("99.73 % inside", 22, TEAL).move_to([-5.35, 3.30, 0], aligned_edge=LEFT)
@@ -212,14 +221,14 @@ class Level06(NarratedCameraScene):
                       run_time=1.4, rate_func=rf.ease_in_out_sine)
 
         # ---- restate the same quantity as odds, by morph ----
-        odds = gauge("0.27 %", 34, RED).move_to(DOWN * 3.55)
+        odds = gauge("0.27 %", 34, RED).move_to(DOWN * 3.62)
         with self.say("Which is the two wings added together."):
             self.play(FadeOut(hyp, shift=DOWN * 0.25),
                       run_time=0.5, rate_func=rf.ease_in_sine)
             self.play(ReplacementTransform(VGroup(w_l, w_r), odds),
                       run_time=1.3, rate_func=rf.ease_in_out_sine)
 
-        arl = gauge("1 false alarm in 370 subgroups", 28, RED).move_to(DOWN * 3.55)
+        arl = gauge("1 false alarm in 370 subgroups", 28, RED).move_to(DOWN * 3.62)
         with self.say("Invert it and the bet is priced. Zero point two seven percent "
                       "is one false alarm in three hundred and seventy subgroups. A "
                       "point outside the limit is that bet, taken."):

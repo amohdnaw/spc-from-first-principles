@@ -70,7 +70,8 @@ class ConstantsAct(NarratedCameraScene):
         # ---- one subgroup of five, and the only spread you can measure ----
         rng = np.random.default_rng(11)
         vals = np.sort(rng.normal(0, 1, N_PARTS))
-        line = Line(LEFT * 4.2, RIGHT * 4.2, stroke_color=GREY, stroke_width=2)
+        # short of the panel column at x 4.15, where the R̄ readout sits at this height
+        line = Line(LEFT * 3.9, RIGHT * 3.9, stroke_color=GREY, stroke_width=2)
         line.shift(UP * 1.5)
         lab_n = micro("A SUBGROUP OF n = 5 PARTS").next_to(line, UP, buff=0.35)
         dots = VGroup(*[
@@ -105,16 +106,19 @@ class ConstantsAct(NarratedCameraScene):
         def done() -> int:
             return int(np.clip(round(10 ** lg.get_value()), 1, SUBGROUPS))
 
-        axes = Axes(x_range=[0, 4, 1], y_range=[1.6, 3.0, 0.4],
+        # the trace runs to log10(20,000) = 4.3: an axis that stopped at 4 put
+        # the trace's tail into the d₂ tag
+        x_end = float(np.log10(SUBGROUPS))
+        axes = Axes(x_range=[0, x_end, 1], y_range=[1.6, 3.0, 0.4],
                     x_length=8.6, y_length=2.9, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5}
                     ).shift(LEFT * 0.9 + DOWN * 1.85)
         xlab = micro("SUBGROUPS SIMULATED (POWERS OF TEN)").next_to(
             axes, DOWN, buff=0.24)
-        target = DashedLine(axes.c2p(0, CONST["d2"]), axes.c2p(4, CONST["d2"]),
+        target = DashedLine(axes.c2p(0, CONST["d2"]), axes.c2p(x_end, CONST["d2"]),
                             dash_length=0.12, stroke_color=TEAL, stroke_width=2)
         target_tag = micro(f"d₂ = {CONST['d2']:.4f}", 18, TEAL).next_to(
-            axes.c2p(4, CONST["d2"]), RIGHT, buff=0.12)
+            axes.c2p(x_end, CONST["d2"]), RIGHT, buff=0.12)
 
         traced = always_redraw(lambda: axes.plot_line_graph(
             np.log10(np.arange(1, done() + 1)), running[:done()],

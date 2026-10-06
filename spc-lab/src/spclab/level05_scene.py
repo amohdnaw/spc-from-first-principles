@@ -235,7 +235,7 @@ class Level05(NarratedCameraScene):
                     x_length=8.2, y_length=3.9, tips=False,
                     axis_config={"stroke_color": GREY, "stroke_width": 1.5})
         axes.shift(LEFT * 1.3 + DOWN * 0.62)
-        xlab = within_frame(micro("PARTS PER SAMPLE").next_to(axes, DOWN, buff=0.3))
+        xlab = within_frame(micro("PARTS PER SAMPLE").next_to(axes, DOWN, buff=0.5))
         ylab = within_frame(micro("CAUGHT THE TRUTH").next_to(
             axes.y_axis, UP, buff=0.16), "part 3 y-label")
         target = axes.plot(lambda _: CONF, x_range=[0, len(SIZES) + 1],
@@ -337,9 +337,12 @@ class Level05(NarratedCameraScene):
         grid = np.arange(2, 45)
         widths = np.array([interval_width(int(v), use_t=False) for v in grid])
 
-        curve = always_redraw(lambda: _poly(
-            axes, grid[grid <= max(2, n_t.get_value())],
-            widths[grid <= max(2, n_t.get_value())], BLUE))
+        # widths above the axis top (n = 2) are left off: drawn, the curve ran
+        # up through the y-label
+        def shown():
+            return (grid <= max(2, n_t.get_value())) & (widths <= 1.3)
+
+        curve = always_redraw(lambda: _poly(axes, grid[shown()], widths[shown()], BLUE))
 
         lab_n = at_panel(micro("PARTS"), 0, value=False)
         val_n = always_redraw(lambda: at_panel(

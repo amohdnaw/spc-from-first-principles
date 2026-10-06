@@ -47,16 +47,26 @@ ROWS = ((2.95, 2.52), (1.92, 1.49), (0.89, 0.46))
 config.background_color = BG
 
 
+
+# Pango kerns at the size it is asked for, and at 16-28 it rounds each advance:
+# titles rendered as "in side n oise" and "han dshake". Shaping at 4x and scaling
+# down keeps the font's own spacing. Every string goes through here.
+KERN = 4
+
+
+def _text(txt, size, **kw):
+    return Text(txt, font_size=size * KERN, **kw).scale(1 / KERN)
+
 def prose(txt: str, size: float = 28, color: str = INK) -> Text:
-    return Text(txt, font=SERIF, weight="MEDIUM", font_size=size, color=color)
+    return _text(txt, size, font=SERIF, weight="MEDIUM", color=color)
 
 
 def gauge(txt: str, size: float = 26, color: str = INK) -> Text:
-    return Text(txt, font=MONO, font_size=size, color=color)
+    return _text(txt, size, font=MONO, color=color)
 
 
 def micro(txt: str, size: float = 16, color: str = GREY) -> Text:
-    return Text(txt, font=MONO, font_size=size, color=color)
+    return _text(txt, size, font=MONO, color=color)
 
 
 # 16:9 at the default frame height of 8 units. A readout that reaches this is

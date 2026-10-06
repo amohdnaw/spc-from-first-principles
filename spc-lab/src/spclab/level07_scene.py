@@ -77,7 +77,7 @@ class Level07(NarratedCameraScene):
                     y_axis_config={"stroke_opacity": 0})
         axes.shift(LEFT * 1.15 + DOWN * 0.55)
         xlab = within_frame(micro("PLOTTED STATISTIC, IN ITS OWN SIGMA")
-                            .next_to(axes, DOWN, buff=0.3), "part 1 x-label")
+                            .next_to(axes, DOWN, buff=0.48), "part 1 x-label")
 
         xs = np.linspace(-5.0, 6.2, 420)
         stable = axes.plot_line_graph(xs, norm_pdf(xs), add_vertex_dots=False,
@@ -87,8 +87,8 @@ class Level07(NarratedCameraScene):
                              stroke_color=GREY, stroke_width=1.6)
                         for v in (-LIMIT, LIMIT)])
         tags = VGroup(
-            micro(f"+{LIMIT:.0f}σ", 16, GREY).next_to(axes.c2p(LIMIT, 0), DOWN, buff=0.1),
-            micro(f"−{LIMIT:.0f}σ", 16, GREY).next_to(axes.c2p(-LIMIT, 0), DOWN, buff=0.1))
+            micro(f"+{LIMIT:.0f}σ", 16, GREY).next_to(axes.c2p(LIMIT, 0), DOWN, buff=0.2),
+            micro(f"−{LIMIT:.0f}σ", 16, GREY).next_to(axes.c2p(-LIMIT, 0), DOWN, buff=0.2))
 
         with self.say("Level 6 priced one decision: a point outside three sigma. "
                       "Nought point two seven percent of the time the process is "
