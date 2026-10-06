@@ -128,7 +128,8 @@ def test_no_equation_is_double_escaped():
     pages = sorted(REPO.glob("*.html")) + sorted((REPO / "tools/page-sources").glob("*.html"))
     for p in pages:
         for m in re.finditer(r'data-tex="([^"]*)"', p.read_text()):
-            if r"\\" in m.group(1):
+            # an aligned block breaks lines with \\ on purpose (Level 11's 11.1)
+            if r"\\" in m.group(1) and r"\begin{aligned}" not in m.group(1):
                 offenders.append(f"{p.name}: {m.group(1)[:60]}")
     assert not offenders, "double-escaped equations:\n  " + "\n  ".join(offenders)
 

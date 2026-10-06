@@ -103,8 +103,11 @@
   .lede strong{color:var(--ink-bright)}
 
   /* acts */
-  section{padding:clamp(64px,10vh,120px) 0 0}
+  /* section.wrap, not section: .wrap's padding:0 out-ranked the bare tag, so the acts ran together */
+  section.wrap{padding-top:clamp(64px,10vh,120px)}
   .act-head{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
+  /* on a phone the label wrapped to "Act / I." beside the heading; stack it */
+  @media(max-width:560px){.act-head{flex-direction:column;gap:2px}}
   .act-num{font-family:Libron,'EB Garamond',Georgia,serif;font-style:italic;font-size:clamp(21px,2.5vw,26px);color:var(--accent)}
   h2{font-size:clamp(26px,4vw,46px);max-width:22ch}
   .act-lede{max-width:61ch;color:var(--ink);margin-bottom:clamp(28px,4vh,44px)}
@@ -594,7 +597,7 @@ function drawCharts(){
   el('rect',{x:pad,y:pad,width:W-pad*2,height:H-pad*2,fill:COL.panel,stroke:COL.alarm,'stroke-width':2},mgm);
   const mk=(yy,size,weight,color,text)=>{const t=el('text',{x:W/2,y:yy,'text-anchor':'middle','font-size':size,'font-weight':weight,'font-family':'IBM Plex Mono',fill:color},mgm);t.textContent=text};
   mk(88,'13','400',COL.dim,'Line C — bore diameter');
-  mk(124,'23','700',COL.alarm,'Shut down for tool change today');
+  mk(124,'19','700',COL.alarm,'Shut down for tool change today');
   mk(152,'12','400',COL.dim,'Drift detected before any part went out of spec.');
   mk(170,'12','400',COL.dim,'Cost of waiting: ≈ €4,200/hr in scrap once it slips.');
   mk(196,'12','400',COL.ok,'Action decided: station 2 tool change, 40 min.');

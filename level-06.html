@@ -249,6 +249,13 @@
      with a float at the note's position in the flow, never with grid rows. Grid
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
+  .lab-link{margin-top:var(--rhythm)}
+  /* Links in the prose. The browser's own blue measured 2.0:1 on this ground. */
+  main section a[href^="http"]{color:var(--ink-bright);text-decoration:underline;
+    text-decoration-color:var(--accent);text-underline-offset:3px}
+  main section a[href^="http"]:hover{color:var(--accent)}
+  /* a figure opens at full size on tap; the link must not change how it looks */
+  a.zoom{display:block;cursor:zoom-in}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px
@@ -371,6 +378,25 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
+  /* after the base .note rules, or they win on source order */
+  /* a note right after a drop cap must start at the left edge, not beside the
+     cap. Only below the margin breakpoint: above it the note floats right. */
+  /* clear does not move a note past initial-letter (it is not a float), so push
+     it a body line down; a note further into the paragraph just gains air. */
+  @media (max-width:1499px){
+    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    /* the number's own column left the formula 504px; six equations scrolled */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+  }
+  @media (max-width:640px){
+    /* 12.5px mono read as a footnote on a phone */
+    .note{font-size:14px}
+    .note .k,.note.data .rk{font-size:12px}
+    .note.data .rn{font-size:13px}
+    /* tap targets: the rail links measured 30x23 */
+    .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+  }
 </style>
 </head>
 <body>
@@ -428,10 +454,10 @@
           <p>Everything that follows in this chapter is a consequence of taking that claim seriously enough to test it.<span class="note speak"><span class="k">spoken · 0:11</span><em>“That curve is the null hypothesis. Not an assumption about the parts, but a claim about the process.”</em></span></p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l06_1_null_distribution.png" width="1495" height="782" decoding="async"
-             alt="Null distribution of x-bar with both tails annotated">
+        <a class="zoom" href="spc-lab/docs/l06_1_null_distribution.png"><img src="spc-lab/docs/l06_1_null_distribution.png" width="1495" height="782" decoding="async"
+             alt="Null distribution of x-bar with both tails annotated"></a>
         <figcaption>
-          <span class="fignum">Figure 6.2</span>
+          <span class="fignum">Figure 6.1</span>
           <span class="figtext">The null distribution of x̄, with the exact integral and
           both tails annotated with the false-alarm arithmetic.</span>
         </figcaption>
@@ -483,7 +509,7 @@
           <track kind="captions" src="captions/level06.vtt" srclang="en" label="English">
         </video>
         <figcaption>
-          <span class="fignum">Figure 6.1</span>
+          <span class="fignum">Figure 6.2</span>
           <span class="figtext">Rendered in Manim — the bell becomes H₀, the ±3σ region
           fills to 99.73%, and a violation becomes “evidence against the null.”</span>
         </figcaption>
@@ -523,8 +549,8 @@
           <p>Everything so far assumed we know σ. <span class="note data"><span class="k">estimating sigma</span><span class="row num"><span class="rk">sigma-hat from ranges</span><span class="rv">R̄ / d₂</span></span><span class="row num"><span class="rk">at 25 subgroups</span><span class="rv">±0.075 σ</span><span class="rn">spread in the estimate itself</span></span></span>On a real line we do not — we estimate it, usually from the average range of the subgroups divided by a constant. That estimate is unbiased on average, but a chart built from twenty-five subgroups carries real fuzz in its own limits, which is why Phase I needs enough data before the limits mean anything.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l06_2_rbar_plumbing.png" width="1263" height="741" decoding="async"
-             alt="Sampling distribution of sigma-hat from R-bar over d2">
+        <a class="zoom" href="spc-lab/docs/l06_2_rbar_plumbing.png"><img src="spc-lab/docs/l06_2_rbar_plumbing.png" width="1263" height="741" decoding="async"
+             alt="Sampling distribution of sigma-hat from R-bar over d2"></a>
         <figcaption>
           <span class="fignum">Figure 6.3</span>
           <span class="figtext">How good is <span class="tex" data-tex="\hat{\sigma} = \bar{R}/d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mo>=</mo><mover accent="true"><mi>R</mi><mo>ˉ</mo></mover><mi mathvariant="normal">/</mi><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\hat{\sigma} = \bar{R}/d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.0701em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8201em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>? 4 000 simulated stable processes:
@@ -555,8 +581,8 @@
       <div class="figpair">
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
-             alt="Monte Carlo derivation of the d2 control chart constant">
+        <a class="zoom" href="spc-lab/docs/01_d2.png"><img src="spc-lab/docs/01_d2.png" width="1153" height="736" decoding="async"
+             alt="Monte Carlo derivation of the d2 control chart constant"></a>
         <figcaption>
           <span class="fignum">Figure 6.5</span>
           <span class="figtext"><span class="tex" data-tex="d_2 = \mathrm{E}(R/\sigma)"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false">(</mo><mi>R</mi><mi mathvariant="normal">/</mi><mi>σ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d_2 = \mathrm{E}(R/\sigma)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathrm">E</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mclose">)</span></span></span></span></span>, the bridge from an average range to a σ estimate.
@@ -565,8 +591,8 @@
       </figure>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
-             alt="A2, D3 and D4 constants plotted against subgroup size">
+        <a class="zoom" href="spc-lab/docs/02_A2_D3_D4.png"><img src="spc-lab/docs/02_A2_D3_D4.png" width="1817" height="707" decoding="async"
+             alt="A2, D3 and D4 constants plotted against subgroup size"></a>
         <figcaption>
           <span class="fignum">Figure 6.6</span>
           <span class="figtext">A₂, D₃ and D₄ against subgroup size. These are the numbers on

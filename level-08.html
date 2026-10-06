@@ -252,6 +252,13 @@
      with a float at the note's position in the flow, never with grid rows. Grid
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
+  .lab-link{margin-top:var(--rhythm)}
+  /* Links in the prose. The browser's own blue measured 2.0:1 on this ground. */
+  main section a[href^="http"]{color:var(--ink-bright);text-decoration:underline;
+    text-decoration-color:var(--accent);text-underline-offset:3px}
+  main section a[href^="http"]:hover{color:var(--accent)}
+  /* a figure opens at full size on tap; the link must not change how it looks */
+  a.zoom{display:block;cursor:zoom-in}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px
@@ -374,6 +381,25 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
+  /* after the base .note rules, or they win on source order */
+  /* a note right after a drop cap must start at the left edge, not beside the
+     cap. Only below the margin breakpoint: above it the note floats right. */
+  /* clear does not move a note past initial-letter (it is not a float), so push
+     it a body line down; a note further into the paragraph just gains air. */
+  @media (max-width:1499px){
+    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    /* the number's own column left the formula 504px; six equations scrolled */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+  }
+  @media (max-width:640px){
+    /* 12.5px mono read as a footnote on a phone */
+    .note{font-size:14px}
+    .note .k,.note.data .rk{font-size:12px}
+    .note.data .rn{font-size:13px}
+    /* tap targets: the rail links measured 30x23 */
+    .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+  }
 </style>
 </head>
 <body>
@@ -428,9 +454,9 @@
           <p>The process answers with a spread. It never read the drawing, and at this width it does not fit.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l08_1_two_voices.png" width="1667" height="1247" decoding="async" alt="Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.">
+        <a class="zoom" href="spc-lab/docs/l08_1_two_voices.png"><img src="spc-lab/docs/l08_1_two_voices.png" width="1667" height="1247" decoding="async" alt="Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap."></a>
         <figcaption>
-          <span class="fignum">Figure 8.2</span>
+          <span class="fignum">Figure 8.1</span>
           <span class="figtext">Cp as geometry. Top: perfectly centred, so Cp is just the ratio of two widths. Bottom: drifted — the near gap decides, and the red tail is real scrap.</span>
         </figcaption>
       </figure>
@@ -480,7 +506,7 @@
           <track kind="captions" src="captions/level08.vtt" srclang="en" label="English">
         </video>
         <figcaption>
-          <span class="fignum">Figure 8.1</span>
+          <span class="fignum">Figure 8.2</span>
           <span class="figtext">Rendered in Manim — the tolerance bracket meets the natural
           spread as dimension lines, the bell drifts and its red tail grows, then the promise
           table converts each Cpk into an expected defect rate. Use the calculator above for
@@ -510,7 +536,7 @@
       <details class="act">
         <summary>
           <span class="thumb-wrap"><img class="thumb" src="posters/gallery.jpg" alt="" loading="lazy"></span>
-          <span class="meta"><span class="k">figure 8.4</span><span class="cap">The overview act: a chart and its limits drawing themselves from the data, and where capability geometry sits among them.</span></span>
+          <span class="meta"><span class="k">figure 8.3</span><span class="cap">The overview act: a chart and its limits drawing themselves from the data, and where capability geometry sits among them.</span></span>
           <span class="cue">play</span>
         </summary>
         <video controls playsinline preload="none" poster="posters/gallery.jpg">
@@ -524,9 +550,9 @@
       </aside>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l08_2_cpk_to_ppm.png" width="1345" height="794" decoding="async" alt="The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.">
+        <a class="zoom" href="spc-lab/docs/l08_2_cpk_to_ppm.png"><img src="spc-lab/docs/l08_2_cpk_to_ppm.png" width="1345" height="794" decoding="async" alt="The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”."></a>
         <figcaption>
-          <span class="fignum">Figure 8.3</span>
+          <span class="fignum">Figure 8.4</span>
           <span class="figtext">The thresholds demystified. 1.00 / 1.33 / 1.67 are chosen points on a continuous curve, mapped both short-term and with the 1.5σ drift convention behind “Six Sigma”.</span>
         </figcaption>
       </figure>

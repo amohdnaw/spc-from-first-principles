@@ -368,7 +368,7 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body" data-tex="y = \beta_0 + \beta_A x_A + \beta_B x_B + \beta_{AB}\,x_A x_B + \varepsilon"></div>
+        <div class="eq-body" data-tex="\begin{aligned}y &amp;= \beta_0 + \beta_A x_A + \beta_B x_B \\[2pt] &amp;\quad + \beta_{AB}\,x_A x_B + \varepsilon\end{aligned}"></div>
         <div class="eq-num">(12.1)</div>
         <p class="eq-cap">The fourth term is the whole subject. Set it to zero and one factor at a time works perfectly well, if slowly. Let it be larger than a main effect and the procedure stops at the wrong corner — with no noise required.</p>
       </div>
@@ -433,18 +433,14 @@
         <div class="rule"></div>
         <img src="spc-lab/docs/l12_1_why_ofat_fails.png" width="2556" height="929" loading="lazy"
              alt="The response surface with the one-at-a-time path stopping short of the optimum, and the interaction plot beside it">
-        <figcaption><span class="fignum">Figure 12.1</span><span class="figtext">One set of
-        measurements, written down twice. Identical histogram bin for bin, identical mean and
-        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+        <figcaption><span class="fignum">Figure 12.1</span><span class="figtext">One factor at a time stops at 8 when the best is 6, a third worse, because it never visits the corner where both factors are high. Effects: A −4, B −2, interaction +6.</span></figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/l12_2_screening_and_curvature.png" width="3179" height="929" loading="lazy"
              alt="The alias structure of a seven-factor screening design, and the centre-point test on a curved and a flat surface">
-        <figcaption><span class="fignum">Figure 12.2</span><span class="figtext">Deming's funnel
-        on the same random draws. Correcting after every part doubles the variance exactly, so
-        the spread the customer receives is √2 times wider.</span></figcaption>
+        <figcaption><span class="fignum">Figure 12.2</span><span class="figtext">Seven factors in eight runs, and what each column is aliased with. Centre points catch the bend the corners cannot: gap −3.14, p = 0.0044 on the curved surface, p = 0.89 on the flat one.</span></figcaption>
       </figure>
 
       <a class="next" href="index.html">

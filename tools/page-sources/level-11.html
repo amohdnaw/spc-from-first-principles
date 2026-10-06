@@ -368,7 +368,7 @@
       </div>
 
       <div class="eq">
-        <div class="eq-body" data-tex="\underbrace{\sum (y_i-\bar{y})^2}_{\text{total}} = \underbrace{\sum (\hat{y}_i-\bar{y})^2}_{\text{explained}} + \underbrace{\sum (y_i-\hat{y}_i)^2}_{\text{residual}}"></div>
+        <div class="eq-body" data-tex="\begin{aligned}\underbrace{\sum (y_i-\bar{y})^2}_{\text{total}} &amp;= \underbrace{\sum (\hat{y}_i-\bar{y})^2}_{\text{explained}} \\[4pt] &amp;\quad + \underbrace{\sum (y_i-\hat{y}_i)^2}_{\text{residual}}\end{aligned}"></div>
         <div class="eq-num">(11.1)</div>
         <p class="eq-cap">The identity the whole level runs on. Relabel the two terms on the right as between-groups and within-groups and it is ANOVA; split the total four ways instead of two and it is a gauge study. Same arithmetic, three names.</p>
       </div>
@@ -433,18 +433,14 @@
         <div class="rule"></div>
         <img src="spc-lab/docs/l11_1_least_squares.png" width="2368" height="982" loading="lazy"
              alt="The residual sum of squares swept across slopes, and the same straight fit on a straight and a curved relationship">
-        <figcaption><span class="fignum">Figure 11.1</span><span class="figtext">One set of
-        measurements, written down twice. Identical histogram bin for bin, identical mean and
-        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+        <figcaption><span class="fignum">Figure 11.1</span><span class="figtext">The residual sum of squares is a parabola with its floor at slope 0.01315. A curved relationship still scores R² 0.929, but its residuals run 16 on one side, against 7 for a straight one.</span></figcaption>
       </figure>
 
       <figure>
         <div class="rule"></div>
         <img src="spc-lab/docs/l11_2_intervals_and_bridge.png" width="2522" height="956" loading="lazy"
              alt="A confidence band against a prediction band, and the total variance split into part, operator, interaction and repeat">
-        <figcaption><span class="fignum">Figure 11.2</span><span class="figtext">Deming's funnel
-        on the same random draws. Correcting after every part doubles the variance exactly, so
-        the spread the customer receives is √2 times wider.</span></figcaption>
+        <figcaption><span class="fignum">Figure 11.2</span><span class="figtext">At 172 m/min the mean is known to ±0.053 but one new part only to ±0.208, 3.9 times wider. The same sums split a gauge study: part 82.8%, gauge 17.2%.</span></figcaption>
       </figure>
 
       <a class="next" href="level-12.html">

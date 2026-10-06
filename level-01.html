@@ -247,8 +247,12 @@
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
   .lab-link{margin-top:var(--rhythm)}
-  .lab-link a{color:var(--ink-bright);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
-  .lab-link a:hover{color:var(--accent)}
+  /* Links in the prose. The browser's own blue measured 2.0:1 on this ground. */
+  main section a[href^="http"]{color:var(--ink-bright);text-decoration:underline;
+    text-decoration-color:var(--accent);text-underline-offset:3px}
+  main section a[href^="http"]:hover{color:var(--accent)}
+  /* a figure opens at full size on tap; the link must not change how it looks */
+  a.zoom{display:block;cursor:zoom-in}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px
@@ -371,6 +375,25 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
+  /* after the base .note rules, or they win on source order */
+  /* a note right after a drop cap must start at the left edge, not beside the
+     cap. Only below the margin breakpoint: above it the note floats right. */
+  /* clear does not move a note past initial-letter (it is not a float), so push
+     it a body line down; a note further into the paragraph just gains air. */
+  @media (max-width:1499px){
+    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    /* the number's own column left the formula 504px; six equations scrolled */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+  }
+  @media (max-width:640px){
+    /* 12.5px mono read as a footnote on a phone */
+    .note{font-size:14px}
+    .note .k,.note.data .rk{font-size:12px}
+    .note.data .rn{font-size:13px}
+    /* tap targets: the rail links measured 30x23 */
+    .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+  }
 </style>
 </head>
 <body>
@@ -457,8 +480,8 @@
           <p>A run statistic sees what the histogram cannot. <span class="note speak"><span class="k">spoken · 1:58</span><em>“Same histogram, and one of those two processes needs an engineer today.”</em></span>That is the whole reason every chart in this curriculum is drawn in time order rather than as a pile of measurements — and why Level 7 prices the run rules that formalise it.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l01_1_time_order.png" width="1702" height="929" loading="lazy"
-             alt="The same 240 measurements in two arrival orders with identical histograms">
+        <a class="zoom" href="spc-lab/docs/l01_1_time_order.png"><img src="spc-lab/docs/l01_1_time_order.png" width="1702" height="929" loading="lazy"
+             alt="The same 240 measurements in two arrival orders with identical histograms"></a>
         <figcaption><span class="fignum">Figure 1.2</span><span class="figtext">One set of
         measurements, written down twice. Identical histogram bin for bin, identical mean and
         spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
@@ -495,8 +518,8 @@
           <p>Noise is not a signal, and answering it is how you add variation rather than remove it. <span class="note speak"><span class="k">spoken · 2:41</span><em>“Answering it is how you add variation rather than remove it.”</em></span>Everything from here — the limits, the capability arithmetic, the detection theory — is machinery for knowing which kind you are looking at before you touch anything.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l01_2_tampering.png" width="1702" height="929" loading="lazy"
-             alt="Deming's funnel: leaving a stable process alone against adjusting every part">
+        <a class="zoom" href="spc-lab/docs/l01_2_tampering.png"><img src="spc-lab/docs/l01_2_tampering.png" width="1702" height="929" loading="lazy"
+             alt="Deming's funnel: leaving a stable process alone against adjusting every part"></a>
         <figcaption><span class="fignum">Figure 1.3</span><span class="figtext">Deming's funnel
         on the same random draws. Correcting after every part doubles the variance exactly, so
         the spread the customer receives is √2 times wider.</span></figcaption>

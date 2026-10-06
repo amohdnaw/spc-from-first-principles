@@ -252,6 +252,13 @@
      with a float at the note's position in the flow, never with grid rows. Grid
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
+  .lab-link{margin-top:var(--rhythm)}
+  /* Links in the prose. The browser's own blue measured 2.0:1 on this ground. */
+  main section a[href^="http"]{color:var(--ink-bright);text-decoration:underline;
+    text-decoration-color:var(--accent);text-underline-offset:3px}
+  main section a[href^="http"]:hover{color:var(--accent)}
+  /* a figure opens at full size on tap; the link must not change how it looks */
+  a.zoom{display:block;cursor:zoom-in}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px
@@ -374,6 +381,25 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
+  /* after the base .note rules, or they win on source order */
+  /* a note right after a drop cap must start at the left edge, not beside the
+     cap. Only below the margin breakpoint: above it the note floats right. */
+  /* clear does not move a note past initial-letter (it is not a float), so push
+     it a body line down; a note further into the paragraph just gains air. */
+  @media (max-width:1499px){
+    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    /* the number's own column left the formula 504px; six equations scrolled */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+  }
+  @media (max-width:640px){
+    /* 12.5px mono read as a footnote on a phone */
+    .note{font-size:14px}
+    .note .k,.note.data .rk{font-size:12px}
+    .note.data .rn{font-size:13px}
+    /* tap targets: the rail links measured 30x23 */
+    .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+  }
 </style>
 </head>
 <body>
@@ -489,7 +515,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <track kind="captions" src="captions/ewma.vtt" srclang="en" label="English">
         </video>
         <figcaption>
-          <span class="fignum">Figure 9.4</span>
+          <span class="fignum">Figure 9.2</span>
           <span class="figtext">How the memory forms. Limits start wide and tighten toward <span class="tex" data-tex="\pm 3\sigma\sqrt{\lambda/(2-\lambda)}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>±</mo><mn>3</mn><mi>σ</mi><msqrt><mrow><mi>λ</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mn>2</mn><mo>−</mo><mi>λ</mi><mo stretchy="false">)</mo></mrow></msqrt></mrow><annotation encoding="application/x-tex">\pm 3\sigma\sqrt{\lambda/(2-\lambda)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord">±</span><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord mathnormal">λ</span><span class="mord">/</span><span class="mopen">(</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mclose">)</span></span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
 c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
 c340,-704.7,510.7,-1060.3,512,-1067
@@ -515,7 +541,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <p>It crosses the limit at subgroup 34, with the mean only 0.8 sigma off and the raw measurement sitting at +2.48 sigma — a number no Shewhart chart would look at twice. The other chart waited until subgroup 64, thirty subgroups later.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l09_2_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async">
+        <a class="zoom" href="spc-lab/docs/l09_2_race.png"><img src="spc-lab/docs/l09_2_race.png" width="1667" height="1105" alt="The race. Same process, both charts" decoding="async"></a>
         <figcaption>
           <span class="fignum">Figure 9.3</span>
           <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
@@ -537,9 +563,9 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       </aside>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l09_1_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async">
+        <a class="zoom" href="spc-lab/docs/l09_1_arl.png"><img src="spc-lab/docs/l09_1_arl.png" width="1332" height="808" alt="Average Run Length against shift size" decoding="async"></a>
         <figcaption>
-          <span class="fignum">Figure 9.2</span>
+          <span class="fignum">Figure 9.4</span>
           <span class="figtext">Average Run Length against shift size. At a 1σ drift: detection in ~10 subgroups versus ~44, 4.4 times sooner at identical false-alarm cost. Simulated, 8 000 runs per point.</span>
         </figcaption>
       </figure>

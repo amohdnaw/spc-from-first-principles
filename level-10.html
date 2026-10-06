@@ -281,6 +281,13 @@
      with a float at the note's position in the flow, never with grid rows. Grid
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
+  .lab-link{margin-top:var(--rhythm)}
+  /* Links in the prose. The browser's own blue measured 2.0:1 on this ground. */
+  main section a[href^="http"]{color:var(--ink-bright);text-decoration:underline;
+    text-decoration-color:var(--accent);text-underline-offset:3px}
+  main section a[href^="http"]:hover{color:var(--accent)}
+  /* a figure opens at full size on tap; the link must not change how it looks */
+  a.zoom{display:block;cursor:zoom-in}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px
@@ -403,6 +410,25 @@
     .note.nofloat{float:none;width:auto;max-width:var(--measure);margin-top:34px}
     .leaf > div::after{content:"";display:block;clear:both}
   }
+  /* after the base .note rules, or they win on source order */
+  /* a note right after a drop cap must start at the left edge, not beside the
+     cap. Only below the margin breakpoint: above it the note floats right. */
+  /* clear does not move a note past initial-letter (it is not a float), so push
+     it a body line down; a note further into the paragraph just gains air. */
+  @media (max-width:1499px){
+    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    /* the number's own column left the formula 504px; six equations scrolled */
+    .eq{grid-template-columns:1fr;gap:10px}
+    .eq-num{justify-self:end}
+  }
+  @media (max-width:640px){
+    /* 12.5px mono read as a footnote on a phone */
+    .note{font-size:14px}
+    .note .k,.note.data .rk{font-size:12px}
+    .note.data .rn{font-size:13px}
+    /* tap targets: the rail links measured 30x23 */
+    .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+  }
 </style>
 </head>
 <body>
@@ -496,11 +522,9 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <p>The second process is not wider. It is a process whose rate moved, and every limit computed from the binomial is too tight for it — so it will trip its own chart for a reason that has nothing to do with the thing being counted. This is what rational subgrouping means for attribute data.</p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l10_1_spread_is_not_free.png" width="2274" height="956" loading="lazy"
-             alt="The binomial sigma as a function of the rate, and two p-charts with the same mean and different scatter">
-        <figcaption><span class="fignum">Figure 10.1</span><span class="figtext">One set of
-        measurements, written down twice. Identical histogram bin for bin, identical mean and
-        spread — and the longest run on one side of the mean goes from 7 to 121.</span></figcaption>
+        <a class="zoom" href="spc-lab/docs/l10_1_spread_is_not_free.png"><img src="spc-lab/docs/l10_1_spread_is_not_free.png" width="2274" height="956" loading="lazy"
+             alt="The binomial sigma as a function of the rate, and two p-charts with the same mean and different scatter"></a>
+        <figcaption><span class="fignum">Figure 10.1</span><span class="figtext">A rate's spread is fixed by the rate: σ = √(p(1−p)/n), 0.0139 at p = 0.04. Two p-charts share a mean; one scatters at 0.92 of that, the other at 1.64.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -525,11 +549,9 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <p>Over sizes from 120 to 360 that shortcut disagrees with the honest limits on 0.87 % of subgroups, and most of the disagreement is false alarms rather than misses — it spends more than the whole false-alarm budget Level 6 designed for.<span class="note"><span class="k">Level 7's language</span>A fixed cost for nothing bought. The shortcut is not a trade, it is a leak.</span></p>
       <figure>
         <div class="rule"></div>
-        <img src="spc-lab/docs/l10_2_breathing_limits.png" width="2086" height="1044" loading="lazy"
-             alt="A p-chart whose limits breathe with each subgroup size, and where the lower limit clears zero">
-        <figcaption><span class="fignum">Figure 10.2</span><span class="figtext">Deming's funnel
-        on the same random draws. Correcting after every part doubles the variance exactly, so
-        the spread the customer receives is √2 times wider.</span></figcaption>
+        <a class="zoom" href="spc-lab/docs/l10_2_breathing_limits.png"><img src="spc-lab/docs/l10_2_breathing_limits.png" width="2086" height="1044" loading="lazy"
+             alt="A p-chart whose limits breathe with each subgroup size, and where the lower limit clears zero"></a>
+        <figcaption><span class="fignum">Figure 10.2</span><span class="figtext">Limits that move with each subgroup's size. One limit at the average n disagrees on 0.87% of subgroups, and the lower limit clears zero only from n = 217, not the 125 the rule of thumb allows.</span></figcaption>
       </figure>
         </div>
       </div>

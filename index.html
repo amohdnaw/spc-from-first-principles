@@ -241,7 +241,9 @@
     .phases{grid-template-columns:1fr}
     .phase{border-right:0;border-bottom:1px solid var(--rule)}
     .phase:last-child{border-bottom:0}
-    .nav-links{gap:12px;font-size:10px;letter-spacing:.06em}
+    /* 10px links 16px tall were too small to read or hit; 12px in 44px rows */
+    .nav-links{gap:4px 16px;font-size:12px;letter-spacing:.06em}
+    .nav-links a{display:inline-flex;align-items:center;min-height:44px}
     .wordmark{font-size:18px}
     .tools{grid-template-columns:1fr}
     .readouts{gap:24px 32px}
