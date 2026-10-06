@@ -13,6 +13,10 @@
 
 <style>
   /* ---------- self-hosted, two families, two voices ---------- */
+  @font-face{font-family:Libron;src:url('fonts/libron-regular.woff2') format('woff2');font-weight:400 600;font-style:normal;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-italic.woff2') format('woff2');font-weight:400 600;font-style:italic;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-bolditalic.woff2') format('woff2');font-weight:700;font-style:italic;font-display:swap;size-adjust:88%}
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
     font-weight:400 600;font-style:normal;font-display:swap}
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-italic.woff2') format('woff2');
@@ -30,7 +34,7 @@
     --accent:#ffae00; --accent-wash:rgba(255,174,0,.14);
     --signal-ok:#65ccaf; --signal-alarm:#de6a5d; --fill-ok:#2a534b;
 
-    --serif:'EB Garamond',Georgia,serif;
+    --serif:Libron,'EB Garamond',Georgia,serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
 
     --measure:27em;              /* ≈60ch at 21px EB Garamond, measured */

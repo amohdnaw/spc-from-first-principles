@@ -15,10 +15,19 @@ Two voices, and every element belongs to exactly one of them:
 
 | Voice | Font | Owns |
 |---|---|---|
-| **Document** | EB Garamond | prose, headlines, deks, equations, figure captions, pull quotes |
+| **Document** | Libron (EB Garamond fallback) | prose, headlines, deks, equations, figure captions, pull quotes |
 | **Instrument** | IBM Plex Mono | labels, readouts, status, nav, panel headers, figure numbers, units |
 
 If an element is neither reading nor measuring, it should not exist.
+
+**Changed 2026-10-06: the document voice is Libron** (Nico Verbruggen, OFL, `fonts/Libron-OFL.txt`).
+Garamond's hairlines thin out as light text on this dark ground at 19-21px; Libron holds up.
+Libron's x-height is about 15% larger, so every `@font-face` carries `size-adjust:88%`, which
+keeps the 21px scale, the 27em measure and the line breaks where they were. It ships regular and
+bold only: 400-600 map to regular so the 600 headings stay regular, 700 to bold. Its em dash
+is short and reads close to an en dash; that is the font, not a wrong character. The Manim
+videos still render in EB Garamond (`tools/install-fonts.py`); re-render to change them.
+The MSA site inherits this change. Edit `tools/page-sources/` and the built page together.
 
 ---
 

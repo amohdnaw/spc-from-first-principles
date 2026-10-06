@@ -10,6 +10,10 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
 <style>
   /* self-hosted, two families, two voices — see DESIGN.md */
+  @font-face{font-family:Libron;src:url('fonts/libron-regular.woff2') format('woff2');font-weight:400 600;font-style:normal;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-italic.woff2') format('woff2');font-weight:400 600;font-style:italic;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-bolditalic.woff2') format('woff2');font-weight:700;font-style:italic;font-display:swap;size-adjust:88%}
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
     font-weight:400 600;font-style:normal;font-display:swap}
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-italic.woff2') format('woff2');
@@ -48,13 +52,13 @@
   .nc{text-transform:none}
   body{
     background:var(--ground);color:var(--ink-bright);
-    font-family:'EB Garamond',Georgia,serif;
+    font-family:Libron,'EB Garamond',Georgia,serif;
     font-size:21px;line-height:1.55;font-weight:500;
     -webkit-font-smoothing:antialiased;
   }
   ::selection{background:var(--accent);color:var(--ground)}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
-  h1,h2,h3{font-family:'EB Garamond',Georgia,serif;font-weight:600;line-height:1.08;letter-spacing:-0.01em}
+  h1,h2,h3{font-family:Libron,'EB Garamond',Georgia,serif;font-weight:600;line-height:1.08;letter-spacing:-0.01em}
   a{color:inherit}
 
   /* nav */
@@ -64,7 +68,7 @@
     border-bottom:1px solid var(--rule);
   }
   .nav-inner{max-width:var(--max);margin:0 auto;padding:13px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:baseline}
-  .nav-id{font-family:'EB Garamond',Georgia,serif;font-size:21px}
+  .nav-id{font-family:Libron,'EB Garamond',Georgia,serif;font-size:21px}
   .nav-id em{font-style:italic;color:var(--accent)}
   .nav-links{display:flex;flex-wrap:wrap;gap:clamp(12px,2.5vw,26px);font-size:11px;font-weight:600;
     letter-spacing:0.1em;text-transform:uppercase;font-family:'IBM Plex Mono',ui-monospace,monospace}
@@ -101,7 +105,7 @@
   /* acts */
   section{padding:clamp(64px,10vh,120px) 0 0}
   .act-head{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
-  .act-num{font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:clamp(21px,2.5vw,26px);color:var(--accent)}
+  .act-num{font-family:Libron,'EB Garamond',Georgia,serif;font-style:italic;font-size:clamp(21px,2.5vw,26px);color:var(--accent)}
   h2{font-size:clamp(26px,4vw,46px);max-width:22ch}
   .act-lede{max-width:61ch;color:var(--ink);margin-bottom:clamp(28px,4vh,44px)}
 

@@ -10,6 +10,10 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/ibm-plex-mono-400.woff2" crossorigin>
 <style>
   /* self-hosted, two families, two voices — see DESIGN.md */
+  @font-face{font-family:Libron;src:url('fonts/libron-regular.woff2') format('woff2');font-weight:400 600;font-style:normal;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-italic.woff2') format('woff2');font-weight:400 600;font-style:italic;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;size-adjust:88%}
+  @font-face{font-family:Libron;src:url('fonts/libron-bolditalic.woff2') format('woff2');font-weight:700;font-style:italic;font-display:swap;size-adjust:88%}
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-roman.woff2') format('woff2');
     font-weight:400 600;font-style:normal;font-display:swap}
   @font-face{font-family:'EB Garamond';src:url('fonts/eb-garamond-italic.woff2') format('woff2');
@@ -36,7 +40,7 @@
     --signal-ok:#65ccaf;
     --signal-alarm:#de6a5d;
     --fill-ok:#2a534b;
-    --doc:'EB Garamond',Georgia,serif;
+    --doc:Libron,'EB Garamond',Georgia,serif;
     --inst:'IBM Plex Mono',ui-monospace,monospace;
     --gutter:clamp(24px,5vw,72px);
     --max:1240px;
@@ -894,7 +898,7 @@ function smoothNoise(n,seed){const r=rng(seed);let v=0;const out=[];for(let i=0;
     viz.appendChild(el('rect',{x:pad,y:pad,width:W-pad*2,height:H-pad*2-50,fill:COL.panel,
       stroke:COL.alarm,'stroke-width':2}));
     const mk=(yy,size,weight,color,s)=>viz.appendChild(txt({x:W/2,y:yy,'text-anchor':'middle',
-      'font-size':size,'font-weight':weight,'font-family':'"EB Garamond", Georgia, serif',fill:color},s));
+      'font-size':size,'font-weight':weight,'font-family':'Libron, "EB Garamond", Georgia, serif',fill:color},s));
     mk(108,'14','400',COL.dim,'Line 3 — bore diameter');
     mk(146,'25','500',COL.alarm,'Needs attention today');
     mk(176,'13','400',COL.body,'Process is drifting upward since yesterday.');
