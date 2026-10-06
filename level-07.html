@@ -12,9 +12,6 @@
 <link rel="stylesheet" href="vendor/katex/katex.css">
 
 <style>
-  .lab-link{margin-top:var(--rhythm)}
-  .lab-link a{color:var(--ink-bright);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
-  .lab-link a:hover{color:var(--accent)}
   /* ---------- self-hosted, two families, two voices ---------- */
   @font-face{font-family:Libron;src:url('fonts/libron-regular.woff2') format('woff2');font-weight:400 600;font-style:normal;font-display:swap;size-adjust:88%}
   @font-face{font-family:Libron;src:url('fonts/libron-italic.woff2') format('woff2');font-weight:400 600;font-style:italic;font-display:swap;size-adjust:88%}
@@ -249,6 +246,9 @@
      with a float at the note's position in the flow, never with grid rows. Grid
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
+  .lab-link{margin-top:var(--rhythm)}
+  .lab-link a{color:var(--ink-bright);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+  .lab-link a:hover{color:var(--accent)}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px

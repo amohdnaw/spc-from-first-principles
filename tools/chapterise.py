@@ -27,6 +27,9 @@ CHAPTER_CSS = """
      with a float at the note's position in the flow, never with grid rows. Grid
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
+  .lab-link{margin-top:var(--rhythm)}
+  .lab-link a{color:var(--ink-bright);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+  .lab-link a:hover{color:var(--accent)}
 
   /* The page IS the grid. Before this the container was 110rem while the text
      block was 1090px and left-aligned inside it, so the margins came out 149px
@@ -889,6 +892,7 @@ def chapter_07(K):
                  note("corroboration", text="Champ &amp; Woodall, 1987. Agreement with "
                       "a number derived elsewhere is worth more than internal "
                       "consistency.")),
+            "          " + '<p class="lab-link">To watch rules fire as the points land, step 6 of <a href="https://portfolio.amohdnaw.xyz/lab.html#ch3" target="_blank" rel="noopener">CH 3 of the control lab</a> bumps a table partway through a run and names each rule as it trips. It numbers them Nelson\'s way, with eight rules, so this page\'s rule 2 shows up there as rule 5.</p>',
             "      " + K["fig"]("07_western_electric.png"),
         ]),
         ("s5", "7.5", "So is it worth it", [
@@ -1229,6 +1233,7 @@ def chapter_01(K):
                  note("spoken · 2:41", text="“Answering it is how you add variation rather"
                       " than remove it.”", speak=True, serif=True)),
             "      " + K["fig"]("l01_2_tampering.png"),
+            "          " + '<p class="lab-link">You can run it yourself: <a href="https://portfolio.amohdnaw.xyz/lab.html#ch3" target="_blank" rel="noopener">CH 3 of the control lab</a> drops the marbles in 3D, lets you try correcting by hand against the same draws, and runs Deming\'s other two rules, which are worse.</p>',
         ]),
     ]
 
