@@ -1552,8 +1552,8 @@ CHAPTERS = {
     },
     "level-06.html": {
         "number": 6, "word": "six",
-        "before": "Level 4 — the average is predictable",
-        "after": "Level 8 — capability",
+        "before": "Level 5 — estimation, and what an estimate costs",
+        "after": "Level 7 — evidence, and the other way to be wrong",
         "estimate": "6 sections · 1 interactive · 2 acts · ~9 min read",
         "toc": [("6.1", "s1", "A curve that is a claim",
                  "why the bell is a hypothesis about the process, not the parts"),
@@ -1589,7 +1589,7 @@ CHAPTERS = {
     "level-04.html": {
         "number": 4, "word": "four",
         "before": "Level 3 — centre and spread",
-        "after": "Level 6 — limits are a hypothesis test",
+        "after": "Level 5 — estimation, and what an estimate costs",
         "estimate": "4 sections · 1 act · ~6 min read",
         "toc": [("4.1", "s1", "One part tells you nothing",
                  "one die, ten rolls, then ten thousand"),
@@ -1675,7 +1675,7 @@ CHAPTERS = {
     },
     "level-08.html": {
         "number": 8, "word": "eight",
-        "before": "Level 7 — evidence and decisions, not yet written",
+        "before": "Level 7 — evidence, and the other way to be wrong",
         "after": "Level 9 — detection",
         "estimate": "4 sections · 1 interactive · 2 acts · ~8 min read",
         "toc": [("8.1", "s1", "Two distributions on one axis",
@@ -1691,7 +1691,7 @@ CHAPTERS = {
     "level-09.html": {
         "number": 9, "word": "nine",
         "before": "Level 8 — capability",
-        "after": "Level 10 — counting, not measuring, not yet written",
+        "after": "Level 10 — counting, not measuring",
         "estimate": "6 sections · 3 acts · ~9 min read",
         "toc": [("9.1", "s1", "The most expensive failure mode",
                  "every single measurement of a drift looks acceptable"),

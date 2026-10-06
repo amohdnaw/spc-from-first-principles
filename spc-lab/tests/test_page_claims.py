@@ -150,3 +150,20 @@ def test_rendered_equations_contain_no_latex_command_words():
                     offenders.append(f"{p.name}: rendered {w!r}")
                     break
     assert not offenders, "LaTeX commands rendered as text:\n  " + "\n  ".join(sorted(set(offenders)))
+
+
+def test_reading_path_is_consecutive():
+    """Each level's "after · leads to" line names the level either side of it.
+
+    Levels 4, 6, 8 and 9 shipped pointing past Levels 5 and 7 and calling
+    Levels 7 and 10 "not yet written" after both were live, so a newcomer who
+    followed the path skipped estimation and power.
+    """
+    bad = []
+    for n in range(1, 13):
+        s = (REPO / f"level-{n:02d}.html").read_text()
+        chain = re.sub(r"<[^>]+>", " ", re.search(r'class="toc-chain">(.*?)</p>', s, re.S).group(1))
+        want = [f"Level {n - 1} " if n > 1 else "nothing", f"Level {n + 1} " if n < 12 else "nothing"]
+        if any(w not in chain for w in want) or "not yet written" in chain:
+            bad.append(f"level {n}: {' '.join(chain.split())}")
+    assert not bad, "reading path broken:\n  " + "\n  ".join(bad)
