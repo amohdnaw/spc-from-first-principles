@@ -69,7 +69,7 @@ CHAPTER_CSS = """
   .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
     display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
   .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
-  .toc .sub{display:block;font-size:15px;color:var(--ink-dim);line-height:1.4}
+  .toc .sub{display:block;font-size:17px;color:var(--ink-dim);line-height:1.4}
 
   /* a heading must clear the sticky nav when jumped to from the contents */
   main section{scroll-margin-top:96px}
@@ -81,6 +81,8 @@ CHAPTER_CSS = """
     color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
   .leaf > div > p{text-wrap:pretty}
   .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
+  /* captions run to three lines: mono 13px read as a footnote */
+  .eq-cap{font-family:var(--serif);font-size:17px;line-height:1.45;text-align:left;text-wrap:pretty;font-variant-numeric:oldstyle-nums;max-width:var(--measure)}
   /* one drop cap per chapter: on every section it hung into the block below a
      one-line opener. */
   #s1 .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
@@ -160,8 +162,10 @@ CHAPTER_CSS = """
   figure,.figpair{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg))}
   figure video{max-width:min(100%,calc(68vh * 16 / 9))}
 
-  @media (min-width:1500px){
-    :root{ --body:26px; --marg:340px; }
+  @media (min-width:1500px){ :root{ --body:26px; --marg:340px; } }
+  /* 1280, not 1500: below 1500 the 21px measure plus the 320px margin still
+     fits, and the margin otherwise sat empty beside a stacked note */
+  @media (min-width:1280px){
     /* the note floats into the margin at its position in the flow. This is the
        whole trick: no row of its own, so no hole beside it. */
     /* tufte-css's mechanism: a negative right margin pulls the float out of the
@@ -180,8 +184,8 @@ CHAPTER_CSS = """
      cap. Only below the margin breakpoint: above it the note floats right. */
   /* clear does not move a note past initial-letter (it is not a float), so push
      it a body line down; a note further into the paragraph just gains air. */
+  @media (max-width:1279px){ #s1 .lead .note{margin-top:calc(var(--body) * 1.5)} }
   @media (max-width:1499px){
-    #s1 .lead .note{margin-top:calc(var(--body) * 1.5)}
     /* the number's own column left the formula 504px; six equations scrolled */
     .eq{grid-template-columns:1fr;gap:10px}
     .eq-num{justify-self:end}
