@@ -243,6 +243,13 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+  /* the note sits under the panel, so the sidebar is only controls and tiles and
+     the chart grows to their height instead of leaving dead panel under it.
+     flex-basis 0, not auto: auto sizes from the bitmap, which is drawn at 2x on
+     a phone, and the canvas would grow on every redraw. */
+  .lab-canvas{display:flex;flex-direction:column}
+  .lab-canvas canvas{flex:1 1 0;height:0;min-height:300px}
+  .lab > .lab-note{max-width:none;padding:16px 20px;border-top:1px solid var(--rule)}
 
   /* ---------- chapter grammar (DESIGN.md §3) ----------
      Layout follows the book convention rather than an invented one. Tufte CSS:
@@ -462,13 +469,13 @@
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 3 acts · ~9 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 3 acts · 1 interactive · ~10 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 8 — capability<span class="sep">·</span><span class="micro">leads to</span> Level 10 — counting, not measuring</p>
         <ol>
           <li><span class="n">9.1</span><a href="#s1">The most expensive failure mode<span class="tag">act</span><span class="sub">every single measurement of a drift looks acceptable</span></a></li>
           <li><span class="n">9.2</span><a href="#s2">A chart with no memory<span class="sub">43 subgroups late, and 2.6 sigma of movement</span></a></li>
           <li><span class="n">9.3</span><a href="#s3">A statistic that remembers<span class="tag">act</span><span class="sub">one part new, four parts memory, same alarm budget</span></a></li>
-          <li><span class="n">9.4</span><a href="#s4">The same eighty subgroups again<span class="sub">caught at 34, with the mean only 0.8 sigma off</span></a></li>
+          <li><span class="n">9.4</span><a href="#s4">The same eighty subgroups again<span class="tag">interactive</span><span class="sub">caught at 34, with the mean only 0.8 sigma off</span></a></li>
           <li><span class="n">9.5</span><a href="#s5">One drift is an anecdote<span class="sub">44 subgroups against 10, and what the trade means</span></a></li>
           <li><span class="n">9.6</span><a href="#s6">Rules that read the run<span class="sub">four rules that judge the series, not the point</span></a></li>
         </ol>
@@ -574,6 +581,34 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="figtext">The race. Same process, both charts. Shewhart waits for an extreme point; EWMA crosses its tighter limit six subgroups earlier.</span>
         </figcaption>
       </figure>
+  <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — how much memory</span>
+          <span class="status" id="lab-status">EWMA FIRST</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="e-canvas" height="300"
+              aria-label="The eighty drifting subgroups from the act: raw points against ±3σ, and the EWMA against its own calibrated limits"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="l-slider"><span class="nc">λ</span>, weight on the newest — <b id="l-val">0.20</b></label>
+              <input type="range" id="l-slider" min="5" max="100" value="20" step="5">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>EWMA alarms at subgroup</dt><dd class="ok" id="r-ewma">—</dd></div>
+              <div class="tile"><dt>Shewhart alarms at subgroup</dt><dd class="alarm" id="r-shew">—</dd></div>
+              <div class="tile"><dt>EWMA limit, ±</dt><dd class="neutral" id="r-lim">—</dd></div>
+            </dl>
+          </div>
+        </div>
+        <p class="lab-note">The same eighty subgroups as the act: quiet until
+            subgroup 20, then a slow drift. Grey points are raw, against ±3σ; blue is the EWMA.
+            For every λ its limits are calibrated by simulation so that it cries wolf once in 370
+            quiet subgroups, exactly as often as the raw chart, so the race stays fair. A small λ
+            remembers more, which is what a slow drift needs; at λ = 1 the EWMA is the raw chart.</p>
+      </div>
         </div>
       </div>
     </section>
@@ -615,6 +650,91 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     <span>© 2026</span>
   </div>
 </footer>
+
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = { ok: css('--signal-ok'), alarm: css('--signal-alarm'), accent: css('--accent'),
+              dim: css('--ink-dim'), blue: '#58C4DD' };
+const $ = id => document.getElementById(id);
+function sizeCanvas(cv, ctx){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = cv.clientHeight || 300;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  return [W, H];
+}
+
+/* spclab.level09_scene.drifting_process(): 80 subgroups, seed 35, quiet until 20,
+   then +0.06σ per subgroup. Rounded to 4 places; the alarms land where the act's do. */
+const RAW = [-1.1382,0.7712,1.1501,0.7355,1.4480,0.0033,-1.4230,-0.0574,0.4826,0.4152,-0.6008,-2.0598,2.0949,-0.0028,0.4657,-0.6377,-0.8239,0.6437,0.9515,-0.9427,-0.5623,-0.6423,-0.9700,-0.6522,0.1200,-1.4465,2.5041,-1.0139,0.0862,2.3214,0.1781,0.7039,1.3437,2.4782,-0.0603,2.4180,-0.1530,2.9173,2.2224,1.6938,0.8930,2.8538,2.2515,2.6631,0.1453,1.5239,1.9031,2.2332,0.0466,0.1339,2.3345,1.4776,2.1663,0.8728,2.1705,1.2139,0.9783,1.0513,2.6241,0.6772,0.5909,1.5698,2.8006,3.2087,3.2984,3.6349,2.1981,2.3448,4.4339,2.7867,3.2942,2.1065,3.5676,1.9086,2.7473,3.0095,3.1052,3.9800,4.2128,4.4035];
+const SHIFT_AT = 20;
+/* limit multiples L, in units of the EWMA's own sigma, for lambda = 0.05 ... 1.00:
+   bisection on simulated ARL0 = 370.4 with spclab.detection.run_lengths. 0.20 is
+   detection.EWMA_LIMIT itself; 1.00 is the raw chart's 3. */
+const MULT = [2.500,2.706,2.818,2.871,2.908,2.936,2.954,2.966,2.981,2.985,
+              2.989,2.992,2.996,2.996,2.999,2.999,3.000,2.997,2.992,3.000];
+function ewma(lam){ let z = 0; return RAW.map(v => (z = lam * v + (1 - lam) * z)); }
+const limit = lam => MULT[Math.round(lam * 20) - 1] * Math.sqrt(lam / (2 - lam));
+const first = (a, lim) => { const k = a.findIndex(v => Math.abs(v) > lim); return k < 0 ? null : k + 1; };
+window.__spclabEwma = { ewma, limit, first, RAW };
+
+const cv = $('e-canvas'), ctx = cv.getContext('2d');
+const sl = $('l-slider'), N = RAW.length;
+
+function draw(){
+  const [W, H] = sizeCanvas(cv, ctx);
+  const lam = +sl.value / 100, z = ewma(lam), lim = limit(lam);
+  const aE = first(z, lim), aS = first(RAW, 3);
+  const pad = { l: 34, r: 10, t: 14, b: 24 }, lo = -4, hi = 5;
+  const x = i => pad.l + (i - .5) / N * (W - pad.l - pad.r);
+  const y = v => pad.t + (hi - v) / (hi - lo) * (H - pad.t - pad.b);
+  const hline = (v, colour, dash) => { ctx.strokeStyle = colour; ctx.lineWidth = 1.2; ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(pad.l, y(v)); ctx.lineTo(W - pad.r, y(v)); ctx.stroke(); ctx.setLineDash([]); };
+  const vline = (i, colour) => { ctx.strokeStyle = colour; ctx.lineWidth = 1.2; ctx.setLineDash([2, 3]);
+    ctx.beginPath(); ctx.moveTo(x(i), y(hi)); ctx.lineTo(x(i), y(lo)); ctx.stroke(); ctx.setLineDash([]); };
+  hline(0, COL.dim, [5, 4]);
+  hline(3, COL.accent, [3, 3]); hline(-3, COL.accent, [3, 3]);
+  hline(lim, COL.blue, [6, 3]); hline(-lim, COL.blue, [6, 3]);
+  vline(SHIFT_AT + .5, COL.dim);
+  ctx.fillStyle = COL.dim; ctx.globalAlpha = .8;
+  RAW.forEach((v, i) => { ctx.beginPath(); ctx.arc(x(i + 1), y(v), 2.2, 0, 7); ctx.fill(); });
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = COL.blue; ctx.lineWidth = 1.8; ctx.beginPath();
+  z.forEach((v, i) => i ? ctx.lineTo(x(i + 1), y(v)) : ctx.moveTo(x(i + 1), y(v))); ctx.stroke();
+  const ring = (i, v, colour) => { ctx.strokeStyle = colour; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x(i), y(v), 6, 0, 7); ctx.stroke(); };
+  if (aS) ring(aS, RAW[aS - 1], COL.alarm);
+  if (aE) ring(aE, z[aE - 1], COL.ok);
+
+  ctx.font = '11px "IBM Plex Mono", monospace'; ctx.textAlign = 'right'; ctx.fillStyle = COL.accent;
+  ctx.fillText('+3σ', pad.l - 4, y(3) + 4); ctx.fillText('−3σ', pad.l - 4, y(-3) + 4);
+  ctx.fillStyle = COL.dim; ctx.fillText('0', pad.l - 6, y(0) + 4);
+  ctx.textAlign = 'left'; ctx.fillText('drift starts', x(SHIFT_AT + .5) + 4, y(hi) + 10);
+  ctx.textAlign = 'center';
+  for (const i of [1, 20, 40, 60, 80]) ctx.fillText(i, x(i), H - 6);
+
+  $('l-val').textContent = lam.toFixed(2);
+  $('r-ewma').textContent = aE || '—';
+  $('r-shew').textContent = aS || '—';
+  $('r-lim').textContent = lim.toFixed(3);
+  const st = $('lab-status'), lead = aS - aE;
+  st.textContent = lead > 0 ? 'EWMA FIRST BY ' + lead : lead === 0 ? 'A DEAD HEAT' : 'SHEWHART FIRST BY ' + (-lead);
+  st.style.color = lead > 0 ? COL.ok : lead === 0 ? COL.dim : COL.alarm;
+}
+
+sl.addEventListener('input', draw);
+
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+
+new ResizeObserver(() => dispatchEvent(new Event('resize'))).observe(document.querySelector('.lab-canvas canvas'));
+</script>
 
 <!--glossary-->
 <style>

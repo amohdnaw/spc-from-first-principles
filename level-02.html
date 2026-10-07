@@ -237,6 +237,47 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  /* the note sits under the panel, so the sidebar is only controls and tiles and
+     the chart grows to their height instead of leaving dead panel under it.
+     flex-basis 0, not auto: auto sizes from the bitmap, which is drawn at 2x on
+     a phone, and the canvas would grow on every redraw. */
+  .lab-canvas{display:flex;flex-direction:column}
+  .lab-canvas canvas{flex:1 1 0;height:0;min-height:300px}
+  .lab > .lab-note{max-width:none;padding:16px 20px;border-top:1px solid var(--rule)}
+
+  /* the lab stacks on a phone; this stays a media query, because the
+     rules inside it are mobile-only and applying them everywhere puts the
+     canvas border on the wrong edge at desktop. */
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
 
   /* ---------- chapter grammar (DESIGN.md §3) ----------
      Layout follows the book convention rather than an invented one. Tufte CSS:
@@ -456,11 +497,11 @@
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · ~7 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · 1 interactive · ~8 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 1 — variation, and a shape nobody chose<span class="sep">·</span><span class="micro">leads to</span> Level 3 — centre and spread</p>
         <ol>
           <li><span class="n">2.1</span><a href="#s1">A long-run frequency<span class="sub">a proportion describes a process, never the next part</span></a></li>
-          <li><span class="n">2.2</span><a href="#s2">The gap grows, the rate settles<span class="tag">act</span><span class="sub">one sequence read twice — there is no law of averages</span></a></li>
+          <li><span class="n">2.2</span><a href="#s2">The gap grows, the rate settles<span class="tag">act</span><span class="tag">interactive</span><span class="sub">one sequence read twice — there is no law of averages</span></a></li>
           <li><span class="n">2.3</span><a href="#s3">The coin has no memory<span class="sub">independence, shown as an absence</span></a></li>
           <li><span class="n">2.4</span><a href="#s4">Expectation<span class="sub">a balance point the die does not have</span></a></li>
           <li><span class="n">2.5</span><a href="#s5">What a percentage claims<span class="sub"><span class="tex" data-tex="1-(1-\alpha)^{1/\alpha}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><msup><mo stretchy="false">)</mo><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mi>α</mi></mrow></msup></mrow><annotation encoding="application/x-tex">1-(1-\alpha)^{1/\alpha}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.138em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.888em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1/</span><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span></span></span></span></span></span></span></span></span></span></span></span></span> — and why 370 is not a deadline</span></a></li>
@@ -511,6 +552,33 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         </video>
         <figcaption><span class="fignum">Figure 2.2</span><span class="figtext">Rendered in Manim. A coin's long-run frequency, the surplus of heads against the proportion, two million flips sorted by run length, and the die's balance point at 3.5.</span></figcaption>
       </figure>
+  <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — the gap and the rate</span>
+          <span class="status" id="lab-status">RATE SETTLES · GAP GROWS</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="c-canvas" height="300"
+              aria-label="One run of fair coin flips: the share of heads above, the gap between heads and tails below"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="n-slider">Flips — <b id="n-val">10 000</b></label>
+              <input type="range" id="n-slider" min="1" max="5" value="4" step="0.25">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>Share of heads</dt><dd class="ok" id="r-rate">—</dd></div>
+              <div class="tile"><dt>Gap, |heads − tails|</dt><dd class="alarm" id="r-gap">—</dd></div>
+              <div class="tile"><dt>Typical gap, <span class="nc">√(2n/π)</span></dt><dd class="neutral" id="r-typ">—</dd></div>
+            </dl>
+          </div>
+        </div>
+        <p class="lab-note">One fixed run of 100 000 fair flips, read up to the count you pick. Above,
+            the share of heads closes on one half. Below, the surplus of heads over tails keeps
+            growing, about as fast as √(2n/π), the dashed line. The rate settles because the
+            count of flips outruns the gap, not because the gap is repaid.</p>
+      </div>
         </div>
       </div>
     </section>
@@ -574,6 +642,93 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     <span>© 2026</span>
   </div>
 </footer>
+
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = { ok: css('--signal-ok'), alarm: css('--signal-alarm'), accent: css('--accent'),
+              dim: css('--ink-dim'), blue: '#58C4DD' };
+const $ = id => document.getElementById(id);
+function sizeCanvas(cv, ctx){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = cv.clientHeight || 300;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  return [W, H];
+}
+
+const NMAX = 100000;
+/* one fixed run of fair flips: only the slider moves the picture */
+/* mulberry32: a plain LCG's low bits pair up badly and bias these sums */
+const rnd = (a => () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(20261155);
+/* ponytail: seed picked as a typical run, its gap within 0.8-1.4x sqrt(2n/pi) at every
+   decade from 100 to 100 000; an unlucky seed reads 6 at 10 000 and hides the claim */
+const S = new Int32Array(NMAX + 1);            // heads minus tails after i flips
+for (let i = 0; i < NMAX; i++) S[i + 1] = S[i] + (rnd() < 0.5 ? 1 : -1);
+/* E|S_n| tends to sqrt(2n/pi); spclab.chance checks it against the exact sum */
+const typical = n => Math.sqrt(2 * n / Math.PI);
+window.__spclabFlips = S;
+
+const cv = $('c-canvas'), ctx = cv.getContext('2d');
+const sl = $('n-slider');
+const fmt = n => n.toLocaleString('en-US').replace(/,/g, ' ');
+
+function draw(){
+  const [W, H] = sizeCanvas(cv, ctx);
+  const n = Math.round(Math.pow(10, +sl.value));
+  const pad = { l: 46, r: 10, t: 14, b: 22 }, gap = 26;
+  const ph = (H - pad.t - pad.b - gap) / 2;
+  const x = i => pad.l + (i - 1) / Math.max(n - 1, 1) * (W - pad.l - pad.r);
+  const step = Math.max(1, Math.floor(n / 900));
+  const line = (f, y, colour, wide, dash) => {
+    ctx.strokeStyle = colour; ctx.lineWidth = wide; ctx.setLineDash(dash || []); ctx.beginPath();
+    for (let i = 1; i <= n; i += step) i === 1 ? ctx.moveTo(x(i), y(f(i))) : ctx.lineTo(x(i), y(f(i)));
+    ctx.lineTo(x(n), y(f(n))); ctx.stroke(); ctx.setLineDash([]);
+  };
+  /* top: share of heads, on a fixed 0 to 1 scale so settling is visible */
+  const yr = v => pad.t + (1 - v) * ph;
+  ctx.strokeStyle = COL.accent; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(pad.l, yr(.5)); ctx.lineTo(W - pad.r, yr(.5)); ctx.stroke(); ctx.setLineDash([]);
+  line(i => (i + S[i]) / 2 / i, yr, COL.blue, 1.4);
+  /* bottom: |heads - tails|, scaled to the run so far */
+  let top = typical(n) * 1.5;
+  for (let i = 1; i <= n; i++) if (Math.abs(S[i]) > top) top = Math.abs(S[i]);
+  const y0 = pad.t + ph + gap, yg = v => y0 + (1 - v / top) * ph;
+  ctx.strokeStyle = COL.dim; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, yg(0)); ctx.lineTo(W - pad.r, yg(0)); ctx.stroke();
+  line(typical, yg, COL.dim, 1.2, [5, 4]);
+  line(i => Math.abs(S[i]), yg, COL.alarm, 1.4);
+
+  ctx.textAlign = 'right'; ctx.fillStyle = COL.dim;
+  ctx.fillText('1', pad.l - 6, yr(1) + 8); ctx.fillText('0', pad.l - 6, yr(0) + 4);
+  ctx.fillStyle = COL.accent; ctx.fillText('½', pad.l - 6, yr(.5) + 4);
+  ctx.fillStyle = COL.dim; ctx.fillText(Math.round(top), pad.l - 6, yg(top) + 8);
+  ctx.fillText('0', pad.l - 6, yg(0) + 4);
+  ctx.fillText(fmt(n), W - pad.r, H - 6);
+  ctx.textAlign = 'left';
+  ctx.fillText('share of heads', pad.l + 4, pad.t + 10);
+  ctx.fillText('|heads − tails|', pad.l + 4, y0 + 10);
+
+  const rate = (n + S[n]) / 2 / n;
+  $('n-val').textContent = fmt(n);
+  $('r-rate').textContent = rate.toFixed(4);
+  $('r-gap').textContent = fmt(Math.abs(S[n]));
+  $('r-typ').textContent = typical(n).toFixed(1);
+}
+
+sl.addEventListener('input', draw);
+
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+
+new ResizeObserver(() => dispatchEvent(new Event('resize'))).observe(document.querySelector('.lab-canvas canvas'));
+</script>
 
 <!--glossary-->
 <style>

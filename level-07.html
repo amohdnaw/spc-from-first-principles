@@ -237,6 +237,47 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  /* the note sits under the panel, so the sidebar is only controls and tiles and
+     the chart grows to their height instead of leaving dead panel under it.
+     flex-basis 0, not auto: auto sizes from the bitmap, which is drawn at 2x on
+     a phone, and the canvas would grow on every redraw. */
+  .lab-canvas{display:flex;flex-direction:column}
+  .lab-canvas canvas{flex:1 1 0;height:0;min-height:300px}
+  .lab > .lab-note{max-width:none;padding:16px 20px;border-top:1px solid var(--rule)}
+
+  /* the lab stacks on a phone; this stays a media query, because the
+     rules inside it are mobile-only and applying them everywhere puts the
+     canvas border on the wrong edge at desktop. */
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
 
   /* ---------- chapter grammar (DESIGN.md §3) ----------
      Layout follows the book convention rather than an invented one. Tufte CSS:
@@ -456,11 +497,11 @@
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · ~8 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · 1 interactive · ~9 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 6 — limits are a hypothesis test<span class="sep">·</span><span class="micro">leads to</span> Level 8 — capability</p>
         <ol>
           <li><span class="n">7.1</span><a href="#s1">The other way to be wrong<span class="sub">α is crying wolf; β is staying silent, and nobody counts it</span></a></li>
-          <li><span class="n">7.2</span><a href="#s2">Power<span class="tag">act</span><span class="sub">one point, one chance — and how small a chance</span></a></li>
+          <li><span class="n">7.2</span><a href="#s2">Power<span class="tag">act</span><span class="tag">interactive</span><span class="sub">one point, one chance — and how small a chance</span></a></li>
           <li><span class="n">7.3</span><a href="#s3">The chart throws evidence away<span class="sub">a verdict is not the same as a p-value</span></a></li>
           <li><span class="n">7.4</span><a href="#s4">Four rules, one at a time<span class="sub">each rule priced, against a figure published in 1987</span></a></li>
           <li><span class="n">7.5</span><a href="#s5">So is it worth it<span class="sub">the cost is fixed; the benefit is the shift you fear</span></a></li>
@@ -505,6 +546,34 @@
         </video>
         <figcaption><span class="fignum">Figure 7.2</span><span class="figtext">Rendered in Manim. A one-sigma shift caught 2% of the time, the power curve, a 2.5σ point filed as a pass, and the four Western Electric rules taking ARL₀ from 377 to 91.</span></figcaption>
       </figure>
+  <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — the power of one point</span>
+          <span class="status" id="lab-status">SHIFTED</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="p-canvas" height="300"
+              aria-label="The process before and after a shift in its mean, with the ±3σ limits: the shaded tail is the chance one point alarms"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="d-slider">Shift in the mean — <b><span id="d-val">1.0</span> <span class="nc">σ</span></b></label>
+              <input type="range" id="d-slider" min="0" max="4" value="1" step="0.1">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt>Power of one point</dt><dd class="ok" id="r-pow">—</dd></div>
+              <div class="tile"><dt><span class="nc">β</span>, the miss</dt><dd class="alarm" id="r-beta">—</dd></div>
+              <div class="tile"><dt>Average run length</dt><dd class="neutral" id="r-arl">—</dd></div>
+            </dl>
+          </div>
+        </div>
+        <p class="lab-note">Grey is the process where it belongs; blue is the same process after
+            its mean moves by the shift you pick. The amber lines are the ±3σ limits. The blue
+            area outside them is the chance the next point alarms; everything inside is β, the
+            miss. One over that chance is how many points you wait, on average. At no shift the
+            same sum gives the false alarm rate, one in 370.</p>
+      </div>
         </div>
       </div>
     </section>
@@ -572,6 +641,87 @@
     <span>© 2026</span>
   </div>
 </footer>
+
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = { ok: css('--signal-ok'), alarm: css('--signal-alarm'), accent: css('--accent'),
+              dim: css('--ink-dim'), blue: '#58C4DD' };
+const $ = id => document.getElementById(id);
+function sizeCanvas(cv, ctx){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = cv.clientHeight || 300;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  return [W, H];
+}
+
+const LIMIT = 3;                                  // ±3σ, spclab.evidence.LIMIT
+/* erfc to a fractional error under 1.2e-7 (Numerical Recipes erfcc), good in the tails */
+function erfc(z){
+  const t = 1 / (1 + .5 * Math.abs(z));
+  const r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 + t * (.37409196 + t * (.09678418 +
+    t * (-.18628806 + t * (.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-.82215223 + t * .17087277)))))))));
+  return z >= 0 ? r : 2 - r;
+}
+const Phi = z => .5 * erfc(-z / Math.SQRT2);
+/* spclab.evidence.power_one_point: either tail beyond the limits */
+const power = d => Phi(d - LIMIT) + Phi(-d - LIMIT);
+window.__spclabPower = power;
+
+const cv = $('p-canvas'), ctx = cv.getContext('2d');
+const sl = $('d-slider');
+const pdf = z => Math.exp(-.5 * z * z) / Math.sqrt(2 * Math.PI);
+
+function draw(){
+  const [W, H] = sizeCanvas(cv, ctx);
+  const d = +sl.value, P = power(d);
+  const pad = { l: 14, r: 14, t: 18, b: 24 }, base = H - pad.b, lo = -4.5, hi = 8;
+  const x = v => pad.l + (v - lo) / (hi - lo) * (W - pad.l - pad.r);
+  const y = p => base - p / .44 * (base - pad.t);
+  const curve = (mu, a, b, joined) => { for (let i = 0; i <= 200; i++){ const v = a + i / 200 * (b - a);
+    i || joined ? ctx.lineTo(x(v), y(pdf(v - mu))) : ctx.moveTo(x(v), y(pdf(v - mu))); } };
+  const shade = (a, b, colour, alpha) => { if (b <= a) return;
+    ctx.fillStyle = colour; ctx.globalAlpha = alpha; ctx.beginPath(); ctx.moveTo(x(a), base);
+    curve(d, a, b, true); ctx.lineTo(x(b), base); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; };
+  /* inside the limits is the miss, outside is the catch */
+  shade(-LIMIT, LIMIT, COL.blue, .12);
+  shade(LIMIT, hi, COL.blue, .55);
+  shade(lo, -LIMIT, COL.blue, .55);
+  ctx.lineWidth = 1.4;
+  ctx.strokeStyle = COL.dim; ctx.beginPath(); curve(0, lo, hi); ctx.stroke();
+  ctx.strokeStyle = COL.blue; ctx.beginPath(); curve(d, lo, hi); ctx.stroke();
+  ctx.strokeStyle = COL.dim; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, base); ctx.lineTo(W - pad.r, base); ctx.stroke();
+  ctx.strokeStyle = COL.accent; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]);
+  for (const v of [-LIMIT, LIMIT]){ ctx.beginPath(); ctx.moveTo(x(v), pad.t - 6); ctx.lineTo(x(v), base); ctx.stroke(); }
+  ctx.setLineDash([]);
+  ctx.textAlign = 'center'; ctx.fillStyle = COL.accent;
+  ctx.fillText('−3σ', x(-LIMIT), H - 6); ctx.fillText('+3σ', x(LIMIT), H - 6);
+  ctx.fillStyle = COL.dim; ctx.fillText('0', x(0), H - 6);
+  if (d >= 1 && Math.abs(d - LIMIT) >= .8){ ctx.fillStyle = COL.blue; ctx.fillText('+' + d.toFixed(1) + 'σ', x(d), H - 6); }
+
+  $('d-val').textContent = d.toFixed(1);
+  $('r-pow').textContent = P.toFixed(4);
+  $('r-beta').textContent = (1 - P).toFixed(4);
+  $('r-arl').textContent = 1 / P >= 100 ? (1 / P).toFixed(0) : (1 / P).toFixed(1);
+  const st = $('lab-status');
+  st.textContent = d === 0 ? 'NO SHIFT · FALSE ALARMS ONLY' : 'SHIFTED';
+  st.style.color = d === 0 ? COL.ok : COL.alarm;
+}
+
+sl.addEventListener('input', draw);
+
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+
+new ResizeObserver(() => dispatchEvent(new Event('resize'))).observe(document.querySelector('.lab-canvas canvas'));
+</script>
 
 <!--glossary-->
 <style>

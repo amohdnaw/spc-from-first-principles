@@ -908,6 +908,7 @@ def chapter_07(K):
                  note("spoken · 1:36", text="“One point, one chance. That is the whole "
                       "limitation.”", speak=True, serif=True)),
             "      " + K["fig"]("Level07.mp4"),
+            "  " + K["lab"],
         ]),
         ("s3", "7.3", "The chart throws evidence away", [
             para("Consider a point at two and a half sigma. It is inside the limits, so"
@@ -1137,6 +1138,7 @@ def chapter_02(K):
                  " to argue with."),
             "      " + K["fig"]("l02_1_long_run.png"),
             "      " + K["fig"]("Level02.mp4"),
+            "  " + K["lab"],
         ]),
         ("s3", "2.3", "The coin has no memory", [
             para("Two million flips, sorted by the run that came immediately before each"
@@ -1354,6 +1356,7 @@ def chapter_03(K):
                  " smaller divisor corrects for it. Every estimate carries uncertainty, and Level"
                  " 4 puts a number on exactly how much.",
                  datanote(("divisor", "n − 1"), k=f"why not {nc(chr(110))}")),
+            "  " + K["lab"],
             "      " + K["sys"],
         ]),
     ]
@@ -1383,6 +1386,7 @@ def chapter_04(K):
             para("That matters because nothing about a die is bell shaped. The shape did not come"
                  " from the parts; it came from averaging them."),
             "      " + K["fig"]("l04_1_dice_to_bell.png"),
+            "  " + K["lab"],
         ]),
         ("s3", "4.3", "The law", [
             para("Two numbers, measured separately, agree to three decimals: the spread of the"
@@ -1516,6 +1520,7 @@ def chapter_09(K):
                  " measurement sitting at +2.48 sigma — a number no Shewhart chart would look at"
                  " twice. The other chart waited until subgroup 64, thirty subgroups later."),
             "      " + K["fig"]("l09_2_race.png"),
+            "  " + K["lab"],
         ]),
         ("s5", "9.5", "One drift is an anecdote", [
             para("That is one drift. Run thousands of them and the average wait to detect a one"
@@ -1555,7 +1560,7 @@ CHAPTERS = {
         "number": 2, "word": "two",
         "before": "Level 1 — variation, and a shape nobody chose",
         "after": "Level 3 — centre and spread",
-        "estimate": "5 sections · 1 act · ~7 min read",
+        "estimate": "5 sections · 1 act · 1 interactive · ~8 min read",
         "toc": [("2.1", "s1", "A long-run frequency",
                  "a proportion describes a process, never the next part"),
                 ("2.2", "s2", "The gap grows, the rate settles",
@@ -1608,7 +1613,7 @@ CHAPTERS = {
         "number": 3, "word": "three",
         "before": "Level 2 — chance, and what a percentage claims",
         "after": "Level 4 — the average is predictable",
-        "estimate": "5 sections · 1 act · ~7 min read",
+        "estimate": "5 sections · 1 act · 1 interactive · ~8 min read",
         "toc": [("3.1", "s1", "Twelve parts, twelve numbers",
                  "every reading differs and nothing is broken"),
                 ("3.2", "s2", "The mean is a balance point",
@@ -1625,7 +1630,7 @@ CHAPTERS = {
         "number": 4, "word": "four",
         "before": "Level 3 — centre and spread",
         "after": "Level 5 — estimation, and what an estimate costs",
-        "estimate": "4 sections · 1 act · ~6 min read",
+        "estimate": "4 sections · 1 act · 1 interactive · ~7 min read",
         "toc": [("4.1", "s1", "One part tells you nothing",
                  "one die, ten rolls, then ten thousand"),
                 ("4.2", "s2", "Averaging makes a shape",
@@ -1640,7 +1645,7 @@ CHAPTERS = {
         "number": 7, "word": "seven",
         "before": "Level 6 — limits are a hypothesis test",
         "after": "Level 8 — capability",
-        "estimate": "5 sections · 1 act · ~8 min read",
+        "estimate": "5 sections · 1 act · 1 interactive · ~9 min read",
         "toc": [("7.1", "s1", "The other way to be wrong",
                  "α is crying wolf; β is staying silent, and nobody counts it"),
                 ("7.2", "s2", "Power",
@@ -1727,7 +1732,7 @@ CHAPTERS = {
         "number": 9, "word": "nine",
         "before": "Level 8 — capability",
         "after": "Level 10 — counting, not measuring",
-        "estimate": "6 sections · 3 acts · ~9 min read",
+        "estimate": "6 sections · 3 acts · 1 interactive · ~10 min read",
         "toc": [("9.1", "s1", "The most expensive failure mode",
                  "every single measurement of a drift looks acceptable"),
                 ("9.2", "s2", "A chart with no memory",
