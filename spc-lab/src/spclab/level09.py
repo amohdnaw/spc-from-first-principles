@@ -12,6 +12,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 BG, FG, MUTED = "#0e1116", "#e8e8e8", "#8a939f"
 BLUE, TEAL, YELLOW, RED = "#58C4DD", "#5CD0B3", "#FFD54F", "#FC6255"
 GRID = "#232a33"
@@ -23,6 +25,7 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 LAM = 0.2
 MAXRUN = 2000
@@ -105,6 +108,7 @@ def sheet_l09_arl():
                 xy=(0, arl_s[0]), xytext=(0.15, arl_s[0] * 1.6),
                 fontsize=12, color=MUTED,
                 arrowprops=dict(arrowstyle="->", color=MUTED))
+    ax.set_ylim(top=arl_s[0] * 3)  # headroom: the note above sat in the title
     # The speed-up is published by detection.py, which both acts and both pages
     # already quote. Recomputing it here from this figure's own grid point, and
     # then rounding to no decimals, printed "5× sooner" onto a chart while the
@@ -122,6 +126,7 @@ def sheet_l09_arl():
     ax.set_xlabel("process shift when it happens (in σx̄ units)")
     ax.set_ylabel("average subgroups until alarm (log scale)")
     ax.legend(frameon=False); ax.grid(alpha=.5, which="both")
+    figstyle.finish(fig)
     fig.savefig("docs/l09_1_arl.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote docs/l09_1_arl.png")
@@ -176,6 +181,7 @@ def sheet_l09_race():
 
     fig.suptitle("Same process. Same false-alarm rate. Different memory.",
                  fontsize=15, y=1.03)
+    figstyle.finish(fig)
     fig.savefig("docs/l09_2_race.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote docs/l09_2_race.png")

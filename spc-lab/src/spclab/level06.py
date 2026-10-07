@@ -13,6 +13,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 from spclab.formulas import _d2_d3
 
 BG, FG, MUTED = "#0e1116", "#e8e8e8", "#8a939f"
@@ -26,9 +28,11 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 
 def _save(fig, name):
+    figstyle.finish(fig)
     fig.savefig(f"docs/{name}.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", f"docs/{name}.png")

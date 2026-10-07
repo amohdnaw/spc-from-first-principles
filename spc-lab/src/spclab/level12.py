@@ -18,6 +18,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 from spclab.experiments import (
     ALIASES,
     BASELINE,
@@ -47,9 +49,11 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 
 def _save(fig, name):
+    figstyle.finish(fig)
     fig.savefig(f"docs/{name}.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", f"docs/{name}.png")
@@ -69,7 +73,7 @@ def sheet_l12_why_ofat_fails():
     Z = response(A, B)
     im = ax.contourf(A, B, Z, levels=18, cmap="viridis", alpha=.85)
     cs = ax.contour(A, B, Z, levels=9, colors=[MUTED], linewidths=.6)
-    ax.clabel(cs, inline=True, fontsize=8, fmt="%.0f")
+    labels = ax.clabel(cs, inline=True, fontsize=8, fmt="%.0f")
 
     path = OFAT["visited"]
     for (x0, y0), (x1, y1) in zip(path, path[1:]):
@@ -81,6 +85,11 @@ def sheet_l12_why_ofat_fails():
         ax.plot([c[0]], [c[1]], "o", color=FG, ms=7, zorder=5)
         ax.annotate(f"{TRUTH[c]:.0f}", xy=c, xytext=(c[0] * 1.16, c[1] * 1.16),
                     ha="center", va="center", fontsize=12, color=FG, zorder=6)
+    # a contour label beside a corner repeats the corner's own value
+    for t in labels:
+        x, y = t.get_position()
+        if any(abs(x - c[0] * 1.16) < .3 and abs(y - c[1] * 1.16) < .3 for c in CORNERS):
+            t.remove()
 
     ax.plot([OFAT["chosen"][0]], [OFAT["chosen"][1]], "o", color=RED, ms=13,
             mfc="none", mew=2.4, zorder=7)

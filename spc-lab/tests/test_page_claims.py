@@ -96,7 +96,8 @@ def test_total_levels_matches_the_rail():
     rail = re.search(r'<nav class="rail".*?</nav>', INDEX.read_text(), re.S)
     slots = len(re.findall(r"<(?:a|span)[^>]*class=\"lv", rail.group(0))) if rail else 0
     if slots == 0:  # the index carries spine cards rather than a rail
-        slots = len(re.findall(r'class="lv-num', INDEX.read_text()))
+        # numbered cards only: the closing "MSA" card hands over to the other course
+        slots = len(re.findall(r'class="lv-num[^"]*">\s*\d', INDEX.read_text()))
     assert _spelled(_claim(), "levels") == slots, (
         f"index claims {_spelled(_claim(), 'levels')} levels, rail shows {slots}"
     )

@@ -17,6 +17,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 from spclab.variation import (
     ADJUST_EVERY,
     LEAVE_IT,
@@ -41,9 +43,11 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 
 def _save(fig, name):
+    figstyle.finish(fig)
     fig.savefig(f"docs/{name}.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", f"docs/{name}.png")

@@ -20,6 +20,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 from spclab.evidence import (
     ALPHA_1,
     ARL0_ALL,
@@ -52,9 +54,11 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 
 def _save(fig, name):
+    figstyle.finish(fig)
     fig.savefig(f"docs/{name}.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", f"docs/{name}.png")
@@ -88,7 +92,8 @@ def sheet_l07_two_errors():
     for v in (-LIMIT, LIMIT):
         ax.axvline(v, color=MUTED, lw=1.3, ls=":")
     # low, not at the top: at 0.425 these sat inside the legend box
-    ax.text(LIMIT + 0.12, 0.013, f"+{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="left")
+    # inside the line: outside it, the α arrow ran through the label
+    ax.text(LIMIT - 0.12, 0.013, f"+{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="right")
     ax.text(-LIMIT - 0.12, 0.013, f"−{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="right")
 
     ax.annotate(f"α = {ALPHA_1*100:.2f} %\ncrying wolf",

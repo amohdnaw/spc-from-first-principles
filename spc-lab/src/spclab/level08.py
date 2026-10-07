@@ -14,6 +14,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 BG, FG, MUTED = "#0e1116", "#e8e8e8", "#8a939f"
 BLUE, TEAL, YELLOW, RED = "#58C4DD", "#5CD0B3", "#FFD54F", "#FC6255"
 GRID = "#232a33"
@@ -25,9 +27,11 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 
 def _save(fig, name):
+    figstyle.finish(fig)
     fig.savefig(f"docs/{name}.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", f"docs/{name}.png")
@@ -71,6 +75,8 @@ def sheet_l08_two_voices():
     for xv, lab in [(lsl, "LSL"), (usl, "USL")]:
         ax.axvline(xv, color=YELLOW, ls="--", lw=1.4)
         ax.text(xv, pdf.max()*1.22, lab, color=YELLOW, ha="center", fontsize=12)
+    # the limit labels sat above the axes, into the title: give them headroom
+    ax.set_ylim(0, pdf.max() * 1.34)
     ax.set_title(f"Voice of the customer vs voice of the process — "
                  f"perfectly centered:\n$C_p = \\frac{{USL-LSL}}{{6\\sigma}} "
                  f"= {cp:.2f}$   (potential only — assumes perfect centering)",

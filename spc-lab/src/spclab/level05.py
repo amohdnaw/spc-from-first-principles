@@ -19,6 +19,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from spclab import figstyle
+
 from spclab.estimation import (
     CONF,
     COVER_T,
@@ -51,9 +53,11 @@ mpl.rcParams.update({
     "font.family": "serif", "mathtext.fontset": "cm",
     "axes.spines.top": False, "axes.spines.right": False,
 })
+figstyle.apply()
 
 
 def _save(fig, name):
+    figstyle.finish(fig)
     fig.savefig(f"docs/{name}.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", f"docs/{name}.png")
@@ -137,9 +141,9 @@ def sheet_l05_price():
     ns = np.arange(2, 121)
     w_t = np.array([interval_width(int(k)) for k in ns])
     w_z = np.array([interval_width(int(k), use_t=False) for k in ns])
-    ax.plot(ns, w_z, color=BLUE, lw=2.0, label=r"σ known — width $\propto 1/\sqrt{n}$")
+    ax.plot(ns, w_z, color=BLUE, lw=2.0, label=r"$\sigma$ known — width $\propto 1/\sqrt{n}$")
     ax.plot(ns, w_t, color=TEAL, lw=2.0, ls="--",
-            label=r"σ estimated — $t_{n-1}$, wider and steeper")
+            label=r"$\sigma$ estimated — $t_{n-1}$, wider and steeper")
 
     base = interval_width(HALVE_FROM, use_t=False)
     ax.plot([HALVE_FROM], [base], "o", color=YELLOW, ms=7, zorder=5)
