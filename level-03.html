@@ -456,7 +456,7 @@
           <span class="sec-no">3.2</span>
           <h2>The mean is a balance point</h2>
           <p>Twelve numbers are not an answer; you need one number for the centre. <span class="note"><span class="k">the test</span>A candidate centre is right when the deviations either side of it cancel exactly.</span>So guess one and check it. Draw every part's distance to the guess, then add the distances on each side and see whether they cancel.</p>
-          <p>They do not, and the beam tips. <span class="note speak"><span class="k">spoken · 0:58</span><em>“Not a formula you were handed — the one place where the deviations cancel.”</em></span>So walk the guess along until they do. One position makes the two sides equal and opposite and the beam comes level. That position is the mean — not a formula you were handed, but the one place where the deviations cancel.</p>
+          <p>They do not, and the beam tips. <span class="note speak"><span class="k">spoken · 0:58</span><em>“Not a formula you were handed — the one place where the deviations cancel.”</em></span>So walk the guess along until they do. One position makes the two sides equal and opposite and the beam comes level. That position is the <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a> — not a formula you were handed, but the one place where the deviations cancel.</p>
         </div>
       </div>
     </section>
@@ -491,7 +491,7 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
           <span class="sec-no">3.4</span>
           <h2>A shape nobody chose</h2>
           <p>Twelve parts say nothing about shape. <span class="note data"><span class="k">keep going</span><span class="row num"><span class="rk">parts measured</span><span class="rv">20 000</span></span><span class="row num"><span class="rk">bins</span><span class="rv">unchanged</span></span></span>Keep measuring, and keep the same bins: a hundred parts, a thousand, twenty thousand off the same machine with the same gauge. A shape appears that nobody chose or asked for.</p>
-          <p>Many small independent effects, added together, land on this curve. The bell is a consequence of the process, not an assumption about it.</p>
+          <p>Many small <a class="gl" href="glossary.html#independence" data-gl="independence">independent</a> effects, added together, land on this curve. The bell is a consequence of the process, not an assumption about it.</p>
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level03.jpg">
@@ -540,5 +540,53 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
   </div>
 </footer>
 
+<!--glossary-->
+<style>
+  a.gl{color:inherit;text-decoration:underline dotted var(--ink-dim);text-underline-offset:.22em;
+    text-decoration-thickness:1px;cursor:pointer}
+  a.gl:hover,a.gl[aria-expanded="true"]{text-decoration-color:var(--accent)}
+  a.gl[aria-expanded="true"]{background:var(--accent-wash)}
+  a.gl:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+  .gl-note{border-left:2px solid var(--accent);padding:4px 0 4px 18px;margin:18px 0 22px;
+    max-width:var(--measure);font-size:calc(var(--body) * .86);line-height:1.45;color:var(--ink);
+    font-style:normal;font-weight:400;text-indent:0;letter-spacing:normal;text-transform:none}
+  .gl-note .micro{color:var(--ink-dim);margin:0 0 4px;display:block}
+  .gl-note .gl-sym{text-transform:none;letter-spacing:.04em}
+  .gl-note p{margin:0}
+  .gl-note .eq-body{font-size:22px;margin:10px 0;text-align:left;overflow-x:auto;overflow-y:hidden;
+    scrollbar-width:thin;scrollbar-color:var(--rule-strong) transparent}
+  .gl-note .eq-body::-webkit-scrollbar{height:6px}
+  .gl-note .eq-body::-webkit-scrollbar-thumb{background:var(--rule-strong)}
+  @media (max-width:560px){ .gl-note .eq-body{font-size:18px} }
+  .gl-note .eq-body .katex-display{margin:0;text-align:left}
+  .gl-note .eq-body .katex-display>.katex{text-align:left}
+  .gl-foot{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;margin-top:8px}
+  .gl-foot .micro{margin:0;display:inline}
+  .gl-foot a{font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none}
+  .gl-foot a:hover{text-decoration:underline}
+</style>
+<template id="gl-independence"><div class="gl-note" role="note"><div class="micro">independence</div><p>The property that one outcome tells you nothing about another, so neither can nudge the other.</p><div class="gl-foot"><span class="micro">Built in SPC 2</span><a href="glossary.html#independence">full entry →</a></div></div></template>
+<template id="gl-mean"><div class="gl-note" role="note"><div class="micro">mean <span class="gl-sym">x̄, μ</span></div><p>The average: add up the readings and divide by how many there are, which gives the balance point where the gaps on each side cancel.</p><div class="eq-body" data-tex="\bar{x} = \dfrac{\sum x}{n}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mover accent="true"><mi>x</mi><mo>ˉ</mo></mover><mo>=</mo><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mo>∑</mo><mi>x</mi></mrow><mi>n</mi></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\bar{x} = \dfrac{\sum x}{n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.5678em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.113em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div><div class="gl-foot"><span class="micro">Built in SPC 3</span><a href="glossary.html#mean">full entry →</a></div></div></template>
+<script>
+(function(){
+  var open=null;
+  function close(){ if(!open) return; open.note.remove(); open.a.setAttribute('aria-expanded','false'); open=null; }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a.gl'); if(!a) return;
+    e.preventDefault();
+    var same=open&&open.a===a; close(); if(same) return;
+    var t=document.getElementById('gl-'+a.dataset.gl); if(!t) return;
+    var n=t.content.firstElementChild.cloneNode(true);
+    n.id='gl-open'; a.setAttribute('aria-controls','gl-open'); a.setAttribute('aria-expanded','true');
+    // a block may carry margin notes and more prose after the term: open above the first of those
+    var block=a.closest('p,li,blockquote,dd')||a;
+    var side=[].find.call(block.querySelectorAll('.note'),function(x){ return a.compareDocumentPosition(x)&4; });
+    if(side) side.before(n); else block.after(n); open={a:a,note:n};
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&open){ var a=open.a; close(); a.focus(); } });
+  document.querySelectorAll('a.gl').forEach(function(a){ a.setAttribute('role','button'); a.setAttribute('aria-expanded','false'); });
+})();
+</script>
+<!--/glossary-->
 </body>
 </html>

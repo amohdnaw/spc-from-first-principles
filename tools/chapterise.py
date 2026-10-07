@@ -11,6 +11,10 @@ Output is <page> at the repo root, overwritten.
     python3 tools/chapterise.py level-06.html      # one page
     for f in level-01 level-03 level-04 level-06 level-08 level-09; do \
         python3 tools/chapterise.py $f.html; done  # all of them
+
+Then link the glossary terms and render the maths, in that order:
+
+    python3 tools/glossary.py && (cd tools && node typeset.mjs)
 """
 from __future__ import annotations
 import re

@@ -1,0 +1,1446 @@
+[
+ {
+  "id": "accuracy",
+  "term": "accuracy",
+  "symbol": "",
+  "match": [
+   "accuracy"
+  ],
+  "def": "How close the average of many readings sits to the true size.",
+  "tex": "",
+  "built": {
+   "msa": [
+    5
+   ]
+  },
+  "used": {
+   "msa": [
+    5,
+    7
+   ]
+  }
+ },
+ {
+  "id": "anova",
+  "term": "ANOVA",
+  "symbol": "",
+  "match": [
+   "anova"
+  ],
+  "def": "A way to split all the scatter in a set of data into pieces, one per source, that add back up exactly.",
+  "tex": "SS_{total} = SS_{part} + SS_{oper} + SS_{p \\times o} + SS_{rep}",
+  "built": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    3
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    3
+   ]
+  }
+ },
+ {
+  "id": "attribute-data",
+  "term": "attribute data",
+  "symbol": "",
+  "match": [
+   "attribute data",
+   "attribute study",
+   "attribute studies"
+  ],
+  "def": "Results recorded as pass or fail, or as a count, and not as a measured size.",
+  "tex": "",
+  "built": {
+   "spc": [
+    10
+   ],
+   "msa": [
+    6
+   ]
+  },
+  "used": {
+   "spc": [
+    10
+   ],
+   "msa": [
+    6
+   ]
+  }
+ },
+ {
+  "id": "average-and-range",
+  "term": "average-and-range",
+  "symbol": "",
+  "match": [
+   "average-and-range"
+  ],
+  "def": "The older, by-hand way to split gauge error, using the spread inside each small group of readings and a printed table of numbers.",
+  "tex": "",
+  "built": {
+   "msa": [
+    3
+   ]
+  },
+  "used": {
+   "msa": [
+    2,
+    3,
+    7
+   ]
+  }
+ },
+ {
+  "id": "base-rate",
+  "term": "base rate",
+  "symbol": "",
+  "match": [
+   "base rate"
+  ],
+  "def": "The share of all items that belong to one class to begin with, such as the share of parts that are good.",
+  "tex": "",
+  "built": {
+   "msa": [
+    6
+   ]
+  },
+  "used": {
+   "msa": [
+    6
+   ]
+  }
+ },
+ {
+  "id": "bias",
+  "term": "bias",
+  "symbol": "",
+  "match": [
+   "bias",
+   "biased",
+   "unbiased"
+  ],
+  "def": "A steady error in one direction, so the average answer sits off the true value no matter how many readings you take.",
+  "tex": "",
+  "built": {
+   "msa": [
+    2,
+    5
+   ]
+  },
+  "used": {
+   "spc": [
+    6
+   ],
+   "msa": [
+    1,
+    2,
+    3,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "binomial",
+  "term": "binomial",
+  "symbol": "",
+  "match": [
+   "binomial"
+  ],
+  "def": "The pattern of counts you get when each item is either good or bad and every item has the same chance of being bad.",
+  "tex": "\\sigma_{\\hat{p}} = \\sqrt{\\dfrac{\\bar{p}(1-\\bar{p})}{n}}",
+  "built": {
+   "spc": [
+    10
+   ]
+  },
+  "used": {
+   "spc": [
+    10
+   ]
+  }
+ },
+ {
+  "id": "capability",
+  "term": "capability",
+  "symbol": "",
+  "match": [
+   "capability",
+   "capability index"
+  ],
+  "def": "How well the natural spread of a process fits between the limits on the drawing.",
+  "tex": "",
+  "built": {
+   "spc": [
+    8
+   ],
+   "msa": [
+    7
+   ]
+  },
+  "used": {
+   "spc": [
+    1,
+    2,
+    8,
+    12
+   ],
+   "msa": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "centre-points",
+  "term": "centre points",
+  "symbol": "",
+  "match": [
+   "centre points"
+  ],
+  "def": "Extra test runs set halfway between the low and high settings, used to check whether the result follows a curve.",
+  "tex": "",
+  "built": {
+   "spc": [
+    12
+   ]
+  },
+  "used": {
+   "spc": [
+    12
+   ]
+  }
+ },
+ {
+  "id": "common-cause",
+  "term": "common cause",
+  "symbol": "",
+  "match": [
+   "common cause",
+   "common-cause"
+  ],
+  "def": "Variation from the many small causes built into a process; you can only cut it by changing the process itself.",
+  "tex": "",
+  "built": {
+   "spc": [
+    1
+   ]
+  },
+  "used": {
+   "spc": [
+    1
+   ]
+  }
+ },
+ {
+  "id": "confidence-interval",
+  "term": "confidence interval",
+  "symbol": "",
+  "match": [
+   "confidence interval"
+  ],
+  "def": "A range worked out from a sample by a recipe that catches the true value a stated share of the time, such as 95 %.",
+  "tex": "\\bar{x} \\pm t_{n-1}\\,\\dfrac{s}{\\sqrt{n}}",
+  "built": {
+   "spc": [
+    5
+   ]
+  },
+  "used": {
+   "spc": [
+    5,
+    11
+   ],
+   "msa": [
+    5
+   ]
+  }
+ },
+ {
+  "id": "confounded",
+  "term": "confounded",
+  "symbol": "",
+  "match": [
+   "confounded"
+  ],
+  "def": "So tangled together in a test that no math can tell one effect from the other.",
+  "tex": "",
+  "built": {
+   "spc": [
+    12
+   ]
+  },
+  "used": {
+   "spc": [
+    12
+   ]
+  }
+ },
+ {
+  "id": "control-chart",
+  "term": "control chart",
+  "symbol": "",
+  "match": [
+   "control chart",
+   "control charts",
+   "shewhart chart",
+   "shewhart rule"
+  ],
+  "def": "A plot of a process measure in time order, with a line above and below that a steady process should almost never cross.",
+  "tex": "",
+  "built": {
+   "spc": [
+    6
+   ]
+  },
+  "used": {
+   "spc": [
+    2,
+    4,
+    5,
+    6,
+    9
+   ]
+  }
+ },
+ {
+  "id": "control-limit",
+  "term": "control limit",
+  "symbol": "UCL, LCL",
+  "match": [
+   "control limit",
+   "control limits"
+  ],
+  "def": "A line on a chart, usually three spreads out from the centre, that points from an unchanged process cross only about 3 times in 1,000.",
+  "tex": "\\bar{x} \\pm 3\\,\\sigma_{\\bar{x}}",
+  "built": {
+   "spc": [
+    6
+   ]
+  },
+  "used": {
+   "spc": [
+    2
+   ]
+  }
+ },
+ {
+  "id": "cp",
+  "term": "Cp",
+  "symbol": "Cp",
+  "match": [
+   "cp"
+  ],
+  "def": "The width the drawing allows divided by six times the process spread, which ignores where the process is centred.",
+  "tex": "C_p = \\dfrac{\\mathrm{USL} - \\mathrm{LSL}}{6\\sigma}",
+  "built": {
+   "spc": [
+    8
+   ]
+  },
+  "used": {
+   "spc": [
+    8
+   ]
+  }
+ },
+ {
+  "id": "cpk",
+  "term": "Cpk",
+  "symbol": "Cpk",
+  "match": [
+   "cpk"
+  ],
+  "def": "The gap from the process centre to the nearer drawing limit, counted in steps of three times the process spread.",
+  "tex": "C_{pk} = \\dfrac{\\min\\!\\left(\\mathrm{USL} - \\mu,\\ \\mu - \\mathrm{LSL}\\right)}{3\\sigma}",
+  "built": {
+   "spc": [
+    8
+   ],
+   "msa": [
+    7
+   ]
+  },
+  "used": {
+   "spc": [
+    8
+   ],
+   "msa": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "defective",
+  "term": "defective",
+  "symbol": "",
+  "match": [
+   "defective"
+  ],
+  "def": "Describes a whole item that fails inspection; it counts once, even if it has several flaws.",
+  "tex": "",
+  "built": {
+   "spc": [
+    10
+   ]
+  },
+  "used": {
+   "spc": [
+    10
+   ]
+  }
+ },
+ {
+  "id": "degrees-of-freedom",
+  "term": "degrees of freedom",
+  "symbol": "df",
+  "match": [
+   "degrees of freedom"
+  ],
+  "def": "The number of separate pieces of information a guess rests on; fewer of them make a shakier guess.",
+  "tex": "",
+  "built": {
+   "msa": [
+    1
+   ]
+  },
+  "used": {
+   "msa": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "distribution",
+  "term": "distribution",
+  "symbol": "",
+  "match": [
+   "distribution",
+   "distributions"
+  ],
+  "def": "The full pattern of values a process can produce and how often each one turns up.",
+  "tex": "",
+  "built": {
+   "spc": [
+    3
+   ]
+  },
+  "used": {
+   "spc": [
+    6,
+    7,
+    8,
+    10,
+    11
+   ],
+   "msa": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "estimator",
+  "term": "estimator",
+  "symbol": "",
+  "match": [
+   "estimator",
+   "estimators"
+  ],
+  "def": "A fixed recipe that turns data into a guess at a quantity you cannot see directly.",
+  "tex": "",
+  "built": {
+   "msa": [
+    2
+   ]
+  },
+  "used": {
+   "msa": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "expected-value",
+  "term": "expected value",
+  "symbol": "E",
+  "match": [
+   "expected value"
+  ],
+  "def": "The long-run average of something random: its balance point, which need not be a value it can ever take.",
+  "tex": "",
+  "built": {
+   "spc": [
+    2
+   ]
+  },
+  "used": {
+   "spc": [
+    2
+   ]
+  }
+ },
+ {
+  "id": "factorial-design",
+  "term": "factorial design",
+  "symbol": "",
+  "match": [
+   "factorial",
+   "full factorial"
+  ],
+  "def": "An experiment that tries every mix of the chosen settings, so each factor is tested at both levels of every other.",
+  "tex": "",
+  "built": {
+   "spc": [
+    12
+   ]
+  },
+  "used": {
+   "spc": [
+    12
+   ]
+  }
+ },
+ {
+  "id": "false-alarm",
+  "term": "false alarm",
+  "symbol": "α",
+  "match": [
+   "false alarm",
+   "false alarms",
+   "false-alarm"
+  ],
+  "def": "A signal from a chart when nothing about the process has actually changed.",
+  "tex": "\\alpha = 1 - [\\Phi(3) - \\Phi(-3)] = 0.0027",
+  "built": {
+   "spc": [
+    2,
+    6
+   ]
+  },
+  "used": {
+   "spc": [
+    2,
+    6,
+    7,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "gage-r-r",
+  "term": "Gage R&R",
+  "symbol": "GRR",
+  "match": [
+   "gage r&r",
+   "r&r",
+   "gauge study"
+  ],
+  "def": "A study where several people measure the same parts more than once, to find how much of the scatter comes from the gauge and not the parts.",
+  "tex": "\\sigma_{gauge}^2 = \\sigma_{repeat}^2 + \\sigma_{reprod}^2",
+  "built": {
+   "msa": [
+    5
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    5,
+    7
+   ]
+  }
+ },
+ {
+  "id": "pct-grr",
+  "term": "%GRR",
+  "symbol": "%GRR",
+  "match": [
+   "%grr",
+   "study ratio",
+   "tolerance ratio"
+  ],
+  "def": "The gauge's own scatter as a percent of something bigger: how much the parts vary, or how wide the drawing lets them be.",
+  "tex": "\\begin{aligned}\\%GRR_{study} &= \\frac{\\sigma_{gauge}}{\\sigma_{total}} \\\\[2pt] \\%GRR_{tol} &= \\frac{6\\sigma_{gauge}}{tolerance}\\end{aligned}",
+  "built": {
+   "msa": [
+    4
+   ]
+  },
+  "used": {
+   "msa": [
+    4,
+    5,
+    7
+   ]
+  }
+ },
+ {
+  "id": "guard-band",
+  "term": "guard band",
+  "symbol": "",
+  "match": [
+   "guard band"
+  ],
+  "def": "A margin moved inside the drawing limit, so borderline parts get rejected and fewer bad ones get through.",
+  "tex": "",
+  "built": {
+   "msa": [
+    6
+   ]
+  },
+  "used": {
+   "msa": [
+    6
+   ]
+  }
+ },
+ {
+  "id": "histogram",
+  "term": "histogram",
+  "symbol": "",
+  "match": [
+   "histogram",
+   "histograms"
+  ],
+  "def": "A bar chart that sorts readings into equal-width bins and shows how many land in each.",
+  "tex": "",
+  "built": {
+   "spc": [
+    1
+   ]
+  },
+  "used": {
+   "spc": [
+    1
+   ],
+   "msa": [
+    1
+   ]
+  }
+ },
+ {
+  "id": "independence",
+  "term": "independence",
+  "symbol": "",
+  "match": [
+   "independence",
+   "independent"
+  ],
+  "def": "The property that one outcome tells you nothing about another, so neither can nudge the other.",
+  "tex": "",
+  "built": {
+   "spc": [
+    2
+   ]
+  },
+  "used": {
+   "spc": [
+    1,
+    2,
+    3
+   ],
+   "msa": [
+    1,
+    4,
+    6
+   ]
+  }
+ },
+ {
+  "id": "interaction",
+  "term": "interaction",
+  "symbol": "",
+  "match": [
+   "interaction",
+   "interactions",
+   "part-by-operator interaction"
+  ],
+  "def": "When what one factor does depends on how another is set, so their effects do not simply add up.",
+  "tex": "\\begin{aligned}y &= \\beta_0 + \\beta_A x_A + \\beta_B x_B \\\\[2pt] &\\quad + \\beta_{AB}\\,x_A x_B + \\varepsilon\\end{aligned}",
+  "built": {
+   "spc": [
+    12
+   ],
+   "msa": [
+    3
+   ]
+  },
+  "used": {
+   "spc": [
+    11,
+    12
+   ],
+   "msa": [
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "kappa",
+  "term": "kappa",
+  "symbol": "κ",
+  "match": [
+   "kappa",
+   "cohen's kappa",
+   "cohen’s kappa"
+  ],
+  "def": "How often two judges agree after taking away the agreement pure luck would give, where 1 is perfect and 0 is no better than luck.",
+  "tex": "\\kappa = \\frac{p_{o} - p_{e}}{1 - p_{e}}",
+  "built": {
+   "msa": [
+    6
+   ]
+  },
+  "used": {
+   "msa": [
+    6
+   ]
+  }
+ },
+ {
+  "id": "main-effect",
+  "term": "main effect",
+  "symbol": "",
+  "match": [
+   "main effect",
+   "main effects"
+  ],
+  "def": "The average change in the result when one factor moves from its low setting to its high one.",
+  "tex": "",
+  "built": {
+   "spc": [
+    12
+   ]
+  },
+  "used": {
+   "spc": [
+    12
+   ]
+  }
+ },
+ {
+  "id": "mean",
+  "term": "mean",
+  "symbol": "x̄, μ",
+  "match": [
+   "mean"
+  ],
+  "def": "The average: add up the readings and divide by how many there are, which gives the balance point where the gaps on each side cancel.",
+  "tex": "\\bar{x} = \\dfrac{\\sum x}{n}",
+  "built": {
+   "spc": [
+    3
+   ]
+  },
+  "used": {
+   "spc": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "msa": [
+    2,
+    3,
+    4,
+    5,
+    7
+   ]
+  },
+  "skip_before": [
+   "squares",
+   "range"
+  ]
+ },
+ {
+  "id": "ndc",
+  "term": "ndc",
+  "symbol": "ndc",
+  "match": [
+   "ndc",
+   "number of distinct categories"
+  ],
+  "def": "A gauge score that says how many separate size groups the gauge can reliably sort parts into.",
+  "tex": "1.41\\,\\sigma_{part}/\\sigma_{gauge}",
+  "built": {
+   "msa": [
+    4
+   ]
+  },
+  "used": {
+   "msa": [
+    4
+   ]
+  }
+ },
+ {
+  "id": "normal-distribution",
+  "term": "normal distribution",
+  "symbol": "",
+  "match": [
+   "normal curve",
+   "standard normals",
+   "normal approximation"
+  ],
+  "def": "The even, bell-shaped curve that shows up when many small, unrelated effects add together.",
+  "tex": "",
+  "built": {
+   "spc": [
+    3,
+    6
+   ]
+  },
+  "used": {
+   "spc": [
+    5,
+    6,
+    10
+   ]
+  }
+ },
+ {
+  "id": "null-hypothesis",
+  "term": "null hypothesis",
+  "symbol": "H₀",
+  "match": [
+   "null hypothesis"
+  ],
+  "def": "The starting claim a test tries to knock down; in SPC, the claim that the process has not changed.",
+  "tex": "",
+  "built": {
+   "spc": [
+    6
+   ]
+  },
+  "used": {
+   "spc": [
+    6
+   ]
+  }
+ },
+ {
+  "id": "one-at-a-time",
+  "term": "one-at-a-time",
+  "symbol": "",
+  "match": [
+   "one-at-a-time"
+  ],
+  "def": "Tuning one factor, fixing it, then tuning the next, which can miss the best setting when factors work together.",
+  "tex": "",
+  "built": {
+   "spc": [
+    12
+   ]
+  },
+  "used": {
+   "spc": [
+    12
+   ]
+  }
+ },
+ {
+  "id": "p-value",
+  "term": "p-value",
+  "symbol": "p",
+  "match": [
+   "p-value",
+   "p-values"
+  ],
+  "def": "The chance of seeing a result at least this extreme if nothing had really changed.",
+  "tex": "",
+  "built": {
+   "spc": [
+    7
+   ]
+  },
+  "used": {
+   "spc": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "percent-agreement",
+  "term": "percent agreement",
+  "symbol": "",
+  "match": [
+   "percent agreement"
+  ],
+  "def": "The share of items on which two judges give the same verdict, with no allowance for lucky matches.",
+  "tex": "",
+  "built": {
+   "msa": [
+    6
+   ]
+  },
+  "used": {
+   "msa": [
+    6
+   ]
+  }
+ },
+ {
+  "id": "poisson",
+  "term": "Poisson",
+  "symbol": "",
+  "match": [
+   "poisson"
+  ],
+  "def": "The pattern of counts you get when flaws turn up at random at a steady rate, so one item can carry several.",
+  "tex": "\\sigma_c = \\sqrt{\\bar{c}}",
+  "built": {
+   "spc": [
+    10
+   ]
+  },
+  "used": {
+   "spc": [
+    10
+   ]
+  }
+ },
+ {
+  "id": "power-curve",
+  "term": "power curve",
+  "symbol": "",
+  "match": [
+   "power curve"
+  ],
+  "def": "A graph of how likely a chart is to catch a shift on the next point, plotted against the size of the shift.",
+  "tex": "\\text{power}(\\delta) = \\Phi(-k-\\delta) + \\Phi(-k+\\delta)",
+  "built": {
+   "spc": [
+    7
+   ]
+  },
+  "used": {
+   "spc": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "ppm",
+  "term": "ppm",
+  "symbol": "ppm",
+  "match": [
+   "ppm",
+   "parts per million"
+  ],
+  "def": "A rate counted out of every million items, used when bad parts are too rare for a plain percent.",
+  "tex": "",
+  "built": {
+   "spc": [
+    8
+   ]
+  },
+  "used": {
+   "spc": [
+    8,
+    10
+   ]
+  }
+ },
+ {
+  "id": "precision",
+  "term": "precision",
+  "symbol": "",
+  "match": [
+   "precision"
+  ],
+  "def": "How tightly repeated readings or guesses bunch together, whether or not they bunch around the right value.",
+  "tex": "",
+  "built": {
+   "spc": [
+    5
+   ],
+   "msa": [
+    5
+   ]
+  },
+  "used": {
+   "spc": [
+    5
+   ],
+   "msa": [
+    5,
+    7
+   ]
+  }
+ },
+ {
+  "id": "probability",
+  "term": "probability",
+  "symbol": "",
+  "match": [
+   "probability",
+   "probabilities"
+  ],
+  "def": "The share of times an outcome happens over a very long run of repeats, never a promise about the next try.",
+  "tex": "",
+  "built": {
+   "spc": [
+    2
+   ]
+  },
+  "used": {
+   "spc": [
+    2,
+    8,
+    10
+   ]
+  }
+ },
+ {
+  "id": "quadrature",
+  "term": "quadrature",
+  "symbol": "",
+  "match": [
+   "quadrature"
+  ],
+  "def": "Combining two unrelated spreads by squaring each, adding, and taking the square root, like the sides of a right triangle.",
+  "tex": "\\sigma_{obs}^2 = \\sigma_{part}^2 + \\sigma_{gauge}^2",
+  "built": {
+   "msa": [
+    1
+   ]
+  },
+  "used": {
+   "msa": [
+    1
+   ]
+  }
+ },
+ {
+  "id": "quantile",
+  "term": "quantile",
+  "symbol": "",
+  "match": [
+   "quantile",
+   "quantiles"
+  ],
+  "def": "The cut-off value that leaves a chosen share of outcomes below it.",
+  "tex": "",
+  "built": {
+   "spc": [
+    5
+   ]
+  },
+  "used": {
+   "spc": [
+    5
+   ]
+  }
+ },
+ {
+  "id": "r2",
+  "term": "R²",
+  "symbol": "R²",
+  "match": [
+   "r²"
+  ],
+  "def": "The share of all the scatter in the results that a fitted line accounts for.",
+  "tex": "R^2 = 1 - \\dfrac{\\sum (y_i-\\hat{y}_i)^2}{\\sum (y_i-\\bar{y})^2}",
+  "built": {
+   "spc": [
+    11
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ]
+  }
+ },
+ {
+  "id": "rational-subgrouping",
+  "term": "rational subgrouping",
+  "symbol": "",
+  "match": [
+   "rational subgrouping"
+  ],
+  "def": "Choosing groups so only short-term noise varies inside each one, and any real change shows up between groups.",
+  "tex": "",
+  "built": {
+   "spc": [
+    10
+   ]
+  },
+  "used": {
+   "spc": [
+    10
+   ]
+  }
+ },
+ {
+  "id": "regression",
+  "term": "regression",
+  "symbol": "",
+  "match": [
+   "regression"
+  ],
+  "def": "Fitting a line that shows how one measured quantity changes with another.",
+  "tex": "",
+  "built": {
+   "spc": [
+    11
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ]
+  }
+ },
+ {
+  "id": "repeatability",
+  "term": "repeatability",
+  "symbol": "EV",
+  "match": [
+   "repeatability"
+  ],
+  "def": "How much readings scatter when one person measures the same part again and again with the same gauge.",
+  "tex": "",
+  "built": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    2
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "reproducibility",
+  "term": "reproducibility",
+  "symbol": "AV",
+  "match": [
+   "reproducibility"
+  ],
+  "def": "How much readings differ when different people measure the same parts with the same gauge.",
+  "tex": "",
+  "built": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    2
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "residual",
+  "term": "residual",
+  "symbol": "",
+  "match": [
+   "residual",
+   "residuals"
+  ],
+  "def": "The gap between an actual result and the value a fitted line predicts for it.",
+  "tex": "y_i - \\hat{y}_i",
+  "built": {
+   "spc": [
+    11
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ]
+  }
+ },
+ {
+  "id": "run-length",
+  "term": "run length",
+  "symbol": "ARL",
+  "match": [
+   "run length",
+   "run lengths"
+  ],
+  "def": "The number of points a chart plots before it gives a signal; its average says how long you wait.",
+  "tex": "",
+  "built": {
+   "spc": [
+    7
+   ]
+  },
+  "used": {
+   "spc": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "special-cause",
+  "term": "special cause",
+  "symbol": "",
+  "match": [
+   "special cause",
+   "special-cause"
+  ],
+  "def": "Variation from one event you can find, such as a tool change, a new batch or a new operator.",
+  "tex": "",
+  "built": {
+   "spc": [
+    1
+   ]
+  },
+  "used": {
+   "spc": [
+    1
+   ]
+  }
+ },
+ {
+  "id": "standard-deviation",
+  "term": "standard deviation",
+  "symbol": "σ, s",
+  "match": [
+   "standard deviation",
+   "standard deviations",
+   "sigma",
+   "sigmas"
+  ],
+  "def": "The typical distance of a reading from the average.",
+  "tex": "s = \\sqrt{\\dfrac{\\sum (x - \\bar{x})^{2}}{n - 1}}",
+  "built": {
+   "spc": [
+    3
+   ]
+  },
+  "used": {
+   "spc": [
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12
+   ],
+   "msa": [
+    1,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "standard-error",
+  "term": "standard error",
+  "symbol": "",
+  "match": [
+   "standard error"
+  ],
+  "def": "How far a sample's average usually lands from the true average; it shrinks as the sample grows.",
+  "tex": "\\sigma_{\\bar{x}} = \\dfrac{\\sigma}{\\sqrt{n}}",
+  "built": {
+   "spc": [
+    4,
+    5
+   ]
+  },
+  "used": {
+   "spc": [
+    5
+   ],
+   "msa": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "subgroup",
+  "term": "subgroup",
+  "symbol": "n",
+  "match": [
+   "subgroup",
+   "subgroups"
+  ],
+  "def": "A small batch of parts made close together in time and plotted as one point, such as five in a row.",
+  "tex": "",
+  "built": {
+   "spc": [
+    4
+   ]
+  },
+  "used": {
+   "spc": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    9,
+    10
+   ],
+   "msa": [
+    7
+   ]
+  }
+ },
+ {
+  "id": "sum-of-squares",
+  "term": "sum of squares",
+  "symbol": "SS",
+  "match": [
+   "sum of squares",
+   "sums of squares",
+   "sum-of-squares"
+  ],
+  "def": "Each value's gap from an average, squared, then added up; the raw material for splitting scatter by source.",
+  "tex": "\\begin{aligned}\\underbrace{\\sum (y_i-\\bar{y})^2}_{\\text{total}} &= \\underbrace{\\sum (\\hat{y}_i-\\bar{y})^2}_{\\text{explained}} \\\\[4pt] &\\quad + \\underbrace{\\sum (y_i-\\hat{y}_i)^2}_{\\text{residual}}\\end{aligned}",
+  "built": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    3
+   ]
+  },
+  "used": {
+   "spc": [
+    11
+   ],
+   "msa": [
+    3
+   ]
+  }
+ },
+ {
+  "id": "tolerance",
+  "term": "tolerance",
+  "symbol": "T",
+  "match": [
+   "tolerance"
+  ],
+  "def": "The range of sizes the drawing accepts, from the smallest allowed value to the largest.",
+  "tex": "T = \\mathrm{USL} - \\mathrm{LSL}",
+  "built": {
+   "spc": [
+    8
+   ],
+   "msa": [
+    4
+   ]
+  },
+  "used": {
+   "spc": [
+    2,
+    8,
+    11
+   ],
+   "msa": [
+    1,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "variance",
+  "term": "variance",
+  "symbol": "σ²",
+  "match": [
+   "variance",
+   "variances"
+  ],
+  "def": "The average squared gap between each reading and the average; scatter from unrelated sources adds up neatly in this form.",
+  "tex": "",
+  "built": {
+   "spc": [
+    3
+   ],
+   "msa": [
+    1
+   ]
+  },
+  "used": {
+   "spc": [
+    1,
+    10,
+    11
+   ],
+   "msa": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "western-electric-rules",
+  "term": "Western Electric rules",
+  "symbol": "",
+  "match": [
+   "western electric rules",
+   "run rules"
+  ],
+  "def": "Extra chart rules that flag a pattern across several points, such as eight in a row on one side of the centre.",
+  "tex": "",
+  "built": {
+   "spc": [
+    7
+   ]
+  },
+  "used": {
+   "spc": [
+    1,
+    7
+   ]
+  }
+ }
+]
