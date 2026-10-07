@@ -333,6 +333,16 @@ from spclab.chance import (  # noqa: E402
     ARL0, DIE_E, GAP_AT, MEDIAN_WAIT, MEMORY, MEMORY_WORST, MILESTONES,
     P_IN_ARL0, P_IN_SHIFT, RATE_ERR_AT, SHIFT_SUBGROUPS,
 )
+from spclab.evidence import phi  # noqa: E402
+
+# Level 4.5 reads areas off the bell. Every share is computed from erf here,
+# never typed, so the table and the later levels that quote it cannot drift.
+Z95 = 1.959963984540054  # the two-sided 95 % point; asserted against phi below
+assert abs((2 * phi(Z95) - 1) - 0.95) < 1e-12
+INSIDE_K = {k: 2 * phi(k) - 1 for k in (1, 2, 3)}
+TAIL_K = {k: 1 - phi(k) for k in (1, 2, 3)}
+TAIL3_PPM = f"{TAIL_K[3]*1e6:,.0f}".replace(",", " ")  # the site writes 1 350
+
 from spclab.estimation import (  # noqa: E402
     CONF, COVER_T, COVER_Z, D2_MEAN, D2_PUBLISHED, D2_SE, D2_SUBGROUPS_FOR_3DP,
     HALVE_FROM, HALVE_N_T, HALVE_N_Z, SE_EXACT, SE_OBSERVED, SIZES, SUBGROUP_N,
@@ -1414,6 +1424,44 @@ def chapter_04(K):
             "      " + K["sys"],
             "      " + K["fig"]("l04_2_sqrt_n.png"),
         ]),
+        ("s5", "4.5", "Reading the bell", [
+            para("A bell is only useful if you can read areas off it. Measure the distance"
+                 " from the centre in sigmas and the share of the bell inside any distance"
+                 f" is fixed, the same for every bell: {INSIDE_K[1]*100:.0f} % within one"
+                 f" sigma, {INSIDE_K[2]*100:.0f} % within two, {INSIDE_K[3]*100:.2f} % within"
+                 " three.",
+                 datanote(("±1 " + nc("σ"), f"{INSIDE_K[1]*100:.2f} %"),
+                          (f"±{Z95:.2f} " + nc("σ"), "95.00 %"),
+                          ("±2 " + nc("σ"), f"{INSIDE_K[2]*100:.2f} %"),
+                          ("±3 " + nc("σ"), f"{INSIDE_K[3]*100:.2f} %"),
+                          k="share inside"), lead=True),
+            para("Every one of those shares comes from a single function, written "
+                 + tex(r"\Phi(z)") + ": the share of the bell below " + nc("z") + " sigmas."
+                 " It has no tidy formula. Calculators and spreadsheets compute it from"
+                 " the error function, erf. Two sigmas hold"
+                 f" {INSIDE_K[2]*100:.2f} %, so the round 95 % sits a little closer in, at"
+                 f" {Z95:.2f} sigmas. That is the {Z95:.2f} Level 5 builds its intervals with.",
+                 note("Φ", text=tex(r"\Phi(z)=\tfrac12\bigl(1+\operatorname{erf}(z/\sqrt2)\bigr)")
+                      + ". In a spreadsheet, NORM.S.DIST(z, TRUE).")),
+            para("Often only one side matters: a part too thick, a mean that has drifted"
+                 " up. Then read one tail, which holds half of what lies outside. Beyond one"
+                 f" sigma on one side lies {TAIL_K[1]*100:.1f} % of the bell, beyond two"
+                 f" {TAIL_K[2]*100:.1f} %, beyond three {TAIL_K[3]*100:.3f} %, or"
+                 f" {TAIL3_PPM} parts per million.",
+                 datanote(("beyond +1 " + nc("σ"), f"{TAIL_K[1]*100:.1f} %"),
+                          ("beyond +2 " + nc("σ"), f"{TAIL_K[2]*100:.1f} %"),
+                          ("beyond +3 " + nc("σ"), f"{TAIL3_PPM} ppm"),
+                          k="one tail")),
+            para("Count every distance in sigmas, never in millimetres. That is why Level 6"
+                 " sets its limits at three sigmas and Level 8 turns a gap to the spec limit"
+                 " into sigmas before it reads anything off the bell. And the far"
+                 f" tails are small but never empty: the {(1-INSIDE_K[3])*100:.2f} % outside"
+                 f" three sigmas is the false alarm Level 6 prices at one subgroup in"
+                 f" {1/(1-INSIDE_K[3]):.0f}.",
+                 note("which bell", text="These areas belong to the normal curve. Averages"
+                      " of a few parts come close to it, as 4.2 showed. Single parts often"
+                      " do too, but nothing guarantees it.")),
+        ]),
     ]
 
 
@@ -1631,7 +1679,7 @@ CHAPTERS = {
         "number": 4, "word": "four",
         "before": "Level 3 — centre and spread",
         "after": "Level 5 — estimation, and what an estimate costs",
-        "estimate": "4 sections · 1 act · 1 interactive · ~7 min read",
+        "estimate": "5 sections · 1 act · 1 interactive · ~9 min read",
         "toc": [("4.1", "s1", "One part tells you nothing",
                  "one die, ten rolls, then ten thousand"),
                 ("4.2", "s2", "Averaging makes a shape",
@@ -1639,7 +1687,9 @@ CHAPTERS = {
                 ("4.3", "s3", "The law",
                  "two numbers agreeing to three decimals"),
                 ("4.4", "s4", "What averaging buys",
-                 "why subgroups of four and five, and never fifty")],
+                 "why subgroups of four and five, and never fifty"),
+                ("4.5", "s5", "Reading the bell",
+                 f"areas in sigmas: where {Z95:.2f}, {TAIL_K[2]*100:.1f} % and {TAIL3_PPM} ppm come from")],
         "sections": chapter_04,
     },
     "level-07.html": {
