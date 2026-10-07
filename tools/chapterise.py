@@ -32,6 +32,10 @@ CHAPTER_CSS = """
      rows put the note in a row of its own and cut an L-shaped hole in the page. */
   :root{ --marg:320px; --marg-gap:48px; }
   .lab-link{margin-top:var(--rhythm)}
+  /* the lab is another site in a new tab: say so before the click */
+  .lab-link a[target="_blank"]::after{content:"external";font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-left:8px;padding:1px 6px;vertical-align:.15em;
+    border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);display:inline-block;text-decoration:none}
   /* Links in the prose. The browser's own blue measured 2.0:1 on this ground. */
   main section a[href^="http"]{color:var(--ink-bright);text-decoration:underline;
     text-decoration-color:var(--accent);text-underline-offset:3px}
