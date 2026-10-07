@@ -278,6 +278,9 @@
   .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
   .toc a{color:var(--ink);text-decoration:none;font-size:19px}
   .toc a:hover{color:var(--accent)}
+  .toc .tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
+    padding:1px 6px;margin-left:10px;vertical-align:.15em;white-space:nowrap}
   .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
     display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
   .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
@@ -293,7 +296,9 @@
     color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
   .leaf > div > p{text-wrap:pretty}
   .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
-  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
+  /* one drop cap per chapter: on every section it hung into the block below a
+     one-line opener. */
+  #s1 .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
 
   /* margin notes: instrument voice, level with the paragraph they annotate.
      Below the margin breakpoint they simply follow the prose at measure width. */
@@ -303,8 +308,15 @@
   .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
     font-size:11px;margin-bottom:5px}
   .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
-  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
-    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
+  /* a note that argues is document voice: serif at the 17px step. Mono stays for
+     the label, numbers and data rows (DESIGN.md 6 bans mono body prose). */
+  .note:not(.data):not(.watch){font-family:var(--serif);font-size:17px;line-height:1.45;
+    color:var(--ink-dim);font-variant-numeric:oldstyle-nums}
+  .note .k,.note .v{font-family:var(--mono)}
+  .note em{font-style:italic;color:var(--ink)}
+  /* only the spoken quote is a block; inline italics inside a sentence stay inline */
+  .note.speak em{font-family:var(--serif);font-size:17px;line-height:1.45;display:block;
+    font-variant-numeric:oldstyle-nums}
   .note.speak{border-left-color:var(--accent)}
   .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
     align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
@@ -384,7 +396,7 @@
   /* clear does not move a note past initial-letter (it is not a float), so push
      it a body line down; a note further into the paragraph just gains air. */
   @media (max-width:1499px){
-    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    #s1 .lead .note{margin-top:calc(var(--body) * 1.5)}
     /* the number's own column left the formula 504px; six equations scrolled */
     .eq{grid-template-columns:1fr;gap:10px}
     .eq-num{justify-self:end}
@@ -396,6 +408,10 @@
     .note.data .rn{font-size:13px}
     /* tap targets: the rail links measured 30x23 */
     .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+    /* the wrapped rail took ~320px before the title: a fixed grid of equal cells
+       (6 to a row) stacks it into tight rows instead */
+    .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
+    .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
 </style>
 </head>
@@ -436,7 +452,7 @@
         <p class="toc-chain"><span class="micro">after</span> Level 6 — limits are a hypothesis test<span class="sep">·</span><span class="micro">leads to</span> Level 8 — capability</p>
         <ol>
           <li><span class="n">7.1</span><a href="#s1">The other way to be wrong<span class="sub">α is crying wolf; β is staying silent, and nobody counts it</span></a></li>
-          <li><span class="n">7.2</span><a href="#s2">Power<span class="sub">one point, one chance — and how small a chance</span></a></li>
+          <li><span class="n">7.2</span><a href="#s2">Power<span class="tag">act</span><span class="sub">one point, one chance — and how small a chance</span></a></li>
           <li><span class="n">7.3</span><a href="#s3">The chart throws evidence away<span class="sub">a verdict is not the same as a p-value</span></a></li>
           <li><span class="n">7.4</span><a href="#s4">Four rules, one at a time<span class="sub">each rule priced, against a figure published in 1987</span></a></li>
           <li><span class="n">7.5</span><a href="#s5">So is it worth it<span class="sub">the cost is fixed; the benefit is the shift you fear</span></a></li>

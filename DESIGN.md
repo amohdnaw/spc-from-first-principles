@@ -131,7 +131,7 @@ scale is allowed exactly three substitutions below 560px, and no others:
 |---|---|---|
 | body prose | 21 | **19** |
 | mono micro-label, where a row would otherwise wrap | 11 | **10** |
-| wordmark | 21 | **18** |
+| wordmark | 13 mono (was 21 serif on the landing; unified 2026-10-07) | 13 |
 
 These were already in `index.html` and `line-of-sight.html` as undocumented values before
 being written down here. Anything else stays on the scale at every width — a 10px panel

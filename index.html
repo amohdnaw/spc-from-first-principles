@@ -86,8 +86,10 @@
   nav{border-bottom:1px solid var(--rule)}
   .nav-in{max-width:var(--max);margin:0 auto;padding:20px var(--gutter);
     display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
-  .wordmark{font-family:var(--doc);font-size:21px;color:var(--ink-bright);white-space:nowrap}
-  .wordmark i{font-style:italic;color:var(--accent)}
+  /* the same mono wordmark string as every level page (DESIGN.md, Identity) */
+  .wordmark{font-family:var(--inst);font-size:13px;font-weight:600;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-bright);white-space:nowrap;text-decoration:none}
+  .wordmark i,.wordmark span{font-style:normal;color:var(--accent)}
   .nav-links{display:flex;gap:24px;font-family:var(--inst);font-size:11px;font-weight:600;
     text-transform:uppercase;letter-spacing:.14em;color:var(--ink-dim);flex-wrap:wrap}
   .nav-links a:hover{color:var(--ink-bright)}
@@ -244,7 +246,6 @@
     /* 10px links 16px tall were too small to read or hit; 12px in 44px rows */
     .nav-links{gap:4px 16px;font-size:12px;letter-spacing:.06em}
     .nav-links a{display:inline-flex;align-items:center;min-height:44px}
-    .wordmark{font-size:18px}
     .tools{grid-template-columns:1fr}
     .readouts{gap:24px 32px}
     .ro dd{font-size:21px}
@@ -284,11 +285,12 @@
 
 <nav>
   <div class="nav-in">
-    <a class="wordmark" href="index.html">Ammar Nawawi <i>/ SPC</i></a>
+    <a class="wordmark" href="index.html">Ammar Nawawi <span>/ SPC</span></a>
     <div class="nav-links">
       <a class="on" href="#curriculum">Curriculum</a>
       <a href="#labs">Labs</a>
       <a href="line-of-sight.html">Line of Sight</a>
+      <a href="glossary.html">Glossary</a>
       <a href="https://portfolio.amohdnaw.xyz" target="_blank" rel="noopener">Portfolio ↗</a>
     </div>
   </div>
@@ -378,7 +380,7 @@
         <div class="lv-title">What the numbers mean</div>
         <p class="lv-idea">The prerequisite. What a mean actually is, why spread has to be squared, and where the bell comes from &mdash; measured on twelve real shafts. No control charts.</p>
       </div>
-      <div class="lv-hook">start here &rarr;</div>
+      <div class="lv-hook">read it &rarr;</div>
     </a>
     <a class="lv" href="level-04.html">
       <div class="lv-num num">4</div>
@@ -461,6 +463,14 @@
         which is why it is a structural failure rather than a sampling one.</p>
       </div>
       <div class="lv-hook">open the lab &rarr;</div>
+    </a>
+    <a class="lv" href="https://amohdnaw.github.io/msa-from-first-principles/">
+      <div class="lv-num num">MSA</div>
+      <div>
+        <div class="lv-title">Next course: the gauge under every chart</div>
+        <p class="lv-idea">Every chart above trusts its measurements. Seven levels on what a gauge adds to the spread you see, and when a gauge is good enough to judge a part.</p>
+      </div>
+      <div class="lv-hook">MSA course &rarr;</div>
     </a>
   </div>
 

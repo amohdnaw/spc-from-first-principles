@@ -288,6 +288,9 @@
   .toc .n{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:.35em}
   .toc a{color:var(--ink);text-decoration:none;font-size:19px}
   .toc a:hover{color:var(--accent)}
+  .toc .tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
+    padding:1px 6px;margin-left:10px;vertical-align:.15em;white-space:nowrap}
   .toc-chain{font-family:var(--serif);font-size:17px;color:var(--ink-dim);margin:14px 0 0;
     display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}
   .toc-chain .sep{color:var(--rule-strong);padding:0 4px}
@@ -303,7 +306,9 @@
     color:var(--ink-bright);margin:0 0 14px;max-width:26em;text-wrap:balance}
   .leaf > div > p{text-wrap:pretty}
   .toc .sub,.note em,figcaption .figtext{text-wrap:pretty}
-  .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
+  /* one drop cap per chapter: on every section it hung into the block below a
+     one-line opener. */
+  #s1 .lead::first-letter{initial-letter:2;font-weight:600;color:var(--ink-bright);margin-right:.08em}
 
   /* margin notes: instrument voice, level with the paragraph they annotate.
      Below the margin breakpoint they simply follow the prose at measure width. */
@@ -313,8 +318,15 @@
   .note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
     font-size:11px;margin-bottom:5px}
   .note .v{color:var(--ink-bright);font-size:21px;font-variant-numeric:tabular-nums}
-  .note em{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink);
-    line-height:1.45;display:block;font-variant-numeric:oldstyle-nums}
+  /* a note that argues is document voice: serif at the 17px step. Mono stays for
+     the label, numbers and data rows (DESIGN.md 6 bans mono body prose). */
+  .note:not(.data):not(.watch){font-family:var(--serif);font-size:17px;line-height:1.45;
+    color:var(--ink-dim);font-variant-numeric:oldstyle-nums}
+  .note .k,.note .v{font-family:var(--mono)}
+  .note em{font-style:italic;color:var(--ink)}
+  /* only the spoken quote is a block; inline italics inside a sentence stay inline */
+  .note.speak em{font-family:var(--serif);font-size:17px;line-height:1.45;display:block;
+    font-variant-numeric:oldstyle-nums}
   .note.speak{border-left-color:var(--accent)}
   .note.data .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;
     align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(42,49,56,.6);min-width:0}
@@ -394,7 +406,7 @@
   /* clear does not move a note past initial-letter (it is not a float), so push
      it a body line down; a note further into the paragraph just gains air. */
   @media (max-width:1499px){
-    .lead .note{margin-top:calc(var(--body) * 1.5)}
+    #s1 .lead .note{margin-top:calc(var(--body) * 1.5)}
     /* the number's own column left the formula 504px; six equations scrolled */
     .eq{grid-template-columns:1fr;gap:10px}
     .eq-num{justify-self:end}
@@ -406,6 +418,10 @@
     .note.data .rn{font-size:13px}
     /* tap targets: the rail links measured 30x23 */
     .rail a,.rail span.soon{min-height:44px;padding:0 4px}
+    /* the wrapped rail took ~320px before the title: a fixed grid of equal cells
+       (6 to a row) stacks it into tight rows instead */
+    .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
+    .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
 </style>
 </head>
@@ -446,11 +462,11 @@
         <p class="toc-chain"><span class="micro">after</span> Level 5 — estimation, and what an estimate costs<span class="sep">·</span><span class="micro">leads to</span> Level 7 — evidence, and the other way to be wrong</p>
         <ol>
           <li><span class="n">6.1</span><a href="#s1">A curve that is a claim<span class="sub">why the bell is a hypothesis about the process, not the parts</span></a></li>
-          <li><span class="n">6.2</span><a href="#s2">Pricing ±3σ<span class="sub">the integral between the limits, evaluated as they move</span></a></li>
+          <li><span class="n">6.2</span><a href="#s2">Pricing ±3σ<span class="tag">act</span><span class="tag">interactive</span><span class="sub">the integral between the limits, evaluated as they move</span></a></li>
           <li><span class="n">6.3</span><a href="#s3">Where the price hides<span class="sub">the tails are 70× smaller than the chart — stretch the axis to see them</span></a></li>
           <li><span class="n">6.4</span><a href="#s4">The chart is that test, repeated<span class="sub">limits turned on their side, and why boring is the goal</span></a></li>
           <li><span class="n">6.5</span><a href="#s5">How good is the σ estimate?<span class="sub"><span class="tex" data-tex="\bar R / d_2"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>R</mi><mo>ˉ</mo></mover><mi mathvariant="normal">/</mi><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\bar R / d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0701em;vertical-align:-0.25em;"></span><span class="mord katex-accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8201em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> — the bridge from a range to a standard deviation</span></a></li>
-          <li><span class="n">6.6</span><a href="#s6">Where the constants come from<span class="sub"><span class="tex" data-tex="d_2, A_2, D_3, D_4"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>A</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">d_2, A_2, D_3, D_4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> — simulated, never looked up</span></a></li>
+          <li><span class="n">6.6</span><a href="#s6">Where the constants come from<span class="tag">act</span><span class="sub"><span class="tex" data-tex="d_2, A_2, D_3, D_4"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>A</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">d_2, A_2, D_3, D_4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> — simulated, never looked up</span></a></li>
         </ol>
       </div>
     </header>
