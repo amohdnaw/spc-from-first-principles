@@ -499,7 +499,7 @@ def chapter_12(K):
                           ("corners visited", f"{len(set(OFAT['visited']))} of 4"),
                           k="one at a time, noise-free")),
             para("The reason is visible once it is drawn: the procedure never visits the"
-                 " corner where both factors are set high together, so the setting that"
+                 " corner with high pressure and low temperature, so the setting that"
                  " wins is one it never tries.",
                  note("spoken plainly", text="It is not a search that stopped early. It "
                       "is a search that cannot reach the answer.")),
@@ -507,8 +507,8 @@ def chapter_12(K):
         ]),
         ("s3", "12.3", "The interaction it cannot estimate", [
             para("An interaction is a difference of differences: what the temperature"
-                 " does at high pressure, minus what it does at low pressure. That needs"
-                 " all four corners, and one at a time visits three.",
+                 " does at high pressure, minus what it does at low pressure, halved. That"
+                 " needs all four corners, and one at a time visits three.",
                  datanote(("effect A", f"{EFFECTS['A']:+.0f}"),
                           ("effect B", f"{EFFECTS['B']:+.0f}"),
                           ("interaction AB", f"{EFFECTS['AB']:+.0f}"),
@@ -944,7 +944,8 @@ def chapter_07(K):
                             for rs in cumulative_sets()],
                           k="false alarm every / catches in")),
             para(f"All four together give a false alarm every {ARL0_ALL:.0f} subgroups"
-                 f" instead of {ARL0_ONE_RULE:.0f}. That figure was published in 1987 as"
+                 f" instead of {ARL0_ONE_RULE:.0f} (simulated; the exact value for rule 1"
+                 " alone is 370.4, the 370 of Levels 2 and 6). That figure was published in 1987 as"
                  f" {CHAMP_WOODALL_ARL0}, and the simulation here was not told about it"
                  " — it reproduces it from the rules themselves.",
                  note("corroboration", text="Champ &amp; Woodall, 1987. Agreement with "
@@ -1090,8 +1091,8 @@ def chapter_02(K):
     lo, mid, hi = MILESTONES
     return [
         ("s1", "2.1", "A long-run frequency", [
-            para("Level 1 ended with a shape nobody chose. Putting a number on that shape"
-                 " means saying something like “99.73 % inside”, and before this curriculum"
+            para("Level 1 ended on a funnel: reacting to noise makes it worse. Telling"
+                 " noise from a real change means saying something like “99.73 % inside”, and before this curriculum"
                  " is allowed to say it, it has to be honest about what such a number is a"
                  " statement <em>about</em>.",
                  note("the claim ahead", text="Level 6 prices a pair of limits at 99.73 %. "
@@ -1125,7 +1126,7 @@ def chapter_02(K):
                  note("no repayment", text="The expected surplus never returns toward "
                       "zero. There is nothing to repay it.")),
             para("Below, the proportion, from the same flips. Its error is that same"
-                 " quantity divided by the number of flips, so the same hundredfold"
+                 " quantity divided by twice the number of flips, so the same hundredfold"
                  " <em>divides</em> it by ten. Root n in the numerator, n in the"
                  " denominator.",
                  datanote((f"at {nc('n')} = {lo:,}", f"{RATE_ERR_AT[lo]:.5f}"),
@@ -1400,10 +1401,10 @@ def chapter_04(K):
                  " sigma set to one, then walk the subgroup size from one to twenty-five. At"
                  " twenty-five parts the spread of the mean is a fifth of one part's spread — the"
                  " root is doing all the work.",
-                 datanote(("2nd part buys", "half the error"), ("25th part buys", "0.004 σ"),
+                 datanote(("2nd part buys", "0.29 σ"), ("25th part buys", "0.004 σ"),
                           k="the shape of the deal")),
-            para("But look at the shape of what you are buying. The second part halves your"
-                 " uncertainty; the twenty-fifth buys four thousandths of a sigma. Averaging is"
+            para("But look at the shape of what you are buying. The second part cuts your"
+                 " uncertainty by 29 % (it halves the variance); the twenty-fifth buys four thousandths of a sigma. Averaging is"
                  " cheap at the start and almost free of value at the end, which is why subgroups"
                  " of four and five are everywhere and subgroups of fifty are not."),
             para("It is also why a control chart plots subgroup means rather than parts: a shift"
@@ -1487,10 +1488,10 @@ def chapter_09(K):
             "      " + K["fig"]("Level09.mp4"),
         ]),
         ("s2", "9.2", "A chart with no memory", [
-            para("The first violation lands at subgroup 64. That is 43 subgroups after the drift"
+            para("The first violation lands at subgroup 64. That is 44 subgroups after the drift"
                  " began, by which time the mean has moved 2.6 sigma and every part in between was"
                  " made by a process nobody knew had changed.",
-                 datanote(("drift starts", "subgroup 20"), ("first alarm", "subgroup 64"),
+                 datanote(("drift starts", "after subgroup 20"), ("first alarm", "subgroup 64"),
                           ("mean moved by then", "2.6 σ"), k="what it cost")),
             para("Each point was judged on its own and then forgotten. That is the whole weakness,"
                  " and it is not a tuning problem: the chart has no memory.",
@@ -1558,7 +1559,7 @@ CHAPTERS = {
     },
     "level-02.html": {
         "number": 2, "word": "two",
-        "before": "Level 1 — variation, and a shape nobody chose",
+        "before": "Level 1 — variation, and why reacting to it backfires",
         "after": "Level 3 — centre and spread",
         "estimate": "5 sections · 1 act · 1 interactive · ~8 min read",
         "toc": [("2.1", "s1", "A long-run frequency",
@@ -1732,7 +1733,7 @@ CHAPTERS = {
         "number": 9, "word": "nine",
         "before": "Level 8 — capability",
         "after": "Level 10 — counting, not measuring",
-        "estimate": "6 sections · 3 acts · 1 interactive · ~10 min read",
+        "estimate": "5 sections · 3 acts · 1 interactive · ~10 min read",
         "toc": [("9.1", "s1", "The most expensive failure mode",
                  "every single measurement of a drift looks acceptable"),
                 ("9.2", "s2", "A chart with no memory",
@@ -1742,9 +1743,7 @@ CHAPTERS = {
                 ("9.4", "s4", "The same eighty subgroups again",
                  "caught at 34, with the mean only 0.8 sigma off"),
                 ("9.5", "s5", "One drift is an anecdote",
-                 "44 subgroups against 10, and what the trade means"),
-                ("9.6", "s6", "Rules that read the run",
-                 "four rules that judge the series, not the point")],
+                 "44 subgroups against 10, and what the trade means")],
         "sections": chapter_09,
     },
 }
