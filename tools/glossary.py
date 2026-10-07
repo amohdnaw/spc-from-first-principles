@@ -217,8 +217,9 @@ def glossary_page(template: str, terms: list[dict], site: str) -> str:
     head = head.replace(' aria-current="page"', "")
     foot = template[template.index("</main>"):]
     foot = BLOCK_RE.sub("\n", foot)
-    rows = []
+    rows, first = [], {}
     for e in sorted(terms, key=lambda e: e["term"].lstrip("%").lower()):
+        first.setdefault(e["term"].lstrip("%")[0].upper(), e["id"])
         tags = " ".join(NAME[s] for s in ("spc", "msa") if e["used"].get(s))
         sym = f' <span class="gl-sym">{html.escape(e["symbol"])}</span>' if e["symbol"] and e["symbol"] != e["term"] else ""
         eq = f'<div class="eq-body" data-tex="{tex_attr(e["tex"])}"></div>' if e["tex"] else ""
@@ -229,9 +230,16 @@ def glossary_page(template: str, terms: list[dict], site: str) -> str:
             f'<p class="gl-meta"><span class="micro">Built in</span> {level_links(e, site, "built")}<br>'
             f'<span class="micro">Used in</span> {level_links(e, site, "used")}</p></section>')
     style = """<style>
-  .gl-page{max-width:var(--measure);margin:0 auto;padding:64px 0 96px}
+  /* the level pages' .leaf box, so the column starts on the same left edge */
+  .gl-page{max-width:calc(var(--measure) + var(--marg-gap) + var(--marg));margin:0 auto;padding:64px 0 96px}
+  .gl-page > *{max-width:var(--measure)}
+  .gl-az{display:flex;flex-wrap:wrap;margin:0 0 40px;max-width:none!important;font-family:var(--mono);font-size:14px}
+  .gl-az a,.gl-az span{min-width:22px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+  .gl-az a{color:var(--accent);text-decoration:none}
+  .gl-az a:hover{text-decoration:underline}
+  .gl-az span{color:var(--rule-strong)}
   .gl-page h1{margin:0 0 8px}
-  .gl-page .dek{color:var(--ink-dim);margin:0 0 40px}
+  .gl-page .dek{color:var(--ink-dim);margin:0 0 24px}
   .gl-entry{border-left:2px solid var(--rule-strong);padding:2px 0 2px 18px;margin:0 0 32px;scroll-margin-top:96px}
   .gl-entry:target{border-left-color:var(--accent)}
   .gl-entry h2{font-size:1.15em;margin:0 0 4px;font-weight:400;color:var(--ink-bright)}
@@ -250,8 +258,11 @@ def glossary_page(template: str, terms: list[dict], site: str) -> str:
   .gl-entry .gl-meta a{color:var(--accent);text-decoration:none}
   .gl-entry .gl-meta a:hover{text-decoration:underline}
 </style>"""
+    az = "".join(f'<a href="#{first[c]}">{c}</a>' if c in first else f'<span>{c}</span>'
+                 for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     body = (f'<main class="gl-page">\n{style}\n<h1>Glossary</h1>\n'
             f'<p class="dek">{len(terms)} terms from both sites, SPC and MSA, one plain sentence each.</p>\n'
+            f'<div class="gl-az" role="navigation" aria-label="Jump to a letter">{az}</div>\n'
             + "\n".join(rows) + "\n")
     return head + body + foot
 
