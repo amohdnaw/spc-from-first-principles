@@ -343,6 +343,14 @@ INSIDE_K = {k: 2 * phi(k) - 1 for k in (1, 2, 3)}
 TAIL_K = {k: 1 - phi(k) for k in (1, 2, 3)}
 TAIL3_PPM = f"{TAIL_K[3]*1e6:,.0f}".replace(",", " ")  # the site writes 1 350
 
+from spclab.level06 import XR_SIGMA, xbar_r_example  # noqa: E402
+
+# Level 6.7 builds one X̄–R chart. The page quotes the same arrays the figure
+# draws, so the arithmetic in the prose and the lines on the chart cannot part.
+XR = xbar_r_example()
+XR_OUT = int(((XR["means"] > XR["ucl_xbar"]) | (XR["means"] < XR["lcl_xbar"])).sum()
+             + (XR["ranges"] > XR["ucl_r"]).sum())
+
 from spclab.estimation import (  # noqa: E402
     CONF, COVER_T, COVER_Z, D2_MEAN, D2_PUBLISHED, D2_SE, D2_SUBGROUPS_FOR_3DP,
     HALVE_FROM, HALVE_N_T, HALVE_N_Z, SE_EXACT, SE_OBSERVED, SIZES, SUBGROUP_N,
@@ -426,7 +434,8 @@ def chapter_06(K):
                     para("A control chart is not a new idea on top of this one. It is the same test, run"
                          " again on every subgroup, forever. The limits are the boundary we just drew,"
                          " turned on its side. Every point inside is the process agreeing with the null"
-                         " hypothesis, and that is what boring looks like. Boring is the goal.",
+                         " hypothesis, and that is what boring looks like. Boring is the goal. The"
+                         " usual form of it, the Shewhart chart, gets built from real numbers in 6.7.",
                          note("allowed by H₀", v="1 in 370")),
                     para("Then one point steps outside — say 4.1σ above the centre line, where the null"
                          " allows one point in 370. That point is not a bad part, and scrapping it changes"
@@ -466,6 +475,42 @@ def chapter_06(K):
                     "      " + K["fig"]("01_d2.png"),
                     "      " + K["fig"]("02_A2_D3_D4.png"),
                     "      </div>",
+        ]),
+        ("s7", "6.7", "Building the chart", [
+            para("Here is the whole procedure on one stable process: twenty-five subgroups of"
+                 " five parts, measured in millimetres. Each subgroup gives two numbers, its mean"
+                 " and its range. Plot the means on one chart and the ranges on a second chart"
+                 " under it. That pair is the " + tex(r"\bar{X}") + "–R chart. Walter Shewhart"
+                 " drew the first control chart in 1924, so it also goes by his name.",
+                 datanote(("subgroups", f"{len(XR['means'])} × 5"),
+                          ("grand mean", f"{XR['xbarbar']:.4f}"),
+                          ("mean range R̄", f"{XR['rbar']:.4f}"),
+                          k="the data, mm"), lead=True),
+            para("The top chart's centre line is the grand mean, " + tex(r"\bar{\bar{x}}") + ","
+                 " the mean of the means. Its limits sit " + tex(r"A_2\bar{R}") + " either side."
+                 f" For subgroups of five A₂ is {XR['A2']:.3f}, so the distance is"
+                 f" {XR['A2']:.3f} × {XR['rbar']:.4f} = {XR['A2']*XR['rbar']:.4f} mm and the"
+                 f" limits land at {XR['lcl_xbar']:.4f} and {XR['ucl_xbar']:.4f}.",
+                 note("why A₂ works", text=tex(r"\bar{R}/d_2") + " estimates one part's σ (6.5). Divide by"
+                      " √n for the σ of a mean (4.3), then take three of those: "
+                      + tex(r"3\bar{R}/(d_2\sqrt{n}) = A_2\bar{R}") + ".")),
+            para("The ranges get a chart of their own because a process can go wrong without its"
+                 " mean moving. A loose fixture lets parts scatter while the average stays put."
+                 " The R chart's centre line is " + tex(r"\bar{R}") + " and its upper limit is "
+                 + tex(r"D_4\bar{R}") + f" = {XR['D4']:.3f} × {XR['rbar']:.4f} ="
+                 f" {XR['ucl_r']:.4f} mm. Its lower limit, " + tex(r"D_3\bar{R}") + ", is"
+                 " zero, because D₃ is zero for any subgroup of six parts or fewer.",
+                 datanote(("A₂", f"{XR['A2']:.3f}"), ("D₃", f"{XR['D3']:.0f}"),
+                          ("D₄", f"{XR['D4']:.3f}"), k="at n = 5")),
+            para("Read the range chart first. If the ranges are out of control, " + tex(r"\bar{R}") + " is wrong,"
+                 " and so is every limit built from it on the top chart. Here "
+                 + ("nothing crosses a line on either chart" if XR_OUT == 0 else
+                    f"{XR_OUT} points cross a line")
+                 + ": twenty-five subgroups of a process doing nothing but varying.",
+                 datanote((nc("σ") + " from R̄ / d₂", f"{XR['sigma_hat']:.4f}"),
+                          (nc("σ") + " that made the data", f"{XR_SIGMA:.4f}"),
+                          k="the estimate, checked")),
+            "      " + K["fig"]("l06_3_xbar_r.png"),
         ]),
     ]
 
@@ -832,7 +877,7 @@ def chapter_10(K):
                  " while " + tex(r"n\bar{p} > k^{2}(1-\bar{p})") + f", which at three"
                  f" sigma is {NP_THRESHOLD:.2f}. At four per cent defective that means"
                  f" subgroups of {N_FOR_LCL} — not the {folklore} the familiar"
-                 " “np̄ ≥ 5” rule of thumb allows.",
+                 " “" + tex(r"n\bar{p} \ge 5") + "” rule of thumb allows.",
                  note("the rule of thumb", text="A weaker version of the same "
                       "arithmetic. At " + tex(r"n\bar{p} = 5") + " the limit is still "
                       "negative.")),
@@ -1643,7 +1688,7 @@ CHAPTERS = {
         "number": 6, "word": "six",
         "before": "Level 5 — estimation, and what an estimate costs",
         "after": "Level 7 — evidence, and the other way to be wrong",
-        "estimate": "6 sections · 1 interactive · 2 acts · ~9 min read",
+        "estimate": "7 sections · 1 interactive · 2 acts · ~11 min read",
         "toc": [("6.1", "s1", "A curve that is a claim",
                  "why the bell is a hypothesis about the process, not the parts"),
                 ("6.2", "s2", "Pricing ±3σ",
@@ -1655,7 +1700,9 @@ CHAPTERS = {
                 ("6.5", "s5", "How good is the σ estimate?",
                  tex(r"\bar R / d_2") + " — the bridge from a range to a standard deviation"),
                 ("6.6", "s6", "Where the constants come from",
-                 tex(r"d_2, A_2, D_3, D_4") + " — simulated, never looked up")],
+                 tex(r"d_2, A_2, D_3, D_4") + " — simulated, never looked up"),
+                ("6.7", "s7", "Building the chart",
+                 "the " + tex(r"\bar{X}") + "–R pair from 25 subgroups, one multiplication per limit")],
         "sections": chapter_06,
     },
     "level-03.html": {

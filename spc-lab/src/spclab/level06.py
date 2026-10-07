@@ -3,6 +3,7 @@
 Sheet 1: the sampling distribution of x̄ with the ±3σ envelope and its
          exact tail area — the origin of '99.73%' and ARL ≈ 370.
 Sheet 2: the plumbing — how well does R̄/d₂ estimate σ? (simulated).
+Sheet 3: a worked X̄–R chart — 25 subgroups of 5, limits from A₂, D₃, D₄.
 
     PYTHONPATH=src .venv/bin/python -m spclab.level06
 """
@@ -15,7 +16,7 @@ import matplotlib.pyplot as plt
 
 from spclab import figstyle
 
-from spclab.formulas import _d2_d3
+from spclab.formulas import _d2_d3, xbar_r_limits
 
 BG, FG, MUTED = "#0e1116", "#e8e8e8", "#8a939f"
 BLUE, TEAL, YELLOW, RED = "#58C4DD", "#5CD0B3", "#FFD54F", "#FC6255"
@@ -115,6 +116,58 @@ def sheet_l06_plumbing():
     _save(fig, "l06_2_rbar_plumbing")
 
 
+# ---------------------------------------------------------------------------
+# Sheet 3 — a worked X̄–R chart: the constants of 6.6 put to work
+# ---------------------------------------------------------------------------
+XR_SUBS, XR_N, XR_MU, XR_SIGMA, XR_SEED = 25, 5, 50.000, 0.012, 61
+
+
+def xbar_r_example() -> dict:
+    """One stable process, 25 subgroups of 5, in mm. The page quotes these."""
+    data = np.random.default_rng(XR_SEED).normal(XR_MU, XR_SIGMA, (XR_SUBS, XR_N))
+    lim = xbar_r_limits(data)
+    lim["means"] = data.mean(axis=1)
+    lim["ranges"] = np.ptp(data, axis=1)
+    lim["sigma_hat"] = lim["rbar"] / lim["d2"]
+    return lim
+
+
+def sheet_l06_xbar_r():
+    """X̄ chart over R chart, every limit labelled with its arithmetic."""
+    e = xbar_r_example()
+    x = np.arange(1, XR_SUBS + 1)
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(7, 7.6), sharex=True,
+                                 gridspec_kw={"hspace": .35})
+
+    def chart(ax, ys, centre, lo, hi, names, col):
+        ax.plot(x, ys, "-o", color=col, ms=4, lw=1.4)
+        for v, lab, c in ((hi, names[0], YELLOW), (centre, names[1], MUTED),
+                          (lo, names[2], YELLOW)):
+            ax.axhline(v, color=c, ls="--", lw=1.2)
+            # labels live in a gutter right of the plot, where no data runs
+            ax.text(1.02, v, lab, color=c, fontsize=10.5, va="center",
+                    transform=ax.get_yaxis_transform())
+        ax.grid(alpha=.4, axis="y")
+
+    chart(a1, e["means"], e["xbarbar"], e["lcl_xbar"], e["ucl_xbar"],
+          (f"UCL {e['ucl_xbar']:.4f}", r"$\bar{\bar{x}}$ " + f"{e['xbarbar']:.4f}",
+           f"LCL {e['lcl_xbar']:.4f}"), BLUE)
+    a1.set_title(r"$\bar{x}$ chart · subgroup means, mm", loc="left")
+    chart(a2, e["ranges"], e["rbar"], e["lcl_r"], e["ucl_r"],
+          (f"UCL {e['ucl_r']:.4f}", r"$\bar{R}$ " + f"{e['rbar']:.4f}",
+           f"LCL {e['lcl_r']:.0f}"), TEAL)
+    a2.set_title("R chart · subgroup ranges, mm", loc="left")
+    a2.set_xlabel("subgroup")
+    a2.set_xlim(0, XR_SUBS + 1)
+    pad = (e["ucl_xbar"] - e["xbarbar"]) * .25
+    a1.set_ylim(e["lcl_xbar"] - pad, e["ucl_xbar"] + pad)
+    a2.set_ylim(-e["rbar"] * .12, e["ucl_r"] * 1.12)
+    hits = figstyle.collisions(fig)
+    assert not hits, hits
+    _save(fig, "l06_3_xbar_r")
+
+
 if __name__ == "__main__":
     sheet_l06_null()
     sheet_l06_plumbing()
+    sheet_l06_xbar_r()
