@@ -494,14 +494,14 @@
         <div>
           <p class="ch-no">Level 10 · chapter ten</p>
           <h1>Counting, not measuring</h1>
-          <p class="dek">Stop measuring and start counting, and the distribution hands you the spread. Part III is hands-on: this level has no video and one thing to drag.</p>
+          <p class="dek">Stop measuring and start counting, and the distribution hands you the spread. Part III is hands-on: this level has one video and one thing to drag.</p>
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 interactive · ~9 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 act · 1 interactive · ~9 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 9 — detection, and memory beating sensitivity<span class="sep">·</span><span class="micro">leads to</span> Level 11 — relationships, and the seam to MSA</p>
         <ol>
-          <li><span class="n">10.1</span><a href="#s1">The spread is not a free parameter<span class="sub">for a count, the mean fixes the standard deviation</span></a></li>
+          <li><span class="n">10.1</span><a href="#s1">The spread is not a free parameter<span class="tag">act</span><span class="sub">for a count, the mean fixes the standard deviation</span></a></li>
           <li><span class="n">10.2</span><a href="#s2">Same mean, different scatter<span class="sub">a variance ratio you get for free</span></a></li>
           <li><span class="n">10.3</span><a href="#s3">Four charts, two questions<span class="sub">np, p, c, u — and nothing else to remember</span></a></li>
           <li><span class="n">10.4</span><a href="#s4">When the limits have to breathe<span class="sub">the average-n shortcut, priced</span></a></li>
@@ -515,6 +515,14 @@
         <div>
           <span class="sec-no">10.1</span>
           <h2>The spread is not a free parameter</h2>
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/level10.jpg">
+          <source src="spc-lab/media/videos/level10_scene/1080p60/Level10.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level10.vtt" srclang="en" label="English">
+        </video>
+        <figcaption><span class="fignum">Figure 10.1</span><span class="figtext">Rendered in Manim. The rate sweeps from 2% to 50% and the spread follows it; at 4% the subgroup size moves instead, and the lower limit leaves zero only from n = 217, not the 125 the rule of thumb allows.</span></figcaption>
+      </figure>
           <p class="lead">Levels 3 to 5 spent their time estimating a spread, because for a measurement the spread is a separate fact about the process — it has to be measured, and it carries its own error. <span class="note"><span class="k">what changes</span>A measurement needs a range chart beside it. A count does not, and this is why.</span>Stop measuring and start counting, and that stops being true.</p>
           <p>Count <a class="gl" href="glossary.html#defective" data-gl="defective">defective</a> items and the result is <a class="gl" href="glossary.html#binomial" data-gl="binomial">binomial</a>, so its <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">standard deviation</a> is fixed by its <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a>. <span class="note data"><span class="k">the mean fixes the spread</span><span class="row num"><span class="rk"><span class="nc">p̄</span> assumed</span><span class="rv">0.04</span></span><span class="row num"><span class="rk"><span class="nc">n</span></span><span class="rv">200</span></span><span class="row num"><span class="rk"><span class="nc">σ</span> of the proportion</span><span class="rv">0.01386</span></span><span class="row txt"><span class="rk"><span class="nc">c̄</span> = 6.5</span><span class="rv"><span class="nc">σ</span> = 2.550</span></span></span>Count defects and the result is <a class="gl" href="glossary.html#poisson" data-gl="poisson">Poisson</a>, where the <a class="gl" href="glossary.html#variance" data-gl="variance">variance</a> <em>is</em> the mean. Either way nothing is estimated separately.</p>
       <div class="eq">
@@ -558,7 +566,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l10_1_spread_is_not_free.png"><img src="spc-lab/docs/l10_1_spread_is_not_free.png" width="1609" height="921" loading="lazy"
              alt="The binomial sigma as a function of the rate, and two p-charts with the same mean and different scatter"></a>
-        <figcaption><span class="fignum">Figure 10.1</span><span class="figtext">A rate's spread is fixed by the rate: σ = √(p(1−p)/n), 0.0139 at p = 0.04. Two p-charts share a mean; one scatters at 0.92 of that, the other at 1.64.</span></figcaption>
+        <figcaption><span class="fignum">Figure 10.2</span><span class="figtext">A rate's spread is fixed by the rate: σ = √(p(1−p)/n), 0.0139 at p = 0.04. Two p-charts share a mean; one scatters at 0.92 of that, the other at 1.64.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -585,7 +593,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l10_2_breathing_limits.png"><img src="spc-lab/docs/l10_2_breathing_limits.png" width="1737" height="997" loading="lazy"
              alt="A p-chart whose limits breathe with each subgroup size, and where the lower limit clears zero"></a>
-        <figcaption><span class="fignum">Figure 10.2</span><span class="figtext">Limits that move with each subgroup's size. One limit at the average n disagrees on 0.87% of subgroups, and the lower limit clears zero only from n = 217, not the 125 the rule of thumb allows.</span></figcaption>
+        <figcaption><span class="fignum">Figure 10.3</span><span class="figtext">Limits that move with each subgroup's size. One limit at the average n disagrees on 0.87% of subgroups, and the lower limit clears zero only from n = 217, not the 125 the rule of thumb allows.</span></figcaption>
       </figure>
         </div>
       </div>

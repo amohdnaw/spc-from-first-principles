@@ -1,0 +1,144 @@
+1
+00:00:00,000 --> 00:00:04,901
+Levels three to five spent their time estimating a spread, because for
+
+2
+00:00:05,001 --> 00:00:09,332
+a measurement the spread is a separate fact about the process.
+
+3
+00:00:09,416 --> 00:00:14,844
+Count defective items instead, and that stops being true. Out of n
+
+4
+00:00:14,944 --> 00:00:20,957
+items the number defective is binomial, and its standard deviation is the
+
+5
+00:00:21,057 --> 00:00:25,396
+square root of n, times p bar, times one minus p bar.
+
+6
+00:00:25,483 --> 00:00:28,334
+Divide by n to turn the count into a
+
+7
+00:00:28,434 --> 00:00:31,695
+fraction, and the n moves under the root.
+
+8
+00:00:31,783 --> 00:00:35,655
+Nothing on the right is a separate spread. The rate and
+
+9
+00:00:35,755 --> 00:00:39,627
+the subgroup size fix it, and nobody gets to choose it.
+
+10
+00:00:39,716 --> 00:00:43,282
+Here is a subgroup of two hundred items at four
+
+11
+00:00:43,382 --> 00:00:47,416
+per cent defective: how often each fraction turns up.
+
+12
+00:00:47,516 --> 00:00:51,040
+Three sigma either side gives the limits.
+
+13
+00:00:51,133 --> 00:00:54,061
+Now move the rate, and only the rate. The
+
+14
+00:00:54,161 --> 00:00:57,753
+spread follows it, because the rate is the spread.
+
+15
+00:00:57,850 --> 00:01:02,886
+At fifty per cent the scatter is as wide as it can ever get.
+
+16
+00:01:02,983 --> 00:01:06,643
+Bring the rate down to two per cent and the band
+
+17
+00:01:06,743 --> 00:01:11,187
+closes up. The lower limit runs into zero and stops there.
+
+18
+00:01:11,283 --> 00:01:15,848
+The arithmetic puts it below zero, at minus one per cent.
+
+19
+00:01:15,948 --> 00:01:20,595
+A chart cannot draw a negative fraction, so it draws zero,
+
+20
+00:01:20,695 --> 00:01:23,951
+and a limit at zero can never be crossed.
+
+21
+00:01:24,050 --> 00:01:27,109
+That is why a chart for counts has no range
+
+22
+00:01:27,209 --> 00:01:31,078
+chart beside it. There is no separate spread to chart.
+
+23
+00:01:31,166 --> 00:01:33,746
+Now hold the rate at four per cent,
+
+24
+00:01:33,846 --> 00:01:37,114
+and change the size of the subgroup instead.
+
+25
+00:01:37,200 --> 00:01:41,828
+Fifty items per subgroup, and the band opens wide.
+
+26
+00:01:41,916 --> 00:01:45,640
+Two hundred, and it closes. A bigger subgroup gives a
+
+27
+00:01:45,740 --> 00:01:50,041
+steadier fraction, so when the size changes from one subgroup
+
+28
+00:01:50,141 --> 00:01:53,504
+to the next, the limits have to breathe with it.
+
+29
+00:01:53,600 --> 00:01:57,685
+Even at two hundred the lower limit is stuck at zero.
+
+30
+00:01:57,785 --> 00:02:00,923
+The rule of thumb says n p bar of five is
+
+31
+00:02:01,023 --> 00:02:05,188
+enough, which here is a hundred and twenty five items.
+
+32
+00:02:05,283 --> 00:02:12,143
+The arithmetic says otherwise. The limit clears zero only from 217.
+
+33
+00:02:12,233 --> 00:02:17,564
+Look closely at the floor. Above that size, every item you add buys a
+
+34
+00:02:17,664 --> 00:02:22,837
+real lower limit: a chart that can tell you the process got better.
+
+35
+00:02:22,933 --> 00:02:25,893
+A limit at zero is not a limit. Size
+
+36
+00:02:25,993 --> 00:02:29,889
+the subgroup so the chart can signal both ways.
+

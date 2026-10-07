@@ -19,7 +19,8 @@ OUTDIR=media/videos
 POSTERS=../posters
 CAPTIONS=../captions
 
-# scene file : class : poster name
+# scene file : class : poster name [: poster time in s, when the ink score
+# would pick a frame mid camera move: Level 10 scored best halfway into its zoom]
 SCENES=(
   "level01_scene:Level01:level01"
   "level02_scene:Level02:level02"
@@ -30,6 +31,7 @@ SCENES=(
   "level07_scene:Level07:level07"
   "level08_scene:Level08:level08"
   "level09_scene:Level09:level09"
+  "level10_scene:Level10:level10:60"
   "scenes:SPCGallery:gallery"
   "scenes2:ConstantsAct:constants"
   "scenes2:EWMAMemory:ewma"
@@ -46,7 +48,7 @@ for entry in "${SCENES[@]}"; do
   if [ -n "${ONLY:-}" ] && [ "${entry#*:}" != "${ONLY}:"* ]; then
     case "$entry" in *":${ONLY}:"*) ;; *) continue ;; esac
   fi
-  IFS=: read -r file klass poster <<<"$entry"
+  IFS=: read -r file klass poster at <<<"$entry"
   printf '=== %-14s %s\n' "$klass" "(src/spclab/$file.py)"
 
   PYTHONPATH=src $VENV/manim "$QUALITY" --disable_caching \
@@ -81,7 +83,7 @@ for entry in "${SCENES[@]}"; do
   fi
 
   # poster: best of 11 candidate frames by ink coverage
-  PYTHONPATH=src $VENV/python - "$mp4" "$POSTERS/$poster.jpg" <<'PY'
+  PYTHONPATH=src $VENV/python - "$mp4" "$POSTERS/$poster.jpg" "${at:-}" <<'PY'
 import subprocess, sys, tempfile
 from collections import Counter
 from PIL import Image
@@ -93,8 +95,10 @@ def ink(p):
     px = list(im.getdata()); bg = Counter(px).most_common(1)[0][0]
     return sum(1 for c in px if max(abs(c[i]-bg[i]) for i in range(3)) > 18)/len(px)
 best = (-1, dur/2)
+if len(sys.argv) > 3 and sys.argv[3]:
+    best = (0, float(sys.argv[3]))
 with tempfile.TemporaryDirectory() as td:
-    for i in range(4, 15):
+    for i in (range(4, 15) if best[0] < 0 else ()):
         t = round(dur*i/16, 2)
         f = f'{td}/{i}.jpg'
         subprocess.run(['ffmpeg','-v','error','-ss',str(t),'-i',mp4,'-frames:v','1','-q:v','3',f,'-y'],check=True)

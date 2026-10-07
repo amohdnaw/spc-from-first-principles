@@ -731,6 +731,7 @@ def chapter_10(K):
     folklore = int(round(5.0 / P_BAR))
     return [
         ("s1", "10.1", "The spread is not a free parameter", [
+            "      " + K["fig"]("Level10.mp4"),
             para("Levels 3 to 5 spent their time estimating a spread, because for a"
                  " measurement the spread is a separate fact about the process — it has"
                  " to be measured, and it carries its own error. Stop measuring and"
@@ -1653,7 +1654,7 @@ CHAPTERS = {
         "number": 10, "word": "ten",
         "before": "Level 9 — detection, and memory beating sensitivity",
         "after": "Level 11 — relationships, and the seam to MSA",
-        "estimate": "6 sections · 1 interactive · ~9 min read",
+        "estimate": "6 sections · 1 act · 1 interactive · ~9 min read",
         "toc": [("10.1", "s1", "The spread is not a free parameter",
                  "for a count, the mean fixes the standard deviation"),
                 ("10.2", "s2", "Same mean, different scatter",
