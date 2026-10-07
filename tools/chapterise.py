@@ -1092,8 +1092,24 @@ def chapter_05(K):
                  note("the substitution", text="Not a correction bolted on. It is what "
                       "the arithmetic gives when the spread is estimated too.")),
             "      " + K["eq"],
-            para(f"At {n} parts that quantile is {T_AT[n]:.3f} rather than 1.960, and"
-                 f" the count lands where it belongs — at every sample size, not just"
+            para("That quantile comes from the <em>t</em> distribution. In 1908 William"
+                 " Gosset, a chemist at the Guinness brewery who published as “Student”,"
+                 " worked out how far the sample mean lands from the true mean, counted in"
+                 " standard errors, when <em>s</em> comes from the same few parts. The"
+                 " answer is a bell with heavier tails, and the fewer the parts, the"
+                 " heavier they get. It has one setting, the degrees of freedom: "
+                 "<em>n</em> − 1, the same <em>n</em> − 1 Level 3 divided by. Five"
+                 " parts leave four.",
+                 datanote(*[(f"{nc(chr(110))} = {k}", f"{T_AT[k]:.3f}") for k in SIZES],
+                          ("normal", f"{Z95:.3f}"),
+                          k=f"the 95 % {nc(chr(116))} quantile"),
+                 note("in a spreadsheet", text="T.INV.2T(0.05, n − 1). With 100 parts it is"
+                      f" {T_AT[100]:.3f}, almost the normal value: <em>t</em> only matters"
+                      " when the parts are few.")),
+            para(f"Read it the way 4.5 read the bell. {T_AT[n]:.3f} is the distance that"
+                 f" leaves 2.5 % in each tail of <em>t</em> with {n - 1} degrees of freedom,"
+                 f" just as {Z95:.2f} does for the normal curve. Build the interval with it"
+                 f" and the count lands where it belongs — at every sample size, not just"
                  f" the comfortable ones.",
                  datanote(*[(f"{nc(chr(110))} = {k}", f"{COVER_T[k]*100:.1f} %") for k in SIZES],
                           k=f"the same interval built with {nc(chr(116))}"),
