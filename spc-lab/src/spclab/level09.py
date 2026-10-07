@@ -13,6 +13,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from spclab import figstyle
+from spclab.detection import DET_EWMA, DET_SHEW, EWMA_LIMIT, N_SUB, RAW, SHIFT_AT, ZS
 
 BG, FG, MUTED = "#0e1116", "#e8e8e8", "#8a939f"
 BLUE, TEAL, YELLOW, RED = "#58C4DD", "#5CD0B3", "#FFD54F", "#FC6255"
@@ -133,22 +134,13 @@ def sheet_l09_arl():
 
 
 def sheet_l09_race():
-    """One drifting process, two charts racing to detect it."""
-    rng = np.random.default_rng(55)
-    n = 60
-    shift_at = 20
-    raw = rng.normal(0, 1, n) + np.where(np.arange(n) >= shift_at,
-                                         (np.arange(n) - shift_at) * 0.15, 0)
-    lam = LAM
-    z, zs = 0.0, []
-    for x in raw:
-        z = lam * x + (1 - lam) * z
-        zs.append(z)
-    zs = np.array(zs)
-    lim = 3 * np.sqrt(lam / (2 - lam))
+    """One drifting process, two charts racing to detect it.
 
-    det_s = next(i for i, v in enumerate(raw) if abs(v) > 3)
-    det_e = next(i for i, v in enumerate(zs) if abs(v) > lim)
+    The act's own run (detection.drifting_process) at the calibrated EWMA
+    limit, so the figure, the act, the 9.4 prose and the lab show one race.
+    """
+    raw, zs, n, shift_at = RAW, ZS, N_SUB, SHIFT_AT
+    lim, det_s, det_e = EWMA_LIMIT, DET_SHEW, DET_EWMA
 
     fig, axs = plt.subplots(2, 1, figsize=(11, 7), sharex=True,
                             constrained_layout=True)

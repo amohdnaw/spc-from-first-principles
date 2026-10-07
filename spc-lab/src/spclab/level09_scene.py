@@ -42,38 +42,13 @@ from spclab.act_style import (
     at_panel, gauge, micro, prose,
 )
 from spclab.detection import (
+    DET_EWMA, DET_SHEW, DRIFT, N_SUB, OFF_EWMA, OFF_SHEW, RAW, SHIFT_AT, ZS,
+    drifting_process,
     ARL0_EWMA, ARL0_SHEW, ARL1_EWMA, ARL1_SHEW, EWMA_LIMIT, LAM,
     SHEWHART_ARL0, SPEEDUP,
 )
 from spclab.narration import NarratedCameraScene
 
-# The demonstration process: 80 subgroups, quiet until 20, then a ramp of
-# 0.06 σ per subgroup. The old act ramped at 0.15 σ, which reaches 6 σ inside
-# the window — on that data the Shewhart chart caught the drift one subgroup
-# after the EWMA, so the single realisation contradicted the averages it was
-# supposed to illustrate. This ramp is slow enough to be the failure mode the
-# act is about, and seed 35 is a run whose lead matches the simulated ARLs.
-N_SUB, SHIFT_AT, DRIFT, SEED = 80, 20, 0.06, 35
-
-
-def drifting_process():
-    """One process: quiet, then a slow ramp. Same data for both charts."""
-    rng = np.random.default_rng(SEED)
-    raw = rng.normal(0, 1, N_SUB) + np.where(
-        np.arange(N_SUB) >= SHIFT_AT, (np.arange(N_SUB) - SHIFT_AT) * DRIFT, 0.0)
-    z, zs = 0.0, []
-    for v in raw:
-        z = LAM * v + (1 - LAM) * z
-        zs.append(z)
-    return raw, np.array(zs)
-
-
-RAW, ZS = drifting_process()
-# where each rule fires on this run, and how far the mean had already moved
-DET_SHEW = int(next(k for k, v in enumerate(RAW) if abs(v) > 3.0))
-DET_EWMA = int(next(k for k, v in enumerate(ZS) if abs(v) > EWMA_LIMIT))
-OFF_SHEW = (DET_SHEW - SHIFT_AT) * DRIFT
-OFF_EWMA = (DET_EWMA - SHIFT_AT) * DRIFT
 
 
 class Level09(NarratedCameraScene):
