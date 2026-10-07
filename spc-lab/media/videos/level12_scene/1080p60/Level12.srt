@@ -1,0 +1,88 @@
+1
+00:00:00,000 --> 00:00:04,221
+A moulded part shrinks as it cools. Two settings decide
+
+2
+00:00:04,321 --> 00:00:09,092
+how much: hold pressure and melt temperature. Lower is better.
+
+3
+00:00:09,183 --> 00:00:13,938
+This map is the truth. Nobody gets to see it. All an engineer
+
+4
+00:00:14,038 --> 00:00:18,635
+can do is run the process at a setting and read one number.
+
+5
+00:00:18,733 --> 00:00:21,834
+Start where most people start: everything
+
+6
+00:00:21,934 --> 00:00:24,177
+low. The part shrinks sixteen.
+
+7
+00:00:24,266 --> 00:00:29,590
+One factor at a time. Hold the pressure, and try the temperature high.
+
+8
+00:00:29,683 --> 00:00:32,799
+Eight. Better. Keep the high temperature.
+
+9
+00:00:32,883 --> 00:00:36,119
+Now hold that, and try the pressure high.
+
+10
+00:00:36,216 --> 00:00:38,564
+Ten. Worse. Go back.
+
+11
+00:00:38,650 --> 00:00:42,378
+Three runs, every one of them measured perfectly, and
+
+12
+00:00:42,478 --> 00:00:45,846
+the procedure stops at eight. It looks finished.
+
+13
+00:00:45,933 --> 00:00:51,161
+Look at the one corner it never ran: high pressure, low temperature.
+
+14
+00:00:51,250 --> 00:00:55,710
+A design that runs all four corners finds it. Six.
+
+15
+00:00:55,800 --> 00:01:00,868
+Four runs instead of three, and the answer one at a time gave
+
+16
+00:01:00,968 --> 00:01:05,444
+is 33 per cent worse. Noise had nothing to do with it.
+
+17
+00:01:05,533 --> 00:01:10,774
+The reason is the interaction. Raising the temperature cuts shrinkage by
+
+18
+00:01:10,874 --> 00:01:15,151
+eight at low pressure, and adds four at high pressure. What
+
+19
+00:01:15,251 --> 00:01:19,082
+one factor does depends on the other, and a walk that
+
+20
+00:01:19,182 --> 00:01:21,753
+moves one at a time never sees that.
+
+21
+00:01:21,850 --> 00:01:25,924
+One factor at a time is not slow. It is wrong. Change
+
+22
+00:01:26,024 --> 00:01:30,966
+the factors together, and the design sees what they do together.
+

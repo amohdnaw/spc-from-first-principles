@@ -32,6 +32,8 @@ SCENES=(
   "level08_scene:Level08:level08"
   "level09_scene:Level09:level09"
   "level10_scene:Level10:level10:60"
+  "level11_scene:Level11:level11:42"
+  "level12_scene:Level12:level12:70"
   "scenes:SPCGallery:gallery"
   "scenes2:ConstantsAct:constants"
   "scenes2:EWMAMemory:ewma"

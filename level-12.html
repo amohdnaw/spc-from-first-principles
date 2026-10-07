@@ -498,11 +498,11 @@
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 interactive · ~9 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">6 sections · 1 act · 1 interactive · ~9 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 11 — relationships, and the seam to MSA<span class="sep">·</span><span class="micro">leads to</span> nothing — this is where the arc closes</p>
         <ol>
           <li><span class="n">12.1</span><a href="#s1">Changing things on purpose<span class="sub">one term in the model is the whole subject</span></a></li>
-          <li><span class="n">12.2</span><a href="#s2">One factor at a time, with perfect measurements<span class="sub">it stops at the wrong corner, and noise is not the reason</span></a></li>
+          <li><span class="n">12.2</span><a href="#s2">One factor at a time, with perfect measurements<span class="tag">act</span><span class="sub">it stops at the wrong corner, and noise is not the reason</span></a></li>
           <li><span class="n">12.3</span><a href="#s3">The interaction it cannot estimate<span class="tag">interactive</span><span class="sub">unidentifiable, which is stronger than imprecise</span></a></li>
           <li><span class="n">12.4</span><a href="#s4">Screening: width, bought with aliasing<span class="sub">seven factors in eight runs, and the price as a table</span></a></li>
           <li><span class="n">12.5</span><a href="#s5">Curvature, and why the corners cannot see it<span class="sub">the bend is constant across corners, not absent</span></a></li>
@@ -530,6 +530,14 @@
         <div>
           <span class="sec-no">12.2</span>
           <h2>One factor at a time, with perfect measurements</h2>
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/level12.jpg">
+          <source src="spc-lab/media/videos/level12_scene/1080p60/Level12.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level12.vtt" srclang="en" label="English">
+        </video>
+        <figcaption><span class="fignum">Figure 12.1</span><span class="figtext">Rendered in Manim. With perfect measurements, one factor at a time walks from 16 to 8 and stops after three runs. The corner it never ran holds 6: temperature cuts shrinkage by 8 at low pressure and adds 4 at high pressure.</span></figcaption>
+      </figure>
           <p class="lead">Hold pressure and melt temperature, two levels each, shrinkage as the response and lower is better. <span class="note data"><span class="k">true shrinkage at the four corners</span><span class="row num"><span class="rk">pressure -1, temp -1</span><span class="rv">16</span></span><span class="row num"><span class="rk">pressure -1, temp +1</span><span class="rv">8</span></span><span class="row num"><span class="rk">pressure +1, temp -1</span><span class="rv">6</span></span><span class="row num"><span class="rk">pressure +1, temp +1</span><span class="rv">10</span></span></span>The classic procedure: start with everything low, tune the second factor, fix it, tune the first.</p>
           <p>Run it with no measurement noise whatsoever — every reading exactly the true value — and it stops at 8 when 6 was available. <span class="note data"><span class="k">one at a time, noise-free</span><span class="row num"><span class="rk">stops at</span><span class="rv">8</span></span><span class="row num"><span class="rk">optimum</span><span class="rv">6</span></span><span class="row num"><span class="rk">shortfall</span><span class="rv">2</span></span><span class="row num"><span class="rk">corners visited</span><span class="rv">3 of 4</span></span></span>That is 33 % worse, and it cannot be blamed on sampling error because there is none.</p>
           <p>The reason is visible once it is drawn: the procedure never visits the corner where both factors are set high together, so the setting that wins is one it never tries.<span class="note"><span class="k">spoken plainly</span>It is not a search that stopped early. It is a search that cannot reach the answer.</span></p>
@@ -537,7 +545,7 @@
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l12_1_why_ofat_fails.png"><img src="spc-lab/docs/l12_1_why_ofat_fails.png" width="1673" height="890" loading="lazy"
              alt="The response surface with the one-at-a-time path stopping short of the optimum, and the interaction plot beside it"></a>
-        <figcaption><span class="fignum">Figure 12.1</span><span class="figtext">One factor at a time stops at 8 when the best is 6, a third worse, because it never visits the corner where both factors are high. Effects: A −4, B −2, interaction +6.</span></figcaption>
+        <figcaption><span class="fignum">Figure 12.2</span><span class="figtext">One factor at a time stops at 8 when the best is 6, a third worse, because it never visits the corner where both factors are high. Effects: A −4, B −2, interaction +6.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -607,7 +615,7 @@
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l12_2_screening_and_curvature.png"><img src="spc-lab/docs/l12_2_screening_and_curvature.png" width="1510" height="890" loading="lazy"
              alt="The alias structure of a seven-factor screening design, and the centre-point test on a curved and a flat surface"></a>
-        <figcaption><span class="fignum">Figure 12.2</span><span class="figtext">Seven factors in eight runs, and what each column is aliased with. Centre points catch the bend the corners cannot: gap −3.14, p = 0.0044 on the curved surface, p = 0.89 on the flat one.</span></figcaption>
+        <figcaption><span class="fignum">Figure 12.3</span><span class="figtext">Seven factors in eight runs, and what each column is aliased with. Centre points catch the bend the corners cannot: gap −3.14, p = 0.0044 on the curved surface, p = 0.89 on the flat one.</span></figcaption>
       </figure>
         </div>
       </div>

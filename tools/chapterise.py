@@ -482,6 +482,7 @@ def chapter_12(K):
                       "Below that, one-at-a-time is merely slow.")),
         ]),
         ("s2", "12.2", "One factor at a time, with perfect measurements", [
+            "      " + K["fig"]("Level12.mp4"),
             para("Hold pressure and melt temperature, two levels each, shrinkage as the"
                  " response and lower is better. The classic procedure: start with"
                  " everything low, tune the second factor, fix it, tune the first.",
@@ -623,6 +624,7 @@ def chapter_11(K):
                       "is the same subtraction.")),
         ]),
         ("s2", "11.2", "Least squares is a claim", [
+            "      " + K["fig"]("Level11.mp4"),
             para("The line is not drawn by eye and it is not fitted by iteration: it is"
                  " the slope that minimises the sum of squared residuals, and the closed"
                  " form lands exactly at that minimum rather than near it.",
@@ -1673,7 +1675,7 @@ CHAPTERS = {
         "number": 11, "word": "eleven",
         "before": "Level 10 — counting, not measuring",
         "after": "Level 12 — experiments, and the arc closes",
-        "estimate": "5 sections · 1 interactive · ~9 min read",
+        "estimate": "5 sections · 1 act · 1 interactive · ~9 min read",
         "toc": [("11.1", "s1", "One identity, three names",
                  "regression, ANOVA and a gauge study are one subtraction"),
                 ("11.2", "s2", "Least squares is a claim",
@@ -1690,7 +1692,7 @@ CHAPTERS = {
         "number": 12, "word": "twelve",
         "before": "Level 11 — relationships, and the seam to MSA",
         "after": "nothing — this is where the arc closes",
-        "estimate": "6 sections · 1 interactive · ~9 min read",
+        "estimate": "6 sections · 1 act · 1 interactive · ~9 min read",
         "toc": [("12.1", "s1", "Changing things on purpose",
                  "one term in the model is the whole subject"),
                 ("12.2", "s2", "One factor at a time, with perfect measurements",

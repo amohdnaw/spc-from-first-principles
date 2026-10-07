@@ -1,0 +1,124 @@
+1
+00:00:00,000 --> 00:00:03,861
+Twenty nine parts, each cut at a different speed, each
+
+2
+00:00:03,961 --> 00:00:08,924
+with its surface roughness measured. Faster cutting, rougher surface.
+
+3
+00:00:09,016 --> 00:00:12,733
+Which straight line describes them? Start with the
+
+4
+00:00:12,833 --> 00:00:16,092
+laziest one: flat, at the average roughness.
+
+5
+00:00:16,183 --> 00:00:20,003
+Every part misses the line by some amount. Square
+
+6
+00:00:20,103 --> 00:00:22,803
+each miss, and draw it as a square.
+
+7
+00:00:22,900 --> 00:00:26,295
+Add up their areas. That sum is the score,
+
+8
+00:00:26,395 --> 00:00:29,208
+and a smaller sum is a better line.
+
+9
+00:00:29,316 --> 00:00:32,351
+Now tilt the line about the centre of the
+
+10
+00:00:32,451 --> 00:00:35,792
+cloud. The squares shrink, and the sum falls.
+
+11
+00:00:35,900 --> 00:00:39,272
+Keep tilting, past the cloud, and the squares
+
+12
+00:00:39,372 --> 00:00:41,896
+grow again. The sum comes back up.
+
+13
+00:00:42,000 --> 00:00:45,077
+Every slope has a score, and the scores
+
+14
+00:00:45,177 --> 00:00:48,500
+make a parabola. It has exactly one floor.
+
+15
+00:00:48,616 --> 00:00:51,684
+Bring the line back down to the floor.
+
+16
+00:00:51,800 --> 00:00:55,845
+Nobody needs to slide anything. Set the slope of the
+
+17
+00:00:55,945 --> 00:00:59,752
+parabola to zero and the floor has a closed form:
+
+18
+00:00:59,852 --> 00:01:03,340
+the cross products over the squares of speed.
+
+19
+00:01:03,450 --> 00:01:09,470
+Here that is 0.01315 microns per metre a minute.
+
+20
+00:01:09,583 --> 00:01:14,862
+Look closely at the floor. The formula's slope sits at the minimum, not
+
+21
+00:01:14,962 --> 00:01:19,635
+near it. Any other line is worse, by an amount you can compute.
+
+22
+00:01:19,750 --> 00:01:23,196
+That is what least squares means. It is a claim
+
+23
+00:01:23,296 --> 00:01:26,970
+about this parabola, and you just watched it hold.
+
+24
+00:01:27,083 --> 00:01:30,864
+The flat line from the start was not wasted. Its
+
+25
+00:01:30,964 --> 00:01:35,311
+squares are the total variation, nine point zero three.
+
+26
+00:01:35,400 --> 00:01:38,055
+The floor's squares are what the line
+
+27
+00:01:38,155 --> 00:01:41,108
+leaves unexplained, nought point two six.
+
+28
+00:01:41,200 --> 00:01:45,296
+One minus their ratio is R squared: the share of the
+
+29
+00:01:45,396 --> 00:01:50,220
+total variation the line accounts for, ninety seven per cent.
+
+30
+00:01:50,316 --> 00:01:55,126
+Regression, ANOVA, and the gauge study that comes next all
+
+31
+00:01:55,226 --> 00:01:59,528
+split this same total. The line is found, not drawn.
+

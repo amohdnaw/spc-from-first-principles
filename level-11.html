@@ -498,11 +498,11 @@
         </div>
       </div>
       <div class="toc">
-        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 interactive · ~9 min read</span></div>
+        <div class="toc-head"><span class="micro">What this chapter derives</span><span class="micro est">5 sections · 1 act · 1 interactive · ~9 min read</span></div>
         <p class="toc-chain"><span class="micro">after</span> Level 10 — counting, not measuring<span class="sep">·</span><span class="micro">leads to</span> Level 12 — experiments, and the arc closes</p>
         <ol>
           <li><span class="n">11.1</span><a href="#s1">One identity, three names<span class="sub">regression, ANOVA and a gauge study are one subtraction</span></a></li>
-          <li><span class="n">11.2</span><a href="#s2">Least squares is a claim<span class="sub">the closed form sits at the minimum, not near it</span></a></li>
+          <li><span class="n">11.2</span><a href="#s2">Least squares is a claim<span class="tag">act</span><span class="sub">the closed form sits at the minimum, not near it</span></a></li>
           <li><span class="n">11.3</span><a href="#s3">R² is a ratio, not a grade<span class="tag">interactive</span><span class="sub">it rises for nothing, and it cannot see a curve</span></a></li>
           <li><span class="n">11.4</span><a href="#s4">Two intervals that are not the same interval<span class="sub">one 1 inside a square root, and what it costs to ignore</span></a></li>
           <li><span class="n">11.5</span><a href="#s5">The same total, split four ways<span class="sub">part, operator, interaction — and the seam to MSA</span></a></li>
@@ -556,13 +556,21 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
         <div>
           <span class="sec-no">11.2</span>
           <h2>Least squares is a claim</h2>
+      <figure>
+        <div class="rule"></div>
+        <video controls playsinline preload="metadata" poster="posters/level11.jpg">
+          <source src="spc-lab/media/videos/level11_scene/1080p60/Level11.mp4" type="video/mp4">
+          <track kind="captions" src="captions/level11.vtt" srclang="en" label="English">
+        </video>
+        <figcaption><span class="fignum">Figure 11.1</span><span class="figtext">Rendered in Manim. The line tilts about the centre of the cloud and each miss is drawn as its square. The sum bottoms out at 0.259 at slope 0.01315, exactly where the closed form puts it, and set against the flat line&rsquo;s 9.032 that gives R² 0.971.</span></figcaption>
+      </figure>
           <p class="lead">The line is not drawn by eye and it is not fitted by iteration: it is the slope that minimises the sum of squared <a class="gl" href="glossary.html#residual" data-gl="residual">residuals</a>, and the closed form lands exactly at that minimum rather than near it.<span class="note data"><span class="k">29 speeds, one line</span><span class="row num"><span class="rk">slope</span><span class="rv">0.01315</span></span><span class="row num"><span class="rk">intercept</span><span class="rv">0.4737</span></span><span class="row num"><span class="rk">residual SS</span><span class="rv">0.2590</span></span><span class="row num"><span class="rk">R²</span><span class="rv">0.9713</span></span></span></p>
           <p>Sweeping the slope traces a parabola in the residual <a class="gl" href="glossary.html#sum-of-squares" data-gl="sum-of-squares">sum of squares</a>. <span class="note"><span class="k">orthogonal residuals</span>Least squares leaves the residuals summing to zero and uncorrelated with the predictor — exactly, not approximately.</span>That parabola is why the phrase means something: any other slope is worse, and it is worse by a computable amount.</p>
       <figure>
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l11_1_least_squares.png"><img src="spc-lab/docs/l11_1_least_squares.png" width="1719" height="936" loading="lazy"
              alt="The residual sum of squares swept across slopes, and the same straight fit on a straight and a curved relationship"></a>
-        <figcaption><span class="fignum">Figure 11.1</span><span class="figtext">The residual sum of squares is a parabola with its floor at slope 0.01315. A curved relationship still scores R² 0.929, but its residuals run 16 on one side, against 7 for a straight one.</span></figcaption>
+        <figcaption><span class="fignum">Figure 11.2</span><span class="figtext">The residual sum of squares is a parabola with its floor at slope 0.01315. A curved relationship still scores R² 0.929, but its residuals run 16 on one side, against 7 for a straight one.</span></figcaption>
       </figure>
         </div>
       </div>
@@ -631,7 +639,7 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l11_2_intervals_and_bridge.png"><img src="spc-lab/docs/l11_2_intervals_and_bridge.png" width="1645" height="913" loading="lazy"
              alt="A confidence band against a prediction band, and the total variance split into part, operator, interaction and repeat"></a>
-        <figcaption><span class="fignum">Figure 11.2</span><span class="figtext">At 172 m/min the mean is known to ±0.053 but one new part only to ±0.208, 3.9 times wider. The same sums split a gauge study: part 82.8%, gauge 17.2%.</span></figcaption>
+        <figcaption><span class="fignum">Figure 11.3</span><span class="figtext">At 172 m/min the mean is known to ±0.053 but one new part only to ±0.208, 3.9 times wider. The same sums split a gauge study: part 82.8%, gauge 17.2%.</span></figcaption>
       </figure>
           <p>What those percentages mean — whether this gauge may be used, on what <a class="gl" href="glossary.html#tolerance" data-gl="tolerance">tolerance</a>, and what to do when reproducibility dominates — is a different subject with its own arc, and this curriculum stops at the boundary rather than summarising it badly. <span class="note"><span class="k">the seam</span>This site never teaches gauge acceptance, and the MSA side never teaches control limits. One link each way.</span>It continues at <a href="https://amohdnaw.github.io/msa-from-first-principles/" target="_blank" rel="noopener">MSA from first principles</a>, a sibling site that repeats this method on the measurement system itself: a gauge is a process, so it has a <a class="gl" href="glossary.html#distribution" data-gl="distribution">distribution</a>, so the same arithmetic applies to it.</p>
         </div>
