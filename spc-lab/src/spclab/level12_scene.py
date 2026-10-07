@@ -30,7 +30,7 @@ from spclab.act_style import (
     GREY, INK, RED, TEAL, YELLOW,
     at_panel, gauge, micro, prose, within_frame,
 )
-from spclab.experiments import B0, BA, BB, BAB, BASELINE, CORNERS, OPTIMUM, OPTIMUM_Y, ofat, response
+from spclab.experiments import B0, BA, BB, BAB, BASELINE, CORNERS, OPTIMUM, OPTIMUM_Y, PRECISION, ofat, response
 from spclab.narration import NarratedCameraScene
 
 OF = ofat()
@@ -226,6 +226,42 @@ class Level12(NarratedCameraScene):
                       "pressure. What one factor does depends on the other, and a "
                       "walk that moves one at a time never sees that."):
             self.play(FadeIn(why, shift=UP * 0.12), FadeIn(cap),
+                      run_time=1.0, rate_func=rf.ease_out_sine)
+
+        # hidden replication: every run sits in every estimate
+        hi = [response(1, b) for b in (-1, 1)]
+        lo = [response(-1, b) for b in (-1, 1)]
+        eff = MathTex(r"A", "=", rf"\tfrac{{{hi[0]:.0f}+{hi[1]:.0f}}}{{2}}", "-",
+                      rf"\tfrac{{{lo[0]:.0f}+{lo[1]:.0f}}}{{2}}", "=",
+                      rf"{(sum(hi) - sum(lo)) / 2:+.0f}".replace("-", "-"),
+                      font_size=36, color=INK).move_to([2.1, -0.9, 0])
+        within_frame(eff, "effect")
+        with self.say("The four corners buy something else as well. The effect of "
+                      "pressure is the average of the high pressure runs, minus the "
+                      "average of the low ones.") as tr:
+            self.play(FadeOut(why, shift=UP * 0.12), FadeOut(cap), run_time=0.6,
+                      rate_func=rf.ease_in_sine)
+            self.play(FadeIn(eff, shift=UP * 0.12), run_time=1.0, rate_func=rf.ease_out_sine)
+            self.play(Circumscribe(VGroup(r4, self.readings[2]), color=TEAL, buff=0.1),
+                      Circumscribe(eff[2], color=TEAL, buff=0.06),
+                      run_time=max(1.2, tr.duration * 0.25), rate_func=rf.ease_in_out_sine)
+        with self.say("Every run is used in that estimate, and in the temperature "
+                      "effect, and in the interaction. Nothing is spent on one "
+                      "question alone.") as tr:
+            self.play(Circumscribe(VGroup(*self.readings, r4), color=YELLOW, buff=0.12),
+                      run_time=max(1.6, tr.duration * 0.5), rate_func=rf.ease_in_out_sine)
+        prec = MathTex(rf"{PRECISION['factorial_sd']:.3f}", r"\;\text{vs}\;",
+                       rf"{PRECISION['ofat_sd']:.3f}", font_size=40, color=INK)
+        prec[0].set_color(TEAL)
+        prec[2].set_color(RED)
+        prec.next_to(eff, DOWN, buff=0.45)
+        pcap = micro("SPREAD OF THE ESTIMATE · SAME RUNS", 13).next_to(prec, DOWN, buff=0.18)
+        within_frame(pcap, "precision caption")
+        with self.say(f"Add real measurement noise and spend {PRECISION['runs']} runs "
+                      "either way. The factorial's estimate of the pressure effect "
+                      f"is {PRECISION['ratio']:.1f} times steadier than the "
+                      "one-at-a-time comparison it replaces."):
+            self.play(FadeIn(prec, shift=UP * 0.12), FadeIn(pcap),
                       run_time=1.0, rate_func=rf.ease_out_sine)
 
         verdict = prose("not slow: wrong", 34, YELLOW).move_to([1.9, 2.55, 0])

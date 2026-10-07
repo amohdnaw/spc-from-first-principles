@@ -81,10 +81,42 @@ one factor does depends on the other, and a walk that
 moves one at a time never sees that.
 
 21
-00:01:21.850 --> 00:01:25.924
-One factor at a time is not slow. It is wrong. Change
+00:01:21.850 --> 00:01:25.352
+The four corners buy something else as well. The
 
 22
-00:01:26.024 --> 00:01:30.966
+00:01:25.452 --> 00:01:28.728
+effect of pressure is the average of the high
+
+23
+00:01:28.828 --> 00:01:32.406
+pressure runs, minus the average of the low ones.
+
+24
+00:01:32.500 --> 00:01:37.299
+Every run is used in that estimate, and in the temperature effect,
+
+25
+00:01:37.399 --> 00:01:41.976
+and in the interaction. Nothing is spent on one question alone.
+
+26
+00:01:42.066 --> 00:01:46.161
+Add real measurement noise and spend 16 runs either
+
+27
+00:01:46.261 --> 00:01:50.684
+way. The factorial's estimate of the pressure effect is
+
+28
+00:01:50.784 --> 00:01:56.030
+1.4 times steadier than the one-at-a-time comparison it replaces.
+
+29
+00:01:56.116 --> 00:02:00.191
+One factor at a time is not slow. It is wrong. Change
+
+30
+00:02:00.291 --> 00:02:05.232
 the factors together, and the design sees what they do together.
 
