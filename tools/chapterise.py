@@ -1353,8 +1353,11 @@ def chapter_01(K):
                           k="the cost of answering noise"), lead=True),
             para("Each correction subtracts the previous part's noise from this part's, so"
                  " every outcome after the first is a difference of two independent draws."
-                 " The variance is exactly doubled and stays doubled — the spread the"
-                 " customer receives is √2 times wider, bought with a full shift of"
+                 " Two numbers measure that scatter, and Level 3 builds both from real"
+                 " parts: the variance is the average squared distance of each part from"
+                 " the average, and its square root, σ (sigma), is the spread in the parts'"
+                 " own units. Here the variance doubles exactly and stays doubled, so the"
+                 " spread the customer receives is √2 times wider, bought with a full shift of"
                  " conscientious work."),
             "      " + K["eq"],
             para("Noise is not a signal, and answering it is how you add variation rather"
