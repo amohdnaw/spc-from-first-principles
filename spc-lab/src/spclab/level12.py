@@ -15,6 +15,7 @@ Every number comes from spclab.experiments.
 from __future__ import annotations
 
 import numpy as np
+from matplotlib import patheffects
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -50,6 +51,9 @@ mpl.rcParams.update({
     "axes.spines.top": False, "axes.spines.right": False,
 })
 figstyle.apply()
+
+
+HALO = [patheffects.withStroke(linewidth=2, foreground=BG, alpha=.6)]  # halo, not a box: a box punched a hole in the filled contour
 
 
 def _save(fig, name):
@@ -99,10 +103,10 @@ def sheet_l12_why_ofat_fails():
     ax.text(OFAT["chosen"][0] + 0.22, OFAT["chosen"][1] - 0.34,
             f"one-at-a-time\nstops here — {OFAT['chosen_y']:.0f}", ha="left",
             fontsize=11, color=RED,
-            bbox=dict(facecolor=BG, edgecolor="none", alpha=.85, pad=2.4))
-    ax.text(OPTIMUM[0], OPTIMUM[1] + 0.40,
-            f"the optimum\n{OPTIMUM_Y:.0f}", ha="center", fontsize=11, color=TEAL,
-            bbox=dict(facecolor=BG, edgecolor="none", alpha=.85, pad=2.4))
+            path_effects=HALO)
+    ax.text(OPTIMUM[0] + 0.12, OPTIMUM[1] + 0.40,
+            f"the optimum\n{OPTIMUM_Y:.0f}", ha="right", ma="center", fontsize=11, color=TEAL,
+            path_effects=HALO)
 
     ax.set_xlim(-1.35, 1.35)
     ax.set_ylim(-1.35, 1.45)

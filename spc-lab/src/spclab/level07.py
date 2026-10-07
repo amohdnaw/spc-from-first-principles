@@ -91,20 +91,19 @@ def sheet_l07_two_errors():
 
     for v in (-LIMIT, LIMIT):
         ax.axvline(v, color=MUTED, lw=1.3, ls=":")
-    # low, not at the top: at 0.425 these sat inside the legend box
-    # inside the line: outside it, the α arrow ran through the label
-    ax.text(LIMIT - 0.12, 0.013, f"+{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="right")
-    ax.text(-LIMIT - 0.12, 0.013, f"−{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="right")
+    # mid-height, outside each line: at 0.425 they sat in the legend, at the
+    # foot the curves ran through them; at 0.22 both sides are empty
+    ax.text(LIMIT + 0.12, 0.22, f"+{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="left")
+    ax.text(-LIMIT - 0.12, 0.22, f"−{LIMIT:.0f}σ", color=MUTED, fontsize=11, ha="right")
 
     ax.annotate(f"α = {ALPHA_1*100:.2f} %\ncrying wolf",
                 xy=(LIMIT + 0.28, 0.004), xytext=(LIMIT + 0.75, 0.10),
                 fontsize=11.5, color=RED,
                 arrowprops=dict(arrowstyle="->", color=RED, lw=1.2))
-    # inside the region it names, on a ground of its own — the previous position
-    # put the text across the −3σ line
-    ax.text(0.55, 0.105, f"β = {1 - POWER_AT[SHIFT]:.3f}\nthe shift stays inside",
-            color=YELLOW, fontsize=11.5, ha="center",
-            bbox=dict(facecolor=BG, edgecolor="none", alpha=.86, pad=3.0))
+    # inside the region it names, centred on the shifted mean where the shading
+    # is widest; no ground box (it punched a hole in the shading)
+    ax.text(0.45, 0.03, f"β = {1 - POWER_AT[SHIFT]:.3f}\nthe shift\nstays inside",
+            color=YELLOW, fontsize=11.5, ha="center", linespacing=1.15)
 
     ax.set_xlim(-5.2, 6.4)
     ax.set_ylim(0, 0.47)
@@ -120,11 +119,13 @@ def sheet_l07_two_errors():
     ds = np.linspace(0, 4.2, 500)
     axp.plot(ds, [power_one_point(d) for d in ds], color=BLUE, lw=2.2)
     axp.axhline(0.5, color=MUTED, lw=1.0, ls=":")
-    for d, c in ((SHIFT, YELLOW), (BIG_SHIFT, TEAL)):
+    # labels on the empty side of the curve: above-left at the flat foot,
+    # below-right on the climb (above-right, the curve ran through them)
+    for d, c, off in ((SHIFT, YELLOW, (-0.85, 0.12)), (BIG_SHIFT, TEAL, (0.2, -0.14))):
         pw = power_one_point(d)
         axp.plot([d], [pw], "o", color=c, ms=7, zorder=5)
         axp.annotate(f"{d:.0f}σ → {pw*100:.1f} %", xy=(d, pw),
-                     xytext=(d + 0.18, pw + 0.07), fontsize=11.5, color=c,
+                     xytext=(d + off[0], pw + off[1]), fontsize=11.5, color=c,
                      arrowprops=dict(arrowstyle="->", color=c, lw=1.1))
     axp.set_xlim(0, 4.2)
     axp.set_ylim(0, 1.02)
