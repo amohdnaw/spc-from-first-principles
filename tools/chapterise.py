@@ -409,7 +409,10 @@ def chapter_06(K):
                                   k="what three sigma is worth")),
                     para("Stop at three sigma and the answer is 99.73%. Nobody chose that number. It is"
                          " simply what ±3σ is worth, and everything the process should ever do lives"
-                         " inside it.",
+                         " inside it. The σ is the spread of whatever the chart plots: one part's"
+                         " σ on a chart of single parts, σ/√<em>n</em> on a chart of subgroup"
+                         " means, which is why an average chart's limits sit tighter than the"
+                         " parts do.",
                          note("Φ", text="The standard normal CDF, computed from erf — not a table."),
                          note("spoken · 0:38", text="“Ninety-nine point seven three percent. Nobody "
                               "chose that number.”", speak=True, serif=True)),
@@ -928,7 +931,9 @@ def chapter_07(K):
                       "three-sigma limit is chosen against."), lead=True),
             para("Draw the shifted process against the same limits and the problem is"
                  " visible before it is named. A mean that has moved by a full sigma"
-                 " sits almost entirely inside them.",
+                 " sits almost entirely inside them. Sigma here, as on every chart, is the"
+                 " spread of the plotted point: one part's σ for single parts, σ/√<em>n</em>"
+                 " for subgroup means.",
                  datanote((f"{nc(chr(945))}, crying wolf", f"{ALPHA_1*100:.2f} %"),
                           (f"{nc(chr(946))} at {SHIFT:.0f}{nc(chr(963))}", f"{1-POWER_AT[SHIFT]:.3f}"),
                           ("so it is caught", f"{POWER_AT[SHIFT]*100:.1f} %"),
@@ -1576,7 +1581,9 @@ def chapter_08(K):
                           ("Cpk 1.67", "0.27 ppm"), k="the promise")),
             para("Which is why the difference between 1.33 and 1.67 is not a rounding argument. It"
                  " is two orders of magnitude of scrap. A capability index is a defect rate"
-                 " wearing a friendlier number."),
+                 " wearing a friendlier number. The σ inside it is the spread of single"
+                 " parts, never of subgroup means: the customer receives parts, not averages,"
+                 " and the narrower σ/√<em>n</em> would promise a defect rate nobody ships."),
             K["watch"]("SPCGallery.mp4", "gallery", "figure 8.4",
                        "The overview act: a chart and its limits drawing themselves from the data,"
                        " and where capability geometry sits among them."),
