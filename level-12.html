@@ -264,6 +264,13 @@
   .tile dd.alarm{color:var(--signal-alarm)}
   .tile dd.neutral{color:var(--ink-bright)}
   .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  /* the note sits under the panel, so the sidebar is only controls and tiles and
+     the chart grows to their height instead of leaving dead panel under it.
+     flex-basis 0, not auto: auto sizes from the bitmap, which is drawn at 2x on
+     a phone, and the canvas would grow on every redraw. */
+  .lab-canvas{display:flex;flex-direction:column}
+  .lab-canvas canvas{flex:1 1 0;height:0;min-height:300px}
+  .lab > .lab-note{max-width:none;padding:16px 20px;border-top:1px solid var(--rule)}
 
   /* the lab stacks on a phone; this stays a media query, because the
      rules inside it are mobile-only and applying them everywhere puts the
@@ -543,11 +550,11 @@
               <div class="tile"><dt>The optimum</dt><dd class="ok" id="r-opt">—</dd></div>
               <div class="tile"><dt>Shortfall</dt><dd class="neutral" id="r-gap">—</dd></div>
             </dl>
-            <p class="lab-note">No noise at all: every value here is the true response.
-            Set the interaction to zero and one factor at a time never fails. The
-            arithmetic is the same as <code>spclab.experiments</code>.</p>
           </div>
         </div>
+        <p class="lab-note">No noise at all: every value here is the true response.
+            Set the interaction to zero and one factor at a time never fails. The
+            arithmetic is the same as <code>spclab.experiments</code>.</p>
       </div>
           <p>Drag the interaction to zero and the procedure never fails — which is the honest version of the claim. <span class="note"><span class="k">why that matters</span>The condition for the method to work is the thing the method cannot check.</span>One at a time is not wrong in general; it is wrong exactly when factors interact, and you cannot know whether they do without a design that could have told you.</p>
         </div>
@@ -655,8 +662,8 @@ const fmt = v => (v < 0 ? '\u2212' : '+') + Math.abs(v).toFixed(1);
 
 function draw(){
   const dpr = Math.min(devicePixelRatio || 1, 2);
-  const W = cv.clientWidth, H = 300;
-  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
+  const W = cv.clientWidth, H = cv.clientHeight || 300;
+  if (cv.width !== Math.round(W*dpr) || cv.height !== Math.round(H*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,W,H);
 
@@ -664,15 +671,16 @@ function draw(){
   const resp = makeResponse(bb, bab);
   const o = ofat(resp);
 
-  const pad = { l: 64, r: 96, t: 34, b: 46 };
+  const pad = { l: 64, r: 116, t: 34, b: 62 };
   const x = a => pad.l + (a + 1)/2 * (W - pad.l - pad.r);
   const y = b => H - pad.b - (b + 1)/2 * (H - pad.t - pad.b);
 
   /* axis labels */
   ctx.font = '11px "IBM Plex Mono", monospace';
   ctx.fillStyle = COL.dim; ctx.textAlign = 'center';
-  ctx.fillText('PRESSURE LOW', x(-1), H - pad.b + 20);
-  ctx.fillText('PRESSURE HIGH', x(1), H - pad.b + 20);
+  /* below the 20px corner circles, not under them */
+  ctx.fillText('PRESSURE LOW', x(-1), H - pad.b + 40);
+  ctx.fillText('PRESSURE HIGH', x(1), H - pad.b + 40);
   ctx.save(); ctx.translate(pad.l - 44, y(0)); ctx.rotate(-Math.PI/2);
   ctx.fillText('TEMPERATURE', 0, 0); ctx.restore();
 
@@ -701,8 +709,8 @@ function draw(){
   }
 
   ctx.font = '11px "IBM Plex Mono", monospace'; ctx.textAlign = 'left';
-  ctx.fillStyle = COL.ok;  ctx.fillText('OPTIMUM', W - pad.r + 12, y(1) - 6);
-  ctx.fillStyle = COL.alarm; ctx.fillText('OFAT STOPS', W - pad.r + 12, y(1) + 12);
+  ctx.fillStyle = COL.ok;  ctx.fillText('OPTIMUM', W - pad.r + 32, y(1) - 6);
+  ctx.fillStyle = COL.alarm; ctx.fillText('OFAT STOPS', W - pad.r + 32, y(1) + 12);
 
   iVal.textContent = fmt(bab);
   bVal.textContent = fmt(bb);
@@ -719,6 +727,8 @@ addEventListener('resize', draw);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
 draw();
 })();
+
+new ResizeObserver(() => dispatchEvent(new Event('resize'))).observe(document.querySelector('.lab-canvas canvas'));
 </script>
 
 <!--glossary-->

@@ -264,6 +264,13 @@
   .tile dd.alarm{color:var(--signal-alarm)}
   .tile dd.neutral{color:var(--ink-bright)}
   .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  /* the note sits under the panel, so the sidebar is only controls and tiles and
+     the chart grows to their height instead of leaving dead panel under it.
+     flex-basis 0, not auto: auto sizes from the bitmap, which is drawn at 2x on
+     a phone, and the canvas would grow on every redraw. */
+  .lab-canvas{display:flex;flex-direction:column}
+  .lab-canvas canvas{flex:1 1 0;height:0;min-height:300px}
+  .lab > .lab-note{max-width:none;padding:16px 20px;border-top:1px solid var(--rule)}
 
   /* the lab stacks on a phone; this stays a media query, because the
      rules inside it are mobile-only and applying them everywhere puts the
@@ -590,11 +597,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
               <div class="tile"><dt>Lower limit</dt><dd class="alarm" id="r-lcl">—</dd></div>
               <div class="tile"><dt><span class="nc">n</span> for a lower limit</dt><dd class="neutral" id="r-need">—</dd></div>
             </dl>
-            <p class="lab-note">Drag either one. The limits are computed here from the
-            same formulas <code>spclab.counting</code> is tested against — nothing is
-            looked up, and the lower limit is shown before it is clamped.</p>
           </div>
         </div>
+        <p class="lab-note">Drag either one. The limits are computed here from the
+            same formulas <code>spclab.counting</code> is tested against — nothing is
+            looked up, and the lower limit is shown before it is clamped.</p>
       </div>
           <p>Drag the two controls. <span class="note"><span class="k">computed here</span>The lab runs the same formulas <code>spclab.counting</code> is tested against, in the browser.</span>The status reads ONE-SIDED whenever the lower limit has been clamped, and the third tile tells you the subgroup size that would fix it.</p>
         </div>
@@ -675,8 +682,8 @@ for (let i = 0; i < 40; i++){
 
 function draw(){
   const dpr = Math.min(devicePixelRatio || 1, 2);
-  const W = cv.clientWidth, H = 300;
-  if (cv.width !== Math.round(W * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const W = cv.clientWidth, H = cv.clientHeight || 300;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, W, H);
 
@@ -744,6 +751,8 @@ addEventListener('resize', draw);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
 draw();
 })();
+
+new ResizeObserver(() => dispatchEvent(new Event('resize'))).observe(document.querySelector('.lab-canvas canvas'));
 </script>
 
 <!--glossary-->
