@@ -217,6 +217,9 @@ def glossary_page(template: str, terms: list[dict], site: str) -> str:
     head = head.replace(' aria-current="page"', "")
     foot = template[template.index("</main>"):]
     foot = BLOCK_RE.sub("\n", foot)
+    # the template is a level page: its lab script and observer would run here
+    # against a canvas the glossary does not have, and throw
+    foot = re.sub(r"<script>.*?</script>\n?", "", foot, flags=re.S)
     rows, first = [], {}
     for e in sorted(terms, key=lambda e: e["term"].lstrip("%").lower()):
         first.setdefault(e["term"].lstrip("%")[0].upper(), e["id"])

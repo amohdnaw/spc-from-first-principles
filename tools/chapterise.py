@@ -1290,6 +1290,7 @@ def chapter_01(K):
                  note("spoken · 2:41", text="“Answering it is how you add variation rather"
                       " than remove it.”", speak=True, serif=True)),
             "      " + K["fig"]("l01_2_tampering.png"),
+            "  " + K["lab"],
             "          " + '<p class="lab-link">You can run it yourself: <a href="https://portfolio.amohdnaw.xyz/lab.html#ch3" target="_blank" rel="noopener">CH 3 of the control lab</a> drops the marbles in 3D, lets you try correcting by hand against the same draws, and runs Deming\'s other two rules, which are worse.</p>',
         ]),
     ]
@@ -1537,7 +1538,7 @@ CHAPTERS = {
         "number": 1, "word": "one",
         "before": "nothing — this is where the curriculum starts",
         "after": "Level 2 — chance, and what a percentage claims",
-        "estimate": "5 sections · 1 act · ~7 min read",
+        "estimate": "5 sections · 1 act · 1 interactive · ~8 min read",
         "toc": [("1.1", "s1", "Nothing repeats",
                  "twelve parts off one machine, and no two the same"),
                 ("1.2", "s2", "A histogram is an instrument",

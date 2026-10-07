@@ -244,6 +244,47 @@
     color:#e8eef4;
     background:rgba(13,17,20,.74);
   }
+  /* ---------- interactive ---------- */
+  .lab{margin:64px 0 0;border:1px solid var(--rule);background:var(--panel)}
+  .lab-head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:11px 20px;border-bottom:1px solid var(--rule)}
+  .lab-head .status{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--signal-ok)}
+  .lab-grid{display:grid;grid-template-columns:1fr 300px;gap:0}
+  .lab-canvas{padding:20px;border-right:1px solid var(--rule);min-width:0}
+  canvas{display:block;width:100%;height:300px}
+  .lab-ctl{padding:20px;display:flex;flex-direction:column;gap:20px}
+  .lab-ctl label{font-family:var(--mono);font-size:11px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+    display:block;margin-bottom:12px}
+  .lab-ctl label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  .tiles{display:flex;flex-direction:column;gap:1px;background:var(--rule)}
+  .tile{background:var(--panel-high);padding:12px 14px}
+  .tile dt{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px}
+  .tile dd{margin:0;font-family:var(--mono);font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile dd.ok{color:var(--signal-ok)}
+  .tile dd.alarm{color:var(--signal-alarm)}
+  .tile dd.neutral{color:var(--ink-bright)}
+  .lab-note{font-size:17px;line-height:1.5;color:var(--ink-dim);margin:0}
+  /* the note sits under the panel, so the sidebar is only controls and tiles and
+     the chart grows to their height instead of leaving dead panel under it.
+     flex-basis 0, not auto: auto sizes from the bitmap, which is drawn at 2x on
+     a phone, and the canvas would grow on every redraw. */
+  .lab-canvas{display:flex;flex-direction:column}
+  .lab-canvas canvas{flex:1 1 0;height:0;min-height:300px}
+  .lab > .lab-note{max-width:none;padding:16px 20px;border-top:1px solid var(--rule)}
+
+  /* the lab stacks on a phone; this stays a media query, because the
+     rules inside it are mobile-only and applying them everywhere puts the
+     canvas border on the wrong edge at desktop. */
+  @media(max-width:900px){
+    .lab-grid{grid-template-columns:1fr}
+    .lab-canvas{border-right:0;border-bottom:1px solid var(--rule)}
+  }
 </style>
 </head>
 <body>
@@ -397,7 +438,34 @@
         <span>Chance &mdash; what a percentage is a claim about &rarr;</span>
       </a>
     </section>
-  </main>
+        <div class="lab">
+        <div class="lab-head">
+          <span class="micro">Interactive — Deming's funnel</span>
+          <span class="status" id="lab-status">TAMPERING</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab-canvas">
+            <canvas id="f-canvas" height="300"
+              aria-label="The same 400 parts run twice from one set of noise: left alone, and corrected after every part by a share of its miss"></canvas>
+          </div>
+          <div class="lab-ctl">
+            <div>
+              <label for="g-slider">Share of each miss you correct — <b id="g-val">100 %</b></label>
+              <input type="range" id="g-slider" min="0" max="100" value="100" step="5">
+            </div>
+            <dl class="tiles">
+              <div class="tile"><dt><span class="nc">σ</span>, left alone</dt><dd class="neutral" id="r-left">—</dd></div>
+              <div class="tile"><dt><span class="nc">σ</span>, adjusted</dt><dd class="alarm" id="r-adj">—</dd></div>
+              <div class="tile"><dt>Variance ratio, exact</dt><dd class="alarm" id="r-ratio">—</dd></div>
+            </dl>
+          </div>
+        </div>
+        <p class="lab-note">Grey is the machine left alone; blue is the same noise with a
+            correction after every part. Correcting a share g of each miss multiplies the
+            variance by exactly 2 / (2 − g): doubled at 100 %, untouched only at 0 %.
+            The amber lines are ±3σ of the machine left alone; the blue ones are ±3σ of the adjusted run.</p>
+      </div>
+</main>
 </div>
 
 <footer>
@@ -410,5 +478,105 @@
   </div>
 </footer>
 
+<script>
+(function(){
+'use strict';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = { ok: css('--signal-ok'), alarm: css('--signal-alarm'), accent: css('--accent'),
+              dim: css('--ink-dim'), blue: '#58C4DD' };
+const N = 400;
+
+/* one fixed set of standard normal draws: only the slider moves the picture */
+let seed = 20261007;
+const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+const E = [];
+for (let i = 0; i < N; i++){
+  let u = 0, v = 0;
+  while (u === 0) u = rnd();
+  while (v === 0) v = rnd();
+  E.push(Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v));
+}
+/* scaled to mean 0, sigma 1 exactly, so the adjusted tile reads as the multiple */
+{ const m = E.reduce((s, v) => s + v, 0) / N;
+  const k = Math.sqrt(E.reduce((s, v) => s + (v - m) * (v - m), 0) / (N - 1));
+  for (let i = 0; i < N; i++) E[i] = (E[i] - m) / k; }
+
+/* Deming's rule 2, generalised: after each part, move the setting by -g times
+   that part's miss. g = 1 is the funnel; the variance ratio is 2 / (2 - g),
+   the value spclab.variation checks by simulation at g = 1. */
+function funnel(g){
+  const x = new Array(N); let a = 0;
+  for (let t = 0; t < N; t++){ x[t] = a + E[t]; a -= g * x[t]; }
+  return x;
+}
+const sd = x => { const m = x.reduce((s, v) => s + v, 0) / x.length;
+  return Math.sqrt(x.reduce((s, v) => s + (v - m) * (v - m), 0) / (x.length - 1)); };
+const ratio = g => 2 / (2 - g);
+window.__spclabFunnel = funnel;
+window.__spclabFunnelRatio = ratio;
+
+const cv = document.getElementById('f-canvas'), ctx = cv.getContext('2d');
+const gSl = document.getElementById('g-slider'), gVal = document.getElementById('g-val');
+const rL = document.getElementById('r-left'), rA = document.getElementById('r-adj');
+const rR = document.getElementById('r-ratio'), stat = document.getElementById('lab-status');
+const sLeft = sd(E);
+
+function draw(){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const W = cv.clientWidth, H = cv.clientHeight || 300;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const g = +gSl.value / 100, adj = funnel(g);
+  const pad = { l: 34, r: 10, t: 14, b: 14 }, lim = 5.5;
+  const y = v => pad.t + (lim - v) / (2 * lim) * (H - pad.t - pad.b);
+  const x = i => pad.l + i / (N - 1) * (W - pad.l - pad.r);
+  const hline = (v, colour, dash) => {
+    ctx.strokeStyle = colour; ctx.lineWidth = 1.2; ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(pad.l, y(v)); ctx.lineTo(W - pad.r, y(v)); ctx.stroke();
+    ctx.setLineDash([]);
+  };
+  hline(0, COL.dim, [5, 4]);
+  hline(3 * sLeft, COL.accent, [3, 3]);
+  hline(-3 * sLeft, COL.accent, [3, 3]);
+  const run = (v, colour, wide) => {
+    ctx.strokeStyle = colour; ctx.lineWidth = wide; ctx.beginPath();
+    v.forEach((u, i) => { const yy = y(Math.max(-lim, Math.min(lim, u)));
+      i ? ctx.lineTo(x(i), yy) : ctx.moveTo(x(i), yy); });
+    ctx.stroke();
+  };
+  /* blue first, grey over it: at 100 % the blue run would bury the reference */
+  run(adj, COL.blue, 1.2);
+  ctx.globalAlpha = .75; run(E, COL.dim, 1); ctx.globalAlpha = 1;
+  const sAdj = sd(adj);
+  if (g > 0){ hline(3 * sAdj, COL.blue, [6, 3]); hline(-3 * sAdj, COL.blue, [6, 3]); }
+
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  ctx.fillStyle = COL.dim; ctx.textAlign = 'right';
+  ctx.fillText('0', pad.l - 6, y(0) + 4);
+  ctx.fillStyle = COL.accent;
+  ctx.fillText('+3σ', pad.l - 4, y(3 * sLeft) + 4);
+  ctx.fillText('−3σ', pad.l - 4, y(-3 * sLeft) + 4);
+
+  if (g > 0){ ctx.fillStyle = COL.blue; ctx.textAlign = 'left';
+    ctx.fillText('adjusted ±3σ', pad.l + 4, y(3 * sAdj) - 5); }
+  gVal.textContent = Math.round(g * 100) + ' %';
+  rL.textContent = sLeft.toFixed(2);
+  rA.textContent = sAdj.toFixed(2);
+  rR.textContent = '× ' + ratio(g).toFixed(2);
+  rA.className = rR.className = g > 0 ? 'alarm' : 'ok';
+  if (g > 0){ stat.textContent = 'TAMPERING'; stat.style.color = COL.alarm; }
+  else      { stat.textContent = 'LEFT ALONE'; stat.style.color = COL.ok; }
+}
+
+gSl.addEventListener('input', draw);
+addEventListener('resize', draw);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+draw();
+})();
+
+new ResizeObserver(() => dispatchEvent(new Event('resize'))).observe(document.querySelector('.lab-canvas canvas'));
+</script>
 </body>
 </html>
