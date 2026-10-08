@@ -44,9 +44,15 @@ def _pdf(xs, mu, sg):
 # ---------------------------------------------------------------------------
 # Sheet 1 — two voices, one axis
 # ---------------------------------------------------------------------------
+# The 8.3 example. The page prose imports these, so text and figure share one source.
+LSL, USL = 49.7, 50.3              # customer's voice: width 0.6
+SG = 0.075                         # process voice: 6σ = 0.45
+MU_DRIFT = 50.12                   # the mean after the drift
+CPK_DRIFT = min(USL - MU_DRIFT, MU_DRIFT - LSL) / (3 * SG)
+
+
 def sheet_l08_two_voices():
-    lsl, usl = 49.7, 50.3          # customer's voice: width 0.6
-    sg = 0.075                      # process voice: 6σ = 0.45
+    lsl, usl, sg = LSL, USL, SG
 
     fig, axs = plt.subplots(2, 1, figsize=(11, 8), sharex=True,
                             constrained_layout=True)
@@ -85,7 +91,7 @@ def sheet_l08_two_voices():
 
     # --- bottom: mean drifts; Cpk measures the nearer gap
     ax = axs[1]
-    mu = 50.12
+    mu = MU_DRIFT
     pdf = _pdf(xs, mu, sg)
     inside = (xs >= lsl) & (xs <= usl)
     ax.fill_between(xs, pdf, where=~inside, color=RED, alpha=.55, lw=0)

@@ -386,6 +386,18 @@ TAIL3_PPM = f"{TAIL_K[3]*1e6:,.0f}".replace(",", " ")  # the site writes 1 350
 
 from spclab.level06 import XR_SIGMA, xbar_r_example  # noqa: E402
 from spclab.level04 import SQRTN_SIGMA  # noqa: E402
+from spclab.formulas import ppm_from_cpk  # noqa: E402
+from spclab.level08 import CPK_DRIFT  # noqa: E402
+from spclab import detection as DT  # noqa: E402
+
+# Levels 8 and 9 quote these; the prose, the figures and the tests share them.
+PPM_DRIFT = ppm_from_cpk(CPK_DRIFT)
+PPM_DRIFT_S = f"{PPM_DRIFT:,.0f}".replace(",", "\u00a0")
+ONE_IN_DRIFT = round(1e6 / PPM_DRIFT)
+CPK_PPM = {c: ppm_from_cpk(c) for c in (1.00, 1.33, 1.67)}
+# detection indexes subgroups from 0; the page counts from 1
+D9_SHEW, D9_EWMA = DT.DET_SHEW + 1, DT.DET_EWMA + 1
+assert DT.LAM == 0.2  # the prose says "a fifth" and "one part new and four parts memory"
 
 # Level 6.7 builds one X̄–R chart. The page quotes the same arrays the figure
 # draws, so the arithmetic in the prose and the lines on the chart cannot part.
@@ -1685,22 +1697,22 @@ def chapter_08(K):
             para("Now let the mean drift and change nothing else. The spread stays exactly where"
                  " it was, but the number collapses, because Cpk keeps the smaller of the two"
                  " one-sided ratios: the near limit is the one you fail first.",
-                 datanote(("Cpk", "0.80"), ("leak", "8 198 ppm"), ("in plain counting", "1 in 122"),
+                 datanote(("Cpk", f"{CPK_DRIFT:.2f}"), ("leak", f"{PPM_DRIFT_S} ppm"), ("in plain counting", f"1 in {ONE_IN_DRIFT}"),
                           k="what the drift costs")),
-            para("That leak is 8,198 parts per million, and at this scale you cannot see it. So"
+            para(f"That leak is {PPM_DRIFT_S} parts per million, and at this scale you cannot see it. So"
                  " stretch the vertical axis until it is visible: the peak leaves the frame, and"
                  " the tail is what we came for. The index itself is only the near gap, measured"
                  " in three sigmas.",
-                 note("spoken · 1:36", text="“8,198 parts per million is the same sentence as 1 in"
-                      " 122 parts.”", speak=True, serif=True)),
+                 note("spoken · 1:36", text=f"“{PPM_DRIFT_S} parts per million is the same sentence as 1 in"
+                      f" {ONE_IN_DRIFT} parts.”", speak=True, serif=True)),
         ]),
         ("s4", "8.4", "Every Cpk is a promise about defect rate", [
             para("Parts per million up the side, on a logarithmic scale, because it spans five"
                  " decades. Walk Cpk upward from 0.6 and read the promise off the curve. Every"
                  " figure here is computed at render time by the same function the test suite"
                  " checks — nothing is read off a table.",
-                 datanote(("Cpk 1.00", "1 350 ppm"), ("Cpk 1.33", "33.04 ppm"),
-                          ("Cpk 1.67", "0.27 ppm"), k="the promise")),
+                 datanote(("Cpk 1.00", f"{CPK_PPM[1.00]:,.0f} ppm".replace(",", "\u00a0")), ("Cpk 1.33", f"{CPK_PPM[1.33]:.2f} ppm"),
+                          ("Cpk 1.67", f"{CPK_PPM[1.67]:.2f} ppm"), k="the promise")),
             para("Which is why the difference between 1.33 and 1.67 is not a rounding argument. It"
                  " is two orders of magnitude of scrap. A capability index is a defect rate"
                  " wearing a friendlier number. The σ inside it is the spread of single"
@@ -1720,20 +1732,20 @@ def chapter_09(K):
         ("s1", "9.1", "The most expensive failure mode", [
             para("Slow drift is the most expensive failure mode in manufacturing, because every"
                  " single measurement of it looks acceptable. Here is a Shewhart chart with limits"
-                 " at ±3σ, which buys one false alarm in 370 subgroups.",
-                 datanote(("false alarm budget", "1 in 370"), ("drift rate", "0.06 σ / subgroup"),
+                 f" at ±3σ, which buys one false alarm in {DT.SHEWHART_ARL0:.0f} subgroups.",
+                 datanote(("false alarm budget", f"1 in {DT.SHEWHART_ARL0:.0f}"), ("drift rate", f"{DT.DRIFT} σ / subgroup"),
                           k="the setup"), lead=True),
-            para("The first twenty subgroups are noise around the target. Then the mean starts"
-                 " walking at 0.06 sigma per subgroup — slow enough that no single measurement"
+            para(f"The first {DT.SHIFT_AT} subgroups are noise around the target. Then the mean starts"
+                 f" walking at {DT.DRIFT} sigma per subgroup — slow enough that no single measurement"
                  " looks wrong, and the chart carries on saying nothing."),
             "      " + K["fig"]("Level09.mp4"),
         ]),
         ("s2", "9.2", "A chart with no memory", [
-            para("The first violation lands at subgroup 64. That is 44 subgroups after the drift"
-                 " began, by which time the mean has moved 2.6 sigma and every part in between was"
+            para(f"The first violation lands at subgroup {D9_SHEW}. That is {D9_SHEW - DT.SHIFT_AT} subgroups after the drift"
+                 f" began, by which time the mean has moved {DT.OFF_SHEW:.1f} sigma and every part in between was"
                  " made by a process nobody knew had changed.",
-                 datanote(("drift starts", "after subgroup 20"), ("first alarm", "subgroup 64"),
-                          ("mean moved by then", "2.6 σ"), k="what it cost")),
+                 datanote(("drift starts", f"after subgroup {DT.SHIFT_AT}"), ("first alarm", f"subgroup {D9_SHEW}"),
+                          ("mean moved by then", f"{DT.OFF_SHEW:.1f} σ"), k="what it cost")),
             para("Each point was judged on its own and then forgotten. That is the whole weakness,"
                  " and it is not a tuning problem: the chart has no memory.",
                  note("spoken · 1:12", text="“Each point was judged on its own and then forgotten."
@@ -1746,11 +1758,11 @@ def chapter_09(K):
                  " parts memory. Written out, with " + tex(r"x_i") + " the newest subgroup"
                  " mean and " + tex(r"z_i") + " the running statistic, " + tex(r"z_i = \lambda x_i + (1-\lambda)\,z_{i-1}") + ","
                  " started at the target.",
-                 datanote(("lambda", "0.20"), ("weighting", "1 new : 4 memory"),
+                 datanote(("lambda", f"{DT.LAM:.2f}"), ("weighting", "1 new : 4 memory"),
                           k="how much it keeps")),
             para("Its limits are not ±3. They are calibrated by simulation until this chart cries"
-                 " wolf exactly as rarely as the last one — one alarm in 370 quiet subgroups"
-                 " against 370, so the comparison that follows is fair."),
+                 f" wolf exactly as rarely as the last one — one alarm in {DT.ARL0_EWMA:.0f} quiet subgroups"
+                 f" against {DT.SHEWHART_ARL0:.0f}, so the comparison that follows is fair."),
             "      " + K["eq"],
             "      " + K["fig"]("EWMAMemory.mp4"),
         ]),
@@ -1758,26 +1770,26 @@ def chapter_09(K):
             para("While the process is quiet the statistic wanders near zero, because new noise"
                  " keeps cancelling old noise. Once the drift starts the noise still cancels but"
                  " the drift does not: it is the same direction every time, so it adds up.",
-                 datanote(("crosses at", "subgroup 34"), ("mean off by", "0.8 σ"),
-                          ("raw point there", "+2.48 σ"), k="caught early")),
-            para("It crosses the limit at subgroup 34, with the mean only 0.8 sigma off and the raw"
-                 " measurement sitting at +2.48 sigma — a number no Shewhart chart would look at"
-                 " twice. The other chart waited until subgroup 64, thirty subgroups later."),
+                 datanote(("crosses at", f"subgroup {D9_EWMA}"), ("mean off by", f"{DT.OFF_EWMA:.1f} σ"),
+                          ("raw point there", f"{DT.RAW[DT.DET_EWMA]:+.2f} σ"), k="caught early")),
+            para(f"It crosses the limit at subgroup {D9_EWMA}, with the mean only {DT.OFF_EWMA:.1f} sigma off and the raw"
+                 f" measurement sitting at {DT.RAW[DT.DET_EWMA]:+.2f} sigma — a number no Shewhart chart would look at"
+                 f" twice. The other chart waited until subgroup {D9_SHEW}, {D9_SHEW - D9_EWMA} subgroups later."),
             "      " + K["fig"]("l09_2_race.png"),
             "  " + K["lab"],
         ]),
         ("s5", "9.5", "One drift is an anecdote", [
             para("That is one drift. The standard yardstick swaps the slow walk for a sudden"
                  " step: the mean jumps by one sigma and stays there. Run thousands of those and"
-                 " the average wait comes out at 44 subgroups for the Shewhart rule and 10 for"
-                 " this one. Divide them: 4.4 times sooner, bought with no extra false alarms at"
-                 " all. The 44 matching the drift above is a coincidence; that run gave 44"
-                 " against 14.",
-                 datanote(("Shewhart ARL", "44"), ("EWMA ARL", "10"), ("speed-up", "4.4×"),
+                 f" the average wait comes out at {DT.ARL1_SHEW:.0f} subgroups for the Shewhart rule and {DT.ARL1_EWMA:.0f} for"
+                 f" this one. Divide them: {DT.SPEEDUP:.1f} times sooner, bought with no extra false alarms at"
+                 f" all. The {DT.ARL1_SHEW:.0f} matching the drift above is a coincidence; that run gave {D9_SHEW - DT.SHIFT_AT}"
+                 f" against {D9_EWMA - DT.SHIFT_AT}.",
+                 datanote(("Shewhart ARL", f"{DT.ARL1_SHEW:.0f}"), ("EWMA ARL", f"{DT.ARL1_EWMA:.0f}"), ("speed-up", f"{DT.SPEEDUP:.1f}×"),
                           k="thousands of 1" + nc("σ") + " steps")),
             para("That trade — sensitivity bought without paying in false alarms — is the whole of"
                  " detection theory.",
-                 note("spoken · 3:41", text="“4.4 times sooner, bought with no extra false alarms"
+                 note("spoken · 3:41", text=f"“{DT.SPEEDUP:.1f} times sooner, bought with no extra false alarms"
                       " at all.”", speak=True, serif=True)),
             "      " + K["sys"],
             "      " + K["fig"]("l09_1_arl.png"),
