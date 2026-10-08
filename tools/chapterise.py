@@ -520,10 +520,19 @@ def chapter_06(K):
 
 def chapter_12(K):
     from spclab.experiments import (
-        ALIASES, BASELINE, CORNERS, CURVED, EFFECTS, FLAT, FULL_RUNS, OFAT,
-        OPTIMUM, OPTIMUM_Y, PRECISION, SCREEN_FACTORS, SCREEN_RUNS, TRUTH,
+        ALIASES, BASELINE, CORNERS, CURVED, EFFECTS, FLAT, FULL_RUNS, GENERATORS,
+        OFAT, OPTIMUM, OPTIMUM_Y, PRECISION, SCREEN_FACTORS, SCREEN_RUNS, TRUTH,
     )
     worse = 100.0 * OFAT["shortfall"] / OPTIMUM_Y
+    # defining relation: every product of the generator words (I = ABD, ...)
+    import functools, itertools as _it, operator
+    words = [set(w + L) for L, w in GENERATORS.items()]
+    relation = [functools.reduce(operator.xor, c) for r in range(1, len(words) + 1)
+                for c in _it.combinations(words, r)]
+    resolution = min(len(w) for w in relation)
+    roman = {3: "III", 4: "IV", 5: "V"}[resolution]
+    gens = ", ".join(f"{L}&nbsp;=&nbsp;{w}" for L, w in GENERATORS.items())
+    base = "".join(L for L in SCREEN_FACTORS if L not in GENERATORS)
     return [
         ("s1", "12.1", "Changing things on purpose", [
             para("Every level so far watched a process, or described data that arrived"
@@ -533,6 +542,17 @@ def chapter_12(K):
                  note("the last level", text="Eleven levels of listening. This one "
                       "asks."), lead=True),
             "      " + K["eq"],
+            para("Here <em>y</em> is the response and each <em>x</em> is a factor coded"
+                 " −1 at its low setting and +1 at its high one. " + tex(r"\beta_0") +
+                 " is the average over the four corners; " + tex(r"\beta_A") + " and "
+                 + tex(r"\beta_B") + " are how far <em>y</em> moves per unit of each factor;"
+                 " " + tex(r"\beta_{AB}") + " is the twist, how much the first factor's"
+                 " slope changes as the second moves; " + tex(r"\varepsilon") + " is the"
+                 " measurement noise."),
+            para("Low to high is two units, so an <em>effect</em>, the change from one"
+                 " setting to the other, is twice its β. The interaction effect of"
+                 f" {EFFECTS['AB']:+.0f} in 12.3 is a " + tex(r"\beta_{AB}") +
+                 f" of {EFFECTS['AB']/2:+.1f}, the value the lab in 12.3 starts at."),
             para("If two factors interact — if what the second one does depends on where"
                  " the first one is set — then studying them one at a time can lead you"
                  " confidently to the wrong setting. Not slowly. Wrongly.",
@@ -597,15 +617,23 @@ def chapter_12(K):
         ]),
         ("s4", "12.4", "Screening: width, bought with aliasing", [
             para(f"With seven factors a full factorial is {FULL_RUNS} runs. A"
-                 f" sixteenth-fraction does it in {SCREEN_RUNS}, and the price is not"
-                 " vague — it is a table you can write down before the first run.",
+                 f" fraction does it in {SCREEN_RUNS}, one sixteenth of that, and the price"
+                 " is not vague — it is a table you can write down before the first run.",
                  datanote(*[(f"main effect {L}", ", ".join(ALIASES[L]))
                             for L in SCREEN_FACTORS[:4]],
                           k="confounded with"), lead=True),
+            para(f"The {SCREEN_RUNS} runs are a full factorial in {', '.join(base)}. The"
+                 f" other {len(GENERATORS)} factors get no runs of their own: each is set by"
+                 " a generator, a rule that copies a product of existing columns —"
+                 f" {gens}. That is how {SCREEN_RUNS} runs hold {len(SCREEN_FACTORS)}"
+                 " factors, and it is also the bill."),
             para("Each main effect is confounded with a set of two-factor interactions:"
                  " the columns are literally identical across the eight runs, so no"
-                 " arithmetic can separate them. That is what resolution means, and it"
-                 " is computed from the design's generators rather than looked up.",
+                 " arithmetic can separate them. Resolution grades that damage: it is the"
+                 " length of the shortest word you get by multiplying generators together"
+                 f" (D&nbsp;=&nbsp;AB gives ABD), {resolution} here, written {roman}. Resolution {roman}"
+                 " keeps main effects clear of each other but tangles each with two-factor"
+                 " interactions.",
                  note("the deal", text="Screening finds which factors matter. It cannot "
                       "also tell you how they interact — that is the next experiment.")),
             para("Which is the right trade at the start of an investigation and the wrong"
