@@ -116,13 +116,13 @@ def sheet_l09_arl():
     # rest of the curriculum said 4.4 — the same claim, computed twice, disagreeing.
     from spclab.detection import ARL1_EWMA, ARL1_SHEW, SPEEDUP
     mid = 4
-    ax.annotate(f"a 1σ drift:\nEWMA catches it in {ARL1_EWMA:.0f}\n"
+    ax.annotate(f"a sudden 1σ shift:\nEWMA catches it in {ARL1_EWMA:.0f}\n"
                 f"vs {ARL1_SHEW:.0f} subgroups —\n{SPEEDUP:.1f}× sooner",
                 xy=(shifts[mid], arl_e[mid]), xytext=(shifts[mid] + .25, arl_e[mid] * 6),
                 fontsize=12, color=YELLOW,
                 arrowprops=dict(arrowstyle="->", color=YELLOW))
     ax.set_title("Average Run Length vs shift size — simulated, 8 000 runs per point\n"
-                 "same false-alarm rate, wildly different sensitivity to drift",
+                 "same false-alarm rate, wildly different sensitivity to a shift",
                  loc="left")
     ax.set_xlabel("process shift when it happens (in σx̄ units)")
     ax.set_ylabel("average subgroups until alarm (log scale)")

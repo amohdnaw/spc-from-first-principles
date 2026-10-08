@@ -1621,7 +1621,9 @@ def chapter_09(K):
             para("Same process, same data, same false-alarm budget — and a statistic that"
                  " remembers. Each new subgroup gets a fifth of the weight and the running"
                  " statistic keeps the rest: with lambda at 0.2 that is one part new and four"
-                 " parts memory.",
+                 " parts memory. Written out, with " + tex(r"x_i") + " the newest subgroup"
+                 " mean and " + tex(r"z_i") + " the running statistic, " + tex(r"z_i = \lambda x_i + (1-\lambda)\,z_{i-1}") + ","
+                 " started at the target.",
                  datanote(("lambda", "0.20"), ("weighting", "1 new : 4 memory"),
                           k="how much it keeps")),
             para("Its limits are not ±3. They are calibrated by simulation until this chart cries"
@@ -1643,11 +1645,14 @@ def chapter_09(K):
             "  " + K["lab"],
         ]),
         ("s5", "9.5", "One drift is an anecdote", [
-            para("That is one drift. Run thousands of them and the average wait to detect a one"
-                 " sigma shift comes out at 44 subgroups for the Shewhart rule and 10 for this"
-                 " one. Divide them: 4.4 times sooner, bought with no extra false alarms at all.",
+            para("That is one drift. The standard yardstick swaps the slow walk for a sudden"
+                 " step: the mean jumps by one sigma and stays there. Run thousands of those and"
+                 " the average wait comes out at 44 subgroups for the Shewhart rule and 10 for"
+                 " this one. Divide them: 4.4 times sooner, bought with no extra false alarms at"
+                 " all. The 44 matching the drift above is a coincidence; that run gave 44"
+                 " against 14.",
                  datanote(("Shewhart ARL", "44"), ("EWMA ARL", "10"), ("speed-up", "4.4×"),
-                          k="thousands of drifts")),
+                          k="thousands of 1" + nc("σ") + " steps")),
             para("That trade — sensitivity bought without paying in false alarms — is the whole of"
                  " detection theory.",
                  note("spoken · 3:41", text="“4.4 times sooner, bought with no extra false alarms"
