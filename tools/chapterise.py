@@ -785,7 +785,7 @@ def chapter_11(K):
 def chapter_10(K):
     from spclab.counting import (
         C_AT, C_BAR, DISPERSION_BATCHED, DISPERSION_CLEAN, MISCLASS, NP_THRESHOLD,
-        N_CONST, N_FOR_LCL, P_AT_CONST, P_BAR, TAIL, UNIT_DEFECT, UNIT_ITEM,
+        N_CONST, N_FOR_LCL, NP_AT_CONST, P_AT_CONST, P_BAR, TAIL, UNIT_DEFECT, UNIT_ITEM,
         CHART_TABLE,
     )
     folklore = int(round(5.0 / P_BAR))
@@ -847,6 +847,11 @@ def chapter_10(K):
                           k="the whole selection rule"),
                  note("question two", text="Constant subgroup size, or not? That is the "
                       "only other thing the choice depends on.")),
+            para("Each chart plots a single number per subgroup. The np-chart plots the count"
+                 " of defective items and the p-chart the fraction defective; the c-chart"
+                 " plots the count of defects and the u-chart defects per unit inspected."
+                 " The fraction and the per-unit rate exist so that subgroups of different"
+                 " sizes land on one scale."),
             para("That is the entire decision. There is no fifth chart hiding behind a"
                  " third question."),
         ]),
@@ -876,7 +881,12 @@ def chapter_10(K):
                           ("as drawn", "0"),
                           (f"{nc('n')} needed", f"{N_FOR_LCL}"),
                           k=f"at {nc('n')} = {N_CONST}"), lead=True),
-            para("There is a threshold and it is exact. The lower limit clears zero only"
+            para("Like every limit in this course, it is the centre minus three of its own"
+                 " sigmas: " + tex(r"\mathrm{LCL} = \bar{p} - 3\sqrt{\bar{p}(1-\bar{p})/n}") + "."
+                 f" At <em>n</em> = {N_CONST} that is {P_BAR:.2f}&nbsp;− 3&nbsp;×&nbsp;{P_AT_CONST['sigma']:.4f}"
+                 f" = {P_AT_CONST['lcl_raw']:.4f}".replace("-", "−") + ", below zero."),
+            para("There is a threshold and it is exact. Ask when that difference stays above"
+                 " zero, square both sides, and the lower limit clears zero only"
                  " while " + tex(r"n\bar{p} > k^{2}(1-\bar{p})") + f", which at three"
                  f" sigma is {NP_THRESHOLD:.2f}. At four per cent defective that means"
                  f" subgroups of {N_FOR_LCL} — not the {folklore} the familiar"
@@ -899,13 +909,19 @@ def chapter_10(K):
                           ("normal approximation", f"{TAIL['approx']:.5f}"),
                           ("ratio", f"×{TAIL['ratio']:.2f}"),
                           k="P(16 or more defective)"), lead=True),
+            para(f"Take the process from 10.1: subgroups of {N_CONST} at {P_BAR*100:.0f} %"
+                 f" defective, so {NP_AT_CONST['cl']:.0f} defective on average and an np-chart"
+                 f" upper limit at {NP_AT_CONST['ucl']:.1f}. Sixteen defective is a subgroup"
+                 " sitting just under that limit. How often does one land there or beyond?"),
             para(f"The true probability is {TAIL['ratio']:.1f} times what the normal"
                  " approximation reports. Quoting a normal-based ppm on count data is"
                  " therefore not a rounding error — it understates the risk by a factor"
                  " you would notice. The approximation improves as the counts grow; it"
                  " is wrong where attribute data usually lives.",
-                 note("so what to do", text="Use the exact tail. It is one incomplete "
-                      "beta, and this site already had one for Level 5.")),
+                 note("so what to do", text="Use the exact tail: add up the binomial "
+                      "probabilities from 16 to 200. For large subgroups the same sum comes "
+                      "from the incomplete beta function, which Level 5 already uses for "
+                      "<em>t</em>.")),
         ]),
     ]
 
