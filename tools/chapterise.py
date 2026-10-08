@@ -672,6 +672,14 @@ def chapter_11(K):
                  note("why it is the bridge", text="Regression, ANOVA and a gauge study "
                       "are one identity. Seeing that is what makes the last of them "
                       "ordinary."), lead=True),
+            para("Draw a straight line through a cloud of points. For each point,"
+                 " " + tex(r"y_i") + " is what was measured, " + tex(r"\hat{y}_i") +
+                 " is what the line predicts at that point, and " + tex(r"\bar{y}") +
+                 " is the average of all the readings. Each reading's distance from the"
+                 " average then breaks into two pieces: the line's prediction minus the"
+                 " average, and the reading minus the prediction. Square each piece and sum"
+                 " over the points, and for a least-squares line the three sums obey the"
+                 " identity below exactly."),
             "      " + K["eq"],
             para("Split the total variation in two and you have regression, where the"
                  " explained part over the total is R². Relabel those two terms"
@@ -685,7 +693,10 @@ def chapter_11(K):
             "      " + K["fig"]("Level11.mp4"),
             para("The line is not drawn by eye and it is not fitted by iteration: it is"
                  " the slope that minimises the sum of squared residuals, and the closed"
-                 " form lands exactly at that minimum rather than near it.",
+                 " form lands exactly at that minimum rather than near it: "
+                 + tex(r"b = \sum (x_i-\bar{x})(y_i-\bar{y}) \,/\, \sum (x_i-\bar{x})^2") +
+                 ", and the intercept puts the line through the point of averages, "
+                 + tex(r"a = \bar{y} - b\bar{x}") + ".",
                  datanote(("slope", f"{FIT['slope']:.5f}"),
                           ("intercept", f"{FIT['intercept']:.4f}"),
                           ("residual SS", f"{FIT['sse']:.4f}"),
@@ -734,11 +745,14 @@ def chapter_11(K):
             para("Asked to predict at a speed, there are two honest answers and they are"
                  " different sizes. One is an interval for the <em>mean</em> response"
                  " there; the other is an interval for a <em>single new reading</em>.",
-                 datanote((f"at {X0:.0f} m/min", ""),
-                          ("the mean response", f"±{HALF_CI:.3f}"),
+                 datanote(("the mean response", f"±{HALF_CI:.3f}"),
                           ("one new reading", f"±{HALF_PI:.3f}"),
                           ("ratio", f"×{HALF_PI/HALF_CI:.2f}"),
-                          k="95 % half-widths"), lead=True),
+                          k=f"95 % half-widths at {X0:.0f} m/min"), lead=True),
+            para("With <em>s</em> the residual standard deviation, " + tex(r"S_{xx} = \sum (x_i-\bar{x})^2") +
+                 " and <em>t</em> the Level 5 quantile at <em>n</em> − 2 degrees of freedom,"
+                 " the mean response gets " + tex(r"\pm\, t s \sqrt{1/n + (x_0-\bar{x})^2/S_{xx}}") +
+                 " and one new reading gets " + tex(r"\pm\, t s \sqrt{1 + 1/n + (x_0-\bar{x})^2/S_{xx}}") + "."),
             para("The difference is a single 1 inside a square root, and that 1 is the"
                  " variance of the new reading itself. It is why more data shrinks the"
                  " first interval toward nothing and never shrinks the second below the"
