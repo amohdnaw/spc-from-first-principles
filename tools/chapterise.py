@@ -207,6 +207,33 @@ CHAPTER_CSS = """
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook{border:1px solid var(--rule);margin:32px 0 8px;max-width:var(--measure)}
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 """
 
 def tex(latex: str) -> str:
@@ -1745,6 +1772,115 @@ def chapter_09(K):
     ]
 
 
+# ---------------------------------------------------------------- hooks
+# specs/plain-entry-contract.md. Each hook is a question a newcomer can answer
+# before meeting a single term. Its numbers are computed here and handed to a
+# few lines of JS that only draw them, so the page cannot disagree with the build.
+def hook_01():
+    import numpy as _np
+    sig, first = 0.2, 0.3
+    # the first fixed-seed run whose 20 parts show what the long run promises:
+    # left alone near sigma, adjusted near the exact sqrt(2) ratio
+    for seed in range(1000):
+        e = _np.random.default_rng(seed).normal(0, sig, 21)
+        e[0] = first
+        left, adj = e[1:], e[1:] - e[:-1]
+        rl, ra = _np.sqrt((left ** 2).mean()), _np.sqrt((adj ** 2).mean())
+        if abs(ra / rl - TAMPER_SIGMA_RATIO_EXACT) < 0.02 and abs(rl - sig) < 0.02:
+            break
+    else:
+        raise SystemExit("hook_01: no representative run in 1000 seeds")
+    worse = (ra / rl - 1) * 100
+    data = {"left": [round(float(v), 4) for v in left],
+            "adj": [round(float(v), 4) for v in adj]}
+    import json as _json
+    return f'''          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Try it first · 20 parts</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">Your machine makes a part, and it comes out {first:.1f}&nbsp;mm too big. Do you adjust the machine by {first:.1f}&nbsp;mm to make up for it?</p>
+              <button type="button" data-pick="adj" aria-pressed="false">Adjust it</button><button type="button" data-pick="left" aria-pressed="false">Leave it alone</button>
+              <svg class="hk-dots" viewBox="0 0 420 110" role="img" aria-label="The next 20 parts, how far each one lands from the target size"><line x1="0" x2="420" y1="55" y2="55" stroke="var(--rule-strong)" stroke-dasharray="4 4"/><text x="0" y="50" fill="var(--ink-dim)" font-family="IBM Plex Mono,monospace" font-size="10">target</text></svg>
+            </div>
+            <div class="hk-tiles" hidden>
+              <div><span class="micro">Left alone · typical miss</span><b class="ok">±{rl:.2f} mm</b></div>
+              <div><span class="micro">Adjusted every part</span><b class="alarm">±{ra:.2f} mm</b></div>
+            </div>
+            <p class="hk-after" hidden></p>
+            <script type="application/json" id="hk-data">{_json.dumps(data)}</script>
+          </div>
+          <script>
+          (() => {{
+            const box = document.getElementById("hook"), svg = box.querySelector("svg");
+            const D = JSON.parse(document.getElementById("hk-data").textContent);
+            const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const NS = "http://www.w3.org/2000/svg", X = i => 14 + i * 20.5, Y = v => 55 - v * 60;
+            const said = {{
+              adj: "Say you keep doing that after every part. You adjusted 20 times, and your parts came out {worse:.0f} % more scattered than if you had left the machine alone. This level shows why.",
+              left: "Good instinct. Adjusting after every part would have left your parts {worse:.0f} % more scattered than leaving the machine alone. Most people adjust. This level shows why."
+            }};
+            function draw(key, cls, delay) {{
+              D[key].forEach((v, i) => {{
+                const c = document.createElementNS(NS, "circle");
+                c.setAttribute("cx", X(i)); c.setAttribute("cy", Y(Math.max(-.85, Math.min(.85, v))));
+                c.setAttribute("r", 4); c.setAttribute("fill", cls === "ok" ? "var(--signal-ok)" : "var(--signal-alarm)");
+                c.style.opacity = still ? 1 : 0; svg.appendChild(c);
+                if (!still) setTimeout(() => {{ c.style.transition = "opacity .2s"; c.style.opacity = 1; }}, delay + i * 70);
+              }});
+            }}
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {{
+              if (box.dataset.done) return;
+              box.dataset.done = 1;
+              const pick = b.dataset.pick;
+              box.querySelectorAll("button").forEach(x => {{ x.disabled = true; x.setAttribute("aria-pressed", x === b); }});
+              draw(pick, pick === "adj" ? "alarm" : "ok", 0);
+              draw(pick === "adj" ? "left" : "adj", pick === "adj" ? "ok" : "alarm", 20 * 70 + 300);
+              const st = document.getElementById("hk-status");
+              st.textContent = pick === "adj" ? "adjusted 20×" : "left alone";
+              st.className = "micro " + (pick === "adj" ? "alarm" : "ok");
+              setTimeout(() => {{
+                box.querySelector(".hk-tiles").hidden = false;
+                const a = box.querySelector(".hk-after"); a.textContent = said[pick]; a.hidden = false;
+              }}, still ? 0 : 2 * 20 * 70 + 400);
+            }}));
+          }})();
+          </script>'''
+
+
+def hook_02():
+    from math import comb
+    flips, heads = 10, 8
+    p = sum(comb(flips, k) for k in range(heads, flips + 1)) / 2 ** flips
+    one_in = round(1 / p)
+    return f'''          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">You flip a coin {flips} times and get {heads} heads. Is the coin unfair?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
+            </div>
+            <div class="hk-tiles" hidden>
+              <div><span class="micro">A fair coin, {heads}+ heads in {flips}</span><b>{p*100:.1f} %</b></div>
+              <div><span class="micro">That is about</span><b>1 in {one_in}</b></div>
+            </div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {{
+            const box = document.getElementById("hook");
+            const said = {{
+              yes: "Most people say yes. But a perfectly fair coin does this about 1 time in {one_in}.",
+              no: "Fair enough, but you can't be sure of that either: a slightly unfair coin would give {heads} heads more often.",
+              cant: "That is the honest answer. A perfectly fair coin does this about 1 time in {one_in}."
+            }};
+            const end = " Telling luck from a real change, and saying how sure you are, is what this course is about. This level starts with what a percentage like that actually means.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {{
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false;
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }}));
+          }})();
+          </script>'''
+
+
 CHAPTERS = {
     "level-01.html": {
         "number": 1, "word": "one",
@@ -1762,6 +1898,19 @@ CHAPTERS = {
                 ("1.5", "s5", "Reacting to noise makes it worse",
                  "Deming's funnel: correcting every part doubles the variance")],
         "sections": chapter_01,
+        "hook": hook_01,
+        "plain": {
+            "s1": "Make the same part twelve times and you get twelve slightly different"
+                  " sizes. That is normal. Nothing is broken.",
+            "s2": "A histogram is a bar chart of how often each size turns up. How wide"
+                  " you make the bars changes the picture, so never trust just one.",
+            "s3": "A steady machine and a slowly drifting one can make exactly the same"
+                  " set of sizes. Only the order the parts came out in tells them apart.",
+            "s4": "Some wobble is just the machine being a machine. Some has a cause you"
+                  " can find, like a worn tool. The two need opposite responses.",
+            "s5": "If you nudge the machine every time a part comes out a bit off, your"
+                  " parts get more scattered, not less.",
+        },
     },
     "level-02.html": {
         "number": 2, "word": "two",
@@ -1779,6 +1928,19 @@ CHAPTERS = {
                 ("2.5", "s5", "What a percentage claims",
                  tex(r"1-(1-\alpha)^{1/\alpha}") + " — and why 370 is not a deadline")],
         "sections": chapter_02,
+        "hook": hook_02,
+        "plain": {
+            "s1": "A number like “99.73 % inside the limits” describes what a process"
+                  " does over thousands of parts. It says nothing certain about the next one.",
+            "s2": "Flip a coin more and more: the share of heads creeps toward half, but"
+                  " the gap between heads and tails can keep growing. Nothing evens out.",
+            "s3": "A coin has no memory. After five heads in a row, the next flip is"
+                  " still a coin flip.",
+            "s4": "The expected value is the long-run average. For a die it is 3.5, a"
+                  " number the die can never actually show.",
+            "s5": "A chart that false-alarms “once in 370 points” can alarm on the"
+                  " fifth point or the nine-hundredth. 370 is an average, not a schedule.",
+        },
     },
     "level-05.html": {
         "number": 5, "word": "five",
@@ -2035,6 +2197,8 @@ def build_main(spec: dict, keep: dict) -> str:
     A(f'          <p class="ch-no">Level {n} · chapter {spec["word"]}</p>')
     A('          <h1 class="page-title"></h1>')
     A('          <p class="dek page-dek"></p>')
+    if spec.get("hook"):
+        A(spec["hook"]())
     A("        </div>")
     A("      </div>")
     A('      <div class="toc">')
@@ -2055,6 +2219,9 @@ def build_main(spec: dict, keep: dict) -> str:
         A("        <div>")
         A(f'          <span class="sec-no">{num}</span>')
         A(f"          <h2>{title}</h2>")
+        if anchor in spec.get("plain", {}):
+            A(f'{P}<div class="plain"><span class="micro">In plain words</span>'
+              f'<p>{spec["plain"][anchor]}</p></div>')
         for b in blocks:
             A(b)
         A("        </div>")

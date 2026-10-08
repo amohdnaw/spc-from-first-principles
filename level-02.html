@@ -462,6 +462,33 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook{border:1px solid var(--rule);margin:32px 0 8px;max-width:var(--measure)}
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -493,7 +520,35 @@
         <div>
           <p class="ch-no">Level 2 · chapter two</p>
           <h1>Chance</h1>
-          <p class="dek">A proportion is a long-run frequency. Before a chart may claim 99.73 %, this is what such a number is a statement about.</p>
+          <p class="dek">A proportion is a long-run frequency. Before a chart may claim 99.73&nbsp;%, this is what such a number is a statement about.</p>
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">You flip a coin 10 times and get 8 heads. Is the coin unfair?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
+            </div>
+            <div class="hk-tiles" hidden>
+              <div><span class="micro">A fair coin, 8+ heads in 10</span><b>5.5 %</b></div>
+              <div><span class="micro">That is about</span><b>1 in 18</b></div>
+            </div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook");
+            const said = {
+              yes: "Most people say yes. But a perfectly fair coin does this about 1 time in 18.",
+              no: "Fair enough, but you can't be sure of that either: a slightly unfair coin would give 8 heads more often.",
+              cant: "That is the honest answer. A perfectly fair coin does this about 1 time in 18."
+            };
+            const end = " Telling luck from a real change, and saying how sure you are, is what this course is about. This level starts with what a percentage like that actually means.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false;
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
         </div>
       </div>
       <div class="toc">
@@ -513,6 +568,7 @@
         <div>
           <span class="sec-no">2.1</span>
           <h2>A long-run frequency</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A number like “99.73 % inside the limits” describes what a process does over thousands of parts. It says nothing certain about the next one.</p></div>
           <p class="lead">Level 1 ended on a funnel: reacting to noise makes it worse. <span class="note"><span class="k">the claim ahead</span>Level 6 prices a pair of limits at 99.73 %. This level earns the right to say it.</span>Telling noise from a real change means saying something like “99.73 % inside”, and before this curriculum is allowed to say it, it has to be honest about what such a number is a statement <em>about</em>.</p>
           <p>Flip a fair coin once and the proportion of heads is nought or one. <span class="note"><span class="k">not a property</span>A probability describes a repeated process, never the next trial.</span>No single flip is ever half a head. Flip it again and again and the proportion goes wherever the flips send it — and then it stops wandering, and settles.</p>
           <p>That settling <em>is</em> the definition. <span class="note speak"><span class="k">spoken · 0:31</span><em>“A probability is a long-run frequency — a statement about what a repeated process does.”</em></span>A <a class="gl" href="glossary.html#probability" data-gl="probability">probability</a> is a long-run frequency: a statement about what a repeated process does, and never a statement about the next part off the machine.</p>
@@ -524,6 +580,7 @@
         <div>
           <span class="sec-no">2.2</span>
           <h2>The gap grows, the rate settles</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Flip a coin more and more: the share of heads creeps toward half, but the gap between heads and tails can keep growing. Nothing evens out.</p></div>
           <p class="lead">The belief worth killing lives here. <span class="note data"><span class="k">the surplus, expected</span><span class="row num"><span class="rk">at <span class="nc">n</span> = 100</span><span class="rv">gap 8</span></span><span class="row num"><span class="rk">at <span class="nc">n</span> = 10,000</span><span class="rv">gap 80</span></span><span class="row num"><span class="rk">at <span class="nc">n</span> = 1,000,000</span><span class="rv">gap 798</span></span></span>If heads are behind, are they owed? Read one sequence of flips two ways at once and the answer is exact rather than rhetorical.</p>
           <p>Above, the surplus of heads over tails. <span class="note"><span class="k">no repayment</span>The expected surplus never returns toward zero. There is nothing to repay it.</span>It climbs, and it has an exact expected size — <span class="tex" data-tex="\mathbb{E}|S_n| = 2^{1-n} n \binom{n-1}{\lfloor (n-1)/2 \rfloor}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">E</mi><mi mathvariant="normal">∣</mi><msub><mi>S</mi><mi>n</mi></msub><mi mathvariant="normal">∣</mi><mo>=</mo><msup><mn>2</mn><mrow><mn>1</mn><mo>−</mo><mi>n</mi></mrow></msup><mi>n</mi><mrow><mo fence="true">(</mo><mfrac linethickness="0px"><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mrow><mo stretchy="false">⌊</mo><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mn>2</mn><mo stretchy="false">⌋</mo></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb{E}|S_n| = 2^{1-n} n \binom{n-1}{\lfloor (n-1)/2 \rfloor}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathbb">E</span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0576em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0576em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.4151em;vertical-align:-0.52em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span></span><span class="mord mathnormal">n</span><span class="mord"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8951em;"><span style="top:-2.355em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">⌊(</span><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span><span class="mclose mtight">)</span><span class="mord mtight">/2</span><span class="mclose mtight">⌋</span></span></span></span><span style="top:-3.144em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span></span></span></span></span>, which for any n worth plotting is <span class="tex" data-tex="\sqrt{2n/\pi}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mn>2</mn><mi>n</mi><mi mathvariant="normal">/</mi><mi>π</mi></mrow></msqrt></mrow><annotation encoding="application/x-tex">\sqrt{2n/\pi}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord">2</span><span class="mord mathnormal">n</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.0359em;">π</span></span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
 c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
@@ -587,6 +644,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">2.3</span>
           <h2>The coin has no memory</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A coin has no memory. After five heads in a row, the next flip is still a coin flip.</p></div>
           <p class="lead">Two million flips, sorted by the run that came immediately before each one. <span class="note data"><span class="k">next flip is a head</span><span class="row num"><span class="rk">after 1 head</span><span class="rv">0.4988</span></span><span class="row num"><span class="rk">after 3 heads</span><span class="rv">0.5012</span></span><span class="row num"><span class="rk">after 6 heads</span><span class="rv">0.4981</span></span><span class="row num"><span class="rk">worst departure</span><span class="rv">0.0019</span></span></span>After a single head, after two, after six — how often is the next flip a head?</p>
           <p>Every answer is one half. <span class="note"><span class="k">why it is here</span>Limits computed from independent subgroups are wrong the moment the points inform each other.</span>Nothing happens, and the fact that nothing happens is the result: the sequence carries no debt. That is <a class="gl" href="glossary.html#independence" data-gl="independence">independence</a>, and it is also the assumption every <a class="gl" href="glossary.html#control-limit" data-gl="control-limit">control limit</a> in Part II quietly rests on.</p>
         </div>
@@ -597,8 +655,9 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">2.4</span>
           <h2>Expectation</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>The <a class="gl" href="glossary.html#expected-value" data-gl="expected-value">expected value</a> is the long-run average. For a die it is 3.5, a number the die can never actually show.</p></div>
           <p class="lead">One more idea before the chart. <span class="note data"><span class="k">a fair die</span><span class="row num"><span class="rk">balance point</span><span class="rv">3.5</span></span><span class="row num"><span class="rk">a face of the die</span><span class="rv">no</span></span></span>Slide a fulcrum under six equal weights, one per face of a fair die, until they balance. It settles between three and four.</p>
-          <p>Three point five is not a face. <span class="note"><span class="k">forward</span>Level 3 puts this same balance point on real measurements and calls it the mean.</span>The die can never show it, and it is still the value to expect. An <a class="gl" href="glossary.html#expected-value" data-gl="expected-value">expected value</a> is a balance point, not a prediction — and it need not be attainable at all.</p>
+          <p>Three point five is not a face. <span class="note"><span class="k">forward</span>Level 3 puts this same balance point on real measurements and calls it the mean.</span>The die can never show it, and it is still the value to expect. An expected value is a balance point, not a prediction — and it need not be attainable at all.</p>
         </div>
       </div>
     </section>
@@ -607,6 +666,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">2.5</span>
           <h2>What a percentage claims</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A chart that false-alarms “once in 370 points” can alarm on the fifth point or the nine-hundredth. 370 is an average, not a schedule.</p></div>
           <p class="lead">Now the number this level was written to protect. <span class="note"><span class="k">not the part</span>A part is never a probability. It is one part.</span>Nought point two seven percent — the other side of 99.73 % — has three readings, and only one of them is true.</p>
           <p>It is not the chance this part is bad. <span class="note"><span class="k">not capability</span>Parts against tolerance is Level 8. This is the chart against itself.</span>It is not the fraction of parts out of <a class="gl" href="glossary.html#tolerance" data-gl="tolerance">tolerance</a> — that is <a class="gl" href="glossary.html#capability" data-gl="capability">capability</a>, and it waits until Level 8. It is the rate at which a chart on an unchanged process trips its own limits.</p>
           <p>Which has a consequence worth doing the arithmetic for. <span class="note data"><span class="k">at least one false alarm</span><span class="row num"><span class="rk">over 100 subgroups</span><span class="rv">23.7 %</span></span><span class="row num"><span class="rk">over 370 subgroups</span><span class="rv">63.3 %</span></span><span class="row num"><span class="rk">the limit</span><span class="rv">1 − 1/e</span></span></span>Run a shift of 100 <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroups</a> with nothing wrong and the chance of having been alarmed at least once is already 23.7 %. Run the 370 that the phrase “one alarm in 370” actually names, and it is 63.3 % — not certainty.</p>

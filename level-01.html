@@ -462,6 +462,33 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook{border:1px solid var(--rule);margin:32px 0 8px;max-width:var(--measure)}
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -494,6 +521,56 @@
           <p class="ch-no">Level 1 · chapter one</p>
           <h1>Variation</h1>
           <p class="dek">Nothing repeats. The order it arrived in is the part a histogram throws away.</p>
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Try it first · 20 parts</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">Your machine makes a part, and it comes out 0.3&nbsp;mm too big. Do you adjust the machine by 0.3&nbsp;mm to make up for it?</p>
+              <button type="button" data-pick="adj" aria-pressed="false">Adjust it</button><button type="button" data-pick="left" aria-pressed="false">Leave it alone</button>
+              <svg class="hk-dots" viewBox="0 0 420 110" role="img" aria-label="The next 20 parts, how far each one lands from the target size"><line x1="0" x2="420" y1="55" y2="55" stroke="var(--rule-strong)" stroke-dasharray="4 4"/><text x="0" y="50" fill="var(--ink-dim)" font-family="IBM Plex Mono,monospace" font-size="10">target</text></svg>
+            </div>
+            <div class="hk-tiles" hidden>
+              <div><span class="micro">Left alone · typical miss</span><b class="ok">±0.19 mm</b></div>
+              <div><span class="micro">Adjusted every part</span><b class="alarm">±0.27 mm</b></div>
+            </div>
+            <p class="hk-after" hidden></p>
+            <script type="application/json" id="hk-data">{"left": [-0.2649, -0.0497, 0.0841, 0.2272, 0.0219, -0.1105, -0.157, 0.1497, 0.327, 0.0546, -0.2467, -0.1917, 0.32, 0.0406, -0.3464, -0.0167, -0.2326, -0.1259, -0.0976, -0.1427], "adj": [-0.5649, 0.2152, 0.1338, 0.1431, -0.2053, -0.1325, -0.0464, 0.3067, 0.1772, -0.2724, -0.3012, 0.055, 0.5117, -0.2794, -0.387, 0.3297, -0.2159, 0.1068, 0.0283, -0.0451]}</script>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook"), svg = box.querySelector("svg");
+            const D = JSON.parse(document.getElementById("hk-data").textContent);
+            const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const NS = "http://www.w3.org/2000/svg", X = i => 14 + i * 20.5, Y = v => 55 - v * 60;
+            const said = {
+              adj: "Say you keep doing that after every part. You adjusted 20 times, and your parts came out 40 % more scattered than if you had left the machine alone. This level shows why.",
+              left: "Good instinct. Adjusting after every part would have left your parts 40 % more scattered than leaving the machine alone. Most people adjust. This level shows why."
+            };
+            function draw(key, cls, delay) {
+              D[key].forEach((v, i) => {
+                const c = document.createElementNS(NS, "circle");
+                c.setAttribute("cx", X(i)); c.setAttribute("cy", Y(Math.max(-.85, Math.min(.85, v))));
+                c.setAttribute("r", 4); c.setAttribute("fill", cls === "ok" ? "var(--signal-ok)" : "var(--signal-alarm)");
+                c.style.opacity = still ? 1 : 0; svg.appendChild(c);
+                if (!still) setTimeout(() => { c.style.transition = "opacity .2s"; c.style.opacity = 1; }, delay + i * 70);
+              });
+            }
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              if (box.dataset.done) return;
+              box.dataset.done = 1;
+              const pick = b.dataset.pick;
+              box.querySelectorAll("button").forEach(x => { x.disabled = true; x.setAttribute("aria-pressed", x === b); });
+              draw(pick, pick === "adj" ? "alarm" : "ok", 0);
+              draw(pick === "adj" ? "left" : "adj", pick === "adj" ? "ok" : "alarm", 20 * 70 + 300);
+              const st = document.getElementById("hk-status");
+              st.textContent = pick === "adj" ? "adjusted 20×" : "left alone";
+              st.className = "micro " + (pick === "adj" ? "alarm" : "ok");
+              setTimeout(() => {
+                box.querySelector(".hk-tiles").hidden = false;
+                const a = box.querySelector(".hk-after"); a.textContent = said[pick]; a.hidden = false;
+              }, still ? 0 : 2 * 20 * 70 + 400);
+            }));
+          })();
+          </script>
         </div>
       </div>
       <div class="toc">
@@ -513,6 +590,7 @@
         <div>
           <span class="sec-no">1.1</span>
           <h2>Nothing repeats</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Make the same part twelve times and you get twelve slightly different sizes. That is normal. Nothing is broken.</p></div>
           <p class="lead">Take twelve parts off one machine — same tool, same operator, same gauge, one after another. <span class="note data"><span class="k">one machine, one shift</span><span class="row num"><span class="rk">span of twelve</span><span class="rv">47 µm</span></span><span class="row num"><span class="rk">closest pair</span><span class="rv">1 µm</span></span><span class="row num"><span class="rk">gauge resolution</span><span class="rv">1 µm</span></span></span>Every reading is different, and nothing is broken.</p>
           <p>The closest two parts differ by a single micron, which is exactly where this gauge stops: below that it has nothing to say. <span class="note speak"><span class="k">spoken · 0:31</span><em>“Spread is not a defect. It is what every real process does, and the job is to describe it.”</em></span>Spread is not a defect, it is what every real process does, and the job of the next eleven chapters is to describe it well enough to act on.</p>
       <figure>
@@ -533,8 +611,9 @@
         <div>
           <span class="sec-no">1.2</span>
           <h2>A histogram is an instrument</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A <a class="gl" href="glossary.html#histogram" data-gl="histogram">histogram</a> is a bar chart of how often each size turns up. How wide you make the bars changes the picture, so never trust just one.</p></div>
           <p>Pile 240 measurements into bins and a shape appears. <span class="note data"><span class="k">same data, two settings</span><span class="row num"><span class="rk">at 4 bins</span><span class="rv">one lump</span></span><span class="row num"><span class="rk">at 52 bins</span><span class="rv">a comb</span></span></span>The shape looks like a fact about the process, and it is not: bin width is a setting on the instrument, and the setting changes the answer.</p>
-          <p>Four bins says the process is a single lump. Fifty-two says it is a row of spikes. Neither is the process. Somewhere in between is a picture you can read, and knowing that the knob exists is the difference between reading a <a class="gl" href="glossary.html#histogram" data-gl="histogram">histogram</a> and believing one.</p>
+          <p>Four bins says the process is a single lump. Fifty-two says it is a row of spikes. Neither is the process. Somewhere in between is a picture you can read, and knowing that the knob exists is the difference between reading a histogram and believing one.</p>
         </div>
       </div>
     </section>
@@ -543,6 +622,7 @@
         <div>
           <span class="sec-no">1.3</span>
           <h2>The histogram throws away the order</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A steady machine and a slowly drifting one can make exactly the same set of sizes. Only the order the parts came out in tells them apart.</p></div>
           <p class="lead">Here is the claim this chapter is built on. <span class="note data"><span class="k">what does not change</span><span class="row num"><span class="rk">mean</span><span class="rv">identical</span></span><span class="row num"><span class="rk">spread</span><span class="rv">identical</span></span><span class="row txt"><span class="rk">histogram</span><span class="rv">identical, bin for bin</span></span></span>Take 240 measurements and write them down twice: once in the order they were made, and once sorted, which is what a slow drift looks like written down as it happened.</p>
           <p>These are not two similar samples. <span class="note data"><span class="k">what does change</span><span class="row num"><span class="rk">longest run, stable</span><span class="rv">7</span></span><span class="row num"><span class="rk">longest run, drifting</span><span class="rv">121</span></span><span class="row num"><span class="rk">ratio</span><span class="rv">17×</span></span></span>They are the same numbers, so the <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a> is identical, the spread is identical, and the histogram is identical bin for bin — not approximately, exactly. The only thing that differs is the order, and one of those two processes needs an engineer today.</p>
           <p>A run statistic sees what the histogram cannot. <span class="note speak"><span class="k">spoken · 1:58</span><em>“Same histogram, and one of those two processes needs an engineer today.”</em></span>That is the whole reason every chart in this curriculum is drawn in time order rather than as a pile of measurements — and why Level 7 prices the <a class="gl" href="glossary.html#western-electric-rules" data-gl="western-electric-rules">run rules</a> that formalise it.</p>
@@ -562,6 +642,7 @@
         <div>
           <span class="sec-no">1.4</span>
           <h2>Two kinds of variation</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Some wobble is just the machine being a machine. Some has a cause you can find, like a worn tool. The two need opposite responses.</p></div>
           <p>Shewhart's distinction, and the one the rest of the subject rests on. <span class="note data"><span class="k">the distinction</span><span class="row txt"><span class="rk">common cause</span><span class="rv">the process being itself</span></span><span class="row txt"><span class="rk">special cause</span><span class="rv">something identifiable happened</span></span></span>Some variation is the process being itself — many small causes, none of them findable, none of them worth chasing. Some variation is something identifiable that happened: a tool changed, a batch differed, an operator was new.</p>
           <p>The first kind is called <a class="gl" href="glossary.html#common-cause" data-gl="common-cause">common cause</a> and the second <a class="gl" href="glossary.html#special-cause" data-gl="special-cause">special cause</a>. They demand opposite responses, which is why telling them apart is worth eleven chapters: you improve a common-cause process by changing the process, and a special-cause process by finding the thing that happened.</p>
       <aside class="sys">
@@ -576,6 +657,7 @@
         <div>
           <span class="sec-no">1.5</span>
           <h2>Reacting to noise makes it worse</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>If you nudge the machine every time a part comes out a bit off, your parts get more scattered, not less.</p></div>
           <p class="lead">Suppose you cannot tell them apart, and you treat every wobble as a signal: after each part, you correct the machine by exactly what that part was out by. <span class="note data"><span class="k">the cost of answering noise</span><span class="row num"><span class="rk">variance</span><span class="rv">×2 exactly</span></span><span class="row num"><span class="rk">spread</span><span class="rv">×1.414</span></span></span>It is the most reasonable-looking policy on a shop floor, and it is Deming's funnel.</p>
           <p>Each correction subtracts the previous part's noise from this part's, so every outcome after the first is a difference of two <a class="gl" href="glossary.html#independence" data-gl="independence">independent</a> draws. Two numbers measure that scatter, and Level 3 builds both from real parts: the <a class="gl" href="glossary.html#variance" data-gl="variance">variance</a> is the average squared distance of each part from the average, and its square root, σ (<a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a>), is the spread in the parts' own units. Here the variance doubles exactly and stays doubled, so the spread the customer receives is √2 times wider, bought with a full shift of conscientious work.</p>
       <div class="eq">

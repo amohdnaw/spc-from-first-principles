@@ -98,6 +98,13 @@
   /* ---------- opening act ---------- */
   .hero{padding-block:clamp(48px,7vw,96px) 0}
   .hero h1{max-width:24ch;margin-bottom:24px}
+  .story{max-width:58ch;font-family:var(--doc);font-size:clamp(18px,1.6vw,20px);line-height:1.6;color:var(--ink)}
+  .story-go{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:32px}
+  .btn{font-family:var(--inst);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);border:1px solid var(--accent);padding:14px 20px;min-height:44px;display:inline-flex;align-items:center}
+  .btn:hover{background:var(--accent-wash)}
+  .chart-intro{padding-top:clamp(72px,10vw,128px)}
+  .chart-intro h2{margin-bottom:16px}
   .chart-block{margin-top:clamp(32px,5vw,64px);border-top:1px solid var(--rule)}
   .chart-head{display:flex;justify-content:space-between;align-items:baseline;gap:24px;
     flex-wrap:wrap;padding-block:16px}
@@ -298,10 +305,28 @@
 
 <!-- ================= the opening act — the chart IS the syllabus ================= -->
 <header class="hero wrap">
-  <span class="micro" style="display:block;margin-bottom:24px">An interactive curriculum · twelve levels, all written · thirty-four minutes of narrated video</span>
-  <h1>Every number on this chart can be derived.</h1>
-  <p class="dek">Start anywhere on the trace. Each phase links to the level that explains it.</p>
+  <span class="micro" style="display:block;margin-bottom:24px">An interactive curriculum · twelve levels, all written · no statistics needed to start</span>
+  <h1>At 2 a.m. every part was in spec. By 6 a.m. the customer was sending them back.</h1>
+  <div class="story">
+    <p>Nothing broke. A cutting tool wore down a little with every part, so each part came out a
+    hair bigger than the one before. Every part was measured, and every measurement passed, until
+    they stopped passing.</p>
+    <p>Nobody skipped a check. They asked the wrong question. &ldquo;Is this part good?&rdquo; cannot
+    see a machine going slowly wrong. &ldquo;Is this machine still behaving the way it did an hour
+    ago?&rdquo; can, and hours earlier.</p>
+    <p>This course teaches the second question from the ground up. Level 1 starts with one machine,
+    twenty parts and a choice you make yourself.</p>
+  </div>
+  <div class="story-go">
+    <a class="btn" href="level-01.html">Start at Level 1 &rarr;</a>
+    <a class="link" href="#same-night">or see the same night drawn as a chart &darr;</a>
+  </div>
 </header>
+
+<div class="wrap chart-intro" id="same-night">
+  <h2>The same drift, drawn as a chart</h2>
+  <p class="dek">Every number on it can be derived. Start anywhere on the trace; each phase links to the level that explains it.</p>
+</div>
 
 <div class="chart-block wrap">
   <div class="chart-head">
