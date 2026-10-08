@@ -210,7 +210,19 @@ CHAPTER_CSS = """
   /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
      contents, and one everyday-words line under every section title. Panel and
      readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
-  .hook{border:1px solid var(--rule);margin:32px 0 8px;max-width:var(--measure)}
+  .hook-row{margin:32px 0 8px}
+  .hook{border:1px solid var(--rule);max-width:var(--measure)}
+  .hk-side{max-width:var(--measure);margin-top:28px}
+  .hk-note{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);
+    border-left:1px solid var(--rule);padding:2px 0 2px 16px;margin-bottom:24px}
+  .hk-note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .hk-note a{color:var(--accent);border-bottom:1px solid var(--accent-wash)}
+  .hk-note[hidden]{display:none}
+  .hk-key{display:block;margin-top:6px}.hk-key i{font-style:normal;margin-right:6px}
+  @media (min-width:1280px){
+    .hook-row{display:grid;grid-template-columns:var(--measure) var(--marg);gap:var(--marg-gap);align-items:start}
+    .hk-side{margin-top:0}
+  }
   .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
     border-bottom:1px solid var(--rule)}
   .hk-body{padding:20px}
@@ -1776,6 +1788,16 @@ def chapter_09(K):
 # specs/plain-entry-contract.md. Each hook is a question a newcomer can answer
 # before meeting a single term. Its numbers are computed here and handed to a
 # few lines of JS that only draw them, so the page cannot disagree with the build.
+def hook_row(panel, notes):
+    """The try-it panel plus its margin notes: how to read it, an everyday
+    version, and the real name with a link to where the level covers it.
+    The first note shows before the pick, so it must not give the answer away."""
+    # notes after the first are spoilers, so they appear with the result
+    side = "".join(f'<div class="hk-note"{" hidden" if i else ""}><span class="k">{k}</span>{v}</div>'
+                   for i, (k, v) in enumerate(notes))
+    return f'          <div class="hook-row">\n{panel}\n            <aside class="hk-side">{side}</aside>\n          </div>'
+
+
 def hook_01():
     import numpy as _np
     sig, first = 0.2, 0.3
@@ -1794,7 +1816,7 @@ def hook_01():
     data = {"left": [round(float(v), 4) for v in left],
             "adj": [round(float(v), 4) for v in adj]}
     import json as _json
-    return f'''          <div class="hook" id="hook">
+    panel = f'''          <div class="hook" id="hook">
             <div class="hk-bar"><span class="micro">Try it first · 20 parts</span><span class="micro" id="hk-status"></span></div>
             <div class="hk-body">
               <p class="hk-q">Your machine makes a part, and it comes out {first:.1f}&nbsp;mm too big. Do you adjust the machine by {first:.1f}&nbsp;mm to make up for it?</p>
@@ -1838,12 +1860,22 @@ def hook_01():
               st.textContent = pick === "adj" ? "adjusted 20×" : "left alone";
               st.className = "micro " + (pick === "adj" ? "alarm" : "ok");
               setTimeout(() => {{
-                box.querySelector(".hk-tiles").hidden = false;
+                box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
                 const a = box.querySelector(".hk-after"); a.textContent = said[pick]; a.hidden = false;
               }}, still ? 0 : 2 * 20 * 70 + 400);
             }}));
           }})();
           </script>'''
+    return hook_row(panel, [
+        ("How to read it", 'Each dot is one part. Above the dashed line it came out too big, below it too small.'
+         '<span class="hk-key"><i class="ok">●</i> machine left alone</span>'
+         '<span class="hk-key"><i class="alarm">●</i> adjusted after every part</span>'),
+        ("You have done this", "The shower runs a little cold, so you turn it hot. Now it is too hot, so you"
+         " turn it back. The water was fine all along: the pipes wobble, and every turn adds a swing of"
+         " your own."),
+        ("The name for it", 'Engineers call this tampering. <a href="#s5">Section 1.5</a> runs it on many'
+         " more parts and measures the damage."),
+    ])
 
 
 def hook_02():
@@ -1851,7 +1883,7 @@ def hook_02():
     flips, heads = 10, 8
     p = sum(comb(flips, k) for k in range(heads, flips + 1)) / 2 ** flips
     one_in = round(1 / p)
-    return f'''          <div class="hook" id="hook">
+    panel = f'''          <div class="hook" id="hook">
             <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
             <div class="hk-body">
               <p class="hk-q">You flip a coin {flips} times and get {heads} heads. Is the coin unfair?</p>
@@ -1874,11 +1906,20 @@ def hook_02():
             const end = " Telling luck from a real change, and saying how sure you are, is what this course is about. This level starts with what a percentage like that actually means.";
             box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {{
               box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-              box.querySelector(".hk-tiles").hidden = false;
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
               const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
             }}));
           }})();
           </script>'''
+    return hook_row(panel, [
+        ("Before you pick", "In the long run a fair coin lands heads half the time. Decide whether"
+         f" {flips} flips is a long run."),
+        ("You have done this", "A friend turns up late three times this month, and you decide they are"
+         " always late. Three is a short run too. It might be them, or it might be the traffic."),
+        ("The name for it", f"The {p*100:.1f}&nbsp;% is how often a perfectly fair coin gives {heads} or"
+         f' more heads in {flips} flips. Statisticians call a number like that a p-value.'
+         ' <a href="level-07.html">Level 7</a> puts it to work; this level builds what it stands on.'),
+    ])
 
 
 CHAPTERS = {

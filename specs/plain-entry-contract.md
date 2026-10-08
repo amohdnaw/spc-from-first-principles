@@ -27,6 +27,12 @@ two readout tiles; amber-ruled "In plain words" block).
 5. Panels work by keyboard and at phone width with no sideways scroll; every number is
    computed by the build, none typed.
 
+6. (Added 2026-10-08, Ammar pick "A + C graft".) Beside every hook panel, in the margin
+   column (stacked below it under 1280 px), three notes: a first note that does not give
+   the answer away (how to read it / before you pick), "You have done this" (an everyday
+   version), and "The name for it" (the real term, linked to where the course covers it).
+   Notes two and three appear only after the pick.
+
 ## After "go"
 
 Levels 3–12: one hook each plus plain-words lines in about 50 more sections.
