@@ -537,7 +537,7 @@
           <p class="dek">Every number on a control chart is an estimate, including the constants. This is where an estimate gets an error bar.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">You measure 5 parts. Their average is 50.02&nbsp;mm and they scatter by about 0.03&nbsp;mm. How close is 50.02 to the machine's true average?</p>
               <button type="button" data-pick="exact" aria-pressed="false">It is the true average</button><button type="button" data-pick="close" aria-pressed="false">Within a thousandth</button><button type="button" data-pick="range" aria-pressed="false">Somewhere in a range</button>
@@ -626,6 +626,28 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="sec-no">5.3</span>
           <h2>Why t exists</h2>
           <div class="plain"><span class="micro">In plain words</span><p>With only five parts you must guess the spread too, and small samples often guess it too small. Ranges built that way miss more often than promised, so they must reach further out.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">You build a “95&nbsp;%” range for the true average from 5 parts, using the usual multiplier 1.96 and the spread of those same 5 parts. How often does the range miss?</p>
+              <button type="button" data-pick="five" aria-pressed="false">5 %, as promised</button><button type="button" data-pick="more" aria-pressed="false">More often</button><button type="button" data-pick="less" aria-pressed="false">Less often</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Promised misses</span><b class="">5 %</b></div><div><span class="micro">Actual misses, multiplier 1.96</span><b class="alarm">12.2 %</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"five": "Most people trust the label.", "more": "Right.", "less": "The other way."}, end = " It misses 12.2 % of the time, not 5 %: 5 parts often guess the spread too small. Widen the multiplier to 2.78 and the promise holds again.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p class="lead">The standard error is σ/√<em>n</em>, and nobody knows σ, the true spread. <span class="note data"><span class="k">a “95 %” interval built with 1.96</span><span class="row num"><span class="rk"><span class="nc">n</span> = 2</span><span class="rv">70.0 %</span></span><span class="row num"><span class="rk"><span class="nc">n</span> = 5</span><span class="rv">87.9 %</span></span><span class="row num"><span class="rk"><span class="nc">n</span> = 10</span><span class="rv">91.8 %</span></span><span class="row num"><span class="rk"><span class="nc">n</span> = 25</span><span class="rv">93.9 %</span></span><span class="row num"><span class="rk"><span class="nc">n</span> = 100</span><span class="rv">94.8 %</span></span></span>All you have is <em>s</em>, the spread of the same five parts, so <em>s</em> goes where σ should be. Keep 1.96 anyway and count what you actually get.</p>
           <p>At 5 parts the interval that advertises ninety-five delivers 87.9. <span class="note"><span class="k">the substitution</span>Not a correction bolted on. It is what the arithmetic gives when the spread is guessed too.</span>The reason is luck in the spread. Five parts often happen to sit close together: in 26 % of samples <em>s</em> comes out below 70 % of the true σ. Those samples build intervals that are too narrow: they miss 31 % of the time against 6 % for the rest, and supply 66 % of all the misses. 1.96 was worked out for a spread known exactly, and this one was guessed.</p>
           <p>The fix is to reach further out: far enough that, lucky-narrow samples included, 95 % of intervals still catch the mean. How far depends only on how many parts the spread came from.</p>

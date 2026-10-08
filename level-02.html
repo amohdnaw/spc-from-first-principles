@@ -536,7 +536,7 @@
           <p class="dek">A proportion is a long-run frequency. Before a chart may claim 99.73&nbsp;%, this is what such a number is a statement about.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">You flip a coin 10 times and get 8 heads. Is the coin unfair?</p>
               <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
@@ -675,6 +675,28 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="sec-no">2.5</span>
           <h2>What a percentage claims</h2>
           <div class="plain"><span class="micro">In plain words</span><p>A chart that false-alarms “once in 370 points” can alarm on the fifth point or the nine-hundredth. 370 is an average, not a schedule.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">A chart false-alarms about once in 370 points on average. What is the chance its first <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarm</a> comes before point 100?</p>
+              <button type="button" data-pick="none" aria-pressed="false">Almost none</button><button type="button" data-pick="quarter" aria-pressed="false">About a quarter</button><button type="button" data-pick="half" aria-pressed="false">About half</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">First false alarm before point 100</span><b class="alarm">24 %</b></div><div><span class="micro">Not until after point 741</span><b class="">13 %</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"none": "Most people say almost none.", "quarter": "Right.", "half": "Less than that."}, end = " 370 is an average, not a schedule: about 24 % of the time the first false alarm comes before point 100, and 13 % of the time it waits past point 741.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p class="lead">Now the number this level was written to protect. <span class="note"><span class="k">not the part</span>A part is never a probability. It is one part.</span>Nought point two seven percent — the other side of 99.73 % — has three readings, and only one of them is true.</p>
           <p>It is not the chance this part is bad. <span class="note"><span class="k">not capability</span>Parts against tolerance is Level 8. This is the chart against itself.</span>It is not the fraction of parts out of <a class="gl" href="glossary.html#tolerance" data-gl="tolerance">tolerance</a> — that is <a class="gl" href="glossary.html#capability" data-gl="capability">capability</a>, and it waits until Level 8. It is the rate at which a chart on an unchanged process trips its own limits.</p>
           <p>Which has a consequence worth doing the arithmetic for. <span class="note data"><span class="k">at least one false alarm</span><span class="row num"><span class="rk">over 100 subgroups</span><span class="rv">23.7 %</span></span><span class="row num"><span class="rk">over 370 subgroups</span><span class="rv">63.3 %</span></span><span class="row num"><span class="rk">the limit</span><span class="rv">1 − 1/e</span></span></span>Run a shift of 100 <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroups</a> with nothing wrong and the chance of having been alarmed at least once is already 23.7 %. Run the 370 that the phrase “one alarm in 370” actually names, and it is 63.3 % — not certainty.</p>
@@ -683,7 +705,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div class="eq-num">(2.1)</div>
         <p class="eq-cap">Run the very number of subgroups that “one alarm in 370” names, on a process where nothing has changed, and the chance of having been alarmed at least once is not certainty — it is 1 − 1/e.</p>
       </div>
-          <p>And because the waiting time is geometric, the typical wait is shorter than the average one: half of all first <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarms</a> arrive by subgroup 256, not 370. <span class="note data"><span class="k">subgroups to the first alarm</span><span class="row num"><span class="rk">mean wait</span><span class="rv">370.4</span></span><span class="row num"><span class="rk">median wait</span><span class="rv">256</span></span></span>An average is not a deadline.</p>
+          <p>And because the waiting time is geometric, the typical wait is shorter than the average one: half of all first false alarms arrive by subgroup 256, not 370. <span class="note data"><span class="k">subgroups to the first alarm</span><span class="row num"><span class="rk">mean wait</span><span class="rv">370.4</span></span><span class="row num"><span class="rk">median wait</span><span class="rv">256</span></span></span>An average is not a deadline.</p>
           <p>A percentage on a <a class="gl" href="glossary.html#control-chart" data-gl="control-chart">control chart</a> is a claim about a repeated process, never about a part. <span class="note speak"><span class="k">spoken · 3:52</span><em>“A rate is a claim about the process, not about a part.”</em></span>Level 6 can price the limits now.</p>
       <figure>
         <div class="rule"></div>

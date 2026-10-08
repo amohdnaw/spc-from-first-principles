@@ -537,7 +537,7 @@
           <p class="dek">The last level. Change the settings on purpose — and discover that studying one factor at a time can lead you confidently to the wrong answer.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">Two knobs: pressure and temperature, and a lower result is better. You find the best temperature with pressure set low, then the best pressure at that temperature. Have you found the best setting?</p>
               <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="close" aria-pressed="false">Close enough</button><button type="button" data-pick="no" aria-pressed="false">Not necessarily</button>
@@ -679,6 +679,28 @@
           <span class="sec-no">12.5</span>
           <h2>Curvature, and why the corners cannot see it</h2>
           <div class="plain"><span class="micro">In plain words</span><p>Testing only the high and low ends of each setting cannot tell whether the result bends in between. Add a few runs in the middle, and a gap between middle and ends shows the bend.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">Four corner runs average 6.9. Straight-line thinking says the middle setting should give the same. What do runs in the middle give?</p>
+              <button type="button" data-pick="same" aria-pressed="false">About 6.9</button><button type="button" data-pick="other" aria-pressed="false">Something else</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Corners predict for the middle</span><b class="">6.9</b></div><div><span class="micro">Middle, measured · 4 runs</span><b class="alarm">10.0</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"same": "Most people say so.", "other": "Right."}, end = " The middle gives 10.0. The response bends between the ends, and runs at the corners alone can never show it; a few runs in the middle can.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p class="lead">A two-level design fits a plane with a twist in it. <span class="note data"><span class="k">a surface that really bends</span><span class="row num"><span class="rk">corners</span><span class="rv">6.90</span></span><span class="row num"><span class="rk">centre</span><span class="rv">10.04</span></span><span class="row num"><span class="rk">gap</span><span class="rv">-3.14</span></span><span class="row num"><span class="rk">p</span><span class="rv">0.0044</span></span></span>If the true surface bends, the corners cannot report it — and the reason is sharper than it first looks.</p>
           <p>With coded ±1 factors the quadratic term contributes the <em>same</em> amount at every corner and nothing at the centre. <span class="note"><span class="k">the test</span>A few runs at the middle, and the gap between the corner mean and the centre mean is a pure quadratic signal.</span>So it is not absent from the corner readings — it is constant across them, which makes it inseparable from the intercept. Every effect estimate comes out unchanged.</p>
           <p>Add <a class="gl" href="glossary.html#centre-points" data-gl="centre-points">centre points</a> and it becomes a test. <span class="note data"><span class="k">and it does not cry curvature</span><span class="row num"><span class="rk">flat surface gap</span><span class="rv">+0.06</span></span><span class="row num"><span class="rk">its p</span><span class="rv">0.89</span></span></span>On the bent surface the gap is -3.14 with p = 0.0044; on a genuinely flat one it is +0.06 with p = 0.89. The design does not merely estimate better — it can now be wrong out loud, which is the property Level 7 spent its whole length arguing for.</p>

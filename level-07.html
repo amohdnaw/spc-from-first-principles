@@ -536,7 +536,7 @@
           <p class="dek">Level 6 priced crying wolf. This is the other way to be wrong — and why adding rules is arithmetic rather than opinion.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">The machine starts making parts slightly bigger, by about as much as its normal wobble. Your chart plots the average of 5 parts each hour. Will the next point catch it?</p>
               <button type="button" data-pick="yes" aria-pressed="false">Yes, right away</button><button type="button" data-pick="likely" aria-pressed="false">Probably not</button><button type="button" data-pick="never" aria-pressed="false">Never</button>
@@ -660,6 +660,28 @@
           <span class="sec-no">7.4</span>
           <h2>Four rules, one at a time</h2>
           <div class="plain"><span class="micro">In plain words</span><p>Four extra rules look for patterns across several points. Switch them on one at a time: each catches a real change sooner, and each brings more false alarms.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">With one rule, your chart false-alarms about once in 377 points. Switch on four extra pattern rules. Now?</p>
+              <button type="button" data-pick="same" aria-pressed="false">About the same</button><button type="button" data-pick="double" aria-pressed="false">Twice as often</button><button type="button" data-pick="more" aria-pressed="false">About 4 times as often</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">One rule: a false alarm every</span><b class="">377 points</b></div><div><span class="micro">All rules: a false alarm every</span><b class="alarm">91 points</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"same": "Each rule adds its own false alarms.", "double": "More than that.", "more": "Right."}, end = " False alarms come 4.1 times as often. Every extra rule buys sensitivity and pays for it in alarms; this section prices each one.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p class="lead">The <a class="gl" href="glossary.html#western-electric-rules" data-gl="western-electric-rules">Western Electric rules</a> are usually taught as a list to memorise. <span class="note data"><span class="k">what each rule reads</span><span class="row txt"><span class="rk">rule 1</span><span class="rv">one point beyond 3σ</span></span><span class="row txt"><span class="rk">rule 2</span><span class="rv">2 of 3 beyond 2σ, same side</span></span><span class="row txt"><span class="rk">rule 3</span><span class="rv">4 of 5 beyond 1σ, same side</span></span><span class="row txt"><span class="rk">rule 4</span><span class="rv">8 in a row on one side</span></span></span>They are not a list. They are four purchases, and each one has a price that can be computed.</p>
           <p>Switch them on one at a time and watch two <a class="gl" href="glossary.html#run-length" data-gl="run-length">run lengths</a> move in the same direction — the subgroups between false alarms, which you want long, and the subgroups to catch a real 1σ shift, which you want short. <span class="note data"><span class="k">false alarm every / catches in</span><span class="row num"><span class="rk">rule 1</span><span class="rv">377 / 43.1</span></span><span class="row num"><span class="rk">rule 1+2</span><span class="rv">232 / 20.3</span></span><span class="row num"><span class="rk">rule 1+2+3</span><span class="rv">133 / 11.2</span></span><span class="row num"><span class="rk">rule 1+2+3+4</span><span class="rv">91 / 9.3</span></span></span>Every rule shortens both.</p>
           <p>All four together give a false alarm every 91 subgroups instead of 377 (simulated; the exact value for rule 1 alone is 370.4, the 370 of Levels 2 and 6). <span class="note"><span class="k">corroboration</span>Champ &amp; Woodall, 1987. Agreement with a number derived elsewhere is worth more than internal consistency.</span>That figure was published in 1987 as 91.75, and the simulation here was not told about it — it reproduces it from the rules themselves.</p>

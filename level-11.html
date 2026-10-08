@@ -537,7 +537,7 @@
           <p class="dek">One sum-of-squares identity, wearing three hats: regression, ANOVA, and the gauge study this curriculum hands over to the MSA site.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">29 test cuts show the surface gets rougher as you cut faster. The fitted line says 2.74&nbsp;µm at 172&nbsp;m/min, and you are 95&nbsp;% sure of that average to within ±0.05&nbsp;µm. Will the next part you cut there land within ±0.05 of the line?</p>
               <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="wider" aria-pressed="false">No, it needs a wider range</button><button type="button" data-pick="cant" aria-pressed="false">Can't say</button>
@@ -647,6 +647,28 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
           <span class="sec-no">11.3</span>
           <h2>R² is a ratio, not a grade</h2>
           <div class="plain"><span class="micro">In plain words</span><p>The score for how well a line fits rises even when you add pure junk. It also stays high when a straight line is forced through a curve. Only the leftover misses show the problem.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">A fitted line explains 97.1&nbsp;% of the scatter. Add 10 columns of pure random numbers to the fit. What happens to that score?</p>
+              <button type="button" data-pick="up" aria-pressed="false">It goes up</button><button type="button" data-pick="same" aria-pressed="false">It stays</button><button type="button" data-pick="down" aria-pressed="false">It goes down</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">The real fit</span><b class="">97.1 %</b></div><div><span class="micro">Plus 10 junk columns</span><b class="alarm">98.1 %</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"up": "Right.", "same": "Most people expect that.", "down": "Most people expect that."}, end = " It rises to 98.1 % on pure junk. The score can only go up as you add columns, so a higher score is not a better model.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p class="lead">R² is the fraction of the total variation the line accounts for. <span class="note data"><span class="k">R² after adding nothing</span><span class="row num"><span class="rk">the line alone</span><span class="rv">0.9713</span></span><span class="row num"><span class="rk">plus 3 noise columns</span><span class="rv">0.9722</span></span><span class="row num"><span class="rk">plus 6 noise columns</span><span class="rv">0.9798</span></span><span class="row num"><span class="rk">plus 10 noise columns</span><span class="rv">0.9805</span></span></span>It is a summary, and it has two properties worth knowing before quoting it.</p>
           <p>The first is that it cannot fall when a predictor is added, so adding columns of pure noise raises it. <span class="note"><span class="k">adjusted R²</span>The same ratio, penalised for the number of columns spent buying it.</span>Ten such columns take it from 0.9713 to 0.9805 while explaining nothing whatsoever. Adjusted R² exists precisely because of this, and it turns down — 0.9692 to 0.9679.</p>
           <p>The second is worse: a high R² can sit beside residuals that are visibly wrong. <span class="note data"><span class="k">the number R² cannot see</span><span class="row num"><span class="rk">straight, R²</span><span class="rv">0.971</span></span><span class="row num"><span class="rk">its longest run</span><span class="rv">7</span></span><span class="row num"><span class="rk">curved, R²</span><span class="rv">0.929</span></span><span class="row num"><span class="rk">its longest run</span><span class="rv">16</span></span></span>Fitting a straight line to a curved relationship here scores 0.929 — respectable by any rule of thumb — while the residuals stay on the same side of zero for 16 points in a row against 7 for the honest fit.</p>

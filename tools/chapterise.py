@@ -1879,15 +1879,15 @@ def hook_01():
     ])
 
 
-def quiz_hook(bar, q, picks, tiles, said, end, notes):
+def quiz_hook(bar, q, picks, tiles, said, end, notes, hid="hook"):
     """A question panel: pick an answer, then computed tiles and a reply tailored
     to the pick. picks = [(key, label)], tiles = [(label, value, cls)],
     said = {key: reply}; end is appended to every reply."""
     import json as _json
     btns = "".join(f'<button type="button" data-pick="{k}" aria-pressed="false">{lab}</button>' for k, lab in picks)
     tl = "".join(f'<div><span class="micro">{lab}</span><b class="{c}">{v}</b></div>' for lab, v, c in tiles)
-    panel = f"""          <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">{bar}</span><span class="micro" id="hk-status"></span></div>
+    panel = f"""          <div class="hook" id="{hid}">
+            <div class="hk-bar"><span class="micro">{bar}</span></div>
             <div class="hk-body">
               <p class="hk-q">{q}</p>
               {btns}
@@ -1897,7 +1897,7 @@ def quiz_hook(bar, q, picks, tiles, said, end, notes):
           </div>
           <script>
           (() => {{
-            const box = document.getElementById("hook");
+            const box = document.getElementById("{hid}");
             const said = {_json.dumps(said, ensure_ascii=False)}, end = {_json.dumps(end, ensure_ascii=False)};
             box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {{
               box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
@@ -1906,6 +1906,8 @@ def quiz_hook(bar, q, picks, tiles, said, end, notes):
             }}));
           }})();
           </script>"""
+    if notes is None:  # mid-level hook: the section's own margin notes stay
+        return f'          <div class="hook-row">\n{panel}\n          </div>'
     return hook_row(panel, notes)
 
 
@@ -2181,6 +2183,183 @@ def hook_12():
          ("The name for it", "When one knob changes what the other does, that is an interaction."
           ' <a href="#s3">Section 12.3</a> measures it.')])
 
+def _mid(bar, q, picks, tiles, said, end):
+    # replies go through textContent, so entities must already be characters
+    return quiz_hook(bar, q, picks, tiles, said, end.replace("&nbsp;", "\u00a0"), None, hid="hook2")
+
+
+def mid_01():
+    return _mid("Before you read on",
+        "The same 240 measurements, drawn twice as a bar chart: once with 4 bars, once with 52."
+        " Will the two pictures tell the same story?",
+        [("yes", "Yes, same data"), ("no", "No")],
+        [("With 4 bars", "one lump", ""), ("With 52 bars", "a comb", "")],
+        {"yes": "Same data, but not the same story.", "no": "Right."},
+        " Four bars shows a single lump; fifty-two shows a row of spikes. The bar width is a"
+        " setting you chose, and it changes what the picture seems to say.")
+
+
+def mid_02():
+    from scipy.stats import norm
+    p = 2 * norm.sf(3)
+    arl = 1 / p
+    early = 1 - (1 - p) ** 100
+    late = (1 - p) ** round(2 * arl)
+    return _mid("Before you read on",
+        f"A chart false-alarms about once in {arl:.0f} points on average. What is the chance its"
+        " first false alarm comes before point 100?",
+        [("none", "Almost none"), ("quarter", "About a quarter"), ("half", "About half")],
+        [("First false alarm before point 100", f"{early*100:.0f} %", "alarm"),
+         (f"Not until after point {round(2*arl)}", f"{late*100:.0f} %", "")],
+        {"none": "Most people say almost none.", "quarter": "Right.", "half": "Less than that."},
+        f" {arl:.0f} is an average, not a schedule: about {early*100:.0f}&nbsp;% of the time the first"
+        f" false alarm comes before point 100, and {late*100:.0f}&nbsp;% of the time it waits past"
+        f" point {round(2*arl)}.".replace("&nbsp;", " "))
+
+
+def mid_03():
+    n = 12
+    share = (n - 1) / n
+    return _mid("Before you read on",
+        f"You work out the spread of {n} parts, averaging their squared distances from the mean by"
+        f" dividing by {n}. Over many samples, does that come out too small, about right, or too big?",
+        [("small", "Too small"), ("right", "About right"), ("big", "Too big")],
+        [("Average result, share of the true value", f"{share*100:.1f} %", "alarm"),
+         ("Divide by this instead and it comes out right", f"{n-1}", "ok")],
+        {"small": "Right.", "right": "Most people say so.", "big": "The other way."},
+        f" It comes out too small on average, at {share*100:.1f}&nbsp;% of the truth: the parts sit"
+        f" closer to their own average than to the true one. Dividing by {n-1} instead of {n}"
+        " fixes it.".replace("&nbsp;", " "))
+
+
+def mid_04():
+    first = 2 ** 2
+    again = first ** 2
+    return _mid("Before you read on",
+        f"Averaging {first} parts halves the wobble of a single part. How many parts do you need"
+        " to halve it again?",
+        [("eight", f"{2*first}"), ("sixteen", f"{again}"), ("never", "You can't")],
+        [("Halve the wobble once", f"{first} parts", ""), ("Halve it again", f"{again} parts", "alarm")],
+        {"eight": "Most people say so.", "sixteen": "Right.", "never": "You can, but it gets expensive."},
+        f" Halving it again takes {again} parts, not {2*first}: the wobble shrinks with the square"
+        " root of the count. Each extra part helps less than the one before.")
+
+
+def mid_05():
+    from scipy.stats import t as _t, norm
+    n = 5
+    z = norm.ppf(0.975)
+    miss = 2 * _t.sf(z, n - 1)
+    fix = _t.ppf(0.975, n - 1)
+    return _mid("Before you read on",
+        f"You build a “95&nbsp;%” range for the true average from {n} parts, using the usual"
+        f" multiplier {z:.2f} and the spread of those same {n} parts. How often does the range miss?",
+        [("five", "5 %, as promised"), ("more", "More often"), ("less", "Less often")],
+        [("Promised misses", "5 %", ""), (f"Actual misses, multiplier {z:.2f}", f"{miss*100:.1f} %", "alarm")],
+        {"five": "Most people trust the label.", "more": "Right.", "less": "The other way."},
+        f" It misses {miss*100:.1f}&nbsp;% of the time, not 5&nbsp;%: {n} parts often guess the spread"
+        f" too small. Widen the multiplier to {fix:.2f} and the promise holds again.".replace("&nbsp;", " "))
+
+
+def mid_06():
+    from scipy.stats import norm
+    p3, p2 = 2 * norm.sf(3), 2 * norm.sf(2)
+    return _mid("Before you read on",
+        f"Limits drawn 3 steps out give a false alarm about once in {1/p3:.0f} points. Pull them in"
+        " to 2 steps. How many more false alarms?",
+        [("two", "Twice as many"), ("five", "About 5 times"), ("more", f"About {p2/p3:.0f} times")],
+        [("Limits at 3 steps: one false alarm per", f"{1/p3:.0f} points", ""),
+         ("Limits at 2 steps: one per", f"{1/p2:.0f} points", "alarm")],
+        {"two": "Far more than that.", "five": "More than that.", "more": "Right."},
+        f" One step closer and false alarms come {p2/p3:.0f} times as often. The tails of the bell"
+        " thin out fast, so where you draw the line matters enormously.")
+
+
+def mid_07():
+    from spclab.evidence import ARL0_ALL, ARL0_ONE_RULE
+    k = ARL0_ONE_RULE / ARL0_ALL
+    return _mid("Before you read on",
+        f"With one rule, your chart false-alarms about once in {ARL0_ONE_RULE:.0f} points. Switch on"
+        " four extra pattern rules. Now?",
+        [("same", "About the same"), ("double", "Twice as often"), ("more", f"About {k:.0f} times as often")],
+        [("One rule: a false alarm every", f"{ARL0_ONE_RULE:.0f} points", ""),
+         ("All rules: a false alarm every", f"{ARL0_ALL:.0f} points", "alarm")],
+        {"same": "Each rule adds its own false alarms.", "double": "More than that.", "more": "Right."},
+        f" False alarms come {k:.1f} times as often. Every extra rule buys sensitivity and pays for it"
+        " in alarms; this section prices each one.")
+
+
+def mid_08():
+    from scipy.stats import norm
+    centred = 2 * norm.sf(3)
+    shifted = norm.sf(2) + norm.cdf(-4)
+    return _mid("Before you read on",
+        "A process just fits the customer's limits. Its average slides toward one limit by one step"
+        " of its scatter; the scatter stays the same width. Bad parts go up by how much?",
+        [("third", "About a third more"), ("double", "Double"), ("more", f"About {shifted/centred:.0f} times")],
+        [("Centred · bad parts per million", f"{centred*1e6:,.0f}".replace(",", " "), ""),
+         ("Slid one step · bad parts per million", f"{round(shifted*1e6, -2):,.0f}".replace(",", " "), "alarm")],
+        {"third": "Far more than that.", "double": "More than that.", "more": "Right."},
+        f" Bad parts go up {shifted/centred:.1f} times, almost all of them over the near limit. The"
+        " far side barely notices; the near side is the one you fail.")
+
+
+def mid_09():
+    lam, k = 0.2, 10
+    w = lam * (1 - lam) ** k
+    return _mid("Before you read on",
+        f"The running score counts the newest hour for {lam*100:.0f}&nbsp;% and the past for the"
+        f" rest. How much does the hour from {k} hours ago still count?",
+        [("none", "Nothing, it's forgotten"), ("little", "A little"), ("same", "As much as the newest")],
+        [("Newest hour counts", f"{lam*100:.0f} %", ""), (f"{k} hours ago counts", f"{w*100:.1f} %", "ok")],
+        {"none": "Not quite: it fades but never vanishes.", "little": "Right.", "same": "No, it fades."},
+        f" It still counts {w*100:.1f}&nbsp;%. Old hours fade but never vanish, so a small drift that"
+        " repeats keeps adding up in the score.".replace("&nbsp;", " "))
+
+
+def mid_10():
+    import math as _m
+    p, n = 0.04, 50
+    lcl = p - 3 * _m.sqrt(p * (1 - p) / n)
+    need = _m.floor(9 * (1 - p) / p) + 1
+    return _mid("Before you read on",
+        f"Your line makes {p*100:.0f}&nbsp;% bad parts, and you chart batches of {n}. If the line gets"
+        " better, can the chart show it?",
+        [("yes", "Yes"), ("no", "No"), ("big", "Only for a big gain")],
+        [(f"Lower alarm line, batches of {n}", f"{lcl*100:.1f} %".replace("-", "−"), "alarm"),
+         ("Smallest batch with a lower line", f"{need}", "")],
+        {"yes": "Most people say so.", "no": "Right.", "big": "Not even then."},
+        f" The lower line works out at {lcl*100:.1f}&nbsp;%".replace("-", "−") + ", below zero"
+        f", so no count can ever cross it."
+        f" The chart only warns when things get worse. Batches of {need} or more fix that.".replace("&nbsp;", " "))
+
+
+def mid_11():
+    from spclab.relationships import R2_PLAIN, R2_WITH_NOISE
+    k = max(R2_WITH_NOISE)
+    return _mid("Before you read on",
+        f"A fitted line explains {R2_PLAIN*100:.1f}&nbsp;% of the scatter. Add {k} columns of pure"
+        " random numbers to the fit. What happens to that score?",
+        [("up", "It goes up"), ("same", "It stays"), ("down", "It goes down")],
+        [("The real fit", f"{R2_PLAIN*100:.1f} %", ""), (f"Plus {k} junk columns", f"{R2_WITH_NOISE[k]*100:.1f} %", "alarm")],
+        {"up": "Right.", "same": "Most people expect that.", "down": "Most people expect that."},
+        f" It rises to {R2_WITH_NOISE[k]*100:.1f}&nbsp;% on pure junk. The score can only go up as you"
+        " add columns, so a higher score is not a better model.".replace("&nbsp;", " "))
+
+
+def mid_12():
+    from spclab.experiments import CURVED
+    return _mid("Before you read on",
+        f"Four corner runs average {CURVED['factorial_mean']:.1f}. Straight-line thinking says the"
+        " middle setting should give the same. What do runs in the middle give?",
+        [("same", f"About {CURVED['factorial_mean']:.1f}"), ("other", "Something else")],
+        [("Corners predict for the middle", f"{CURVED['factorial_mean']:.1f}", ""),
+         (f"Middle, measured · {CURVED['n_centre']} runs", f"{CURVED['centre_mean']:.1f}", "alarm")],
+        {"same": "Most people say so.", "other": "Right."},
+        f" The middle gives {CURVED['centre_mean']:.1f}. The response bends between the ends, and"
+        " runs at the corners alone can never show it; a few runs in the middle can.")
+
+
 CHAPTERS = {
     "level-01.html": {
         "number": 1, "word": "one",
@@ -2198,6 +2377,7 @@ CHAPTERS = {
                 ("1.5", "s5", "Reacting to noise makes it worse",
                  "Deming's funnel: correcting every part doubles the variance")],
         "sections": chapter_01,
+        "mid": {"s2": mid_01},
         "hook": hook_01,
         "plain": {
             "s1": "Make the same part twelve times and you get twelve slightly different"
@@ -2228,6 +2408,7 @@ CHAPTERS = {
                 ("2.5", "s5", "What a percentage claims",
                  tex(r"1-(1-\alpha)^{1/\alpha}") + " — and why 370 is not a deadline")],
         "sections": chapter_02,
+        "mid": {"s5": mid_02},
         "hook": hook_02,
         "plain": {
             "s1": "A number like “99.73 % inside the limits” describes what a process"
@@ -2258,6 +2439,7 @@ CHAPTERS = {
                 ("5.5", "s5", "Including ours",
                  tex("d_2") + " is simulated, so it has a standard error too")],
         "sections": chapter_05,
+        "mid": {"s3": mid_05},
         "hook": hook_05,
         "plain": {
             "s1": "Nobody ever sees a process’s true average or spread. Every number on a chart"
@@ -2295,6 +2477,7 @@ CHAPTERS = {
                 ("6.7", "s7", "Building the chart",
                  "the " + tex(r"\bar{X}") + "–R pair from 25 subgroups, one multiplication per limit")],
         "sections": chapter_06,
+        "mid": {"s2": mid_06},
         "hook": hook_06,
         "plain": {
             "s1": "The bell curve behind a control chart is a claim: that the process has not"
@@ -2335,6 +2518,7 @@ CHAPTERS = {
                 ("3.5", "s5", "You never measure everything",
                  "sample against process, and why the divisor is n − 1")],
         "sections": chapter_03,
+        "mid": {"s5": mid_03},
         "hook": hook_03,
         "plain": {
             "s1": "Twelve parts off one machine, same tool and same person, all measure a"
@@ -2371,6 +2555,7 @@ CHAPTERS = {
                 ("4.5", "s5", "Reading the bell",
                  f"areas in sigmas: where {Z95:.2f}, {TAIL_K[2]*100:.1f} % and {TAIL3_PPM} ppm come from")],
         "sections": chapter_04,
+        "mid": {"s4": mid_04},
         "hook": hook_04,
         "plain": {
             "s1": "Roll a die ten times and some faces turn up far too often. Roll it ten"
@@ -2406,6 +2591,7 @@ CHAPTERS = {
                 ("7.5", "s5", "So is it worth it",
                  "the cost is fixed; the benefit is the shift you fear")],
         "sections": chapter_07,
+        "mid": {"s4": mid_07},
         "hook": hook_07,
         "plain": {
             "s1": "A chart can be wrong two ways: it can raise a false alarm, or it can stay"
@@ -2442,6 +2628,7 @@ CHAPTERS = {
                 ("10.6", "s6", "Annex — capability when the shape is wrong",
                  "the normal tail understates a count tail")],
         "sections": chapter_10,
+        "mid": {"s5": mid_10},
         "hook": hook_10,
         "plain": {
             "s1": "Measure a part and you must check its spread as well as its average. Count"
@@ -2480,6 +2667,7 @@ CHAPTERS = {
                 ("11.5", "s5", "The same total, split four ways",
                  "part, operator, interaction — and the seam to MSA")],
         "sections": chapter_11,
+        "mid": {"s3": mid_11},
         "hook": hook_11,
         "plain": {
             "s1": "Fitting a line through points, comparing groups, and checking a measuring"
@@ -2517,6 +2705,7 @@ CHAPTERS = {
                 ("12.6", "s6", "Twelve levels",
                  "what the arc was for")],
         "sections": chapter_12,
+        "mid": {"s5": mid_12},
         "hook": hook_12,
         "plain": {
             "s1": "Until now the course watched a process. Here you change its settings on"
@@ -2552,6 +2741,7 @@ CHAPTERS = {
                 ("8.4", "s4", "Every Cpk is a promise about defect rate",
                  "1.33 against 1.67 is two orders of magnitude of scrap")],
         "sections": chapter_08,
+        "mid": {"s3": mid_08},
         "hook": hook_08,
         "plain": {
             "s1": "The customer draws two lines, and parts between them pass. The machine makes"
@@ -2583,6 +2773,7 @@ CHAPTERS = {
                 ("9.5", "s5", "One drift is an anecdote",
                  "44 subgroups against 10, and what the trade means")],
         "sections": chapter_09,
+        "mid": {"s3": mid_09},
         "hook": hook_09,
         "plain": {
             "s1": "A slow drift is the costliest problem a machine can have, because each part"
@@ -2705,6 +2896,8 @@ def build_main(spec: dict, keep: dict) -> str:
         if anchor in spec.get("plain", {}):
             A(f'{P}<div class="plain"><span class="micro">In plain words</span>'
               f'<p>{spec["plain"][anchor]}</p></div>')
+        if anchor in spec.get("mid", {}):
+            A(spec["mid"][anchor]())
         for b in blocks:
             A(b)
         A("        </div>")

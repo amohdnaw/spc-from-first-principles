@@ -505,7 +505,7 @@
           <p class="dek">±3σ isn't taste. It's a bet at 370:1 odds.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">Your chart checks the process once an hour. Nothing is wrong with the process. How long, on average, until the chart raises an alarm anyway?</p>
               <button type="button" data-pick="never" aria-pressed="false">Never</button><button type="button" data-pick="day" aria-pressed="false">About a day</button><button type="button" data-pick="weeks" aria-pressed="false">About two weeks</button>
@@ -570,6 +570,28 @@
           <span class="sec-no">6.2</span>
           <h2>Pricing ±3σ</h2>
           <div class="plain"><span class="micro">In plain words</span><p>Put two limits around the middle of the curve and slide them outward. At three steps of spread on each side, almost all of the curve sits inside. Nobody picked that share; the curve sets it.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">Limits drawn 3 steps out give a <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarm</a> about once in 370 points. Pull them in to 2 steps. How many more false alarms?</p>
+              <button type="button" data-pick="two" aria-pressed="false">Twice as many</button><button type="button" data-pick="five" aria-pressed="false">About 5 times</button><button type="button" data-pick="more" aria-pressed="false">About 17 times</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Limits at 3 steps: one false alarm per</span><b class="">370 points</b></div><div><span class="micro">Limits at 2 steps: one per</span><b class="alarm">22 points</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"two": "Far more than that.", "five": "More than that.", "more": "Right."}, end = " One step closer and false alarms come 17 times as often. The tails of the bell thin out fast, so where you draw the line matters enormously.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p>Put a pair of limits on that curve and sweep them outward from the centre. <span class="note data"><span class="k">what three sigma is worth</span><span class="row num"><span class="rk">in-control</span><span class="rv">99.73 %</span></span><span class="row num"><span class="rk">outside</span><span class="rv">0.27 %</span></span></span>At every position the question has an exact answer: how much of the distribution is inside? Not looked up in a table — it is the integral of the curve between the limits, evaluated as they move.</p>
           <p>Stop at three <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a> and the answer is 99.73%. <span class="note"><span class="k">Φ</span>The standard normal CDF, computed from erf — not a table.</span><span class="note speak"><span class="k">spoken · 0:38</span><em>“Ninety-nine point seven three percent. Nobody chose that number.”</em></span>Nobody chose that number. It is simply what ±3σ is worth, and everything the process should ever do lives inside it. The σ is the spread of whatever the chart plots: one part's σ on a chart of single parts, σ/√<em>n</em> on a chart of subgroup means, which is why an average chart's limits sit tighter than the parts do.</p>
       <div class="eq">
@@ -622,7 +644,7 @@
         <div>
           <span class="sec-no">6.3</span>
           <h2>Where the price hides</h2>
-          <div class="plain"><span class="micro">In plain words</span><p>The thin slivers outside the limits are too small to see until you stretch the picture. Together they mean a steady process still gives a <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarm</a> about once in 370 points.</p></div>
+          <div class="plain"><span class="micro">In plain words</span><p>The thin slivers outside the limits are too small to see until you stretch the picture. Together they mean a steady process still gives a false alarm about once in 370 points.</p></div>
           <p>The whole of the rest — the part that makes the chart worth running — is out in the tails, and at the scale of the last figure you cannot see it at all. <span class="note"><span class="k">axis stretch</span><span class="v">×70</span>needed before the tails are visible at all.</span>So stretch the vertical axis and let the tails grow. The peak goes straight out of frame, which is the point: the tails are about seventy times smaller than anything else on the chart.</p>
           <p>Each wing is one tenth of one percent of everything, and there are two of them. <span class="note data"><span class="k">the tail, priced</span><span class="row num"><span class="rk">each wing</span><span class="rv">0.135 %</span></span><span class="row num"><span class="rk">both wings</span><span class="rv">0.0027</span></span><span class="row num"><span class="rk">false alarm</span><span class="rv">1 in 370</span></span></span>Together they are the tail integral, and it has a closed form: 0.0027. Invert it and the bet is priced — one false alarm in 370 subgroups.</p>
         </div>

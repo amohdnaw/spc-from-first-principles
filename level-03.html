@@ -536,7 +536,7 @@
           <p class="dek">A mean, a spread, and a shape. Everything after this is built on three ideas.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">Two machines both make parts that average exactly 50.00&nbsp;mm. The customer accepts 49.90 to 50.10&nbsp;mm. Are the two machines equally good?</p>
               <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
@@ -649,6 +649,28 @@ h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span
           <span class="sec-no">3.5</span>
           <h2>You never measure everything</h2>
           <div class="plain"><span class="micro">In plain words</span><p>Your twelve parts only estimate the machine’s true average and spread; another twelve would give other answers. Samples also sit a little tighter than the truth, so the usual formula divides by one fewer part to make up for it.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">You work out the spread of 12 parts, averaging their squared distances from the mean by dividing by 12. Over many samples, does that come out too small, about right, or too big?</p>
+              <button type="button" data-pick="small" aria-pressed="false">Too small</button><button type="button" data-pick="right" aria-pressed="false">About right</button><button type="button" data-pick="big" aria-pressed="false">Too big</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Average result, share of the true value</span><b class="alarm">91.7 %</b></div><div><span class="micro">Divide by this instead and it comes out right</span><b class="ok">11</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"small": "Right.", "right": "Most people say so.", "big": "The other way."}, end = " It comes out too small on average, at 91.7 % of the truth: the parts sit closer to their own average than to the true one. Dividing by 11 instead of 12 fixes it.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p>The true centre and spread belong to the process itself. <span class="note"><span class="k">sample, not process</span>Twelve parts estimate the centre and spread. They are not the centre and spread.</span>Your twelve parts only estimate them, and the estimate is not the thing: four more handfuls of twelve, off the same untouched machine, land somewhere else every time.</p>
           <p>It is also why a sample's spread divides by n − 1. <span class="note data"><span class="k">why not <span class="nc">n</span></span><span class="row num"><span class="rk">divisor</span><span class="rv">n − 1</span></span></span>Twelve parts spread around their own mean sit a little tighter than they do around the truth, so the smaller divisor corrects for it. Every estimate carries uncertainty, and Level 4 puts a number on exactly how much.</p>
   <div class="lab">

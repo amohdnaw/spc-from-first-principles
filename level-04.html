@@ -508,7 +508,7 @@
           <p class="dek">One part is noise. Many parts are information.</p>
           <div class="hook-row">
           <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-bar"><span class="micro">Quick question</span></div>
             <div class="hk-body">
               <p class="hk-q">Which is more likely to land between 3 and 4: one roll of a die, or the average of five rolls?</p>
               <button type="button" data-pick="one" aria-pressed="false">One roll</button><button type="button" data-pick="five" aria-pressed="false">Average of five</button><button type="button" data-pick="same" aria-pressed="false">About the same</button>
@@ -644,6 +644,28 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
           <span class="sec-no">4.4</span>
           <h2>What averaging buys</h2>
           <div class="plain"><span class="micro">In plain words</span><p>Averaging more parts makes the average steadier, but each extra part helps less than the one before. That is why factories average four or five parts at a time, rather than fifty.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">Averaging 4 parts halves the wobble of a single part. How many parts do you need to halve it again?</p>
+              <button type="button" data-pick="eight" aria-pressed="false">8</button><button type="button" data-pick="sixteen" aria-pressed="false">16</button><button type="button" data-pick="never" aria-pressed="false">You can't</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Halve the wobble once</span><b class="">4 parts</b></div><div><span class="micro">Halve it again</span><b class="alarm">16 parts</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"eight": "Most people say so.", "sixteen": "Right.", "never": "You can, but it gets expensive."}, end = " Halving it again takes 16 parts, not 8: the wobble shrinks with the square root of the count. Each extra part helps less than the one before.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p>Put <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroup</a> size along the bottom and the spread of the <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a> up the side, for a machined part with σ = 0.080 mm, then walk the subgroup size from one to twenty-five. <span class="note data"><span class="k">the shape of the deal</span><span class="row num"><span class="rk">2nd part buys</span><span class="rv">0.29 σ</span></span><span class="row num"><span class="rk">25th part buys</span><span class="rv">0.004 σ</span></span></span>At twenty-five parts the spread of the mean is 0.016 mm, a fifth of one part's spread — the root is doing all the work.</p>
           <p>But look at the shape of what you are buying. The second part cuts your uncertainty by 29 % (it halves the <a class="gl" href="glossary.html#variance" data-gl="variance">variance</a>); the twenty-fifth buys four thousandths of a <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a>. Averaging is cheap at the start and almost free of value at the end, which is why subgroups of four and five are everywhere and subgroups of fifty are not.</p>
           <p>It is also why a control chart plots subgroup means rather than parts: a shift that hides inside single measurements moves a mean far enough to see.<span class="note speak"><span class="k">spoken · 2:04</span><em>“A shift that hides inside single parts moves a mean far enough to see.”</em></span></p>

@@ -628,6 +628,28 @@
           <span class="sec-no">1.2</span>
           <h2>A histogram is an instrument</h2>
           <div class="plain"><span class="micro">In plain words</span><p>A <a class="gl" href="glossary.html#histogram" data-gl="histogram">histogram</a> is a bar chart of how often each size turns up. How wide you make the bars changes the picture, so never trust just one.</p></div>
+          <div class="hook-row">
+          <div class="hook" id="hook2">
+            <div class="hk-bar"><span class="micro">Before you read on</span></div>
+            <div class="hk-body">
+              <p class="hk-q">The same 240 measurements, drawn twice as a bar chart: once with 4 bars, once with 52. Will the two pictures tell the same story?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes, same data</button><button type="button" data-pick="no" aria-pressed="false">No</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">With 4 bars</span><b class="">one lump</b></div><div><span class="micro">With 52 bars</span><b class="">a comb</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook2");
+            const said = {"yes": "Same data, but not the same story.", "no": "Right."}, end = " Four bars shows a single lump; fifty-two shows a row of spikes. The bar width is a setting you chose, and it changes what the picture seems to say.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+          </div>
           <p>Pile 240 measurements into bins and a shape appears. <span class="note data"><span class="k">same data, two settings</span><span class="row num"><span class="rk">at 4 bins</span><span class="rv">one lump</span></span><span class="row num"><span class="rk">at 52 bins</span><span class="rv">a comb</span></span></span>The shape looks like a fact about the process, and it is not: bin width is a setting on the instrument, and the setting changes the answer.</p>
           <p>Four bins says the process is a single lump. Fifty-two says it is a row of spikes. Neither is the process. Somewhere in between is a picture you can read, and knowing that the knob exists is the difference between reading a histogram and believing one.</p>
         </div>
