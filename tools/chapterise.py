@@ -17,6 +17,7 @@ Then link the glossary terms and render the maths, in that order:
     python3 tools/glossary.py && (cd tools && node typeset.mjs)
 """
 from __future__ import annotations
+import math
 import re
 import sys
 import pathlib
@@ -1101,6 +1102,20 @@ def chapter_07(K):
 
 def chapter_05(K):
     n = SUBGROUP_N
+    # Share of samples whose s falls below SHORT_AT of the true σ: (n−1)s²/σ² is
+    # chi-square with n−1 df, whose CDF at 4 df is 1 − e^(−x/2)(1 + x/2).
+    assert n - 1 == 4
+    SHORT_AT = 0.7
+    x = (n - 1) * SHORT_AT ** 2
+    SHORT_S = 1 - math.exp(-x / 2) * (1 + x / 2)
+    import numpy as _np
+    _r = _np.random.default_rng(2).normal(size=(400_000, n))
+    _s = _r.std(axis=1, ddof=1)
+    _miss = _np.abs(_r.mean(axis=1)) > Z95 * _s / math.sqrt(n)
+    _low = _s < SHORT_AT
+    assert abs(_low.mean() - SHORT_S) < 0.005  # simulation agrees with the formula
+    MISS_LOW, MISS_REST = _miss[_low].mean(), _miss[~_low].mean()
+    MISS_SHARE = (_miss & _low).sum() / _miss.sum()
     return [
         ("s1", "5.1", "Every number here is an estimate", [
             para("Somewhere behind a process there is a real mean and a real spread."
@@ -1125,10 +1140,12 @@ def chapter_05(K):
                       "being wrong.”", speak=True, serif=True)),
         ]),
         ("s2", "5.2", "What “ninety-five percent” has to earn", [
-            para("An interval is the estimate plus and minus a margin. Build one from"
-                 " every sample and it is the <em>interval</em> that moves; the truth"
-                 " stays where it is. So the way to check a confidence level is not to"
-                 " argue about it — it is to count.",
+            para("An interval is the estimate plus and minus a margin, and the margin is"
+                 f" {Z95:.2f} standard errors. That number comes from the bell: 95 % of it"
+                 f" lies within {Z95:.2f} sigmas of the centre, which 4.5 worked out. Build"
+                 " one interval from every sample and it is the <em>interval</em> that"
+                 " moves; the truth stays where it is. So the way to check a confidence"
+                 " level is not to argue about it — it is to count.",
                  note("not the parameter", text="The interval varies from sample to "
                       "sample. The mean it is chasing does not."), lead=True),
             para("Draw an interval per sample and mark the ones that missed. On a shop"
@@ -1138,43 +1155,48 @@ def chapter_05(K):
                  datanote(("intervals drawn", "40"),
                           ("nominal", f"{CONF*100:.0f} %"),
                           ("counted", f"{COVER_T[n]*100:.1f} %"),
-                          k=f"samples of {n}, {nc(chr(116))} quantile")),
+                          k=f"samples of {n}, {nc(chr(116))} multiplier")),
             "      " + K["fig"]("l05_1_coverage.png"),
             "      " + K["fig"]("Level05.mp4"),
         ]),
         ("s3", "5.3", "Why t exists", [
-            para("Here is where a textbook quietly cheats. The margin needs σ, and σ is"
-                 " no better known than the mean — it is estimated from the same five"
-                 " parts. Use 1.96 anyway and count what you actually get.",
+            para("The standard error is σ/√<em>n</em>, and nobody knows σ, the true"
+                 " spread. All you have is <em>s</em>, the spread of the same five parts,"
+                 f" so <em>s</em> goes where σ should be. Keep {Z95:.2f} anyway and count"
+                 " what you actually get.",
                  datanote(*[(f"{nc(chr(110))} = {k}", f"{COVER_Z[k]*100:.1f} %") for k in SIZES],
-                          k="a “95 %” interval built with 1.96"), lead=True),
+                          k=f"a “95 %” interval built with {Z95:.2f}"), lead=True),
             para(f"At {n} parts the interval that advertises ninety-five delivers"
-                 f" {COVER_Z[n]*100:.1f}. The margin is too narrow because <em>s</em> is"
-                 " itself uncertain, and a quantile taken from a normal curve does not"
-                 " know that. Replace it with one that knows how few parts it was built"
-                 " from.",
+                 f" {COVER_Z[n]*100:.1f}. The reason is luck in the spread. Five parts"
+                 " often happen to sit close together: in"
+                 f" {SHORT_S*100:.0f} % of samples <em>s</em> comes out below"
+                 f" {SHORT_AT*100:.0f} % of the true σ. Those samples build intervals that"
+                 f" are too narrow: they miss {MISS_LOW*100:.0f} % of the time against"
+                 f" {MISS_REST*100:.0f} % for the rest, and supply"
+                 f" {MISS_SHARE*100:.0f} % of all the misses. {Z95:.2f} was worked out for"
+                 " a spread known exactly, and this one was guessed.",
                  note("the substitution", text="Not a correction bolted on. It is what "
-                      "the arithmetic gives when the spread is estimated too.")),
+                      "the arithmetic gives when the spread is guessed too.")),
+            para("The fix is to reach further out: far enough that, lucky-narrow samples"
+                 " included, 95 % of intervals still catch the mean. How far depends only"
+                 " on how many parts the spread came from."),
             "      " + K["eq"],
-            para("That quantile comes from the <em>t</em> distribution. In 1908 William"
-                 " Gosset, a chemist at the Guinness brewery who published as “Student”,"
-                 " worked out how far the sample mean lands from the true mean, counted in"
-                 " standard errors, when <em>s</em> comes from the same few parts. The"
-                 " answer is a bell with heavier tails, and the fewer the parts, the"
-                 " heavier they get. It has one setting, the degrees of freedom: "
-                 "<em>n</em> − 1, the same <em>n</em> − 1 Level 3 divided by. Five"
+            para("In 1908 William Gosset, a chemist at the Guinness brewery who published"
+                 " as “Student”, worked that distance out. His table is the <em>t</em>"
+                 f" distribution. With {n} parts the multiplier is {T_AT[n]:.3f}; with 100"
+                 f" it is {T_AT[100]:.3f}, almost {Z95:.2f} again, because 100 parts pin"
+                 " the spread down. The table is indexed by <em>n</em> − 1, called the"
+                 " degrees of freedom: the same <em>n</em> − 1 Level 3 divided by. Five"
                  " parts leave four.",
                  datanote(*[(f"{nc(chr(110))} = {k}", f"{T_AT[k]:.3f}") for k in SIZES],
-                          ("normal", f"{Z95:.3f}"),
-                          k=f"the 95 % {nc(chr(116))} quantile"),
-                 note("in a spreadsheet", text="T.INV.2T(0.05, n − 1). With 100 parts it is"
-                      f" {T_AT[100]:.3f}, almost the normal value: <em>t</em> only matters"
-                      " when the parts are few.")),
-            para(f"Read it the way 4.5 read the bell. {T_AT[n]:.3f} is the distance that"
-                 f" leaves 2.5 % in each tail of <em>t</em> with {n - 1} degrees of freedom,"
-                 f" just as {Z95:.2f} does for the normal curve. Build the interval with it"
-                 f" and the count lands where it belongs — at every sample size, not just"
-                 f" the comfortable ones.",
+                          ("spread known", f"{Z95:.3f}"),
+                          k=f"the 95 % {nc(chr(116))} multiplier"),
+                 note("in a spreadsheet", text="T.INV.2T(0.05, n − 1) returns the"
+                      " multiplier.")),
+            para(f"So {Z95:.2f} is the multiplier when the spread is known, and"
+                 f" {T_AT[n]:.3f} is the multiplier when the spread was guessed from {n}"
+                 " parts. Build the interval with it and the count lands where it"
+                 " belongs — at every sample size, not just the comfortable ones.",
                  datanote(*[(f"{nc(chr(110))} = {k}", f"{COVER_T[k]*100:.1f} %") for k in SIZES],
                           k=f"the same interval built with {nc(chr(116))}"),
                  note("spoken · 2:10", text="“t is not a correction. It is the honest "
