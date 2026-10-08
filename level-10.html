@@ -463,6 +463,46 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook-row{margin:32px 0 8px}
+  .hook{border:1px solid var(--rule);max-width:var(--measure)}
+  .hk-side{max-width:var(--measure);margin-top:28px}
+  .hk-note{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);
+    border-left:1px solid var(--rule);padding:2px 0 2px 16px;margin-bottom:24px}
+  .hk-note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .hk-note a{color:var(--accent);border-bottom:1px solid var(--accent-wash)}
+  .hk-note[hidden]{display:none}
+  .hk-key{display:block;margin-top:6px}.hk-key i{font-style:normal;margin-right:6px}
+  @media (min-width:1280px){
+    .hook-row{display:grid;grid-template-columns:var(--measure) var(--marg);gap:var(--marg-gap);align-items:start}
+    .hk-side{margin-top:0}
+  }
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -495,6 +535,29 @@
           <p class="ch-no">Level 10 · chapter ten</p>
           <h1>Counting, not measuring</h1>
           <p class="dek">Stop measuring and start counting, and the distribution hands you the spread. Part III is hands-on: this level has one video and one thing to drag.</p>
+          <div class="hook-row">
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">Your line normally makes about 2 bad parts in every 100. Yesterday 4 of 200 were bad. Today 9 of 200. Has the process got worse?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Alarm line, bad parts in 200</span><b class="">9.9</b></div><div><span class="micro">Days an unchanged process gives 9 or more</span><b class="">2.0 %</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook");
+            const said = {"yes": "It looks that way, but the chart would not call it.", "no": "Maybe, but you cannot be sure of that either.", "cant": "That is the honest answer."}, end = " 9 is inside the alarm line of 9.9. An unchanged process does this on about 1 day in 50: unusual, worth a look, not yet proof. This level is about charts for counts.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+            <aside class="hk-side"><div class="hk-note"><span class="k">Before you pick</span>Counts of bad parts bounce from day to day even when nothing changes.</div><div class="hk-note" hidden><span class="k">You have done this</span>Two burnt pizzas one night and five the next feels like a trend. With small counts, doubling by luck is easy.</div><div class="hk-note" hidden><span class="k">The name for it</span>Charts for counted bad parts are p-charts and np-charts. <a href="#s3">Section 10.3</a> says which one to use when.</div></aside>
+          </div>
         </div>
       </div>
       <div class="toc">
@@ -515,6 +578,7 @@
         <div>
           <span class="sec-no">10.1</span>
           <h2>The spread is not a free parameter</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Measure a part and you must check its spread as well as its average. Count bad parts and the average alone sets how much the count should bounce around.</p></div>
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level10.jpg">
@@ -560,6 +624,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">10.2</span>
           <h2>Same mean, different scatter</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Two lines can make the same share of bad parts on average. If one line’s rate shifts between batches, its counts scatter wider than they should, and its chart raises <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarms</a>.</p></div>
           <p class="lead">Two processes, both averaging four per cent defective. <span class="note data"><span class="k">observed ÷ binomial variance</span><span class="row num"><span class="rk">one rate throughout</span><span class="rv">0.92</span></span><span class="row num"><span class="rk">rate drifting</span><span class="rv">1.64</span></span></span>One has a single rate behind every subgroup; in the other the rate drifts — a shift change, a supplier lot, an operator. The means are indistinguishable and the charts are not.</p>
           <p>The second process is not wider. It is a process whose rate moved, and every limit computed from the binomial is too tight for it — so it will trip its own chart for a reason that has nothing to do with the thing being counted. This is what <a class="gl" href="glossary.html#rational-subgrouping" data-gl="rational-subgrouping">rational subgrouping</a> means for <a class="gl" href="glossary.html#attribute-data" data-gl="attribute-data">attribute data</a>.</p>
       <figure>
@@ -576,6 +641,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">10.3</span>
           <h2>Four charts, two questions</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>There are four charts for counted data. You pick one by answering two questions: are you counting bad parts or flaws on a part, and is the batch size always the same?</p></div>
           <p class="lead">The four attribute charts are usually presented as four names to learn. <span class="note"><span class="k">question one</span>Defective <em>items</em>, or <em>defects</em>? One is binomial, the other Poisson.</span>They are two binary questions, and once they are asked the name is determined.</p>
           <p>Are you counting defective items — each thing inspected is either good or bad — or counting defects, where one thing can carry several? <span class="note data"><span class="k">the whole selection rule</span><span class="row num"><span class="rk">items, <span class="nc">n</span> constant</span><span class="rv">np-chart</span></span><span class="row num"><span class="rk">items, <span class="nc">n</span> varies</span><span class="rv">p-chart</span></span><span class="row num"><span class="rk">defects, <span class="nc">n</span> constant</span><span class="rv">c-chart</span></span><span class="row num"><span class="rk">defects, <span class="nc">n</span> varies</span><span class="rv">u-chart</span></span></span><span class="note"><span class="k">question two</span>Constant subgroup size, or not? That is the only other thing the choice depends on.</span>And is the subgroup size constant?</p>
           <p>Each chart plots a single number per subgroup. The np-chart plots the count of defective items and the p-chart the fraction defective; the c-chart plots the count of defects and the u-chart defects per unit inspected. The fraction and the per-unit rate exist so that subgroups of different sizes land on one scale.</p>
@@ -588,8 +654,9 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">10.4</span>
           <h2>When the limits have to breathe</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>When batch sizes change, the alarm lines should sit closer together for big batches and wider apart for small ones. One fixed set of lines for every batch gives many false alarms.</p></div>
           <p class="lead">If the subgroup size varies, the limits vary with it — a bigger subgroup gives a tighter proportion, so the band narrows. <span class="note data"><span class="k">average-n limits against honest ones</span><span class="row num"><span class="rk">subgroup sizes</span><span class="rv">120–360</span></span><span class="row num"><span class="rk">false signals</span><span class="rv">0.77 %</span></span><span class="row num"><span class="rk">signals missed</span><span class="rv">0.10 %</span></span><span class="row num"><span class="rk">disagreement</span><span class="rv">0.87 %</span></span></span>The tempting shortcut is one set of limits computed at the average size.</p>
-          <p>Over sizes from 120 to 360 that shortcut disagrees with the honest limits on 0.87 % of subgroups, and most of the disagreement is <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarms</a> rather than misses — it spends more than the whole false-alarm budget Level 6 designed for.<span class="note"><span class="k">Level 7's language</span>A fixed cost for nothing bought. The shortcut is not a trade, it is a leak.</span></p>
+          <p>Over sizes from 120 to 360 that shortcut disagrees with the honest limits on 0.87 % of subgroups, and most of the disagreement is false alarms rather than misses — it spends more than the whole false-alarm budget Level 6 designed for.<span class="note"><span class="k">Level 7's language</span>A fixed cost for nothing bought. The shortcut is not a trade, it is a leak.</span></p>
       <figure>
         <div class="rule"></div>
         <a class="zoom" href="spc-lab/docs/l10_2_breathing_limits.png"><img src="spc-lab/docs/l10_2_breathing_limits.png" width="1737" height="997" loading="lazy"
@@ -604,6 +671,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">10.5</span>
           <h2>Where the lower limit goes</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>When bad parts are rare and batches small, the lower alarm line drops below zero, so the chart can only warn that things got worse. The section works out how big a batch fixes that.</p></div>
           <p class="lead">At low counts the lower limit goes negative, and a chart cannot draw a negative fraction. <span class="note data"><span class="k">at <span class="nc">n</span> = 200</span><span class="row num"><span class="rk">lower limit, raw</span><span class="rv">-0.16 %</span></span><span class="row num"><span class="rk">as drawn</span><span class="rv">0</span></span><span class="row num"><span class="rk"><span class="nc">n</span> needed</span><span class="rv">217</span></span></span>It gets clamped to zero, and a limit at zero is not a limit: the chart can only ever signal upward.</p>
           <p>Like every limit in this course, it is the centre minus three of its own sigmas: <span class="tex" data-tex="\mathrm{LCL} = \bar{p} - 3\sqrt{\bar{p}(1-\bar{p})/n}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mo>=</mo><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo>−</mo><mn>3</mn><msqrt><mrow><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mover accent="true"><mi>p</mi><mo>ˉ</mo></mover><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mi>n</mi></mrow></msqrt></mrow><annotation encoding="application/x-tex">\mathrm{LCL} = \bar{p} - 3\sqrt{\bar{p}(1-\bar{p})/n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord"><span class="mord mathrm">LCL</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.7778em;vertical-align:-0.1944em;"></span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord">3</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord katex-accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.5678em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">p</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">ˉ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mclose">)</span><span class="mord">/</span><span class="mord mathnormal">n</span></span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
 c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
@@ -656,6 +724,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">10.6</span>
           <h2>Annex — capability when the shape is wrong</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>The bell-curve shortcut for “how often will we get this many bad parts?” gives too small an answer for counts. It makes the process look safer than it really is.</p></div>
           <p class="lead">Level 8 turned a spread into a <a class="gl" href="glossary.html#ppm" data-gl="ppm">ppm</a> by walking out the tail of a <a class="gl" href="glossary.html#normal-distribution" data-gl="normal-distribution">normal curve</a>. <span class="note data"><span class="k">P(16 or more defective)</span><span class="row num"><span class="rk">exact tail</span><span class="rv">0.00700</span></span><span class="row num"><span class="rk">normal approximation</span><span class="rv">0.00195</span></span><span class="row num"><span class="rk">ratio</span><span class="rv">×3.60</span></span></span>Counts are not normal, and the approximation fails in the direction that flatters the process.</p>
           <p>Take the process from 10.1: subgroups of 200 at 4 % defective, so 8 defective on average and an np-chart upper limit at 16.3. Sixteen defective is a subgroup sitting just under that limit. How often does one land there or beyond?</p>
           <p>The true <a class="gl" href="glossary.html#probability" data-gl="probability">probability</a> is 3.6 times what the normal approximation reports. <span class="note"><span class="k">so what to do</span>Use the exact tail: add up the binomial probabilities from 16 to 200. For large subgroups the same sum comes from the incomplete beta function, which Level 5 already uses for <em>t</em>.</span>Quoting a normal-based ppm on count data is therefore not a rounding error — it understates the risk by a factor you would notice. The approximation improves as the counts grow; it is wrong where attribute data usually lives.</p>

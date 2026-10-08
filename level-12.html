@@ -463,6 +463,46 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook-row{margin:32px 0 8px}
+  .hook{border:1px solid var(--rule);max-width:var(--measure)}
+  .hk-side{max-width:var(--measure);margin-top:28px}
+  .hk-note{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);
+    border-left:1px solid var(--rule);padding:2px 0 2px 16px;margin-bottom:24px}
+  .hk-note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .hk-note a{color:var(--accent);border-bottom:1px solid var(--accent-wash)}
+  .hk-note[hidden]{display:none}
+  .hk-key{display:block;margin-top:6px}.hk-key i{font-style:normal;margin-right:6px}
+  @media (min-width:1280px){
+    .hook-row{display:grid;grid-template-columns:var(--measure) var(--marg);gap:var(--marg-gap);align-items:start}
+    .hk-side{margin-top:0}
+  }
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -495,6 +535,29 @@
           <p class="ch-no">Level 12 · chapter twelve</p>
           <h1>Experiments</h1>
           <p class="dek">The last level. Change the settings on purpose — and discover that studying one factor at a time can lead you confidently to the wrong answer.</p>
+          <div class="hook-row">
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">Two knobs: pressure and temperature, and a lower result is better. You find the best temperature with pressure set low, then the best pressure at that temperature. Have you found the best setting?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="close" aria-pressed="false">Close enough</button><button type="button" data-pick="no" aria-pressed="false">Not necessarily</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">One knob at a time settles on</span><b class="alarm">8.0</b></div><div><span class="micro">Best setting, never tried</span><b class="ok">6.0</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook");
+            const said = {"yes": "Most people say yes.", "close": "It can be well off.", "no": "Right."}, end = " Here one knob at a time stops at 8.0; the best setting gives 6.0, and the method never tries it, because what one knob does depends on where the other is set. This level changes settings on purpose, the right way.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+            <aside class="hk-side"><div class="hk-note"><span class="k">Before you pick</span>Each knob has a low and a high setting, so there are four combinations.</div><div class="hk-note" hidden><span class="k">You have done this</span>You find the best route to work, then the best time to leave on that route. The best time on another route might beat both.</div><div class="hk-note" hidden><span class="k">The name for it</span>When one knob changes what the other does, that is an interaction. <a href="#s3">Section 12.3</a> measures it.</div></aside>
+          </div>
         </div>
       </div>
       <div class="toc">
@@ -515,6 +578,7 @@
         <div>
           <span class="sec-no">12.1</span>
           <h2>Changing things on purpose</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Until now the course watched a process. Here you change its settings on purpose. If one setting changes what another does, testing them one at a time can lead you to the wrong answer.</p></div>
           <p class="lead">Every level so far watched a process, or described data that arrived on its own. <span class="note"><span class="k">the last level</span>Eleven levels of listening. This one asks.</span>This one changes the settings deliberately, and the whole subject turns on a single fact that is easy to state and easy to ignore.</p>
       <div class="eq">
         <div class="eq-body" data-tex="\begin{aligned}y &amp;= \beta_0 + \beta_A x_A + \beta_B x_B \\[2pt] &amp;\quad + \beta_{AB}\,x_A x_B + \varepsilon\end{aligned}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mi>y</mi></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mi>A</mi></msub><msub><mi>x</mi><mi>A</mi></msub><mo>+</mo><msub><mi>β</mi><mi>B</mi></msub><msub><mi>x</mi><mi>B</mi></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mspace width="1em"/><mo>+</mo><msub><mi>β</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mtext> </mtext><msub><mi>x</mi><mi>A</mi></msub><msub><mi>x</mi><mi>B</mi></msub><mo>+</mo><mi>ε</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}y &amp;= \beta_0 + \beta_A x_A + \beta_B x_B \\[2pt] &amp;\quad + \beta_{AB}\,x_A x_B + \varepsilon\end{aligned}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:2.9em;vertical-align:-1.2em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7em;"><span style="top:-3.86em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span></span></span><span style="top:-2.16em;"><span class="pstrut" style="height:3em;"></span><span class="mord"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7em;"><span style="top:-3.86em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0528em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0528em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0528em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0502em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0502em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.16em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0528em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">A</span><span class="mord mathnormal mtight" style="margin-right:0.0502em;">B</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0502em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">ε</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2em;"><span></span></span></span></span></span></span></span></span></span></span></span></div>
@@ -532,6 +596,7 @@
         <div>
           <span class="sec-no">12.2</span>
           <h2>One factor at a time, with perfect measurements</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Tune the temperature, lock it, then tune the pressure. Even with perfect readings this falls short, because it never tries the high-pressure, low- temperature setting that gives the best result.</p></div>
       <figure>
         <div class="rule"></div>
         <video controls playsinline preload="metadata" poster="posters/level12.jpg">
@@ -557,6 +622,7 @@
         <div>
           <span class="sec-no">12.3</span>
           <h2>The interaction it cannot estimate</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>To see how two settings work together you need all four combinations, and one at a time never tries them all. Testing all four corners also pins down each setting better.</p></div>
           <p class="lead">An interaction is a difference of differences: what the temperature does at high pressure, minus what it does at low pressure, halved. <span class="note data"><span class="k">from the full factorial</span><span class="row num"><span class="rk">effect A</span><span class="rv">-4</span></span><span class="row num"><span class="rk">effect B</span><span class="rv">-2</span></span><span class="row num"><span class="rk">interaction AB</span><span class="rv">+6</span></span></span>That needs all four corners, and one at a time visits three.</p>
           <p>So the interaction here — +6, larger than either <a class="gl" href="glossary.html#main-effect" data-gl="main-effect">main effect</a> — is not estimated badly by the <a class="gl" href="glossary.html#one-at-a-time" data-gl="one-at-a-time">one-at-a-time</a> runs. <span class="note"><span class="k">not a precision problem</span>Unidentifiable, which is a stronger statement than imprecise.</span>It is not estimable from them at all. The <a class="gl" href="glossary.html#factorial-design" data-gl="factorial-design">factorial</a> gets it from the same number of runs, because a factorial spends its runs on corners rather than on paths.</p>
           <p>And the same design is more precise about the main effects too. <span class="note data"><span class="k">s.d. of the effect, 16 runs</span><span class="row num"><span class="rk">factorial</span><span class="rv">0.225</span></span><span class="row num"><span class="rk">one at a time</span><span class="rv">0.320</span></span><span class="row num"><span class="rk">ratio</span><span class="rv">×1.42</span></span></span>Every run contributes to every effect — the hidden replication — so on 16 runs the factorial's estimate of the pressure effect has a <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">standard deviation</a> of 0.225 against 0.320 for the comparison it replaces.</p>
@@ -599,6 +665,7 @@
         <div>
           <span class="sec-no">12.4</span>
           <h2>Screening: width, bought with aliasing</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>To find which of many settings matter, you can run a small fraction of every combination. The cost: each setting’s effect gets mixed up with certain pairs, and you know which pairs before you start.</p></div>
           <p class="lead">With seven factors a full factorial is 128 runs. <span class="note data"><span class="k">confounded with</span><span class="row num"><span class="rk">main effect A</span><span class="rv">BD, CE, FG</span></span><span class="row num"><span class="rk">main effect B</span><span class="rv">AD, CF, EG</span></span><span class="row num"><span class="rk">main effect C</span><span class="rv">AE, BF, DG</span></span><span class="row num"><span class="rk">main effect D</span><span class="rv">AB, CG, EF</span></span></span>A fraction does it in 8, one sixteenth of that, and the price is not vague — it is a table you can write down before the first run.</p>
           <p>The 8 runs are a full factorial in A, B, C. The other 4 factors get no runs of their own: each is set by a generator, a rule that copies a product of existing columns — D&nbsp;=&nbsp;AB, E&nbsp;=&nbsp;AC, F&nbsp;=&nbsp;BC, G&nbsp;=&nbsp;ABC. That is how 8 runs hold 7 factors, and it is also the bill.</p>
           <p>Each main effect is <a class="gl" href="glossary.html#confounded" data-gl="confounded">confounded</a> with a set of two-factor interactions: the columns are literally identical across the eight runs, so no arithmetic can separate them. <span class="note"><span class="k">the deal</span>Screening finds which factors matter. It cannot also tell you how they interact — that is the next experiment.</span>Resolution grades that damage: it is the length of the shortest word you get by multiplying generators together (D&nbsp;=&nbsp;AB gives ABD), 3 here, written III. Resolution III keeps main effects clear of each other but tangles each with two-factor interactions.</p>
@@ -611,6 +678,7 @@
         <div>
           <span class="sec-no">12.5</span>
           <h2>Curvature, and why the corners cannot see it</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Testing only the high and low ends of each setting cannot tell whether the result bends in between. Add a few runs in the middle, and a gap between middle and ends shows the bend.</p></div>
           <p class="lead">A two-level design fits a plane with a twist in it. <span class="note data"><span class="k">a surface that really bends</span><span class="row num"><span class="rk">corners</span><span class="rv">6.90</span></span><span class="row num"><span class="rk">centre</span><span class="rv">10.04</span></span><span class="row num"><span class="rk">gap</span><span class="rv">-3.14</span></span><span class="row num"><span class="rk">p</span><span class="rv">0.0044</span></span></span>If the true surface bends, the corners cannot report it — and the reason is sharper than it first looks.</p>
           <p>With coded ±1 factors the quadratic term contributes the <em>same</em> amount at every corner and nothing at the centre. <span class="note"><span class="k">the test</span>A few runs at the middle, and the gap between the corner mean and the centre mean is a pure quadratic signal.</span>So it is not absent from the corner readings — it is constant across them, which makes it inseparable from the intercept. Every effect estimate comes out unchanged.</p>
           <p>Add <a class="gl" href="glossary.html#centre-points" data-gl="centre-points">centre points</a> and it becomes a test. <span class="note data"><span class="k">and it does not cry curvature</span><span class="row num"><span class="rk">flat surface gap</span><span class="rv">+0.06</span></span><span class="row num"><span class="rk">its p</span><span class="rv">0.89</span></span></span>On the bent surface the gap is -3.14 with p = 0.0044; on a genuinely flat one it is +0.06 with p = 0.89. The design does not merely estimate better — it can now be wrong out loud, which is the property Level 7 spent its whole length arguing for.</p>
@@ -628,6 +696,7 @@
         <div>
           <span class="sec-no">12.6</span>
           <h2>Twelve levels</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Twelve levels, one idea: every number on a chart comes from reasoning you can check yourself. Each level raised a question that the next one answered.</p></div>
           <p class="lead">That closes the arc. <span class="note"><span class="k">the rule</span>No number on this site is asserted. Every constant is computed at render time and the tests check the same functions.</span>Twelve levels, and the thread through all of them is that every number on a chart is the result of an argument that can be reconstructed — so none of them has to be taken on faith.</p>
           <p>Variation, chance, centre and spread, the predictable average, estimation. <span class="note"><span class="k">where it goes next</span>Level 11 hands measurement systems to their own site. Nothing here needed a citation to be believed.</span>Then limits as a bet, evidence as a trade, <a class="gl" href="glossary.html#capability" data-gl="capability">capability</a>, detection. Then counting rather than measuring, relationships, and experiments. Each level ends by raising the question the next one answers, which is the only structure the whole thing has.</p>
         </div>

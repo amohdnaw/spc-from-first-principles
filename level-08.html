@@ -434,6 +434,46 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook-row{margin:32px 0 8px}
+  .hook{border:1px solid var(--rule);max-width:var(--measure)}
+  .hk-side{max-width:var(--measure);margin-top:28px}
+  .hk-note{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);
+    border-left:1px solid var(--rule);padding:2px 0 2px 16px;margin-bottom:24px}
+  .hk-note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .hk-note a{color:var(--accent);border-bottom:1px solid var(--accent-wash)}
+  .hk-note[hidden]{display:none}
+  .hk-key{display:block;margin-top:6px}.hk-key i{font-style:normal;margin-right:6px}
+  @media (min-width:1280px){
+    .hook-row{display:grid;grid-template-columns:var(--measure) var(--marg);gap:var(--marg-gap);align-items:start}
+    .hk-side{margin-top:0}
+  }
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -466,6 +506,29 @@
           <p class="ch-no">Level 8 · chapter eight</p>
           <h1>Capability is comparing two distributions</h1>
           <p class="dek">Specs are the customer's voice. Spread is the process's. Cpk prices their mismatch in defects.</p>
+          <div class="hook-row">
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">Your last 50 parts were all inside the customer's limits. Is the process good enough?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="likely" aria-pressed="false">Probably</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell from that</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">A process making 1.6 % bad parts passes 50 in a row</span><b class="alarm">44 %</b></div><div><span class="micro">Bad parts it makes per million</span><b class="alarm">16 395</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook");
+            const said = {"yes": "Most people say yes.", "likely": "Most people lean that way.", "cant": "Right."}, end = " A process that makes 1.6 % bad parts still passes 50 in a row 44 % of the time. Passing parts cannot tell you the rate; the spread measured against the limits can.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+            <aside class="hk-side"><div class="hk-note"><span class="k">Before you pick</span>The customer's limits are the two lines every part must land between.</div><div class="hk-note" hidden><span class="k">You have done this</span>A month with no crash does not prove a safe driver. A month is a short run for a rare event.</div><div class="hk-note" hidden><span class="k">The name for it</span>The score that turns spread and limits into a defect rate is Cpk. <a href="#s4">Section 8.4</a> converts it into bad parts per million.</div></aside>
+          </div>
         </div>
       </div>
       <div class="toc">
@@ -484,6 +547,7 @@
         <div>
           <span class="sec-no">8.1</span>
           <h2>Two distributions on one axis</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>The customer draws two lines, and parts between them pass. The machine makes parts with its own natural scatter. Put both on one ruler and you see whether the scatter fits. Here it does not.</p></div>
           <p class="lead"><a class="gl" href="glossary.html#capability" data-gl="capability">Capability</a> compares two <a class="gl" href="glossary.html#distribution" data-gl="distribution">distributions</a>. <span class="note"><span class="k">the customer's voice</span>Two lines on a drawing. They know nothing about your machine.</span>One belongs to the customer and one belongs to the process, and the whole trick is that they are drawn on the same axis, in millimetres. The customer speaks in limits: anything between these two lines is accepted, and nothing outside them is.</p>
           <p>The process answers with a spread. It never read the drawing, and at this width it does not fit.</p>
       <figure>
@@ -502,6 +566,7 @@
         <div>
           <span class="sec-no">8.2</span>
           <h2>Cp is pure geometry</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>The first score is a plain width comparison: how much room the customer’s limits leave against the machine’s scatter. Tighten the scatter and the score goes up.</p></div>
           <p>Improve the process and watch the only number that matters here: the <a class="gl" href="glossary.html#tolerance" data-gl="tolerance">tolerance</a> divided by six <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a>. <span class="note data"><span class="k">geometry only</span><span class="row num"><span class="rk">Cp</span><span class="rv">TOL / 6σ</span></span><span class="row txt"><span class="rk">at Cp 1.33</span><span class="rv">spread = 75 % of TOL</span></span></span>That ratio is <a class="gl" href="glossary.html#cp" data-gl="cp">Cp</a>, and it is pure geometry — no <a class="gl" href="glossary.html#probability" data-gl="probability">probability</a> in it at all.</p>
       <div class="eq">
         <div class="eq-body" data-tex="C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>p</mi><mi>k</mi></mrow></msub><mo>=</mo><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><mi>min</mi><mo>⁡</mo><mtext> ⁣</mtext><mrow><mo fence="true">(</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo>−</mo><mi>μ</mi><mo separator="true">,</mo><mtext> </mtext><mi>μ</mi><mo>−</mo><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow><mo fence="true">)</mo></mrow></mrow><mrow><mn>3</mn><mi>σ</mi></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">C_{pk} = \dfrac{\min\!\left(\mathrm{USL} - \mu,\ \mu - \mathrm{LSL}\right)}{3\sigma}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0715em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.0315em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.113em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mord mathnormal" style="margin-right:0.0359em;">σ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">min</span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathrm">USL</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">μ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathrm">LSL</span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
@@ -555,6 +620,7 @@
         <div>
           <span class="sec-no">8.3</span>
           <h2>The near side is the one you fail</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Let the machine’s average slide toward one limit. The scatter stays the same width, but the score drops, because bad parts spill over the nearer limit first.</p></div>
           <p>Now let the <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a> drift and change nothing else. <span class="note data"><span class="k">what the drift costs</span><span class="row num"><span class="rk">Cpk</span><span class="rv">0.80</span></span><span class="row num"><span class="rk">leak</span><span class="rv">8 198 ppm</span></span><span class="row num"><span class="rk">in plain counting</span><span class="rv">1 in 122</span></span></span>The spread stays exactly where it was, but the number collapses, because <a class="gl" href="glossary.html#cpk" data-gl="cpk">Cpk</a> keeps the smaller of the two one-sided ratios: the near limit is the one you fail first.</p>
           <p>That leak is 8,198 <a class="gl" href="glossary.html#ppm" data-gl="ppm">parts per million</a>, and at this scale you cannot see it. <span class="note speak"><span class="k">spoken · 1:36</span><em>“8,198 parts per million is the same sentence as 1 in 122 parts.”</em></span>So stretch the vertical axis until it is visible: the peak leaves the frame, and the tail is what we came for. The index itself is only the near gap, measured in three sigmas.</p>
         </div>
@@ -565,6 +631,7 @@
         <div>
           <span class="sec-no">8.4</span>
           <h2>Every Cpk is a promise about defect rate</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Every capability score stands for a count of bad parts per million. Two scores that look close can differ enormously in scrap.</p></div>
           <p>Parts per million up the side, on a logarithmic scale, because it spans five decades. <span class="note data"><span class="k">the promise</span><span class="row num"><span class="rk">Cpk 1.00</span><span class="rv">1 350 ppm</span></span><span class="row num"><span class="rk">Cpk 1.33</span><span class="rv">33.04 ppm</span></span><span class="row num"><span class="rk">Cpk 1.67</span><span class="rv">0.27 ppm</span></span></span>Walk Cpk upward from 0.6 and read the promise off the curve. Every figure here is computed at render time by the same function the test suite checks — nothing is read off a table.</p>
           <p>Which is why the difference between 1.33 and 1.67 is not a rounding argument. It is two orders of magnitude of scrap. A capability index is a defect rate wearing a friendlier number. The σ inside it is the spread of single parts, never of <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroup</a> means: the customer receives parts, not averages, and the narrower σ/√<em>n</em> would promise a defect rate nobody ships.</p>
       <details class="act">

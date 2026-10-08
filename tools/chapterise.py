@@ -239,6 +239,7 @@ CHAPTER_CSS = """
   .hk-tiles > div + div{border-left:1px solid var(--rule)}
   .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
     font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
   .hk-after{padding:0 20px 20px;margin:16px 0 0}
   .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
   .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
@@ -1824,8 +1825,8 @@ def hook_01():
               <svg class="hk-dots" viewBox="0 0 420 110" role="img" aria-label="The next 20 parts, how far each one lands from the target size"><line x1="0" x2="420" y1="55" y2="55" stroke="var(--rule-strong)" stroke-dasharray="4 4"/><text x="0" y="50" fill="var(--ink-dim)" font-family="IBM Plex Mono,monospace" font-size="10">target</text></svg>
             </div>
             <div class="hk-tiles" hidden>
-              <div><span class="micro">Left alone · typical miss</span><b class="ok">±{rl:.2f} mm</b></div>
-              <div><span class="micro">Adjusted every part</span><b class="alarm">±{ra:.2f} mm</b></div>
+              <div><span class="micro">Left alone · typical miss, mm</span><b class="ok">±{rl:.2f}</b></div>
+              <div><span class="micro">Adjusted every part · typical miss, mm</span><b class="alarm">±{ra:.2f}</b></div>
             </div>
             <p class="hk-after" hidden></p>
             <script type="application/json" id="hk-data">{_json.dumps(data)}</script>
@@ -1878,49 +1879,307 @@ def hook_01():
     ])
 
 
-def hook_02():
-    from math import comb
-    flips, heads = 10, 8
-    p = sum(comb(flips, k) for k in range(heads, flips + 1)) / 2 ** flips
-    one_in = round(1 / p)
-    panel = f'''          <div class="hook" id="hook">
-            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+def quiz_hook(bar, q, picks, tiles, said, end, notes):
+    """A question panel: pick an answer, then computed tiles and a reply tailored
+    to the pick. picks = [(key, label)], tiles = [(label, value, cls)],
+    said = {key: reply}; end is appended to every reply."""
+    import json as _json
+    btns = "".join(f'<button type="button" data-pick="{k}" aria-pressed="false">{lab}</button>' for k, lab in picks)
+    tl = "".join(f'<div><span class="micro">{lab}</span><b class="{c}">{v}</b></div>' for lab, v, c in tiles)
+    panel = f"""          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">{bar}</span><span class="micro" id="hk-status"></span></div>
             <div class="hk-body">
-              <p class="hk-q">You flip a coin {flips} times and get {heads} heads. Is the coin unfair?</p>
-              <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
+              <p class="hk-q">{q}</p>
+              {btns}
             </div>
-            <div class="hk-tiles" hidden>
-              <div><span class="micro">A fair coin, {heads}+ heads in {flips}</span><b>{p*100:.1f} %</b></div>
-              <div><span class="micro">That is about</span><b>1 in {one_in}</b></div>
-            </div>
+            <div class="hk-tiles" hidden>{tl}</div>
             <p class="hk-after" hidden></p>
           </div>
           <script>
           (() => {{
             const box = document.getElementById("hook");
-            const said = {{
-              yes: "Most people say yes. But a perfectly fair coin does this about 1 time in {one_in}.",
-              no: "Fair enough, but you can't be sure of that either: a slightly unfair coin would give {heads} heads more often.",
-              cant: "That is the honest answer. A perfectly fair coin does this about 1 time in {one_in}."
-            }};
-            const end = " Telling luck from a real change, and saying how sure you are, is what this course is about. This level starts with what a percentage like that actually means.";
+            const said = {_json.dumps(said, ensure_ascii=False)}, end = {_json.dumps(end, ensure_ascii=False)};
             box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {{
               box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
               box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
               const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
             }}));
           }})();
-          </script>'''
-    return hook_row(panel, [
-        ("Before you pick", "In the long run a fair coin lands heads half the time. Decide whether"
-         f" {flips} flips is a long run."),
-        ("You have done this", "A friend turns up late three times this month, and you decide they are"
-         " always late. Three is a short run too. It might be them, or it might be the traffic."),
-        ("The name for it", f"The {p*100:.1f}&nbsp;% is how often a perfectly fair coin gives {heads} or"
-         f' more heads in {flips} flips. Statisticians call a number like that a p-value.'
-         ' <a href="level-07.html">Level 7</a> puts it to work; this level builds what it stands on.'),
-    ])
+          </script>"""
+    return hook_row(panel, notes)
 
+
+def hook_02():
+    from math import comb
+    flips, heads = 10, 8
+    p = sum(comb(flips, k) for k in range(heads, flips + 1)) / 2 ** flips
+    one_in = round(1 / p)
+    return quiz_hook(
+        "Quick question",
+        f"You flip a coin {flips} times and get {heads} heads. Is the coin unfair?",
+        [("yes", "Yes"), ("no", "No"), ("cant", "Can't tell yet")],
+        [(f"A fair coin, {heads}+ heads in {flips}", f"{p*100:.1f} %", ""),
+         ("That is about", f"1 in {one_in}", "")],
+        {"yes": f"Most people say yes. But a perfectly fair coin does this about 1 time in {one_in}.",
+         "no": f"Fair enough, but you can't be sure of that either: a slightly unfair coin would give {heads} heads more often.",
+         "cant": f"That is the honest answer. A perfectly fair coin does this about 1 time in {one_in}."},
+        " Telling luck from a real change, and saying how sure you are, is what this course is about."
+        " This level starts with what a percentage like that actually means.",
+        [("Before you pick", "In the long run a fair coin lands heads half the time. Decide whether"
+          f" {flips} flips is a long run."),
+         ("You have done this", "A friend turns up late three times this month, and you decide they are"
+          " always late. Three is a short run too. It might be them, or it might be the traffic."),
+         ("The name for it", f"The {p*100:.1f}&nbsp;% is how often a perfectly fair coin gives {heads} or"
+          f" more heads in {flips} flips. Statisticians call a number like that a p-value."
+          ' <a href="level-07.html">Level 7</a> puts it to work; this level builds what it stands on.')])
+
+
+def _out_of_spec(sd, tol):
+    from scipy.stats import norm
+    return 2 * norm.sf(tol / sd)
+
+
+def hook_03():
+    tol, sa, sb = 0.10, 0.02, 0.05
+    pa, pb = _out_of_spec(sa, tol), _out_of_spec(sb, tol)
+    return quiz_hook(
+        "Quick question",
+        f"Two machines both make parts that average exactly 50.00&nbsp;mm. The customer accepts"
+        f" {50-tol:.2f} to {50+tol:.2f}&nbsp;mm. Are the two machines equally good?",
+        [("yes", "Yes"), ("no", "No"), ("cant", "Can't tell yet")],
+        [(f"Machine A, typical miss ±{sa:.2f} mm · rejects per million", f"{pa*1e6:.1f}", "ok"),
+         (f"Machine B, typical miss ±{sb:.2f} mm · rejects per million", f"{pb*1e6:,.0f}".replace(",", " "), "alarm")],
+        {"yes": "Same average, very different machines.",
+         "no": "Right, though the average alone could not tell you that.",
+         "cant": "That is the honest answer: the average leaves out how far the parts scatter."},
+        (f" Give machine A a typical miss of ±{sa:.2f}\u00a0mm and machine B ±{sb:.2f}\u00a0mm, and B's"
+         " parts fail about " + f"{float(f'{pb/pa:.2g}'):,.0f}".replace(",", " ") + " times as often. This level builds"
+         " the three numbers that describe a pile of parts: where it sits, how wide it is, and its shape."),
+        [("Before you pick", "An average tells you where the parts land as a group. Think about what"
+          " it leaves out."),
+         ("You have done this", "Two buses both arrive on time on average. One is always within a"
+          " minute; the other swings ten minutes either way. You know which one you would rather catch."),
+         ("The name for it", 'The width of the scatter is the standard deviation. <a href="#s3">Section'
+          " 3.3</a> shows why it is worked out with squares.")])
+
+
+def hook_04():
+    from math import comb
+    from itertools import product
+    one = 2 / 6
+    sums = [sum(r) for r in product(range(1, 7), repeat=5)]
+    five = sum(15 <= t <= 20 for t in sums) / len(sums)
+    return quiz_hook(
+        "Quick question",
+        "Which is more likely to land between 3 and 4: one roll of a die, or the average of five rolls?",
+        [("one", "One roll"), ("five", "Average of five"), ("same", "About the same")],
+        [("One roll lands on 3 or 4", f"{one*100:.0f} %", ""),
+         ("Average of five lands in 3 to 4", f"{five*100:.0f} %", "ok")],
+        {"one": "Most people pick the single roll, or call it even.",
+         "five": "Right.",
+         "same": "Most people call it even."},
+        f" The average of five lands there {five/one:.1f} times as often: high and low rolls cancel, so"
+        " averages crowd toward the middle. That crowding is what every control chart is built on.",
+        [("Before you pick", "A die shows 1 to 6, each face equally likely. The average of five rolls"
+          " can be anything from 1 to 6 in steps of a fifth."),
+         ("You have done this", "One online review can say anything. The average of fifty reviews"
+          " rarely sits at either extreme: the odd ones cancel out."),
+         ("The name for it", "Averages crowding toward the middle is the central limit theorem at work."
+          ' <a href="#s3">Section 4.3</a> measures how fast the crowd tightens.')])
+
+
+def hook_05():
+    from scipy.stats import t as _t, norm
+    n, xbar, s = 5, 50.02, 0.03
+    h5 = _t.ppf(0.975, n - 1) * s / n ** 0.5
+    n2 = 20
+    h20 = _t.ppf(0.975, n2 - 1) * s / n2 ** 0.5
+    poll = norm.ppf(0.975) * (0.25 / 1000) ** 0.5 * 100
+    return quiz_hook(
+        "Quick question",
+        f"You measure {n} parts. Their average is {xbar:.2f}&nbsp;mm and they scatter by about"
+        f" {s:.2f}&nbsp;mm. How close is {xbar:.2f} to the machine's true average?",
+        [("exact", "It is the true average"), ("close", "Within a thousandth"), ("range", "Somewhere in a range")],
+        [(f"True average, {n} parts · 95 % range, mm", f"±{h5:.3f}", ""),
+         (f"Same scatter, {n2} parts · 95 % range, mm", f"±{h20:.3f}", "ok")],
+        {"exact": f"It is only a guess from {n} parts. Another {n} would give another average.",
+         "close": f"Closer than {n} parts can promise.",
+         "range": "Right, and the range can be worked out."},
+        f" With {n} parts the true average could sit anywhere in a band ±{h5:.3f}&nbsp;mm wide. Measure"
+        f" {n2} and the band shrinks to ±{h20:.3f}. This level is about drawing that band honestly.".replace("&nbsp;", " "),
+        [("Before you pick", "Five parts are a small handful. Think about what a different five would"
+          " have shown."),
+         ("You have done this", f"A poll of 1&nbsp;000 people says 52&nbsp;%, plus or minus {poll:.0f}"
+          " points. That plus or minus is the same kind of range."),
+         ("The name for it", 'That range is a confidence interval. <a href="#s2">Section 5.2</a> tests'
+          " whether its 95&nbsp;% keeps its promise.")])
+
+
+def hook_06():
+    from scipy.stats import norm
+    p = 2 * norm.sf(3)
+    hrs = 1 / p
+    return quiz_hook(
+        "Quick question",
+        "Your chart checks the process once an hour. Nothing is wrong with the process. How long, on"
+        " average, until the chart raises an alarm anyway?",
+        [("never", "Never"), ("day", "About a day"), ("weeks", "About two weeks")],
+        [("Chance of an alarm on any one point", f"{p*100:.2f} %", ""),
+         ("Average wait for a false alarm, hours", f"{hrs:.0f}", "alarm")],
+        {"never": "It will, sooner or later: a steady process still lands outside now and then.",
+         "day": "Longer than that.",
+         "weeks": "Right."},
+        f" On average the first false alarm comes after {hrs:.0f} hours, about {hrs/24:.0f} days. The"
+        " limits were drawn to buy exactly those odds. This level shows where they come from.",
+        [("Before you pick", "A steady process still wobbles. The chart's limits are drawn wide, so"
+          " the wobble rarely reaches them."),
+         ("You have done this", "A smoke alarm that never goes off by mistake would also be slow to"
+          " notice a real fire. Every alarm trades one mistake against the other."),
+         ("The name for it", 'That rare mistake is a false alarm. <a href="#s3">Section 6.3</a> finds'
+          f" where the 1 in {hrs:.0f} comes from.")])
+
+
+def hook_07():
+    from scipy.stats import norm
+    n = 5
+    d = n ** 0.5
+    p = norm.sf(3 - d) + norm.cdf(-3 - d)
+    return quiz_hook(
+        "Quick question",
+        f"The machine starts making parts slightly bigger, by about as much as its normal wobble. Your"
+        f" chart plots the average of {n} parts each hour. Will the next point catch it?",
+        [("yes", "Yes, right away"), ("likely", "Probably not"), ("never", "Never")],
+        [("Chance the next point catches it", f"{p*100:.0f} %", "alarm"),
+         ("Average wait for the alarm, hours", f"{1/p:.1f}", "")],
+        {"yes": "Most people expect so.",
+         "likely": "Right.",
+         "never": "It will, but slowly."},
+        f" The next point catches it only {p*100:.0f}&nbsp;% of the time; on average the alarm takes"
+        f" {1/p:.1f} hours, and every part made meanwhile is off. A quiet chart is not proof that"
+        " nothing changed.".replace("&nbsp;", " "),
+        [("Before you pick", "The change is small but real: every part from now on comes out bigger."),
+         ("You have done this", "A smoke alarm that sounds only for thick smoke stays quiet while the"
+          " toast burns. Quiet does not mean fine."),
+         ("The name for it", "The chance a chart catches a real change is its power."
+          ' <a href="#s2">Section 7.2</a> prices it.')])
+
+
+def hook_08():
+    from scipy.stats import norm
+    cpk, run = 0.8, 50
+    p = 2 * norm.sf(3 * cpk)
+    allpass = (1 - p) ** run
+    return quiz_hook(
+        "Quick question",
+        f"Your last {run} parts were all inside the customer's limits. Is the process good enough?",
+        [("yes", "Yes"), ("likely", "Probably"), ("cant", "Can't tell from that")],
+        [(f"A process making {p*100:.1f} % bad parts passes {run} in a row", f"{allpass*100:.0f} %", "alarm"),
+         ("Bad parts it makes per million", f"{p*1e6:,.0f}".replace(",", " "), "alarm")],
+        {"yes": "Most people say yes.",
+         "likely": "Most people lean that way.",
+         "cant": "Right."},
+        f" A process that makes {p*100:.1f}&nbsp;% bad parts still passes {run} in a row"
+        f" {allpass*100:.0f}&nbsp;% of the time. Passing parts cannot tell you the rate; the spread"
+        " measured against the limits can.".replace("&nbsp;", " "),
+        [("Before you pick", "The customer's limits are the two lines every part must land between."),
+         ("You have done this", "A month with no crash does not prove a safe driver. A month is a short"
+          " run for a rare event."),
+         ("The name for it", "The score that turns spread and limits into a defect rate is Cpk."
+          ' <a href="#s4">Section 8.4</a> converts it into bad parts per million.')])
+
+
+def hook_09():
+    from spclab.detection import DET_EWMA, DET_SHEW, SHIFT_AT
+    start, a, b = SHIFT_AT + 1, DET_SHEW + 1, DET_EWMA + 1
+    return quiz_hook(
+        "Quick question",
+        f"A cutting tool starts to wear at hour {start}, and parts grow a little bigger every hour."
+        " Chart A judges each hour on its own. Chart B keeps a running score of recent hours. Both raise"
+        " false alarms equally rarely. How much sooner does B sound the alarm?",
+        [("same", "About the same time"), ("bit", "An hour or two"), ("much", "Much sooner")],
+        [("Chart A, each hour alone · alarm at hour", f"{a}", "alarm"),
+         ("Chart B, running score · alarm at hour", f"{b}", "ok")],
+        {"same": "Most people expect a tie.",
+         "bit": "More than that.",
+         "much": "Right."},
+        f" B caught the drift {a-b} hours sooner, while every single part still looked normal. This"
+        " level builds the chart with a memory.",
+        [("Before you pick", "Both charts see the same parts. Only their memory differs."),
+         ("You have done this", "You spot a slow leak not from one drip but from a puddle that keeps"
+          " growing. The puddle remembers every drip."),
+         ("The name for it", "Chart B is an EWMA chart, short for exponentially weighted moving average."
+          ' <a href="#s3">Section 9.3</a> builds it.')])
+
+
+def hook_10():
+    from scipy.stats import binom
+    n, rate, today = 200, 0.02, 9
+    ucl = n * rate + 3 * (n * rate * (1 - rate)) ** 0.5
+    p = binom.sf(today - 1, n, rate)
+    return quiz_hook(
+        "Quick question",
+        f"Your line normally makes about {rate*100:.0f} bad parts in every 100. Yesterday"
+        f" {round(n*rate)} of {n} were bad. Today {today} of {n}. Has the process got worse?",
+        [("yes", "Yes"), ("no", "No"), ("cant", "Can't tell yet")],
+        [(f"Alarm line, bad parts in {n}", f"{ucl:.1f}", ""),
+         (f"Days an unchanged process gives {today} or more", f"{p*100:.1f} %", "")],
+        {"yes": "It looks that way, but the chart would not call it.",
+         "no": "Maybe, but you cannot be sure of that either.",
+         "cant": "That is the honest answer."},
+        f" {today} is inside the alarm line of {ucl:.1f}. An unchanged process does this on about 1 day"
+        f" in {round(1/p)}: unusual, worth a look, not yet proof. This level is about charts for counts.",
+        [("Before you pick", "Counts of bad parts bounce from day to day even when nothing changes."),
+         ("You have done this", "Two burnt pizzas one night and five the next feels like a trend. With"
+          " small counts, doubling by luck is easy."),
+         ("The name for it", "Charts for counted bad parts are p-charts and np-charts."
+          ' <a href="#s3">Section 10.3</a> says which one to use when.')])
+
+
+def hook_11():
+    from spclab.relationships import FIT, HALF_CI, HALF_PI, X0
+    n, y0 = FIT["n"], FIT["intercept"] + FIT["slope"] * X0
+    return quiz_hook(
+        "Quick question",
+        f"{n} test cuts show the surface gets rougher as you cut faster. The fitted line says"
+        f" {y0:.2f}&nbsp;µm at {X0:.0f}&nbsp;m/min, and you are 95&nbsp;% sure of that average to within"
+        f" ±{HALF_CI:.2f}&nbsp;µm. Will the next part you cut there land within ±{HALF_CI:.2f} of the line?",
+        [("yes", "Yes"), ("wider", "No, it needs a wider range"), ("cant", "Can't say")],
+        [("The average at that speed, µm", f"±{HALF_CI:.3f}", "ok"),
+         ("One next part, µm", f"±{HALF_PI:.3f}", "alarm")],
+        {"yes": "Most people say yes.",
+         "wider": "Right.",
+         "cant": "It can be worked out."},
+        f" The average is pinned down to ±{HALF_CI:.3f}&nbsp;µm, but a single part still carries its own"
+        f" wobble: ±{HALF_PI:.3f}&nbsp;µm, {HALF_PI/HALF_CI:.1f} times wider. More test cuts shrink the first"
+        " range, never the second.".replace("&nbsp;", " "),
+        [("Before you pick", "Each test cut landed a little off the line. The line is the average trend."),
+         ("You have done this", "A weather app can know next month's average temperature well and still"
+          " get tomorrow wrong."),
+         ("The name for it", "The narrow range is a confidence interval, the wide one a prediction interval."
+          ' <a href="#s4">Section 11.4</a> sets them side by side.')])
+
+
+def hook_12():
+    from spclab.experiments import OFAT
+    return quiz_hook(
+        "Quick question",
+        "Two knobs: pressure and temperature, and a lower result is better. You find the best"
+        " temperature with pressure set low, then the best pressure at that temperature. Have you found"
+        " the best setting?",
+        [("yes", "Yes"), ("close", "Close enough"), ("no", "Not necessarily")],
+        [("One knob at a time settles on", f"{OFAT['chosen_y']:.1f}", "alarm"),
+         ("Best setting, never tried", f"{OFAT['optimum_y']:.1f}", "ok")],
+        {"yes": "Most people say yes.",
+         "close": "It can be well off.",
+         "no": "Right."},
+        f" Here one knob at a time stops at {OFAT['chosen_y']:.1f}; the best setting gives"
+        f" {OFAT['optimum_y']:.1f}, and the method never tries it, because what one knob does depends on"
+        " where the other is set. This level changes settings on purpose, the right way.",
+        [("Before you pick", "Each knob has a low and a high setting, so there are four combinations."),
+         ("You have done this", "You find the best route to work, then the best time to leave on that"
+          " route. The best time on another route might beat both."),
+         ("The name for it", "When one knob changes what the other does, that is an interaction."
+          ' <a href="#s3">Section 12.3</a> measures it.')])
 
 CHAPTERS = {
     "level-01.html": {
@@ -1999,6 +2258,22 @@ CHAPTERS = {
                 ("5.5", "s5", "Including ours",
                  tex("d_2") + " is simulated, so it has a standard error too")],
         "sections": chapter_05,
+        "hook": hook_05,
+        "plain": {
+            "s1": "Nobody ever sees a process’s true average or spread. Every number on a chart"
+                  " is a guess from a handful of parts, and you can work out how far such"
+                  " guesses usually miss.",
+            "s2": "A “95 percent” range should catch the true value 95 times in 100. Draw a"
+                  " range from each of many samples and count how many actually catch it.",
+            "s3": "With only five parts you must guess the spread too, and small samples often"
+                  " guess it too small. Ranges built that way miss more often than promised, so"
+                  " they must reach further out.",
+            "s4": "To make an estimate twice as precise you need about four times as many"
+                  " parts, not twice as many. Precision gets expensive fast.",
+            "s5": "Even the fixed numbers this site uses come from simulation, so they are"
+                  " guesses too, with their own error. Pinning one down very precisely takes a"
+                  " huge number of tries.",
+        },
     },
     "level-06.html": {
         "number": 6, "word": "six",
@@ -2020,6 +2295,29 @@ CHAPTERS = {
                 ("6.7", "s7", "Building the chart",
                  "the " + tex(r"\bar{X}") + "–R pair from 25 subgroups, one multiplication per limit")],
         "sections": chapter_06,
+        "hook": hook_06,
+        "plain": {
+            "s1": "The bell curve behind a control chart is a claim: that the process has not"
+                  " changed. It is a claim about the process, never about a single part.",
+            "s2": "Put two limits around the middle of the curve and slide them outward. At"
+                  " three steps of spread on each side, almost all of the curve sits inside."
+                  " Nobody picked that share; the curve sets it.",
+            "s3": "The thin slivers outside the limits are too small to see until you stretch"
+                  " the picture. Together they mean a steady process still gives a false alarm"
+                  " about once in 370 points.",
+            "s4": "A control chart runs that same check on every new group of parts. A point"
+                  " outside the limits is not a bad part. It says something changed, so go and"
+                  " find it.",
+            "s5": "On a real line nobody knows the true spread, so the chart estimates it from"
+                  " how far apart the parts in each group are. With only twenty-five groups that"
+                  " estimate is still a little loose.",
+            "s6": "The fixed numbers printed on every chart form are not copied from a book"
+                  " here. Each one is worked out by simulation, then checked against the"
+                  " published table.",
+            "s7": "Take twenty-five groups of five parts. Chart each group’s average on top and"
+                  " its range underneath. Read the bottom chart first: if it is wrong, so are"
+                  " the top chart’s limits.",
+        },
     },
     "level-03.html": {
         "number": 3, "word": "three",
@@ -2037,6 +2335,25 @@ CHAPTERS = {
                 ("3.5", "s5", "You never measure everything",
                  "sample against process, and why the divisor is n − 1")],
         "sections": chapter_03,
+        "hook": hook_03,
+        "plain": {
+            "s1": "Twelve parts off one machine, same tool and same person, all measure a"
+                  " little differently. That spread is normal, and a few numbers can sum it up"
+                  " instead of twelve.",
+            "s2": "The average is a balance point: the one spot where the parts above it and"
+                  " the parts below it pull equally hard. Slide a guess along until the two"
+                  " sides cancel, and you have found it.",
+            "s3": "You cannot measure spread by averaging how far each part sits from the"
+                  " average, because the ups and downs cancel out. Square each distance first,"
+                  " average them, then take the square root.",
+            "s4": "Twelve parts show no shape. Measure thousands off the same machine and a"
+                  " bell curve appears that nobody asked for, made by many small causes adding"
+                  " up.",
+            "s5": "Your twelve parts only estimate the machine’s true average and spread;"
+                  " another twelve would give other answers. Samples also sit a little tighter"
+                  " than the truth, so the usual formula divides by one fewer part to make up"
+                  " for it.",
+        },
     },
     "level-04.html": {
         "number": 4, "word": "four",
@@ -2054,6 +2371,24 @@ CHAPTERS = {
                 ("4.5", "s5", "Reading the bell",
                  f"areas in sigmas: where {Z95:.2f}, {TAIL_K[2]*100:.1f} % and {TAIL3_PPM} ppm come from")],
         "sections": chapter_04,
+        "hook": hook_04,
+        "plain": {
+            "s1": "Roll a die ten times and some faces turn up far too often. Roll it ten"
+                  " thousand times and every face settles near one roll in six. Nobody arranged"
+                  " that.",
+            "s2": "A single die has no bell shape: every face is equally likely. Average a few"
+                  " dice at a time and the averages pile up into a bell. The averaging made the"
+                  " shape.",
+            "s3": "How much an average wobbles can be worked out before you measure anything:"
+                  " it shrinks in a fixed way as you average more parts. That rule is what makes"
+                  " a control chart possible.",
+            "s4": "Averaging more parts makes the average steadier, but each extra part helps"
+                  " less than the one before. That is why factories average four or five parts"
+                  " at a time, rather than fifty.",
+            "s5": "On any bell curve, the share of parts within a given distance of the middle"
+                  " is fixed, once you count distance in steps of the curve’s own spread. Far"
+                  " out, a tiny sliver always remains.",
+        },
     },
     "level-07.html": {
         "number": 7, "word": "seven",
@@ -2071,6 +2406,23 @@ CHAPTERS = {
                 ("7.5", "s5", "So is it worth it",
                  "the cost is fixed; the benefit is the shift you fear")],
         "sections": chapter_07,
+        "hook": hook_07,
+        "plain": {
+            "s1": "A chart can be wrong two ways: it can raise a false alarm, or it can stay"
+                  " quiet when the machine really has moved. Everyone counts the first. Almost"
+                  " nobody counts the second.",
+            "s2": "Each point gets one chance to spot a change, and for a small change that"
+                  " chance is poor. Even once the average has moved right onto the limit, the"
+                  " next point is only a coin toss.",
+            "s3": "A point just inside the limit is rare enough to deserve a second look, but"
+                  " the chart calls it fine and moves on. Inside or outside is all it keeps.",
+            "s4": "Four extra rules look for patterns across several points. Switch them on one"
+                  " at a time: each catches a real change sooner, and each brings more false"
+                  " alarms.",
+            "s5": "The extra rules always cost the same in false alarms. Against a small, slow"
+                  " drift they pay for themselves. Against a big sudden jump they buy almost"
+                  " nothing, since the basic chart already sees it.",
+        },
     },
     "level-10.html": {
         "number": 10, "word": "ten",
@@ -2090,6 +2442,27 @@ CHAPTERS = {
                 ("10.6", "s6", "Annex — capability when the shape is wrong",
                  "the normal tail understates a count tail")],
         "sections": chapter_10,
+        "hook": hook_10,
+        "plain": {
+            "s1": "Measure a part and you must check its spread as well as its average. Count"
+                  " bad parts and the average alone sets how much the count should bounce"
+                  " around.",
+            "s2": "Two lines can make the same share of bad parts on average. If one line’s"
+                  " rate shifts between batches, its counts scatter wider than they should, and"
+                  " its chart raises false alarms.",
+            "s3": "There are four charts for counted data. You pick one by answering two"
+                  " questions: are you counting bad parts or flaws on a part, and is the batch"
+                  " size always the same?",
+            "s4": "When batch sizes change, the alarm lines should sit closer together for big"
+                  " batches and wider apart for small ones. One fixed set of lines for every"
+                  " batch gives many false alarms.",
+            "s5": "When bad parts are rare and batches small, the lower alarm line drops below"
+                  " zero, so the chart can only warn that things got worse. The section works"
+                  " out how big a batch fixes that.",
+            "s6": "The bell-curve shortcut for “how often will we get this many bad parts?”"
+                  " gives too small an answer for counts. It makes the process look safer than"
+                  " it really is.",
+        },
     },
     "level-11.html": {
         "number": 11, "word": "eleven",
@@ -2107,6 +2480,24 @@ CHAPTERS = {
                 ("11.5", "s5", "The same total, split four ways",
                  "part, operator, interaction — and the seam to MSA")],
         "sections": chapter_11,
+        "hook": hook_11,
+        "plain": {
+            "s1": "Fitting a line through points, comparing groups, and checking a measuring"
+                  " tool all do the same sum: split the total scatter into pieces. Only the"
+                  " names of the pieces change.",
+            "s2": "The best-fit line is the one whose misses, squared and added up, come out"
+                  " smallest. Tilt it to any other slope and that total grows, by an amount you"
+                  " can work out.",
+            "s3": "The score for how well a line fits rises even when you add pure junk. It"
+                  " also stays high when a straight line is forced through a curve. Only the"
+                  " leftover misses show the problem.",
+            "s4": "Predicting the average at a setting and predicting the next single part are"
+                  " two different answers. The next part always gets a wider range, because more"
+                  " data never removes its own wobble.",
+            "s5": "Several people measure the same parts more than once, and the total scatter"
+                  " splits into the parts, the people, and the tool repeating itself. That is"
+                  " how a measuring tool gets checked.",
+        },
     },
     "level-12.html": {
         "number": 12, "word": "twelve",
@@ -2126,6 +2517,26 @@ CHAPTERS = {
                 ("12.6", "s6", "Twelve levels",
                  "what the arc was for")],
         "sections": chapter_12,
+        "hook": hook_12,
+        "plain": {
+            "s1": "Until now the course watched a process. Here you change its settings on"
+                  " purpose. If one setting changes what another does, testing them one at a"
+                  " time can lead you to the wrong answer.",
+            "s2": "Tune the temperature, lock it, then tune the pressure. Even with perfect"
+                  " readings this falls short, because it never tries the high-pressure, low-"
+                  " temperature setting that gives the best result.",
+            "s3": "To see how two settings work together you need all four combinations, and"
+                  " one at a time never tries them all. Testing all four corners also pins down"
+                  " each setting better.",
+            "s4": "To find which of many settings matter, you can run a small fraction of every"
+                  " combination. The cost: each setting’s effect gets mixed up with certain"
+                  " pairs, and you know which pairs before you start.",
+            "s5": "Testing only the high and low ends of each setting cannot tell whether the"
+                  " result bends in between. Add a few runs in the middle, and a gap between"
+                  " middle and ends shows the bend.",
+            "s6": "Twelve levels, one idea: every number on a chart comes from reasoning you"
+                  " can check yourself. Each level raised a question that the next one answered.",
+        },
     },
     "level-08.html": {
         "number": 8, "word": "eight",
@@ -2141,6 +2552,20 @@ CHAPTERS = {
                 ("8.4", "s4", "Every Cpk is a promise about defect rate",
                  "1.33 against 1.67 is two orders of magnitude of scrap")],
         "sections": chapter_08,
+        "hook": hook_08,
+        "plain": {
+            "s1": "The customer draws two lines, and parts between them pass. The machine makes"
+                  " parts with its own natural scatter. Put both on one ruler and you see"
+                  " whether the scatter fits. Here it does not.",
+            "s2": "The first score is a plain width comparison: how much room the customer’s"
+                  " limits leave against the machine’s scatter. Tighten the scatter and the"
+                  " score goes up.",
+            "s3": "Let the machine’s average slide toward one limit. The scatter stays the same"
+                  " width, but the score drops, because bad parts spill over the nearer limit"
+                  " first.",
+            "s4": "Every capability score stands for a count of bad parts per million. Two"
+                  " scores that look close can differ enormously in scrap.",
+        },
     },
     "level-09.html": {
         "number": 9, "word": "nine",
@@ -2158,6 +2583,23 @@ CHAPTERS = {
                 ("9.5", "s5", "One drift is an anecdote",
                  "44 subgroups against 10, and what the trade means")],
         "sections": chapter_09,
+        "hook": hook_09,
+        "plain": {
+            "s1": "A slow drift is the costliest problem a machine can have, because each part"
+                  " on its own still looks fine. Here a standard chart watches the average start"
+                  " to creep, and says nothing.",
+            "s2": "The standard chart judges each point alone and then forgets it, so it raises"
+                  " the alarm long after the drift began. Every part made in between came from a"
+                  " changed process.",
+            "s3": "This chart keeps a running score: each new result counts for a fifth, and"
+                  " the past keeps the rest. Its limits are set so it gives false alarms no more"
+                  " often than the first chart.",
+            "s4": "On the same eighty results, random ups and downs cancel out in the running"
+                  " score but the drift keeps adding up. It sounds the alarm far sooner, on a"
+                  " point the standard chart would ignore.",
+            "s5": "One run could be luck, so test thousands of sudden jumps. The chart with a"
+                  " memory catches them several times sooner, with no extra false alarms.",
+        },
     },
 }
 

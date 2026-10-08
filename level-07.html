@@ -462,6 +462,46 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook-row{margin:32px 0 8px}
+  .hook{border:1px solid var(--rule);max-width:var(--measure)}
+  .hk-side{max-width:var(--measure);margin-top:28px}
+  .hk-note{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);
+    border-left:1px solid var(--rule);padding:2px 0 2px 16px;margin-bottom:24px}
+  .hk-note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .hk-note a{color:var(--accent);border-bottom:1px solid var(--accent-wash)}
+  .hk-note[hidden]{display:none}
+  .hk-key{display:block;margin-top:6px}.hk-key i{font-style:normal;margin-right:6px}
+  @media (min-width:1280px){
+    .hook-row{display:grid;grid-template-columns:var(--measure) var(--marg);gap:var(--marg-gap);align-items:start}
+    .hk-side{margin-top:0}
+  }
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -494,6 +534,29 @@
           <p class="ch-no">Level 7 · chapter seven</p>
           <h1>Evidence and decisions</h1>
           <p class="dek">Level 6 priced crying wolf. This is the other way to be wrong — and why adding rules is arithmetic rather than opinion.</p>
+          <div class="hook-row">
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">The machine starts making parts slightly bigger, by about as much as its normal wobble. Your chart plots the average of 5 parts each hour. Will the next point catch it?</p>
+              <button type="button" data-pick="yes" aria-pressed="false">Yes, right away</button><button type="button" data-pick="likely" aria-pressed="false">Probably not</button><button type="button" data-pick="never" aria-pressed="false">Never</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Chance the next point catches it</span><b class="alarm">22 %</b></div><div><span class="micro">Average wait for the alarm, hours</span><b class="">4.5</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook");
+            const said = {"yes": "Most people expect so.", "likely": "Right.", "never": "It will, but slowly."}, end = " The next point catches it only 22 % of the time; on average the alarm takes 4.5 hours, and every part made meanwhile is off. A quiet chart is not proof that nothing changed.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+            <aside class="hk-side"><div class="hk-note"><span class="k">Before you pick</span>The change is small but real: every part from now on comes out bigger.</div><div class="hk-note" hidden><span class="k">You have done this</span>A smoke alarm that sounds only for thick smoke stays quiet while the toast burns. Quiet does not mean fine.</div><div class="hk-note" hidden><span class="k">The name for it</span>The chance a chart catches a real change is its power. <a href="#s2">Section 7.2</a> prices it.</div></aside>
+          </div>
         </div>
       </div>
       <div class="toc">
@@ -513,7 +576,8 @@
         <div>
           <span class="sec-no">7.1</span>
           <h2>The other way to be wrong</h2>
-          <p class="lead">Level 6 priced one decision: a point outside three <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a>. <span class="note"><span class="k"><span class="nc">α</span></span>Crying wolf. Priced in Level 6, and the only error a three-sigma limit is chosen against.</span>It costs 0.27 % of <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroups</a> a <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarm</a>, and Level 2 turned that rate into one alarm in 370. What neither level mentioned is the other way a chart can be wrong — staying silent when the process really has moved.</p>
+          <div class="plain"><span class="micro">In plain words</span><p>A chart can be wrong two ways: it can raise a <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarm</a>, or it can stay quiet when the machine really has moved. Everyone counts the first. Almost nobody counts the second.</p></div>
+          <p class="lead">Level 6 priced one decision: a point outside three <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a>. <span class="note"><span class="k"><span class="nc">α</span></span>Crying wolf. Priced in Level 6, and the only error a three-sigma limit is chosen against.</span>It costs 0.27 % of <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroups</a> a false alarm, and Level 2 turned that rate into one alarm in 370. What neither level mentioned is the other way a chart can be wrong — staying silent when the process really has moved.</p>
           <p>Draw the shifted process against the same limits and the problem is visible before it is named. <span class="note data"><span class="k">two ways to be wrong</span><span class="row num"><span class="rk"><span class="nc">α</span>, crying wolf</span><span class="rv">0.27 %</span></span><span class="row num"><span class="rk"><span class="nc">β</span> at 1<span class="nc">σ</span></span><span class="rv">0.977</span></span><span class="row num"><span class="rk">so it is caught</span><span class="rv">2.3 %</span></span></span>A <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a> that has moved by a full sigma sits almost entirely inside them. Sigma here, as on every chart, is the spread of the plotted point: one part's σ for single parts, σ/√<em>n</em> for subgroup means.</p>
           <p>So the chance of catching that shift on the next point is 2.3 %. <span class="note speak"><span class="k">spoken · 0:48</span><em>“That is the error Level 6 never mentioned, and it is the bigger one.”</em></span>The chart is not broken. A one-sigma shift simply looks like ordinary noise to a test that only ever sees one point at a time — and this is the bigger of the two errors, because nobody is counting it.</p>
       <figure>
@@ -530,6 +594,7 @@
         <div>
           <span class="sec-no">7.2</span>
           <h2>Power</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Each point gets one chance to spot a change, and for a small change that chance is poor. Even once the average has moved right onto the limit, the next point is only a coin toss.</p></div>
           <p class="lead">Put a number on it at every shift size and you have the <a class="gl" href="glossary.html#power-curve" data-gl="power-curve">power curve</a>: the chance that one point sees a shift of a given size. <span class="note data"><span class="k">chance the next point signals</span><span class="row num"><span class="rk">0.5<span class="nc">σ</span></span><span class="rv">0.6 %</span></span><span class="row num"><span class="rk">1.0<span class="nc">σ</span></span><span class="rv">2.3 %</span></span><span class="row num"><span class="rk">2.0<span class="nc">σ</span></span><span class="rv">15.9 %</span></span><span class="row num"><span class="rk">3.0<span class="nc">σ</span></span><span class="rv">50.0 %</span></span></span>It is worth reading slowly, because it is unflattering.</p>
       <div class="eq">
         <div class="eq-body" data-tex="\text{power}(\delta) = \Phi(-k-\delta) + \Phi(-k+\delta)"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>power</mtext><mo stretchy="false">(</mo><mi>δ</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo>−</mo><mi>δ</mi><mo stretchy="false">)</mo><mo>+</mo><mi mathvariant="normal">Φ</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo>+</mo><mi>δ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{power}(\delta) = \Phi(-k-\delta) + \Phi(-k+\delta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">power</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Φ</span><span class="mopen">(</span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0379em;">δ</span><span class="mclose">)</span></span></span></span></span></div>
@@ -582,6 +647,7 @@
         <div>
           <span class="sec-no">7.3</span>
           <h2>The chart throws evidence away</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A point just inside the limit is rare enough to deserve a second look, but the chart calls it fine and moves on. Inside or outside is all it keeps.</p></div>
           <p class="lead">Consider a point at two and a half sigma. <span class="note data"><span class="k">p-value, two-sided</span><span class="row num"><span class="rk">point at 2.5<span class="nc">σ</span></span><span class="rv">0.0124</span></span><span class="row num"><span class="rk">point at 3.0<span class="nc">σ</span></span><span class="rv">0.0027</span></span><span class="row num"><span class="rk">the chart's verdict</span><span class="rv">in control</span></span></span>It is inside the limits, so the chart calls it in control and moves on. Ask instead how surprising it is, and the answer is a <a class="gl" href="glossary.html#p-value" data-gl="p-value">p-value</a> of 0.0124 — about one in eighty.</p>
           <p>Anywhere else in statistics that is a finding. <span class="note"><span class="k">the same number twice</span>A point exactly on the limit has a p-value equal to α. The chart <em>is</em> a test with its threshold already chosen.</span>Here it is filed as a pass and forgotten, because the in-or-out rule keeps the verdict and discards the evidence.</p>
           <p>A verdict is not the same as the evidence. The extra rules exist to spend what a single point cannot hold — a pattern across several points, none of which is damning on its own.</p>
@@ -593,6 +659,7 @@
         <div>
           <span class="sec-no">7.4</span>
           <h2>Four rules, one at a time</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>Four extra rules look for patterns across several points. Switch them on one at a time: each catches a real change sooner, and each brings more false alarms.</p></div>
           <p class="lead">The <a class="gl" href="glossary.html#western-electric-rules" data-gl="western-electric-rules">Western Electric rules</a> are usually taught as a list to memorise. <span class="note data"><span class="k">what each rule reads</span><span class="row txt"><span class="rk">rule 1</span><span class="rv">one point beyond 3σ</span></span><span class="row txt"><span class="rk">rule 2</span><span class="rv">2 of 3 beyond 2σ, same side</span></span><span class="row txt"><span class="rk">rule 3</span><span class="rv">4 of 5 beyond 1σ, same side</span></span><span class="row txt"><span class="rk">rule 4</span><span class="rv">8 in a row on one side</span></span></span>They are not a list. They are four purchases, and each one has a price that can be computed.</p>
           <p>Switch them on one at a time and watch two <a class="gl" href="glossary.html#run-length" data-gl="run-length">run lengths</a> move in the same direction — the subgroups between false alarms, which you want long, and the subgroups to catch a real 1σ shift, which you want short. <span class="note data"><span class="k">false alarm every / catches in</span><span class="row num"><span class="rk">rule 1</span><span class="rv">377 / 43.1</span></span><span class="row num"><span class="rk">rule 1+2</span><span class="rv">232 / 20.3</span></span><span class="row num"><span class="rk">rule 1+2+3</span><span class="rv">133 / 11.2</span></span><span class="row num"><span class="rk">rule 1+2+3+4</span><span class="rv">91 / 9.3</span></span></span>Every rule shortens both.</p>
           <p>All four together give a false alarm every 91 subgroups instead of 377 (simulated; the exact value for rule 1 alone is 370.4, the 370 of Levels 2 and 6). <span class="note"><span class="k">corroboration</span>Champ &amp; Woodall, 1987. Agreement with a number derived elsewhere is worth more than internal consistency.</span>That figure was published in 1987 as 91.75, and the simulation here was not told about it — it reproduces it from the rules themselves.</p>
@@ -613,6 +680,7 @@
         <div>
           <span class="sec-no">7.5</span>
           <h2>So is it worth it</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>The extra rules always cost the same in false alarms. Against a small, slow drift they pay for themselves. Against a big sudden jump they buy almost nothing, since the basic chart already sees it.</p></div>
           <p class="lead">Line up what the rules cost against what they buy, and the answer stops being a matter of taste.<span class="note data"><span class="k">all four rules</span><span class="row txt"><span class="rk">cost, always</span><span class="rv">×4.1 false alarms</span></span><span class="row num"><span class="rk">bought at 1<span class="nc">σ</span></span><span class="rv">×4.6 sooner</span></span><span class="row num"><span class="rk">bought at 3<span class="nc">σ</span></span><span class="rv">×1.1 sooner</span></span></span></p>
           <p>Against a slow one-sigma drift the rules catch it ×4.6 sooner — more than the ×4.1 in false alarms they cost, so the trade is good. <span class="note"><span class="k">read it twice</span>The cost is one number. The benefit is a function of the shift, and the shift is a fact about your process.</span>Against a three-sigma jump they catch it only ×1.1 sooner, because rule one already sees it on the next point. Same cost, almost nothing bought.</p>
           <p>So the rules are not good or bad, and the argument about whether to use them is not really about statistics. <span class="note speak"><span class="k">spoken · 3:44</span><em>“The cost is fixed. The benefit is the shift you fear.”</em></span>The cost is fixed; the benefit is whatever shift you are actually afraid of. Level 9 asks the same question of a chart with memory, and gets a better answer.</p>

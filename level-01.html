@@ -494,6 +494,7 @@
   .hk-tiles > div + div{border-left:1px solid var(--rule)}
   .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
     font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
   .hk-after{padding:0 20px 20px;margin:16px 0 0}
   .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
   .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
@@ -542,8 +543,8 @@
               <svg class="hk-dots" viewBox="0 0 420 110" role="img" aria-label="The next 20 parts, how far each one lands from the target size"><line x1="0" x2="420" y1="55" y2="55" stroke="var(--rule-strong)" stroke-dasharray="4 4"/><text x="0" y="50" fill="var(--ink-dim)" font-family="IBM Plex Mono,monospace" font-size="10">target</text></svg>
             </div>
             <div class="hk-tiles" hidden>
-              <div><span class="micro">Left alone · typical miss</span><b class="ok">±0.19 mm</b></div>
-              <div><span class="micro">Adjusted every part</span><b class="alarm">±0.27 mm</b></div>
+              <div><span class="micro">Left alone · typical miss, mm</span><b class="ok">±0.19</b></div>
+              <div><span class="micro">Adjusted every part · typical miss, mm</span><b class="alarm">±0.27</b></div>
             </div>
             <p class="hk-after" hidden></p>
             <script type="application/json" id="hk-data">{"left": [-0.2649, -0.0497, 0.0841, 0.2272, 0.0219, -0.1105, -0.157, 0.1497, 0.327, 0.0546, -0.2467, -0.1917, 0.32, 0.0406, -0.3464, -0.0167, -0.2326, -0.1259, -0.0976, -0.1427], "adj": [-0.5649, 0.2152, 0.1338, 0.1431, -0.2053, -0.1325, -0.0464, 0.3067, 0.1772, -0.2724, -0.3012, 0.055, 0.5117, -0.2794, -0.387, 0.3297, -0.2159, 0.1068, 0.0283, -0.0451]}</script>

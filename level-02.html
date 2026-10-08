@@ -494,6 +494,7 @@
   .hk-tiles > div + div{border-left:1px solid var(--rule)}
   .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
     font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
   .hk-after{padding:0 20px 20px;margin:16px 0 0}
   .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
   .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
@@ -540,21 +541,13 @@
               <p class="hk-q">You flip a coin 10 times and get 8 heads. Is the coin unfair?</p>
               <button type="button" data-pick="yes" aria-pressed="false">Yes</button><button type="button" data-pick="no" aria-pressed="false">No</button><button type="button" data-pick="cant" aria-pressed="false">Can't tell yet</button>
             </div>
-            <div class="hk-tiles" hidden>
-              <div><span class="micro">A fair coin, 8+ heads in 10</span><b>5.5 %</b></div>
-              <div><span class="micro">That is about</span><b>1 in 18</b></div>
-            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">A fair coin, 8+ heads in 10</span><b class="">5.5 %</b></div><div><span class="micro">That is about</span><b class="">1 in 18</b></div></div>
             <p class="hk-after" hidden></p>
           </div>
           <script>
           (() => {
             const box = document.getElementById("hook");
-            const said = {
-              yes: "Most people say yes. But a perfectly fair coin does this about 1 time in 18.",
-              no: "Fair enough, but you can't be sure of that either: a slightly unfair coin would give 8 heads more often.",
-              cant: "That is the honest answer. A perfectly fair coin does this about 1 time in 18."
-            };
-            const end = " Telling luck from a real change, and saying how sure you are, is what this course is about. This level starts with what a percentage like that actually means.";
+            const said = {"yes": "Most people say yes. But a perfectly fair coin does this about 1 time in 18.", "no": "Fair enough, but you can't be sure of that either: a slightly unfair coin would give 8 heads more often.", "cant": "That is the honest answer. A perfectly fair coin does this about 1 time in 18."}, end = " Telling luck from a real change, and saying how sure you are, is what this course is about. This level starts with what a percentage like that actually means.";
             box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
               box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
               box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);

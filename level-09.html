@@ -434,6 +434,46 @@
     .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 6px}
     .rail a,.rail span.soon{min-height:40px;letter-spacing:.06em;gap:5px}
   }
+  /* Plain entry (specs/plain-entry-contract.md): a hook panel before the
+     contents, and one everyday-words line under every section title. Panel and
+     readout-tile grammar from DESIGN.md §5; radius 0, one accent. */
+  .hook-row{margin:32px 0 8px}
+  .hook{border:1px solid var(--rule);max-width:var(--measure)}
+  .hk-side{max-width:var(--measure);margin-top:28px}
+  .hk-note{font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);
+    border-left:1px solid var(--rule);padding:2px 0 2px 16px;margin-bottom:24px}
+  .hk-note .k{display:block;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .hk-note a{color:var(--accent);border-bottom:1px solid var(--accent-wash)}
+  .hk-note[hidden]{display:none}
+  .hk-key{display:block;margin-top:6px}.hk-key i{font-style:normal;margin-right:6px}
+  @media (min-width:1280px){
+    .hook-row{display:grid;grid-template-columns:var(--measure) var(--marg);gap:var(--marg-gap);align-items:start}
+    .hk-side{margin-top:0}
+  }
+  .hk-bar{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;
+    border-bottom:1px solid var(--rule)}
+  .hk-body{padding:20px}
+  .hk-q{font-size:calc(var(--body) * 1.22);line-height:1.3;color:var(--ink-bright);margin:0 0 18px}
+  .hook button{font-family:var(--mono);font-size:14px;letter-spacing:.06em;background:transparent;
+    color:var(--ink-bright);border:1px solid var(--rule-strong);padding:12px 18px;cursor:pointer;
+    margin:0 8px 8px 0;border-radius:0;min-height:44px}
+  .hook button[aria-pressed="true"]{background:var(--accent-wash)}
+  .hook button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hk-dots{display:block;width:100%;height:auto;margin-top:12px}
+  .hk-tiles{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+  .hk-tiles[hidden],.hk-after[hidden]{display:none}
+  .hk-tiles > div{padding:14px 20px}
+  .hk-tiles > div + div{border-left:1px solid var(--rule)}
+  .hk-tiles b{display:block;font-family:var(--mono);font-weight:500;font-size:28px;
+    font-variant-numeric:tabular-nums;margin-top:4px}
+  @media (max-width:560px){.hk-tiles > div{padding:12px 14px}.hk-tiles b{font-size:22px}}
+  .hk-after{padding:0 20px 20px;margin:16px 0 0}
+  .ok{color:var(--signal-ok)} .alarm{color:var(--signal-alarm)}
+  .plain{border-left:2px solid var(--accent);padding:4px 0 4px 16px;margin:0 0 24px;
+    max-width:var(--measure)}
+  .plain p{margin:4px 0 0;color:var(--ink-bright)}
+  .plain .micro,.hook .micro{display:block}
+  .hk-bar .micro{display:inline}
 </style>
 </head>
 <body>
@@ -466,6 +506,29 @@
           <p class="ch-no">Level 9 · chapter nine</p>
           <h1>Detection theory: memory beats points</h1>
           <p class="dek">A chart with a memory catches drift while every raw point still looks innocent.</p>
+          <div class="hook-row">
+          <div class="hook" id="hook">
+            <div class="hk-bar"><span class="micro">Quick question</span><span class="micro" id="hk-status"></span></div>
+            <div class="hk-body">
+              <p class="hk-q">A cutting tool starts to wear at hour 21, and parts grow a little bigger every hour. Chart A judges each hour on its own. Chart B keeps a running score of recent hours. Both raise false alarms equally rarely. How much sooner does B sound the alarm?</p>
+              <button type="button" data-pick="same" aria-pressed="false">About the same time</button><button type="button" data-pick="bit" aria-pressed="false">An hour or two</button><button type="button" data-pick="much" aria-pressed="false">Much sooner</button>
+            </div>
+            <div class="hk-tiles" hidden><div><span class="micro">Chart A, each hour alone · alarm at hour</span><b class="alarm">64</b></div><div><span class="micro">Chart B, running score · alarm at hour</span><b class="ok">34</b></div></div>
+            <p class="hk-after" hidden></p>
+          </div>
+          <script>
+          (() => {
+            const box = document.getElementById("hook");
+            const said = {"same": "Most people expect a tie.", "bit": "More than that.", "much": "Right."}, end = " B caught the drift 30 hours sooner, while every single part still looked normal. This level builds the chart with a memory.";
+            box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+              box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+              box.querySelector(".hk-tiles").hidden = false; box.parentElement.querySelectorAll(".hk-note[hidden]").forEach(n => n.hidden = false);
+              const a = box.querySelector(".hk-after"); a.textContent = said[b.dataset.pick] + end; a.hidden = false;
+            }));
+          })();
+          </script>
+            <aside class="hk-side"><div class="hk-note"><span class="k">Before you pick</span>Both charts see the same parts. Only their memory differs.</div><div class="hk-note" hidden><span class="k">You have done this</span>You spot a slow leak not from one drip but from a puddle that keeps growing. The puddle remembers every drip.</div><div class="hk-note" hidden><span class="k">The name for it</span>Chart B is an EWMA chart, short for exponentially weighted moving average. <a href="#s3">Section 9.3</a> builds it.</div></aside>
+          </div>
         </div>
       </div>
       <div class="toc">
@@ -485,6 +548,7 @@
         <div>
           <span class="sec-no">9.1</span>
           <h2>The most expensive failure mode</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>A slow drift is the costliest problem a machine can have, because each part on its own still looks fine. Here a standard chart watches the average start to creep, and says nothing.</p></div>
           <p class="lead">Slow drift is the most expensive failure mode in manufacturing, because every single measurement of it looks acceptable. <span class="note data"><span class="k">the setup</span><span class="row num"><span class="rk">false alarm budget</span><span class="rv">1 in 370</span></span><span class="row txt"><span class="rk">drift rate</span><span class="rv">0.06 σ / subgroup</span></span></span>Here is a <a class="gl" href="glossary.html#control-chart" data-gl="control-chart">Shewhart chart</a> with limits at ±3σ, which buys one <a class="gl" href="glossary.html#false-alarm" data-gl="false-alarm">false alarm</a> in 370 <a class="gl" href="glossary.html#subgroup" data-gl="subgroup">subgroups</a>.</p>
           <p>The first twenty subgroups are noise around the target. Then the <a class="gl" href="glossary.html#mean" data-gl="mean">mean</a> starts walking at 0.06 <a class="gl" href="glossary.html#standard-deviation" data-gl="standard-deviation">sigma</a> per subgroup — slow enough that no single measurement looks wrong, and the chart carries on saying nothing.</p>
       <figure>
@@ -505,6 +569,7 @@
         <div>
           <span class="sec-no">9.2</span>
           <h2>A chart with no memory</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>The standard chart judges each point alone and then forgets it, so it raises the alarm long after the drift began. Every part made in between came from a changed process.</p></div>
           <p>The first violation lands at subgroup 64. <span class="note data"><span class="k">what it cost</span><span class="row txt"><span class="rk">drift starts</span><span class="rv">after subgroup 20</span></span><span class="row num"><span class="rk">first alarm</span><span class="rv">subgroup 64</span></span><span class="row num"><span class="rk">mean moved by then</span><span class="rv">2.6 σ</span></span></span>That is 44 subgroups after the drift began, by which time the mean has moved 2.6 sigma and every part in between was made by a process nobody knew had changed.</p>
           <p>Each point was judged on its own and then forgotten. <span class="note speak"><span class="k">spoken · 1:12</span><em>“Each point was judged on its own and then forgotten. That is the whole weakness.”</em></span>That is the whole weakness, and it is not a tuning problem: the chart has no memory.</p>
         </div>
@@ -515,6 +580,7 @@
         <div>
           <span class="sec-no">9.3</span>
           <h2>A statistic that remembers</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>This chart keeps a running score: each new result counts for a fifth, and the past keeps the rest. Its limits are set so it gives false alarms no more often than the first chart.</p></div>
           <p>Same process, same data, same false-alarm budget — and a statistic that remembers. <span class="note data"><span class="k">how much it keeps</span><span class="row num"><span class="rk">lambda</span><span class="rv">0.20</span></span><span class="row txt"><span class="rk">weighting</span><span class="rv">1 new : 4 memory</span></span></span>Each new subgroup gets a fifth of the weight and the running statistic keeps the rest: with lambda at 0.2 that is one part new and four parts memory. Written out, with <span class="tex" data-tex="x_i"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">x_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> the newest subgroup mean and <span class="tex" data-tex="z_i"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">z_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.044em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> the running statistic, <span class="tex" data-tex="z_i = \lambda x_i + (1-\lambda)\,z_{i-1}"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>λ</mi><msub><mi>x</mi><mi>i</mi></msub><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>λ</mi><mo stretchy="false">)</mo><mtext> </mtext><msub><mi>z</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">z_i = \lambda x_i + (1-\lambda)\,z_{i-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.044em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord mathnormal">λ</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">λ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.044em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.044em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span></span></span></span></span>, started at the target.</p>
           <p>Its limits are not ±3. They are calibrated by simulation until this chart cries wolf exactly as rarely as the last one — one alarm in 370 quiet subgroups against 370, so the comparison that follows is fair.</p>
       <div class="eq">
@@ -570,6 +636,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">9.4</span>
           <h2>The same eighty subgroups again</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>On the same eighty results, random ups and downs cancel out in the running score but the drift keeps adding up. It sounds the alarm far sooner, on a point the standard chart would ignore.</p></div>
           <p>While the process is quiet the statistic wanders near zero, because new noise keeps cancelling old noise. <span class="note data"><span class="k">caught early</span><span class="row num"><span class="rk">crosses at</span><span class="rv">subgroup 34</span></span><span class="row num"><span class="rk">mean off by</span><span class="rv">0.8 σ</span></span><span class="row num"><span class="rk">raw point there</span><span class="rv">+2.48 σ</span></span></span>Once the drift starts the noise still cancels but the drift does not: it is the same direction every time, so it adds up.</p>
           <p>It crosses the limit at subgroup 34, with the mean only 0.8 sigma off and the raw measurement sitting at +2.48 sigma — a number no Shewhart chart would look at twice. The other chart waited until subgroup 64, thirty subgroups later.</p>
       <figure>
@@ -616,6 +683,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         <div>
           <span class="sec-no">9.5</span>
           <h2>One drift is an anecdote</h2>
+          <div class="plain"><span class="micro">In plain words</span><p>One run could be luck, so test thousands of sudden jumps. The chart with a memory catches them several times sooner, with no extra false alarms.</p></div>
           <p>That is one drift. <span class="note data"><span class="k">thousands of 1<span class="nc">σ</span> steps</span><span class="row num"><span class="rk">Shewhart ARL</span><span class="rv">44</span></span><span class="row num"><span class="rk">EWMA ARL</span><span class="rv">10</span></span><span class="row num"><span class="rk">speed-up</span><span class="rv">4.4×</span></span></span>The standard yardstick swaps the slow walk for a sudden step: the mean jumps by one sigma and stays there. Run thousands of those and the average wait comes out at 44 subgroups for the Shewhart rule and 10 for this one. Divide them: 4.4 times sooner, bought with no extra false alarms at all. The 44 matching the drift above is a coincidence; that run gave 44 against 14.</p>
           <p>That trade — sensitivity bought without paying in false alarms — is the whole of detection theory.<span class="note speak"><span class="k">spoken · 3:41</span><em>“4.4 times sooner, bought with no extra false alarms at all.”</em></span></p>
       <aside class="sys">
