@@ -59,14 +59,20 @@ def sheet_l04_dice():
         ("average of 5\na shape appears", 5),
         ("average of 30\nthe bell — a law, not a guess", 30),
     ]
-    bins = np.linspace(1, 6, 51)
     for ax, (title, k) in zip(axs, titles):
         avg = rolls[:, :k].mean(axis=1) if k > 1 else rolls[:, 0]
-        ax.hist(avg, bins=bins if k > 1 else np.arange(0.5, 7, 1),
+        # An average of k dice can only land on multiples of 1/k. Bin edges sit
+        # half a step between those values, a whole number of steps wide, or
+        # some bins catch one more possible value than their neighbours and the
+        # histogram turns into a comb.
+        step = max(1, k // 10)
+        bins = (np.arange(k, 6 * k + 2, step) - 0.5) / k
+        ax.hist(avg, bins=bins,
                 density=True, color=BLUE if k == 1 else TEAL, lw=0, alpha=.85)
         ax.axvline(3.5, color=MUTED, ls="--", lw=1)
         ax.set_title(title, fontsize=12, loc="left")
         ax.grid(alpha=.5, axis="y")
+    axs[0].set_ylabel("density")
 
     # annotate the shrinking spread with real numbers
     sd1 = rolls.std()
@@ -85,8 +91,11 @@ def sheet_l04_dice():
 # ---------------------------------------------------------------------------
 # Sheet 2 — sigma_xbar = sigma / sqrt(n): THE reason X̄ charts exist
 # ---------------------------------------------------------------------------
+SQRTN_SIGMA = 0.08  # a plausible machining σ in mm, read by the Level 4 page
+
+
 def sheet_l04_sqrtn():
-    sig = 0.08  # a plausible machining σ in mm
+    sig = SQRTN_SIGMA
 
     fig, axs = plt.subplots(1, 2, figsize=(13, 4.8), constrained_layout=True)
 

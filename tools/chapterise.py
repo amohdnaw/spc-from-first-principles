@@ -344,6 +344,7 @@ TAIL_K = {k: 1 - phi(k) for k in (1, 2, 3)}
 TAIL3_PPM = f"{TAIL_K[3]*1e6:,.0f}".replace(",", " ")  # the site writes 1 350
 
 from spclab.level06 import XR_SIGMA, xbar_r_example  # noqa: E402
+from spclab.level04 import SQRTN_SIGMA  # noqa: E402
 
 # Level 6.7 builds one X̄–R chart. The page quotes the same arrays the figure
 # draws, so the arithmetic in the prose and the lines on the chart cannot part.
@@ -1534,10 +1535,11 @@ def chapter_04(K):
             "      " + K["eq"],
         ]),
         ("s4", "4.4", "What averaging buys", [
-            para("Put subgroup size along the bottom and the spread of the mean up the side, with"
-                 " sigma set to one, then walk the subgroup size from one to twenty-five. At"
-                 " twenty-five parts the spread of the mean is a fifth of one part's spread — the"
-                 " root is doing all the work.",
+            para("Put subgroup size along the bottom and the spread of the mean up the side,"
+                 f" for a machined part with σ = {SQRTN_SIGMA:.3f} mm, then walk the subgroup"
+                 " size from one to twenty-five. At twenty-five parts the spread of the mean is"
+                 f" {SQRTN_SIGMA/5:.3f} mm, a fifth of one part's spread — the root is doing all"
+                 " the work.",
                  datanote(("2nd part buys", "0.29 σ"), ("25th part buys", "0.004 σ"),
                           k="the shape of the deal")),
             para("But look at the shape of what you are buying. The second part cuts your"
